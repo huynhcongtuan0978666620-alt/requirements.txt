@@ -4,7 +4,7 @@ import pandas as pd
 from datetime import datetime
 
 # URL CHUẨN
-URL_KHO = "https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing"
+https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing
 
 st.set_page_config(page_title="Quản Lý Pha Chế V3.0", page_icon="🧪", layout="wide")
 conn = st.connection("gsheets", type=GSheetsConnection)
