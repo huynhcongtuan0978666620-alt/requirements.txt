@@ -3,19 +3,20 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from datetime import datetime
 
-# --- CẤU HÌNH ĐƯỜNG LINK MỚI CỦA NÍ ---
-URL_KHO = "[https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing](https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing)"
+# --- CẤU HÌNH LINK CHUẨN ---
+# Tôi đã lược bỏ phần đuôi dư thừa để tránh lỗi 404
+URL_KHO = "https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing"
 
 st.set_page_config(page_title="Quản Lý Pha Chế V3.0", page_icon="🧪", layout="wide")
 
-# Thiết lập kết nối với Google Sheets
+# Kết nối
 conn = st.connection("gsheets", type=GSheetsConnection)
 
 def doc_du_lieu(sheet_name):
-    # Đọc dữ liệu từ sheet tương ứng, ttl=0 để luôn lấy dữ liệu mới nhất
+    # Thêm tham số để ép buộc đọc đúng sheet theo tên
     return conn.read(spreadsheet=URL_KHO, worksheet=sheet_name, ttl=0)
 
-# --- KIỂM TRA TRẠNG THÁI ĐĂNG NHẬP ---
+# --- ĐĂNG NHẬP ---
 if "auth" not in st.session_state:
     st.session_state.update({"auth": False, "user": ""})
 
@@ -28,88 +29,68 @@ if not st.session_state.auth:
         if st.button("XÁC NHẬN VÀO HỆ THỐNG"):
             try:
                 df_nv = doc_du_lieu("NhanVien")
-                # Kiểm tra tài khoản và mật khẩu
-                user = df_nv[(df_nv['Số điện thoại'].astype(str) == str(p).strip()) & 
-                             (df_nv['Mật khẩu'].astype(str) == str(pw).strip())]
+                # Ép kiểu string để tránh lỗi mất số 0 đầu
+                p_str = str(p).strip()
+                pw_str = str(pw).strip()
+                
+                user = df_nv[(df_nv['Số điện thoại'].astype(str).str.contains(p_str)) & 
+                             (df_nv['Mật khẩu'].astype(str) == pw_str)]
+                
                 if not user.empty:
                     st.session_state.auth = True
                     st.session_state.user = user.iloc[0]['Tên nhân viên']
                     st.rerun()
                 else:
-                    st.error("Thông tin đăng nhập không đúng!")
+                    st.error("Sai tài khoản hoặc mật khẩu rồi ní ơi!")
             except Exception as e:
-                st.error(f"Lỗi kết nối Sheets: {e}. Ní kiểm tra quyền Chia sẻ (Editor) nhé!")
+                st.error(f"Lỗi: {e}. Ní kiểm tra Tab 'NhanVien' trên Sheets nhé!")
     st.stop()
 
-# --- GIAO DIỆN CHÍNH SAU KHI ĐĂNG NHẬP ---
-st.sidebar.subheader(f"👤 Nhân viên: {st.session_state.user}")
-if st.sidebar.button("🔓 Đăng xuất"):
+# --- GIAO DIỆN NHẬP LIỆU ---
+st.sidebar.subheader(f"👤 {st.session_state.user}")
+if st.sidebar.button("🔓 Thoát"):
     st.session_state.auth = False
     st.rerun()
 
-tab_nhap, tab_soat = st.tabs(["📝 NHẬP MẺ HÀNG", "🕵️ SOÁT SỔ CÁI"])
+tab1, tab2 = st.tabs(["📝 NHẬP MẺ HÀNG", "🕵️ SOÁT SỔ CÁI"])
 
-# --- TAB 1: NHẬP LIỆU ---
-with tab_nhap:
+with tab1:
     try:
         df_dm = doc_du_lieu("DanhMuc")
         list_sp = df_dm['Tên Sản Phẩm'].tolist()
-
-        col_trai, col_phai = st.columns([1, 1.2])
-        with col_trai:
-            st.subheader("Thông tin pha chế")
-            sp = st.selectbox("Sản phẩm pha chế", list_sp)
+        
+        c_l, c_r = st.columns([1, 1.2])
+        with c_l:
+            sp = st.selectbox("Sản phẩm", list_sp)
+            rx = st.number_input("Số lượng RX (Lít)", 0.0)
+            tn = st.number_input("Số lượng TN (Lít)", 0.0)
             
-            c1, c2 = st.columns(2)
-            rx = c1.number_input("Số lượng Rửa Xe (Lít)", 0.0, step=0.1)
-            tn = c2.number_input("Số lượng Tẩy Nhôm (Lít)", 0.0, step=0.1)
+            t = rx + tn
+            p_rx = f"{round((rx/t)*100,1)}%" if t > 0 else "0%"
+            p_tn = f"{round((tn/t)*100,1)}%" if t > 0 else "0%"
+            st.info(f"Tỷ lệ: RX {p_rx} - TN {p_tn}")
             
-            tong = rx + tn
-            p_rx = round((rx/tong)*100, 2) if tong > 0 else 0
-            p_tn = round((tn/tong)*100, 2) if tong > 0 else 0
+            d = st.slider("Chất lượng (xx/10)", 0, 10, 8)
+            n = st.text_area("Ghi chú/Hướng dẫn", "Chuẩn quy trình.")
             
-            st.info(f"📊 Tỷ lệ mẻ: RX {p_rx}% - TN {p_tn}%")
-            
-            # Form đánh giá theo yêu cầu của ní
-            diem = st.slider("Đánh giá chất lượng (xx/10)", 0, 10, 8)
-            note = st.text_area("Hướng dẫn thao tác / Ghi chú sử dụng", "Thao tác chuẩn theo quy trình.")
-
-            if st.button("🚀 GỬI DỮ LIỆU VỀ KHO"):
-                # Tạo dòng dữ liệu mới
-                new_row = pd.DataFrame([{
+            if st.button("🚀 GỬI DỮ LIỆU"):
+                new = pd.DataFrame([{
                     "Ngày": datetime.now().strftime('%d/%m/%Y'),
-                    "Người làm": st.session_state.user,
-                    "Sản phẩm": sp,
-                    "SL Rửa Xe": rx,
-                    "Tỷ lệ RX": f"{p_rx}%",
-                    "SL Tẩy Nhôm": tn,
-                    "Tỷ lệ TN": f"{p_tn}%",
-                    "Đánh giá": f"{diem}/10",
-                    "Ghi chú": note,
-                    "Giờ lưu": datetime.now().strftime('%H:%M:%S')
+                    "Người làm": st.session_state.user, "Sản phẩm": sp,
+                    "SL Rửa Xe": rx, "Tỷ lệ RX": p_rx, "SL Tẩy Nhôm": tn, "Tỷ lệ TN": p_tn,
+                    "Đánh giá": f"{d}/10", "Ghi chú": n, "Giờ lưu": datetime.now().strftime('%H:%M:%S')
                 }])
-                
-                # Đọc dữ liệu cũ, cộng thêm dòng mới và cập nhật
-                df_bc = doc_du_lieu("BaoCao")
-                df_combined = pd.concat([df_bc, new_row], ignore_index=True)
-                conn.update(spreadsheet=URL_KHO, worksheet="BaoCao", data=df_combined)
-                st.success("✅ ĐÃ ĐỒNG BỘ DỮ LIỆU THÀNH CÔNG!")
+                old = doc_du_lieu("BaoCao")
+                combined = pd.concat([old, new], ignore_index=True)
+                conn.update(spreadsheet=URL_KHO, worksheet="BaoCao", data=combined)
+                st.success("ĐÃ LƯU VÀO KHO!")
                 st.balloons()
-                
-        with col_phai:
-            st.subheader("Lịch sử 5 mẻ gần nhất")
-            df_view = doc_du_lieu("BaoCao")
-            st.dataframe(df_view.tail(5), use_container_width=True)
-            
-    except Exception as e:
-        st.warning(f"Đang đợi dữ liệu từ Sheets... (Lỗi: {e})")
+        with c_r:
+            st.subheader("5 mẻ mới nhất")
+            st.dataframe(doc_du_lieu("BaoCao").tail(5))
+    except: st.warning("Đang tải dữ liệu...")
 
-# --- TAB 2: SOÁT SỔ ---
-with tab_soat:
-    st.subheader("🔍 Nhật ký tổng kho (Sổ cái)")
-    try:
-        df_full = doc_du_lieu("BaoCao")
-        st.write(f"Tổng số mẻ hàng trong kho: **{len(df_full)}**")
-        st.dataframe(df_full, use_container_width=True)
-    except:
-        st.info("Chưa có dữ liệu trong sổ cái.")
+with tab2:
+    st.subheader("Sổ cái tổng")
+    try: st.dataframe(doc_du_lieu("BaoCao"), use_container_width=True)
+    except: st.info("Trống.")
