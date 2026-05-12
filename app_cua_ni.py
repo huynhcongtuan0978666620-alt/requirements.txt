@@ -5,7 +5,7 @@ from datetime import datetime
 
 # --- CẤU HÌNH ĐƯỜNG ỐNG ---
 # Link Google Sheets của ní
-URL_KHO = "https://docs.google.com/spreadsheets/d/1Rv74WGZbptvDWqAVuCw2h0Ob0OgcPk8ovgjhwq83SQg/edit?usp=sharing"
+URL_KHO = "https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?gid=825038783#gid=825038783"
 
 st.set_page_config(page_title="Quản Trị V3.0 - Cloud", page_icon="☁️", layout="wide")
 
