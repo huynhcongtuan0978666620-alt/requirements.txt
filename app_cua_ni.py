@@ -4,23 +4,29 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 from datetime import datetime
 import time
-import pytz # Thêm thư viện này để chỉnh múi giờ
+import pytz 
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS (GIỮ NGUYÊN)
+# 1. CẤU HÌNH GIAO DIỆN & CSS (ĐÃ CẬP NHẬT ĐỂ XOÁ NÚT MANAGE APP)
 # ==========================================
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
 st.markdown("""
     <style>
+        /* Ẩn thanh header, footer và các nút mặc định */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         .block-container {padding-top: 1.5rem !important; padding-bottom: 1rem !important;}
         #MainMenu {visibility: hidden !important;}
+        
+        /* CẬP NHẬT MỚI: ẨN NÚT "MANAGE APP" ĐEN ĐEN GÓY PHẢI DƯỚI */
+        div[data-testid="stConnectionStatus"] {display: none !important;}
+        .stActionButton {display: none !important;}
+        iframe[title="manage-app"] {display: none !important;}
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM (MỚI CẬP NHẬT) ---
+# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM ---
 def get_now_vn():
     tz = pytz.timezone('Asia/Ho_Chi_Minh')
     return datetime.now(tz)
@@ -96,13 +102,13 @@ def login_screen():
                 else: st.error("Sai thông tin rồi ní ơi!")
 
 # ==========================================
-# 6. GIAO DIỆN CHÍNH & LOGIC THIẾT QUÂN LUẬT (GIỮ NGUYÊN & SỬA GIỜ)
+# 6. GIAO DIỆN CHÍNH & LOGIC THIẾT QUÂN LUẬT (GIỮ NGUYÊN)
 # ==========================================
 def main_app():
     client = get_gspread_client()
     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
     sheet_bc = sh.worksheet("BaoCao")
-    now_vn = get_now_vn() # Lấy giờ VN hiện tại
+    now_vn = get_now_vn()
 
     with st.sidebar:
         st.success(f"🟢 {st.session_state['username']}")
@@ -120,7 +126,6 @@ def main_app():
             san_pham = st.selectbox("Dịch vụ", danh_sach_sp)
             diem_so = st.select_slider("Đánh giá", options=[f"{i}/10" for i in range(1, 11)], value="9/10")
         with col2:
-            # Ngày mặc định theo giờ VN
             ngay = st.date_input("Ngày thực hiện", now_vn.date())
             so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
             ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
@@ -165,7 +170,6 @@ def main_app():
                 with st.status("🔄 Đang xử lý dữ liệu..."):
                     sl_rx = so_luong if "Nhớt" not in san_pham else 0
                     sl_tn = so_luong if "Nhớt" in san_pham else 0
-                    # Ghi giờ chuẩn VN vào Sheets
                     gio_vn = get_now_vn().strftime("%H:%M:%S")
                     row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rx, sl_tn, diem_so, ghi_chu, gio_vn]
                     
@@ -191,4 +195,4 @@ if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
-                                                                                  
+            
