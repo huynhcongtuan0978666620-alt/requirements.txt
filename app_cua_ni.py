@@ -3,64 +3,69 @@ from streamlit_gsheets import GSheetsConnection
 import pandas as pd
 from datetime import datetime
 
-# URL CHUẨN CỦA NÍ
-URL_KHO = "https://docs.google.com/spreadsheets/d/1vnbmjqQ-RSVYg3xP4qRzTFMvuVr3kBE-QLGgKzn5LA4/edit?usp=sharing"
+# URL FILE MỚI CỦA NÍ
+URL_MOI = "https://docs.google.com/spreadsheets/d/1wkWwXtNSY2E9DEm1lG2fRk0WEmNy2XDUUteppiyJgBo/edit?usp=sharing"
 
-st.set_page_config(page_title="Hệ Thống Pha Chế", layout="wide")
+st.set_page_config(page_title="Pha Chế DBX 2026", layout="wide")
 conn = st.connection("gsheets", type=GSheetsConnection)
 
-def doc_du_lieu(sheet_name):
-    # Ép buộc lấy dữ liệu thô để tránh lỗi định dạng
-    return conn.read(spreadsheet=URL_KHO, worksheet=sheet_name, ttl=0).astype(str)
+st.markdown("<h2 style='text-align: center; color: #007bff;'>🧪 QUẢN LÝ PHA CHẾ THỰC CHIẾN</h2>", unsafe_allow_html=True)
 
-if "auth" not in st.session_state:
-    st.session_state.update({"auth": False, "user": ""})
+# Lấy danh mục sản phẩm từ tab DanhMuc
+try:
+    df_dm = conn.read(spreadsheet=URL_MOI, worksheet="DanhMuc", ttl=0)
+    danh_sach_sp = df_dm.iloc[:, 0].tolist()
+except:
+    danh_sach_sp = ["DBX V1.2", "DBX V1.3", "Dung dịch Rửa Xe", "Tẩy Nhôm"]
 
-if not st.session_state.auth:
-    _, col_login, _ = st.columns([1, 1.5, 1])
-    with col_login:
-        st.markdown("<h2 style='text-align: center;'>💎 ĐĂNG NHẬP</h2>", unsafe_allow_html=True)
-        p = st.text_input("Số điện thoại")
-        pw = st.text_input("Mật khẩu", type="password")
-        if st.button("XÁC NHẬN"):
-            try:
-                df_nv = doc_du_lieu("NhanVien")
-                # Xử lý số điện thoại: bỏ số 0 đầu nếu có để so sánh linh hoạt
-                p_clean = p.strip().lstrip('0')
-                
-                # Tìm user trong cột So_dien_thoai (đã đổi tên)
-                user = df_nv[df_nv['So_dien_thoai'].str.contains(p_clean) & (df_nv['Mat_khau'] == pw.strip())]
-                
-                if not user.empty:
-                    st.session_state.auth = True
-                    st.session_state.user = user.iloc[0]['Ten_nhan_vien']
-                    st.rerun()
-                else:
-                    st.error("Sai tài khoản hoặc mật khẩu!")
-            except Exception as e:
-                st.error(f"Lỗi kết nối: {e}. Ní kiểm tra lại cột A1 trên Sheets nhé!")
-    st.stop()
+# --- KHU VỰC NHẬP LIỆU ---
+with st.expander("📝 NHẬP THÔNG TIN MẺ HÀNG", expanded=True):
+    c1, c2 = st.columns(2)
+    with c1:
+        sp = st.selectbox("Sản phẩm pha chế", danh_sach_sp)
+        rx = st.number_input("Lượng Rửa Xe (Lít)", 0.0, step=0.1)
+        tn = st.number_input("Lượng Tẩy Nhôm (Lít)", 0.0, step=0.1)
+    with c2:
+        dg = st.select_slider("Đánh giá chất lượng (xx/10)", options=list(range(1, 11)), value=8)
+        gc = st.text_area("Ghi chú / Hướng dẫn thao tác", "Pha chế tại Lab.")
 
-# --- GIAO DIỆN SAU KHI VÀO ---
-st.sidebar.subheader(f"👤 {st.session_state.user}")
-if st.sidebar.button("Thoát"):
-    st.session_state.auth = False
-    st.rerun()
+# Tính tỷ lệ % tự động
+tong = rx + tn
+if tong > 0:
+    tile_rx = f"{(rx/tong)*100:.1f}%"
+    tile_tn = f"{(tn/tong)*100:.1f}%"
+    st.success(f"📊 Tỷ lệ: RX {tile_rx} - TN {tile_tn} (Tổng: {tong} Lít)")
 
-tab1, tab2 = st.tabs(["📝 NHẬP LIỆU", "🕵️ SOÁT SỔ"])
-with tab1:
+# --- NÚT LƯU DỮ LIỆU ---
+if st.button("🚀 LƯU VÀO SỔ CÁI"):
     try:
-        df_dm = doc_du_lieu("DanhMuc")
-        sp = st.selectbox("Sản phẩm", df_dm['Tên Sản Phẩm'].tolist())
-        rx = st.number_input("Lít Rửa Xe", 0.0)
-        tn = st.number_input("Lít Tẩy Nhôm", 0.0)
-        if st.button("🚀 LƯU"):
-            new = pd.DataFrame([{"Ngày": datetime.now().strftime('%d/%m/%Y'), "Người làm": st.session_state.user, "Sản phẩm": sp, "SL Rửa Xe": rx, "SL Tẩy Nhôm": tn, "Giờ lưu": datetime.now().strftime('%H:%M:%S')}])
-            old = doc_du_lieu("BaoCao")
-            conn.update(spreadsheet=URL_KHO, worksheet="BaoCao", data=pd.concat([old, new], ignore_index=True))
-            st.success("ĐÃ LƯU THÀNH CÔNG!")
-            st.balloons()
-    except: st.info("Đang tải dữ liệu...")
-with tab2:
-    try: st.dataframe(doc_du_lieu("BaoCao"), use_container_width=True)
-    except: st.write("Chưa có dữ liệu.")
+        new_row = pd.DataFrame([{
+            "Ngày": datetime.now().strftime("%d/%m/%Y"),
+            "Người làm": "Chủ tiệm",
+            "Sản phẩm": sp,
+            "SL Rửa Xe": rx,
+            "Tỷ lệ RX": tile_rx if tong > 0 else "0%",
+            "SL Tẩy Nhôm": tn,
+            "Tỷ lệ TN": tile_tn if tong > 0 else "0%",
+            "Đánh giá": f"{dg}/10",
+            "Ghi chú": gc,
+            "Giờ lưu": datetime.now().strftime("%H:%M:%S")
+        }])
+        
+        # Đọc dữ liệu cũ từ tab BaoCao
+        df_old = conn.read(spreadsheet=URL_MOI, worksheet="BaoCao", ttl=0)
+        df_updated = pd.concat([df_old, new_row], ignore_index=True)
+        
+        # Ghi đè lại vào Google Sheets
+        conn.update(spreadsheet=URL_MOI, worksheet="BaoCao", data=df_updated)
+        st.balloons()
+        st.info("✅ Đã lưu thành công mẻ hàng vào file BC_DULIEU_DEMO_2026!")
+    except Exception as e:
+        st.error(f"Lỗi kết nối: {e}. Ní kiểm tra lại quyền 'Người chỉnh sửa' trên Sheets nhé!")
+
+# Xem lịch sử nhanh
+if st.checkbox("🕵️ Hiển thị lịch sử pha chế"):
+    try:
+        st.dataframe(conn.read(spreadsheet=URL_MOI, worksheet="BaoCao", ttl=0), use_container_width=True)
+    except:
+        st.warning("Chưa có dữ liệu trong tab BaoCao.")
