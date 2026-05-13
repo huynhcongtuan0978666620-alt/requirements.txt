@@ -7,32 +7,37 @@ import time
 import pytz 
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS (BẢN DIỆT TẬN GỐC NÚT MANAGE APP)
+# 1. CẤU HÌNH GIAO DIỆN & CSS (BẢN CHIẾN THUẬT ĐẨY NỘI DUNG)
 # ==========================================
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
 st.markdown("""
     <style>
-        /* 1. Chặn toàn bộ các thành phần mặc định để sạch mắt */
+        /* 1. Ẩn tối đa các thành phần thừa của hệ thống */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
-        .block-container {padding-top: 1rem !important; padding-bottom: 0rem !important;}
         
-        /* 2. Diệt tận gốc nút Manage App và các thành phần liên quan */
+        /* 2. Đẩy nội dung lên sát mép trên và tạo khoảng trống cực lớn ở dưới đáy (250px) */
+        /* Mục đích: Để nút 'Manage app' chỉ đè lên khoảng trắng, không che chữ */
+        .main .block-container {
+            padding-top: 1rem !important; 
+            padding-bottom: 250px !important; 
+        }
+
+        /* 3. Vô hiệu hóa kích thước mọi iframe và button quản trị */
+        iframe[title="manage-app"], .stActionButton, div[data-testid="stConnectionStatus"] {
+            display: none !important;
+            height: 0px !important;
+            width: 0px !important;
+        }
+        
+        /* 4. Tối ưu hóa giao diện cho điện thoại */
         #MainMenu {visibility: hidden !important;}
-        div[data-testid="stConnectionStatus"] {display: none !important;}
-        
-        /* Chiêu cuối: Quét sạch mọi iframe (Manage app) và button lạ */
-        iframe {display: none !important;}
-        .stActionButton {display: none !important;}
-        
-        /* Ép giao diện tràn ra để không còn chỗ cho bất kỳ thanh công cụ nào */
-        footer {display: none !important;}
-        #root > div:nth-child(1) > div > div > div > div > section > div {padding-bottom: 0px !important;}
+        [data-testid="stExpander"] { margin-bottom: 1.5rem !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM (Múi giờ +7) ---
+# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM ---
 def get_now_vn():
     tz = pytz.timezone('Asia/Ho_Chi_Minh')
     return datetime.now(tz)
@@ -78,7 +83,7 @@ def check_login(user_input, pass_input):
     except: return False, None
 
 # ==========================================
-# 4. QUẢN LÝ TRẠNG THÁI (SESSION STATE) (GIỮ NGUYÊN)
+# 4. QUẢN LÝ TRẠNG THÁI (SESSION STATE)
 # ==========================================
 if "logged_in" not in st.session_state:
     st.session_state.update({
@@ -89,7 +94,7 @@ if "logged_in" not in st.session_state:
     })
 
 # ==========================================
-# 5. MÀN HÌNH ĐĂNG NHẬP (GIỮ NGUYÊN)
+# 5. MÀN HÌNH ĐĂNG NHẬP
 # ==========================================
 def login_screen():
     st.markdown("<h2 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h2>", unsafe_allow_html=True)
@@ -108,7 +113,7 @@ def login_screen():
                 else: st.error("Sai thông tin rồi ní ơi!")
 
 # ==========================================
-# 6. GIAO DIỆN CHÍNH & LOGIC THIẾT QUÂN LUẬT (GIỮ NGUYÊN)
+# 6. GIAO DIỆN CHÍNH & THIẾT QUÂN LUẬT
 # ==========================================
 def main_app():
     client = get_gspread_client()
@@ -136,7 +141,7 @@ def main_app():
             so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
             ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
 
-    # --- HỆ THỐNG KIỂM SOÁT THIẾT QUÂN LUẬT (GIỮ NGUYÊN) ---
+    # --- HỆ THỐNG KIỂM SOÁT THIẾT QUÂN LUẬT ---
     is_duplicate = False
     try:
         last_rows = sheet_bc.get_all_values()[-5:]
