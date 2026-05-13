@@ -7,26 +7,32 @@ import time
 import pytz 
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS (ĐÃ CẬP NHẬT ĐỂ XOÁ NÚT MANAGE APP)
+# 1. CẤU HÌNH GIAO DIỆN & CSS (BẢN DIỆT TẬN GỐC NÚT MANAGE APP)
 # ==========================================
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
 st.markdown("""
     <style>
-        /* Ẩn thanh header, footer và các nút mặc định */
+        /* 1. Chặn toàn bộ các thành phần mặc định để sạch mắt */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
-        .block-container {padding-top: 1.5rem !important; padding-bottom: 1rem !important;}
-        #MainMenu {visibility: hidden !important;}
+        .block-container {padding-top: 1rem !important; padding-bottom: 0rem !important;}
         
-        /* CẬP NHẬT MỚI: ẨN NÚT "MANAGE APP" ĐEN ĐEN GÓY PHẢI DƯỚI */
+        /* 2. Diệt tận gốc nút Manage App và các thành phần liên quan */
+        #MainMenu {visibility: hidden !important;}
         div[data-testid="stConnectionStatus"] {display: none !important;}
+        
+        /* Chiêu cuối: Quét sạch mọi iframe (Manage app) và button lạ */
+        iframe {display: none !important;}
         .stActionButton {display: none !important;}
-        iframe[title="manage-app"] {display: none !important;}
+        
+        /* Ép giao diện tràn ra để không còn chỗ cho bất kỳ thanh công cụ nào */
+        footer {display: none !important;}
+        #root > div:nth-child(1) > div > div > div > div > section > div {padding-bottom: 0px !important;}
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM ---
+# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM (Múi giờ +7) ---
 def get_now_vn():
     tz = pytz.timezone('Asia/Ho_Chi_Minh')
     return datetime.now(tz)
@@ -130,7 +136,7 @@ def main_app():
             so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
             ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
 
-    # --- HỆ THỐNG KIỂM SOÁT THIẾT QUÂN LUẬT ---
+    # --- HỆ THỐNG KIỂM SOÁT THIẾT QUÂN LUẬT (GIỮ NGUYÊN) ---
     is_duplicate = False
     try:
         last_rows = sheet_bc.get_all_values()[-5:]
@@ -195,4 +201,4 @@ if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
-            
+    
