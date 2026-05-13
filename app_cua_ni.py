@@ -45,13 +45,67 @@ def safe_append_row(sheet, row_data):
                 continue
             return False
 
-# --- 4. CÁC HÀM BỔ TRỢ ---
+import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
+import pandas as pd
+from datetime import datetime
+import time
+
+# --- 1. CẤU HÌNH GIAO DIỆN & ẨN TRIỆT ĐỂ UI THỪA ---
+st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
+
+st.markdown("""
+    <style>
+        /* Ẩn thanh Header (Share, Star, Github) */
+        header {visibility: hidden !important;}
+        
+        /* Ẩn nút Deploy và Footer mặc định */
+        .stAppDeployButton {display:none !important;}
+        footer {visibility: hidden !important;}
+        
+        /* Ẩn cụm icon Vương miện/Lâu đài và Toolbar ở góc dưới (Status Widget) */
+        [data-testid="stStatusWidget"] {display: none !important;}
+        div[data-testid="stToolbar"] {display: none !important;}
+        button[title="View source"] {display: none !important;}
+        
+        /* Tối ưu khoảng trắng màn hình để App gọn gàng hơn */
+        .block-container {
+            padding-top: 1rem !important;
+            padding-bottom: 0rem !important;
+        }
+        
+        /* Ẩn menu chuột phải và các thành phần ẩn khác của Streamlit */
+        #MainMenu {visibility: hidden !important;}
+    </style>
+    """, unsafe_allow_html=True)
+
+# --- 2. KẾT NỐI GOOGLE SHEETS ---
+def get_gspread_client():
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    creds = Credentials.from_service_account_info(st.secrets["connections"]["gsheets"], scopes=scope)
+    return gspread.authorize(creds)
+
+# --- 3. CƠ CHẾ LƯU DỮ LIỆU AN TOÀN (CHỐNG LỖI API) ---
+def safe_append_row(sheet, row_data):
+    max_retries = 3 
+    for i in range(max_retries):
+        try:
+            sheet.append_row(row_data)
+            return True
+        except Exception:
+            if i < max_retries - 1:
+                time.sleep(2) # Đợi 2 giây rồi thử lại
+                continue
+            return False
+
+# --- 4. CÁC HÀM QUẢN LÝ DỮ LIỆU ---
 def get_product_list():
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         sheet_dm = sh.worksheet("DanhMuc")
-        products = sheet_dm.col_values(1)[1:]
+        products = sheet_dm.col_values(1)[1:] # Lấy từ dòng 2
         return [p.strip() for p in products if p.strip()]
     except:
         return ["Rửa Xe Tay Ga", "Rửa Xe Số", "Thay Nhớt"]
@@ -70,19 +124,16 @@ def check_login(user_input, pass_input):
     except:
         return False, None
 
-# --- 5. MÀN HÌNH ĐĂNG NHẬP SẠCH SẼ ---
+# --- 5. MÀN HÌNH ĐĂNG NHẬP ---
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
     st.session_state["role"] = None
 
 def login_screen():
-    # Thêm icon ổ khóa cho giống ảnh ní gửi
     st.markdown("<h1 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h1>", unsafe_allow_html=True)
-    
     with st.container():
-        # Tạo khung bao quanh cho chuyên nghiệp
         with st.form("login_form"):
-            user = st.text_input("Tên đăng nhập")
+            user = st.text_input("Tên đăng nhập (SĐT)")
             password = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if user == "admin" and password == "2026": 
@@ -100,7 +151,7 @@ def login_screen():
                     else:
                         st.error("Thông tin đăng nhập chưa đúng ní ơi!")
 
-# --- 6. GIAO DIỆN CHÍNH (GIỮ NGUYÊN) ---
+# --- 6. GIAO DIỆN CHÍNH ---
 def main_app():
     client = get_gspread_client()
     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
@@ -126,7 +177,7 @@ def main_app():
             so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
             ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
 
-    # Kiểm tra trùng (Logic cũ)
+    # --- HỆ THỐNG KIỂM SOÁT ---
     btn_disabled = False
     show_confirm = False
     try:
@@ -136,6 +187,7 @@ def main_app():
             if row[1] == nguoi_lam and row[2] == san_pham and float(str(row[3]).replace(',','.')) == so_luong:
                 count_dup += 1
             else: break
+        
         if count_dup >= 1:
             last_time_dt = datetime.strptime(f"{all_vals[-1][0]} {all_vals[-1][7]}", "%d/%m/%Y %H:%M:%S")
             diff = (datetime.now() - last_time_dt).total_seconds()
@@ -149,13 +201,19 @@ def main_app():
     if st.button("🚀 LƯU VÀO SỔ CÁI", type="primary", use_container_width=True, disabled=final_disabled):
         if so_luong > 0:
             with st.status("Đang đồng bộ..."):
-                sl_rua_xe = so_luong if "Nhớt" not in san_pham else 0
-                sl_thay_nhot = so_luong if "Nhớt" in san_pham else 0
-                gio_luu = datetime.now().strftime("%H:%M:%S")
-                new_row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rua_xe, sl_thay_nhot, diem_so, ghi_chu, gio_luu]
-                if safe_append_row(sheet_bc, new_row):
-                    st.success("Đã lưu!"); st.balloons(); time.sleep(1); st.rerun()
+                try:
+                    # Tự động phân loại Rửa xe / Thay nhớt
+                    sl_rua_xe = so_luong if "Nhớt" not in san_pham else 0
+                    sl_thay_nhot = so_luong if "Nhớt" in san_pham else 0
+                    
+                    gio_luu = datetime.now().strftime("%H:%M:%S")
+                    new_row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rua_xe, sl_thay_nhot, diem_so, ghi_chu, gio_luu]
+                    
+                    if safe_append_row(sheet_bc, new_row):
+                        st.success("Đã lưu thành công!"); st.balloons(); time.sleep(1); st.rerun()
+                except Exception as e: st.error(f"Lỗi: {e}")
 
+    # Báo cáo dành cho Admin
     if st.session_state["role"] == "admin":
         st.divider(); st.subheader("📊 BÁO CÁO")
         try:
@@ -168,4 +226,4 @@ if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
-    
+            
