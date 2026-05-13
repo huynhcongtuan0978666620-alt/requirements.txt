@@ -5,28 +5,46 @@ import pandas as pd
 from datetime import datetime
 import time
 
-# --- 1. CẤU HÌNH GIAO DIỆN & ẨN MENU (THEO ẢNH Screenshot_20260513_182407_Chrome_2.jpg) ---
+# --- 1. CẤU HÌNH GIAO DIỆN & DIỆT TẬN GỐC UI THỪA ---
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
-# Đoạn mã CSS này sẽ ẩn thanh trên cùng và nút Deploy phía dưới
 st.markdown("""
     <style>
-        /* Ẩn thanh Header phía trên (Share, Star, Github, Menu) */
-        header {visibility: hidden;}
+        /* 1. ẨN TOÀN BỘ HEADER VÀ FOOTER */
+        header, footer, .stAppDeployButton {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        /* 2. ẨN CỤM ICON VƯƠNG MIỆN/LÂU ĐÀI (STATUS WIDGET) */
+        [data-testid="stStatusWidget"], 
+        [data-testid="stToolbar"],
+        .st-emotion-cache-zt5igj, 
+        .st-emotion-cache-15zrgzn {
+            display: none !important;
+            height: 0px !important;
+            width: 0px !important;
+            overflow: hidden !important;
+        }
+
+        /* 3. ÉP TRÀN MÀN HÌNH ĐỂ KHÔNG CÒN CHỖ CHO TOOLBAR */
+        #root > div:nth-child(1) > div.withScreencast > div > div > div {
+            padding-top: 0px !important;
+        }
         
-        /* Ẩn nút 'Deploy' và các thành phần liên quan ở góc dưới bên phải */
-        .stAppDeployButton {display:none;}
-        footer {visibility: hidden;}
-        
-        /* Tùy chỉnh thêm để khung đăng nhập cân đối hơn */
+        /* 4. ẨN NÚT CHẤM BA DÒNG VÀ MENU PHỤ */
+        #MainMenu {visibility: hidden !important;}
+
+        /* 5. TỐI ƯU KHOẢNG TRẮNG CHO ĐIỆN THOẠI */
         .block-container {
-            padding-top: 2rem;
-            padding-bottom: 0rem;
+            padding-top: 1rem !important;
+            padding-bottom: 0rem !important;
+            max-width: 100% !important;
         }
     </style>
     """, unsafe_allow_html=True)
 
-# --- 2. KẾT NỐI GOOGLE SHEETS (GIỮ NGUYÊN) ---
+# --- 2. KẾT NỐI GOOGLE SHEETS ---
 def get_gspread_client():
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     creds = Credentials.from_service_account_info(st.secrets["connections"]["gsheets"], scopes=scope)
@@ -39,74 +57,19 @@ def safe_append_row(sheet, row_data):
         try:
             sheet.append_row(row_data)
             return True
-        except Exception:
+        except:
             if i < max_retries - 1:
                 time.sleep(2)
                 continue
             return False
 
-import streamlit as st
-import gspread
-from google.oauth2.service_account import Credentials
-import pandas as pd
-from datetime import datetime
-import time
-
-# --- 1. CẤU HÌNH GIAO DIỆN & ẨN TRIỆT ĐỂ UI THỪA ---
-st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
-
-st.markdown("""
-    <style>
-        /* Ẩn thanh Header (Share, Star, Github) */
-        header {visibility: hidden !important;}
-        
-        /* Ẩn nút Deploy và Footer mặc định */
-        .stAppDeployButton {display:none !important;}
-        footer {visibility: hidden !important;}
-        
-        /* Ẩn cụm icon Vương miện/Lâu đài và Toolbar ở góc dưới (Status Widget) */
-        [data-testid="stStatusWidget"] {display: none !important;}
-        div[data-testid="stToolbar"] {display: none !important;}
-        button[title="View source"] {display: none !important;}
-        
-        /* Tối ưu khoảng trắng màn hình để App gọn gàng hơn */
-        .block-container {
-            padding-top: 1rem !important;
-            padding-bottom: 0rem !important;
-        }
-        
-        /* Ẩn menu chuột phải và các thành phần ẩn khác của Streamlit */
-        #MainMenu {visibility: hidden !important;}
-    </style>
-    """, unsafe_allow_html=True)
-
-# --- 2. KẾT NỐI GOOGLE SHEETS ---
-def get_gspread_client():
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    creds = Credentials.from_service_account_info(st.secrets["connections"]["gsheets"], scopes=scope)
-    return gspread.authorize(creds)
-
-# --- 3. CƠ CHẾ LƯU DỮ LIỆU AN TOÀN (CHỐNG LỖI API) ---
-def safe_append_row(sheet, row_data):
-    max_retries = 3 
-    for i in range(max_retries):
-        try:
-            sheet.append_row(row_data)
-            return True
-        except Exception:
-            if i < max_retries - 1:
-                time.sleep(2) # Đợi 2 giây rồi thử lại
-                continue
-            return False
-
-# --- 4. CÁC HÀM QUẢN LÝ DỮ LIỆU ---
+# --- 4. HÀM QUẢN LÝ ---
 def get_product_list():
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         sheet_dm = sh.worksheet("DanhMuc")
-        products = sheet_dm.col_values(1)[1:] # Lấy từ dòng 2
-        return [p.strip() for p in products if p.strip()]
+        return [p.strip() for p in sheet_dm.col_values(1)[1:] if p.strip()]
     except:
         return ["Rửa Xe Tay Ga", "Rửa Xe Số", "Thay Nhớt"]
 
@@ -115,14 +78,12 @@ def check_login(user_input, pass_input):
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         sheet_nv = sh.worksheet("NhanVien")
-        data_nv = sheet_nv.get_all_records()
-        for row in data_nv:
+        for row in sheet_nv.get_all_records():
             if str(row['Số Điện Thoại (Login)']).strip() == str(user_input).strip() and \
                str(row['Mật Khẩu']).strip() == str(pass_input).strip():
                 return True, row['Tên Nhân Viên']
         return False, None
-    except:
-        return False, None
+    except: return False, None
 
 # --- 5. MÀN HÌNH ĐĂNG NHẬP ---
 if "logged_in" not in st.session_state:
@@ -131,25 +92,19 @@ if "logged_in" not in st.session_state:
 
 def login_screen():
     st.markdown("<h1 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h1>", unsafe_allow_html=True)
-    with st.container():
-        with st.form("login_form"):
-            user = st.text_input("Tên đăng nhập (SĐT)")
-            password = st.text_input("Mật khẩu", type="password")
-            if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
-                if user == "admin" and password == "2026": 
-                    st.session_state["logged_in"] = True
-                    st.session_state["role"] = "admin"
-                    st.session_state["username"] = "Chủ tiệm"
+    with st.form("login_form"):
+        user = st.text_input("Tên đăng nhập (SĐT)")
+        password = st.text_input("Mật khẩu", type="password")
+        if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
+            if user == "admin" and password == "2026": 
+                st.session_state.update({"logged_in": True, "role": "admin", "username": "Chủ tiệm"})
+                st.rerun()
+            else:
+                success, name = check_login(user, password)
+                if success:
+                    st.session_state.update({"logged_in": True, "role": "staff", "username": name})
                     st.rerun()
-                else:
-                    success, full_name = check_login(user, password)
-                    if success:
-                        st.session_state["logged_in"] = True
-                        st.session_state["role"] = "staff"
-                        st.session_state["username"] = full_name
-                        st.rerun()
-                    else:
-                        st.error("Thông tin đăng nhập chưa đúng ní ơi!")
+                else: st.error("Thông tin chưa đúng ní ơi!")
 
 # --- 6. GIAO DIỆN CHÍNH ---
 def main_app():
@@ -167,63 +122,43 @@ def main_app():
     danh_sach_sp = get_product_list()
 
     with st.expander("🚀 NHẬP DỮ LIỆU", expanded=True):
-        col1, col2 = st.columns(2)
-        with col1:
+        c1, c2 = st.columns(2)
+        with c1:
             nguoi_lam = st.text_input("Người thực hiện", value=st.session_state["username"], disabled=True)
-            san_pham = st.selectbox("Dịch vụ / Sản phẩm", danh_sach_sp)
-            diem_so = st.select_slider("Đánh giá", options=[f"{i}/10" for i in range(1, 11)], value="9/10")
-        with col2:
-            ngay = st.date_input("Ngày thực hiện", datetime.now())
-            so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
-            ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
+            san_pham = st.selectbox("Dịch vụ", danh_sach_sp)
+            diem = st.select_slider("Đánh giá", options=[f"{i}/10" for i in range(1, 11)], value="9/10")
+        with c2:
+            ngay = st.date_input("Ngày", datetime.now())
+            sl = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
+            note = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
 
-    # --- HỆ THỐNG KIỂM SOÁT ---
-    btn_disabled = False
-    show_confirm = False
+    # Kiểm tra trùng (Rút gọn)
+    btn_off, confirm_on = False, False
     try:
-        all_vals = sheet_bc.get_all_values()
-        count_dup = 0
-        for row in reversed(all_vals):
-            if row[1] == nguoi_lam and row[2] == san_pham and float(str(row[3]).replace(',','.')) == so_luong:
-                count_dup += 1
+        data = sheet_bc.get_all_values()
+        count = 0
+        for r in reversed(data):
+            if r[1] == nguoi_lam and r[2] == san_pham and float(str(r[3]).replace(',','.')) == sl: count += 1
             else: break
-        
-        if count_dup >= 1:
-            last_time_dt = datetime.strptime(f"{all_vals[-1][0]} {all_vals[-1][7]}", "%d/%m/%Y %H:%M:%S")
-            diff = (datetime.now() - last_time_dt).total_seconds()
-            if count_dup == 1 and diff < 60: btn_disabled = True
-            else: show_confirm = True
+        if count >= 1: confirm_on = True
     except: pass
 
-    confirm_check = st.checkbox("Xác nhận dữ liệu đúng") if show_confirm else False
-    final_disabled = btn_disabled or (show_confirm and not confirm_check)
-
-    if st.button("🚀 LƯU VÀO SỔ CÁI", type="primary", use_container_width=True, disabled=final_disabled):
-        if so_luong > 0:
+    check = st.checkbox("Xác nhận dữ liệu đúng") if confirm_on else False
+    if st.button("🚀 LƯU VÀO SỔ CÁI", type="primary", use_container_width=True, disabled=(confirm_on and not check)):
+        if sl > 0:
             with st.status("Đang đồng bộ..."):
-                try:
-                    # Tự động phân loại Rửa xe / Thay nhớt
-                    sl_rua_xe = so_luong if "Nhớt" not in san_pham else 0
-                    sl_thay_nhot = so_luong if "Nhớt" in san_pham else 0
-                    
-                    gio_luu = datetime.now().strftime("%H:%M:%S")
-                    new_row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rua_xe, sl_thay_nhot, diem_so, ghi_chu, gio_luu]
-                    
-                    if safe_append_row(sheet_bc, new_row):
-                        st.success("Đã lưu thành công!"); st.balloons(); time.sleep(1); st.rerun()
-                except Exception as e: st.error(f"Lỗi: {e}")
+                sl_rx = sl if "Nhớt" not in san_pham else 0
+                sl_tn = sl if "Nhớt" in san_pham else 0
+                gio = datetime.now().strftime("%H:%M:%S")
+                row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rx, sl_tn, diem, note, gio]
+                if safe_append_row(sheet_bc, row):
+                    st.success("Xong!"); st.balloons(); time.sleep(1); st.rerun()
 
-    # Báo cáo dành cho Admin
     if st.session_state["role"] == "admin":
         st.divider(); st.subheader("📊 BÁO CÁO")
-        try:
-            df = pd.DataFrame(sheet_bc.get_all_records())
-            st.dataframe(df.tail(15))
-        except: st.info("Đang tải dữ liệu...")
+        try: st.dataframe(pd.DataFrame(sheet_bc.get_all_records()).tail(10))
+        except: st.info("Chờ xíu...")
 
-# --- KHỞI CHẠY ---
-if not st.session_state["logged_in"]:
-    login_screen()
-else:
-    main_app()
-            
+if not st.session_state["logged_in"]: login_screen()
+else: main_app()
+    
