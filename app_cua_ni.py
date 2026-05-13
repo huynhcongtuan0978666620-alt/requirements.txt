@@ -6,55 +6,28 @@ from datetime import datetime
 import time
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS SIÊU CẤP
+# 1. CẤU HÌNH GIAO DIỆN & CSS (GIỮ NGUYÊN & CẬP NHẬT)
 # ==========================================
-st.set_page_config(
-    page_title="Hệ Thống Quản Lý Lab 2026",
-    layout="centered",
-    page_icon="🧪"
-)
+st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
-# Đoạn này xử lý triệt để các icon vương miện/lâu đài và làm sạch giao diện
 st.markdown("""
     <style>
-        /* Ẩn Header, Footer và nút Deploy */
-        header, footer, .stAppDeployButton {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        
-        /* Ẩn cụm Status Widget (Vương miện/Lâu đài) ở góc dưới */
-        [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
-            display: none !important;
-        }
-
-        /* Tùy chỉnh khung nhập liệu cho chuyên nghiệp */
-        .block-container {
-            padding-top: 1.5rem !important;
-            padding-bottom: 1rem !important;
-        }
-        
-        /* Làm nổi bật các thông báo */
-        .stAlert {
-            border-radius: 10px;
-        }
+        header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
+        [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
+        .block-container {padding-top: 1.5rem !important; padding-bottom: 1rem !important;}
+        #MainMenu {visibility: hidden !important;}
     </style>
     """, unsafe_allow_html=True)
 
 # ==========================================
-# 2. KẾT NỐI DỮ LIỆU GOOGLE SHEETS
+# 2. KẾT NỐI GOOGLE SHEETS (GIỮ NGUYÊN)
 # ==========================================
 def get_gspread_client():
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    try:
-        creds = Credentials.from_service_account_info(st.secrets["connections"]["gsheets"], scopes=scope)
-        return gspread.authorize(creds)
-    except Exception as e:
-        st.error(f"Lỗi kết nối API: {e}")
-        return None
+    creds = Credentials.from_service_account_info(st.secrets["connections"]["gsheets"], scopes=scope)
+    return gspread.authorize(creds)
 
 def safe_append_row(sheet, row_data):
-    """Hàm lưu dữ liệu có cơ chế thử lại nếu lỗi mạng"""
     for i in range(3):
         try:
             sheet.append_row(row_data)
@@ -64,177 +37,158 @@ def safe_append_row(sheet, row_data):
     return False
 
 # ==========================================
-# 3. HÀM XỬ LÝ LOGIC NGHIỆP VỤ
+# 3. HÀM XỬ LÝ LOGIC (GIỮ NGUYÊN)
 # ==========================================
 def get_product_list():
-    """Lấy danh mục dịch vụ từ Sheet DanhMuc"""
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-        sheet_dm = sh.worksheet("DanhMuc")
-        # Lấy cột 1, bỏ dòng tiêu đề
-        products = sheet_dm.col_values(1)[1:]
-        return [p.strip() for p in products if p.strip()]
+        return [p.strip() for p in sh.worksheet("DanhMuc").col_values(1)[1:] if p.strip()]
     except:
-        return ["Rửa Xe Tay Ga", "Rửa Xe Số", "Thay Nhớt Shell", "Thay Nhớt Castrol"]
+        return ["Rửa Xe Tay Ga", "Rửa Xe Số", "Thay Nhớt"]
 
 def check_login(user_input, pass_input):
-    """Kiểm tra nhân viên đăng nhập từ Sheet NhanVien"""
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         sheet_nv = sh.worksheet("NhanVien")
-        data_nv = sheet_nv.get_all_records()
-        for row in data_nv:
+        for row in sheet_nv.get_all_records():
             if str(row['Số Điện Thoại (Login)']).strip() == str(user_input).strip() and \
                str(row['Mật Khẩu']).strip() == str(pass_input).strip():
                 return True, row['Tên Nhân Viên']
         return False, None
-    except:
-        return False, None
+    except: return False, None
 
 # ==========================================
-# 4. QUẢN LÝ TRẠNG THÁI HỆ THỐNG (SESSION STATE)
+# 4. QUẢN LÝ TRẠNG THÁI (SESSION STATE) - CẬP NHẬT LOGIC THỜI GIAN
 # ==========================================
 if "logged_in" not in st.session_state:
     st.session_state.update({
         "logged_in": False,
         "role": None,
         "username": None,
-        "last_submit": 0  # Thời gian bấm nút lần cuối
+        "history": {} # Dùng để theo dõi số lần trùng và thời gian cho từng dịch vụ
     })
 
 # ==========================================
-# 5. GIAO DIỆN ĐĂNG NHẬP
+# 5. MÀN HÌNH ĐĂNG NHẬP (GIỮ NGUYÊN)
 # ==========================================
 def login_screen():
-    st.markdown("<h2 style='text-align: center;'>🧪 LAB SYSTEM LOGIN</h2>", unsafe_allow_html=True)
-    with st.container():
-        with st.form("login_form"):
-            user = st.text_input("Số điện thoại đăng nhập")
-            password = st.text_input("Mật khẩu", type="password")
-            submit = st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True)
-            
-            if submit:
-                if user == "admin" and password == "2026":
-                    st.session_state.update({"logged_in": True, "role": "admin", "username": "Chủ tiệm"})
+    st.markdown("<h2 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h2>", unsafe_allow_html=True)
+    with st.form("login_form"):
+        user = st.text_input("Tên đăng nhập (SĐT)")
+        password = st.text_input("Mật khẩu", type="password")
+        if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
+            if user == "admin" and password == "2026":
+                st.session_state.update({"logged_in": True, "role": "admin", "username": "Chủ tiệm"})
+                st.rerun()
+            else:
+                success, name = check_login(user, password)
+                if success:
+                    st.session_state.update({"logged_in": True, "role": "staff", "username": name})
                     st.rerun()
-                else:
-                    success, full_name = check_login(user, password)
-                    if success:
-                        st.session_state.update({"logged_in": True, "role": "staff", "username": full_name})
-                        st.rerun()
-                    else:
-                        st.error("Ní nhập sai thông tin rồi, kiểm tra lại nhé!")
+                else: st.error("Sai thông tin rồi ní ơi!")
 
 # ==========================================
-# 6. GIAO DIỆN CHÍNH (MAIN APP)
+# 6. GIAO DIỆN CHÍNH & LOGIC THIẾT QUÂN LUẬT (CẬP NHẬT MỚI)
 # ==========================================
 def main_app():
-    # Khởi tạo kết nối
     client = get_gspread_client()
     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
     sheet_bc = sh.worksheet("BaoCao")
 
-    # Sidebar quản lý tài khoản
     with st.sidebar:
-        st.header("👤 TÀI KHOẢN")
-        st.info(f"Đang đăng nhập: **{st.session_state['username']}**")
-        if st.button("ĐĂNG XUẤT", use_container_width=True):
+        st.success(f"🟢 {st.session_state['username']}")
+        if st.button("ĐĂNG XUẤT"):
             st.session_state["logged_in"] = False
             st.rerun()
-        st.divider()
-        st.write("Hệ thống thử nghiệm Lab 2026")
 
-    st.title("🚀 NHẬP DỮ LIỆU THỰC CHIẾN")
+    st.title("🧪 QUẢN LÝ DỊCH VỤ")
+    danh_sach_sp = get_product_list()
 
-    # Layout nhập liệu
-    with st.expander("📝 THÔNG TIN DỊCH VỤ", expanded=True):
+    with st.expander("📝 NHẬP DỮ LIỆU", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
             nguoi_lam = st.text_input("Người thực hiện", value=st.session_state["username"], disabled=True)
-            san_pham = st.selectbox("Loại dịch vụ / Sản phẩm", get_product_list())
-            diem_so = st.select_slider("Đánh giá chất lượng", options=[f"{i}/10" for i in range(1, 11)], value="9/10")
-        
+            san_pham = st.selectbox("Dịch vụ", danh_sach_sp)
+            diem_so = st.select_slider("Đánh giá", options=[f"{i}/10" for i in range(1, 11)], value="9/10")
         with col2:
             ngay = st.date_input("Ngày thực hiện", datetime.now())
-            so_luong = st.number_input("Số lượng (xe/chai/lần)", min_value=0.0, step=1.0, format="%.0f")
-            ghi_chu = st.text_input("Ghi chú thêm", value="Thực hiện tại tiệm.")
+            so_luong = st.number_input("Số lượng", min_value=0.0, step=1.0, format="%.0f")
+            ghi_chu = st.text_input("Ghi chú", value="Thực hiện tại tiệm.")
 
-    # --- HỆ THỐNG KIỂM SOÁT THÔNG MINH ---
-    # 1. Chống bấm nhầm (Double-check)
-    show_confirm = False
+    # --- HỆ THỐNG KIỂM SOÁT THIẾT QUÂN LUẬT (0-2-5-KHÓA) ---
+    is_duplicate = False
     try:
-        last_rows = sheet_bc.get_all_values()[-3:] # Lấy 3 dòng cuối
+        # Kiểm tra 5 dòng cuối trong Google Sheets xem có trùng y hệt không
+        last_rows = sheet_bc.get_all_values()[-5:]
         for r in last_rows:
             if r[1] == nguoi_lam and r[2] == san_pham and float(str(r[3]).replace(',','.')) == so_luong:
-                show_confirm = True
+                is_duplicate = True
                 break
     except: pass
 
-    # 2. Chống Spam thời gian (Cooldown)
-    COOLDOWN = 5 # Chờ 5 giây cho chắc ăn
-    time_passed = time.time() - st.session_state["last_submit"]
-    
-    if show_confirm:
-        st.warning("⚠️ Dữ liệu này hình như vừa mới nhập xong. Ní kiểm tra kỹ nhé!")
-        confirm = st.checkbox("Tôi xác nhận đây là lượt làm mới, không phải trùng.")
-    else:
-        confirm = True
+    # Khởi tạo lịch sử cho sản phẩm nếu chưa có
+    if san_pham not in st.session_state["history"]:
+        st.session_state["history"][san_pham] = {"count": 0, "last_time": 0}
 
-    # Nút bấm lưu dữ liệu
-    if time_passed < COOLDOWN:
-        st.button(f"⏳ VUI LÒNG ĐỢI ({int(COOLDOWN - time_passed)}s)", disabled=True, use_container_width=True)
+    # Tính toán thời gian chờ
+    count = st.session_state["history"][san_pham]["count"]
+    last_time = st.session_state["history"][san_pham]["last_time"]
+    wait_time = 0
+    
+    if is_duplicate:
+        if count == 1: wait_time = 120    # Trùng lần 2: chờ 2 phút
+        elif count == 2: wait_time = 300  # Trùng lần 3: chờ 5 phút
+        elif count >= 3: wait_time = 999999 # Trùng lần 4: Khóa vĩnh viễn
+
+    elapsed = time.time() - last_time
+    
+    # Hiển thị nút bấm dựa trên logic thời gian
+    if is_duplicate and count >= 3:
+        st.error("🚫 ĐÃ QUÁ SỐ LẦN TRÙNG CHO PHÉP. KHÔNG THỂ LƯU THÊM!")
+        st.button("🚀 NÚT BỊ KHÓA VĨNH VIỄN", disabled=True, use_container_width=True)
+    elif is_duplicate and elapsed < wait_time:
+        con_lai = int(wait_time - elapsed)
+        st.warning(f"⚠️ Phát hiện trùng lần {count + 1}! Vui lòng đợi {con_lai//60}p {con_lai%60}s để tiếp tục.")
+        st.button(f"⏳ HỆ THỐNG ĐANG KHÓA ({con_lai}s)", disabled=True, use_container_width=True)
     else:
-        if st.button("🚀 LƯU VÀO SỔ CÁI", type="primary", use_container_width=True, disabled=not confirm):
+        # Nút bấm lưu chính
+        nut_label = "🚀 LƯU VÀO SỔ CÁI" if not is_duplicate else f"🚀 XÁC NHẬN LƯU (TRÙNG LẦN {count + 1})"
+        if st.button(nut_label, type="primary", use_container_width=True):
             if so_luong <= 0:
-                st.error("Số lượng phải lớn hơn 0 mới lưu được ní ơi!")
+                st.error("Số lượng phải lớn hơn 0!")
             else:
-                with st.status("🔄 Đang đẩy dữ liệu lên Google Sheets...", expanded=True) as status:
-                    # Phân loại tự động
-                    sl_rua_xe = so_luong if "Nhớt" not in san_pham else 0
-                    sl_thay_nhot = so_luong if "Nhớt" in san_pham else 0
-                    gio_hien_tai = datetime.now().strftime("%H:%M:%S")
-                    
-                    row = [
-                        ngay.strftime("%d/%m/%Y"), 
-                        nguoi_lam, 
-                        san_pham, 
-                        sl_rua_xe, 
-                        sl_thay_nhot, 
-                        diem_so, 
-                        ghi_chu, 
-                        gio_hien_tai
-                    ]
+                with st.status("🔄 Đang xử lý dữ liệu..."):
+                    sl_rx = so_luong if "Nhớt" not in san_pham else 0
+                    sl_tn = so_luong if "Nhớt" in san_pham else 0
+                    gio = datetime.now().strftime("%H:%M:%S")
+                    row = [ngay.strftime("%d/%m/%Y"), nguoi_lam, san_pham, sl_rx, sl_tn, diem_so, ghi_chu, gio]
                     
                     if safe_append_row(sheet_bc, row):
-                        st.session_state["last_submit"] = time.time()
-                        status.update(label="✅ ĐÃ LƯU THÀNH CÔNG!", state="complete", expanded=False)
-                        st.success(f"Đã ghi nhận mẻ: {san_pham}")
-                        st.balloons()
-                        time.sleep(2)
-                        st.rerun()
+                        # Cập nhật lịch sử
+                        if is_duplicate:
+                            st.session_state["history"][san_pham]["count"] += 1
+                        else:
+                            st.session_state["history"][san_pham]["count"] = 1 # Reset về 1 nếu là lượt mới
+                        
+                        st.session_state["history"][san_pham]["last_time"] = time.time()
+                        
+                        st.success("Đã lưu thành công!"); st.balloons(); time.sleep(1); st.rerun()
                     else:
-                        st.error("Lỗi mạng, ní bấm thử lại lần nữa xem sao.")
+                        st.error("Lỗi kết nối mạng!")
 
-    # Phần dành riêng cho Admin (Xem báo cáo nhanh)
+    # Báo cáo Admin (Giữ nguyên)
     if st.session_state["role"] == "admin":
-        st.divider()
-        st.subheader("📊 XEM NHANH 10 GIAO DỊCH CUỐI")
+        st.divider(); st.subheader("📊 BÁO CÁO NHANH")
         try:
-            data = sheet_bc.get_all_records()
-            if data:
-                df = pd.DataFrame(data).tail(10)
-                st.table(df)
-            else:
-                st.info("Chưa có dữ liệu trong sổ cái.")
-        except:
-            st.info("Đang tải dữ liệu từ Sheets...")
+            df = pd.DataFrame(sheet_bc.get_all_records())
+            st.table(df.tail(10))
+        except: st.info("Đang tải dữ liệu...")
 
-# ==========================================
-# 7. KHỞI CHẠY ỨNG DỤNG
-# ==========================================
+# --- KHỞI CHẠY ---
 if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
+            
