@@ -7,37 +7,22 @@ import time
 import pytz 
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS (BẢN DIỆT TẬN GỐC NGUY CƠ)
+# 1. CẤU HÌNH GIAO DIỆN & CSS (GIỮ NGUYÊN)
 # ==========================================
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
 st.markdown("""
     <style>
-        /* 1. Chặn toàn bộ các thành phần hệ thống để nhân viên không táy máy */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
-        
-        /* 2. Diệt nút Manage App và lớp phủ menu quản trị */
         #MainMenu {visibility: hidden !important;}
         .stActionButton {display: none !important;}
         div[data-testid="stConnectionStatus"] {display: none !important;}
-        
-        /* 3. Đẩy nội dung lên cao, tạo khoảng trống đáy cực lớn (300px) */
-        .main .block-container {
-            padding-top: 1rem !important; 
-            padding-bottom: 300px !important; 
-        }
-
-        /* 4. Vô hiệu hóa kích thước mọi iframe chứa Logs hoặc menu hệ thống */
-        iframe[title="manage-app"], iframe {
-            display: none !important;
-            height: 0px !important;
-            width: 0px !important;
-        }
+        .main .block-container { padding-top: 1rem !important; padding-bottom: 300px !important; }
+        iframe[title="manage-app"], iframe { display: none !important; height: 0px !important; width: 0px !important; }
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM LẤY GIỜ CHUẨN VIỆT NAM ---
 def get_now_vn():
     tz = pytz.timezone('Asia/Ho_Chi_Minh')
     return datetime.now(tz)
@@ -51,7 +36,7 @@ def get_gspread_client():
     return gspread.authorize(creds)
 
 # ==========================================
-# 3. HÀM XỬ LÝ LOGIC DỮ LIỆU (KHỚP HÌNH 1778728124490.jpg)
+# 3. HÀM XỬ LÝ LOGIC DỮ LIỆU
 # ==========================================
 def get_service_data():
     try:
@@ -82,35 +67,30 @@ if "logged_in" not in st.session_state:
     st.session_state.update({"logged_in": False, "role": None, "username": None, "history": {}})
 
 # ==========================================
-# 5. MÀN HÌNH ĐĂNG NHẬP (HIỆU ỨNG PHÁO HOA & DELAY 2S)
+# 5. MÀN HÌNH ĐĂNG NHẬP
 # ==========================================
 def login_screen():
     st.markdown("<h2 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h2>", unsafe_allow_html=True)
     with st.form("login_form"):
         user = st.text_input("Tên đăng nhập (SĐT)")
         password = st.text_input("Mật khẩu", type="password")
-        submit = st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True)
-        
-        if submit:
+        if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
             if user == "admin" and password == "2026":
                 st.success("✨ Chúc mừng bạn đã đăng nhập thành công")
-                st.balloons()
-                time.sleep(2)
+                st.balloons(); time.sleep(2)
                 st.session_state.update({"logged_in": True, "role": "admin", "username": "Chủ tiệm"})
                 st.rerun()
             else:
                 success, name = check_login(user, password)
                 if success:
                     st.success("✨ Chúc mừng bạn đã đăng nhập thành công")
-                    st.balloons()
-                    time.sleep(2)
+                    st.balloons(); time.sleep(2)
                     st.session_state.update({"logged_in": True, "role": "staff", "username": name})
                     st.rerun()
-                else:
-                    st.error("😔 Bạn đã nhập sai rồi, kiểm tra lại đi nhé")
+                else: st.error("😔 Bạn đã nhập sai rồi, kiểm tra lại đi nhé")
 
 # ==========================================
-# 6. GIAO DIỆN CHÍNH (PHÂN QUYỀN CHẶT CHẼ)
+# 6. GIAO DIỆN CHÍNH
 # ==========================================
 def main_app():
     client = get_gspread_client()
@@ -127,7 +107,6 @@ def main_app():
 
     st.title("🧪 QUẢN LÝ TIỆM & LAB")
 
-    # --- FORM NHẬP LIỆU (NHÂN VIÊN CHỈ THẤY PHẦN NÀY) ---
     with st.expander("📝 LẬP HÓA ĐƠN MỚI", expanded=True):
         col1, col2 = st.columns(2)
         with col1:
@@ -149,21 +128,28 @@ def main_app():
         with col4:
             da_thanh_toan = st.number_input("Số tiền đã thanh toán (VNĐ)", min_value=0.0, value=float(thanh_tien))
 
-    # --- NÚT LƯU DỮ LIỆU ---
+    # --- NÚT LƯU DỮ LIỆU (ĐÃ CHỈNH THỨ TỰ CỘT) ---
     if st.button("🚀 XÁC NHẬN NHẬP LIỆU", type="primary", use_container_width=True):
-        with st.status("🔄 Đang ghi dữ liệu vào sổ cái..."):
+        with st.status("🔄 Đang ghi sổ cái..."):
             gio_vn = now_vn.strftime("%H:%M:%S")
+            # THỨ TỰ ROW KHỚP VỚI CỘT A-J TRÊN SHEET BAOCAO
             row = [
-                now_vn.strftime("%d/%m/%Y"), st.session_state["username"], ten_kh, 
-                sdt_kh, san_pham, so_luong, don_gia, thanh_tien, da_thanh_toan, gio_vn
+                now_vn.strftime("%d/%m/%Y"), # Cột A: Ngày
+                st.session_state["username"],# Cột B: Người làm
+                ten_kh,                      # Cột C: Tên KH
+                sdt_kh,                      # Cột D: SĐT KH
+                san_pham,                    # Cột E: Dịch vụ
+                so_luong,                    # Cột F: Số lượng
+                don_gia,                     # Cột G: Đơn giá
+                thanh_tien,                  # Cột H: Thành tiền
+                da_thanh_toan,               # Cột I: Đã thanh toán
+                gio_vn                       # Cột J: Giờ lưu
             ]
             sheet_bc.append_row(row)
             st.success("Đã lưu thành công!"); st.balloons(); time.sleep(1); st.rerun()
 
-    # --- KHU VỰC ADMIN (NHÂN VIÊN KHÔNG THẤY) ---
     if st.session_state["role"] == "admin":
-        st.divider()
-        st.subheader("📊 QUẢN TRỊ VIÊN")
+        st.divider(); st.subheader("📊 QUẢN TRỊ VIÊN")
         tab1, tab2 = st.tabs(["Sổ Cái", "Cài Đặt"])
         with tab1:
             df = pd.DataFrame(sheet_bc.get_all_records())
@@ -171,9 +157,7 @@ def main_app():
         with tab2:
             st.link_button("MỞ GOOGLE SHEET GỐC", st.secrets["connections"]["gsheets"]["spreadsheet"])
 
-# --- CHẠY APP ---
 if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
-    
