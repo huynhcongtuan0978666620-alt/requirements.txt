@@ -8,7 +8,7 @@ import hashlib
 import time
 
 # ==========================================
-# 1. GIAO DIỆN CHUẨN SALON KIM HIỀN - 2026
+# GIAO DIỆN CHUẨN SALON KIM HIỀN - 2026
 # ==========================================
 st.set_page_config(page_title="SALON KIM HIỀN - QUẢN LÝ", layout="centered", page_icon="✂️")
 
@@ -24,25 +24,18 @@ st.markdown("""
             margin-bottom: 20px; box-shadow: 0px 10px 30px rgba(0,0,0,0.3);
             border: 1px solid #ffffff20;
         }
-        .ten-tiem { font-size: 32px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+        .ten-tiem { font-size: 30px; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
         .thong-tin-phu { font-size: 15px; color: #ecf0f1; opacity: 0.9; }
         .sdt-tiem { font-size: 18px; color: #ffffff; font-weight: 700; margin-top: 5px; }
         .slogan { font-size: 16px; color: #ffffff; font-weight: 500; font-style: italic; margin-top: 10px; border-top: 1px solid #ffffff30; padding-top: 10px; }
 
-        /* CÂN GIỮA 3 TAB TUYỆT ĐỐI - KHẮC PHỤC LỖI Screenshot_20260514_224155_Chrome.jpg */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 12px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 55px; background-color: #f8f9fa; border-radius: 12px 12px 0 0; max-width: 160px; border: 1px solid #dee2e6; }
         .stTabs [data-baseweb="tab"] p { color: #333333 !important; font-weight: 700 !important; font-size: 16px; }
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #fdbb2d !important; border: none; }
-
-        .tien-thua-box {
-            background-color: #d4edda; color: #155724; padding: 15px; border-radius: 12px;
-            text-align: center; font-size: 24px; font-weight: bold; border: 2px solid #28a745;
-        }
     </style>
     """, unsafe_allow_html=True)
 
-# --- CÁC HÀM HỆ THỐNG XỬ LÝ DỮ LIỆU ---
 def hash_password(password): 
     return hashlib.sha256(str(password).strip().encode()).hexdigest()
 
@@ -69,16 +62,12 @@ def get_all_users():
         return sh.worksheet("Admin").get_all_records()
     except: return []
 
-# --- GIAO DIỆN CHÍNH ---
 def main():
-    # 1. Quản lý trạng thái khóa đơn (Chống trùng đơn tuyệt đối)
     if "is_processing" not in st.session_state:
         st.session_state.is_processing = False
-
     if "logged_in" not in st.session_state:
         st.session_state.update({"logged_in": False, "role": None, "full_name": None, "phone": None})
 
-    # Header tiệm
     st.markdown("""
         <div class="bang-hieu-lktv">
             <div class="ten-tiem">SALON KIM HIỀN</div>
@@ -90,10 +79,9 @@ def main():
 
     if not st.session_state["logged_in"]:
         with st.form("login_form"):
-            st.subheader("🔐 ĐĂNG NHẬP HỆ THỐNG")
             u = st.text_input("Tài khoản")
             p = st.text_input("Mật khẩu", type="password")
-            if st.form_submit_button("VÀO HỆ THỐNG", use_container_width=True):
+            if st.form_submit_button("ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm", "phone": "0978.888.888"})
                     st.rerun()
@@ -103,78 +91,55 @@ def main():
                     if str(u) == str(row.get('Tài khoản')).strip() and p_hash == str(row.get('Mật khẩu')).strip():
                         st.session_state.update({"logged_in": True, "role": row.get('Quyền'), "full_name": row.get('Họ tên'), "phone": row.get('Số điện thoại')})
                         st.rerun()
-                st.error("Sai thông tin đăng nhập!")
+                st.error("Sai thông tin!")
     else:
-        # Giao diện sau đăng nhập
         tabs = st.tabs(["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"])
 
         with tabs[0]:
-            st.info(f"👷 Nhân viên: **{st.session_state['full_name']}** | SĐT: {st.session_state['phone']}")
-            
+            st.info(f"👷 NV: {st.session_state['full_name']} | {st.session_state['phone']}")
             services = get_service_data()
             kh = st.text_input("Khách hàng", "Khách lẻ")
-            sdt_kh = st.text_input("SĐT Khách")
+            sdt_kh = st.text_input("SĐT khách")
             dv = st.selectbox("Dịch vụ", list(services.keys()))
             sl = st.number_input("Số lượng", 0.5, 50.0, 1.0, 0.5)
-            
             gia = services.get(dv, 0)
             tong = gia * sl
-            st.markdown(f"### TỔNG THANH TOÁN: `{tong:,.0f} VNĐ`")
+            st.markdown(f"### TỔNG: `{tong:,.0f} VNĐ`")
             
-            # --- XỬ LÝ LƯU ĐƠN VỚI KHÓA VẬT LÝ --- [cite: ]
+            # --- KHÓA NÚT CHỐNG TRÙNG TUYỆT ĐỐI ---
             if st.session_state.is_processing:
-                # Trạng thái đang lưu: Nút biến mất, hiện cảnh báo đỏ
-                st.warning("⚠️ ĐANG XỬ LÝ ĐƠN HÀNG... VUI LÒNG KHÔNG THOÁT APP!") [cite: ]
-                st.button("🚀 ĐANG GỬI DỮ LIỆU LÊN HỆ THỐNG...", disabled=True, use_container_width=True) [cite: ]
-                
+                st.warning("⚠️ ĐANG LƯU... ĐỪNG BẤM THÊM NÍ ƠI!")
+                st.button("🚀 HỆ THỐNG ĐANG XỬ LÝ...", disabled=True, use_container_width=True)
                 try:
                     client = get_gspread_client()
                     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     ws = sh.worksheet("BaoCao")
                     now = get_now_vn()
-                    
-                    # Thông tin nhân viên để khen thưởng rõ ràng [cite: ]
                     nv_label = f"{st.session_state['full_name']} ({st.session_state['phone']})"
-                    
-                    # Gửi 1 dòng duy nhất lên Sheet
-                    ws.append_row([
-                        now.strftime("%d/%m/%Y"), 
-                        nv_label, 
-                        kh, 
-                        sdt_kh, 
-                        dv, 
-                        sl, 
-                        gia, 
-                        tong, 
-                        tong, 
-                        now.strftime("%H:%M:%S")
-                    ])
-                    
-                    st.success("🎉 ĐÃ LƯU ĐƠN THÀNH CÔNG!") [cite: ]
+                    ws.append_row([now.strftime("%d/%m/%Y"), nv_label, kh, sdt_kh, dv, sl, gia, tong, tong, now.strftime("%H:%M:%S")])
+                    st.success("✅ ĐÃ LƯU THÀNH CÔNG!")
                     st.balloons()
-                    time.sleep(2) # Chờ 2 giây để reset trạng thái [cite: ]
+                    time.sleep(2)
                     st.session_state.is_processing = False
                     st.rerun()
                 except Exception as e:
-                    st.error(f"Lỗi kết nối: {e}")
+                    st.error(f"Lỗi: {e}")
                     st.session_state.is_processing = False
-                    if st.button("Thử lại ngay"): st.rerun()
+                    st.rerun()
             else:
-                # Trạng thái bình thường: Hiện nút lưu
-                if st.button("🚀 XÁC NHẬN LƯU ĐƠN", use_container_width=True, type="primary"): [cite: ]
-                    st.session_state.is_processing = True [cite: ]
+                if st.button("🚀 XÁC NHẬN LƯU ĐƠN", use_container_width=True, type="primary"):
+                    st.session_state.is_processing = True
                     st.rerun()
 
         if st.session_state["role"] == "Admin":
             with tabs[1]:
-                st.subheader("📊 DỮ LIỆU 20 ĐƠN GẦN NHẤT")
-                if st.button("🔄 LÀM MỚI BẢNG"): st.rerun()
+                if st.button("🔄 Cập nhật"): st.rerun()
                 try:
                     client = get_gspread_client()
                     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     df = pd.DataFrame(sh.worksheet("BaoCao").get_all_records())
                     st.dataframe(df.tail(20), use_container_width=True)
-                except: st.info("Đang tải dữ liệu từ Google Sheets...")
+                except: st.write("Đang tải dữ liệu...")
 
         if st.sidebar.button("🚪 Đăng xuất"):
             st.session_state.clear()
@@ -182,4 +147,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-            
+    
