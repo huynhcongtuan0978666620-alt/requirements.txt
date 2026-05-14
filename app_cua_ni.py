@@ -7,7 +7,7 @@ import pytz
 import hashlib
 
 # ==========================================
-# 1. GIAO DIỆN CHUẨN LKTV
+# 1. GIAO DIỆN CHUẨN LKTV - QUẢN LÝ MINH BẠCH
 # ==========================================
 st.set_page_config(page_title="LKTV DETAILING - 2026", layout="centered", page_icon="🧼")
 
@@ -41,7 +41,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- CÁC HÀM HỆ THỐNG ---
+# --- HÀM HỆ THỐNG ---
 def hash_password(password): 
     return hashlib.sha256(str(password).strip().encode()).hexdigest()
 
@@ -93,7 +93,7 @@ def display_header(settings):
             <img src="{logo_url}" class="logo-img">
             <div class="ten-tiem">{settings.get('TenTiem', 'LKTV DETAILING')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', 'LONG XUYÊN')}</div>
-            <div class="sdt-tiem">📞 {settings.get('SDT', 'Chưa có SĐT')}</div>
+            <div class="sdt-tiem">📞 {settings.get('SDT', '0xxx.xxx.xxx')}</div>
             <div class="slogan">{settings.get('Slogan', 'Nơi Đặt Niềm Tin..')}</div>
         </div>
     """, unsafe_allow_html=True)
@@ -101,7 +101,7 @@ def display_header(settings):
 def main():
     settings = get_settings()
     if "logged_in" not in st.session_state:
-        st.session_state.update({"logged_in": False, "role": None, "user": None})
+        st.session_state.update({"logged_in": False, "role": None, "user": None, "full_name": None, "phone": None})
 
     if not st.session_state["logged_in"]:
         display_header(settings)
@@ -109,79 +109,90 @@ def main():
             st.markdown("### 🔐 ĐĂNG NHẬP")
             u_input = st.text_input("Tên đăng nhập")
             p_input = st.text_input("Mật khẩu", type="password")
-            if st.form_submit_button("VÀO NHÀ", use_container_width=True, type="primary"):
-                # Login Admin cứng
+            if st.form_submit_button("XÁC NHẬN", use_container_width=True, type="primary"):
                 if u_input == "admin" and p_input == "2026":
-                    st.session_state.update({"logged_in": True, "role": "Admin", "user": "Chủ Tiệm"})
+                    st.session_state.update({"logged_in": True, "role": "Admin", "user": "admin", "full_name": "Chủ Tiệm", "phone": settings.get('SDT', '')})
                     st.rerun()
-                # Login Nhân viên từ Sheets
+                
                 users = get_all_users()
                 p_hashed = hash_password(p_input)
                 for row in users:
+                    # KHỚP CHÍNH XÁC CÁC TIÊU ĐỀ CỘT NÍ YÊU CẦU
                     if str(u_input) == str(row.get('Tài khoản')).strip() and p_hashed == str(row.get('Mật khẩu')).strip():
-                        st.session_state.update({"logged_in": True, "role": row.get('Quyền', 'Nhân viên'), "user": u_input})
+                        st.session_state.update({
+                            "logged_in": True, 
+                            "role": row.get('Quyền', 'Nhân viên'), 
+                            "user": u_input,
+                            "full_name": row.get('Họ tên', u_input),
+                            "phone": row.get('Số điện thoại', 'N/A')
+                        })
                         st.rerun()
-                st.error("Thông tin không đúng!")
+                st.error("Thông tin đăng nhập không đúng!")
     else:
         display_header(settings)
         tab_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
         tabs = st.tabs(tab_list)
 
         with tabs[0]:
+            st.success(f"👷 **Nhân viên trực:** {st.session_state['full_name']} | 📞 {st.session_state['phone']}")
             services = get_service_data()
-            with st.container():
-                kh = st.text_input("Tên khách hàng", "Khách lẻ")
-                sdt = st.text_input("SĐT khách hàng")
-                dv = st.selectbox("Dịch vụ", list(services.keys()))
-                sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
-                
-                don_gia = services.get(dv, 0)
-                tong_bill = don_gia * sl
-                st.divider()
-                st.markdown(f"### 🧾 TỔNG THANH TOÁN: `{tong_bill:,.0f} VNĐ`")
-                
-                khach_dua = st.number_input("Khách thanh toán (VNĐ)", min_value=0.0, value=float(tong_bill), step=1000.0)
-                tien_thua = khach_dua - tong_bill
-                
-                if tien_thua > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 Trả lại khách: {tien_thua:,.0f} VNĐ</div>', unsafe_allow_html=True)
+            kh = st.text_input("Tên khách hàng", "Khách lẻ")
+            sdt_kh = st.text_input("SĐT khách hàng")
+            dv = st.selectbox("Dịch vụ", list(services.keys()))
+            sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
+            
+            don_gia = services.get(dv, 0)
+            tong_bill = don_gia * sl
+            st.divider()
+            st.markdown(f"### 🧾 TỔNG THANH TOÁN: `{tong_bill:,.0f} VNĐ`")
+            
+            khach_dua = st.number_input("Khách thanh toán (VNĐ)", min_value=0.0, value=float(tong_bill), step=1000.0)
+            tien_thua = khach_dua - tong_bill
+            if tien_thua > 0:
+                st.markdown(f'<div class="tien-thua-box">💵 Trả lại khách: {tien_thua:,.0f} VNĐ</div>', unsafe_allow_html=True)
 
-                if st.button("🚀 NHẬP LIỆU NGAY", use_container_width=True, type="primary"):
-                    try:
-                        client = get_gspread_client()
-                        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        ws = sh.worksheet("BaoCao")
-                        now = get_now_vn()
-                        ws.append_row([now.strftime("%d/%m/%Y"), st.session_state['user'], kh, sdt, dv, sl, don_gia, tong_bill, tong_bill, now.strftime("%H:%M:%S")])
-                        st.success("Đã ghi nhận thành công!")
-                        st.balloons()
-                    except Exception as e: st.error(f"Lỗi: {e}")
+            if st.button("🚀 LƯU ĐƠN HÀNG", use_container_width=True, type="primary"):
+                try:
+                    client = get_gspread_client()
+                    sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    ws = sh.worksheet("BaoCao")
+                    now = get_now_vn()
+                    # Lưu thông tin rõ ràng để ní khen thưởng
+                    nv_info = f"{st.session_state['full_name']} ({st.session_state['phone']})"
+                    ws.append_row([now.strftime("%d/%m/%Y"), nv_info, kh, sdt_kh, dv, sl, don_gia, tong_bill, tong_bill, now.strftime("%H:%M:%S")])
+                    st.success(f"Đã lưu đơn thành công cho {st.session_state['full_name']}!")
+                    st.balloons()
+                except Exception as e: st.error(f"Lỗi: {e}")
 
         if st.session_state["role"] == "Admin":
             with tabs[1]:
-                st.subheader("📈 Lịch sử doanh thu")
+                st.subheader("📊 Lịch sử doanh thu")
                 try:
                     client = get_gspread_client()
                     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     df = pd.DataFrame(sh.worksheet("BaoCao").get_all_records())
-                    if not df.empty: st.dataframe(df.tail(30), use_container_width=True)
+                    if not df.empty:
+                        st.dataframe(df.tail(30), use_container_width=True)
                 except: st.warning("Đang tải dữ liệu...")
             
             with tabs[2]:
-                st.subheader("⚙️ QUẢN TRỊ & NHÂN SỰ")
-                # NƠI TẠO MÃ ĐĂNG NHẬP CHO NHÂN VIÊN
-                with st.expander("🔑 TRÌNH TẠO MÃ BẢO MẬT NHÂN VIÊN", expanded=True):
-                    st.write("Nhập mật khẩu bạn muốn cấp cho nhân viên vào đây:")
-                    new_pass = st.text_input("Mật khẩu mới", type="password", key="new_pass_input")
+                st.subheader("⚙️ QUẢN TRỊ NHÂN SỰ")
+                with st.expander("🔑 TRÌNH TẠO MÃ BẢO MẬT", expanded=True):
+                    new_pass = st.text_input("Nhập mật khẩu cấp cho nhân viên", type="password")
                     if new_pass:
-                        ma_bam = hash_password(new_pass)
-                        st.success("Mã bảo mật đã được tạo!")
-                        st.code(ma_bam, language="text")
-                        st.warning("⚠️ Ní hãy Copy dãy mã trên và dán vào cột 'Mật khẩu' trong Sheet Admin.")
+                        st.code(hash_password(new_pass), language="text")
+                        st.caption("Dán mã này vào cột 'Mật khẩu' trên Google Sheets.")
+
+                with st.expander("👥 DANH SÁCH NHÂN SỰ"):
+                    users_data = get_all_users()
+                    if users_data:
+                        # Hiển thị đúng các tiêu đề ní muốn
+                        df_users = pd.DataFrame(users_data)
+                        st.table(df_users[['Tài khoản', 'Quyền', 'Họ tên', 'Số điện thoại']])
 
         if st.sidebar.button("🚪 Đăng xuất"):
             st.session_state.update({"logged_in": False})
             st.rerun()
 
 if __name__ == "__main__": main()
-        
+    
