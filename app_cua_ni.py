@@ -7,7 +7,7 @@ import pytz
 import hashlib
 
 # ==========================================
-# 1. GIAO DIỆN CHUẨN LKTV - QUẢN LÝ MINH BẠCH
+# 1. GIAO DIỆN CHUẨN LKTV - CÂN CHỈNH GIỮA
 # ==========================================
 st.set_page_config(page_title="LKTV DETAILING - 2026", layout="centered", page_icon="🧼")
 
@@ -29,9 +29,29 @@ st.markdown("""
         .sdt-tiem { font-size: 18px; color: #f1c40f; font-weight: 700; margin-top: 5px; }
         .slogan { font-size: 15px; color: #f1c40f; font-weight: 500; font-style: italic; margin-top: 10px; border-top: 1px solid #ffffff30; padding-top: 10px; }
 
-        .stTabs [data-baseweb="tab"] { height: 50px; background-color: #ffffff; border-radius: 10px 10px 0 0; }
-        .stTabs [data-baseweb="tab"] p { color: #000000 !important; font-weight: 700 !important; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; }
+        /* --- PHẦN QUAN TRỌNG: CÂN GIỮA VÀ DÀN ĐỀU 3 TAB --- */
+        .stTabs [data-baseweb="tab-list"] {
+            display: flex;
+            justify-content: center; /* Căn giữa toàn bộ cụm Tab */
+            gap: 10px;
+            width: 100%;
+        }
+        .stTabs [data-baseweb="tab"] {
+            flex: 1; /* Chia đều độ rộng cho các Tab */
+            height: 50px;
+            background-color: #ffffff;
+            border-radius: 10px 10px 0 0;
+            max-width: 150px; /* Khống chế độ rộng tối đa để không quá bè */
+        }
+        .stTabs [data-baseweb="tab"] p { 
+            color: #000000 !important; 
+            font-weight: 700 !important;
+            text-align: center;
+            width: 100%;
+        }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] { 
+            background-color: #f1c40f !important; 
+        }
 
         .tien-thua-box {
             background-color: #d4edda; color: #155724; padding: 15px; border-radius: 10px;
@@ -41,7 +61,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM HỆ THỐNG ---
+# --- HÀM HỆ THỐNG GIỮ NGUYÊN 100% ---
 def hash_password(password): 
     return hashlib.sha256(str(password).strip().encode()).hexdigest()
 
@@ -68,7 +88,7 @@ def get_settings():
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         return {row[0]: row[1] for row in sh.worksheet("ThietLap").get_all_values() if len(row) > 1}
-    except: return {"TenTiem": "LKTV DETAILING"}
+    except: return {"TenTiem": "SALON KIM HIỀN"}
 
 @st.cache_data(ttl=60)
 def get_service_data():
@@ -76,7 +96,7 @@ def get_service_data():
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         return {r['Tên Sản Phẩm']: float(str(r['Đơn Giá']).replace(',','')) for r in sh.worksheet("DanhMuc").get_all_records() if r['Tên Sản Phẩm']}
-    except: return {"Rửa xe": 50000}
+    except: return {"Cắt tóc": 50000}
 
 def get_all_users():
     try:
@@ -85,16 +105,15 @@ def get_all_users():
         return sh.worksheet("Admin").get_all_records()
     except: return []
 
-# --- HIỂN THỊ LOGO & THÔNG TIN ---
 def display_header(settings):
     logo_url = format_drive_link(settings.get('Logo', ''))
     st.markdown(f"""
         <div class="bang-hieu-lktv">
             <img src="{logo_url}" class="logo-img">
-            <div class="ten-tiem">{settings.get('TenTiem', 'LKTV DETAILING')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('Diachi', 'LONG XUYÊN')}</div>
-            <div class="sdt-tiem">📞 {settings.get('SDT', '0xxx.xxx.xxx')}</div>
-            <div class="slogan">{settings.get('Slogan', 'Nơi Đặt Niềm Tin..')}</div>
+            <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
+            <div class="sdt-tiem">📞 {settings.get('SDT', '0978.888.888')}</div>
+            <div class="slogan">{settings.get('Slogan', 'Nơi Bạn Đặt Niềm Tin')}</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -117,7 +136,6 @@ def main():
                 users = get_all_users()
                 p_hashed = hash_password(p_input)
                 for row in users:
-                    # KHỚP CHÍNH XÁC CÁC TIÊU ĐỀ CỘT NÍ YÊU CẦU
                     if str(u_input) == str(row.get('Tài khoản')).strip() and p_hashed == str(row.get('Mật khẩu')).strip():
                         st.session_state.update({
                             "logged_in": True, 
@@ -130,11 +148,12 @@ def main():
                 st.error("Thông tin đăng nhập không đúng!")
     else:
         display_header(settings)
+        # Tab list hiển thị theo quyền
         tab_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
         tabs = st.tabs(tab_list)
 
         with tabs[0]:
-            st.success(f"👷 **Nhân viên trực:** {st.session_state['full_name']} | 📞 {st.session_state['phone']}")
+            st.success(f"👷 **Nhân sự trực:** {st.session_state['full_name']} | 📞 {st.session_state['phone']}")
             services = get_service_data()
             kh = st.text_input("Tên khách hàng", "Khách lẻ")
             sdt_kh = st.text_input("SĐT khách hàng")
@@ -157,7 +176,6 @@ def main():
                     sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     ws = sh.worksheet("BaoCao")
                     now = get_now_vn()
-                    # Lưu thông tin rõ ràng để ní khen thưởng
                     nv_info = f"{st.session_state['full_name']} ({st.session_state['phone']})"
                     ws.append_row([now.strftime("%d/%m/%Y"), nv_info, kh, sdt_kh, dv, sl, don_gia, tong_bill, tong_bill, now.strftime("%H:%M:%S")])
                     st.success(f"Đã lưu đơn thành công cho {st.session_state['full_name']}!")
@@ -186,7 +204,6 @@ def main():
                 with st.expander("👥 DANH SÁCH NHÂN SỰ"):
                     users_data = get_all_users()
                     if users_data:
-                        # Hiển thị đúng các tiêu đề ní muốn
                         df_users = pd.DataFrame(users_data)
                         st.table(df_users[['Tài khoản', 'Quyền', 'Họ tên', 'Số điện thoại']])
 
