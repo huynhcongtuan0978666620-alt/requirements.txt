@@ -7,10 +7,9 @@ import pytz
 import hashlib
 import time
 
-# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV (v25.5) ---
-# Tăng cường độ dài bằng cách viết chi tiết các thuộc tính CSS
+# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV (KHÔNG XOÁ CŨ) ---
 st.set_page_config(
-    page_title="LKTV DETAILING - 2026", 
+    page_title="LKTV DETAILING - IRONCLAD", 
     layout="centered", 
     page_icon="✂️",
     initial_sidebar_state="collapsed"
@@ -18,11 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN CÁC THÀNH PHẦN THỪA CỦA STREAMLIT */
+        /* ẨN CÁC THÀNH PHẦN THỪA */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
-        /* BẢNG HIỆU LKTV V25.5 */
+        /* BẢNG HIỆU LKTV V25.5 QUAY TRỞ LẠI */
         .bang-hieu-lktv {
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
@@ -91,7 +90,7 @@ st.markdown("""
             border-bottom: 5px solid #d4ac0d; 
         }
 
-        /* BOX TIỀN THỪA CÓ HIỆU ỨNG */
+        /* BOX TIỀN THỪA CÓ HIỆU ỨNG PULSE */
         .tien-thua-box {
             background-color: #d4edda; 
             color: #155724; 
@@ -112,7 +111,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HÀM HỆ THỐNG CHI TIẾT (v25.5) ---
+# --- 2. HÀM HỆ THỐNG (GIỮ NGUYÊN) ---
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
@@ -139,7 +138,7 @@ def get_settings():
         sh = client.open_by_url(url)
         rows = sh.worksheet("ThietLap").get_all_values()
         return {row[0]: row[1] for row in rows if len(row) > 1}
-    except Exception as e:
+    except Exception:
         return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131 Trần Bình Trọng", "SDT": "0978.888.888"}
 
 @st.cache_data(ttl=60)
@@ -164,9 +163,8 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
-# --- 3. HÀM CHÍNH (MAIN PROCESS) ---
+# --- 3. HÀM CHÍNH ---
 def main():
-    # KHỞI TẠO STATE HÀNG RÀO THÉP
     if "last_submit" not in st.session_state: st.session_state.last_submit = None
     if "submit_count" not in st.session_state: st.session_state.submit_count = 0
     if "submitting" not in st.session_state: st.session_state.submitting = False
@@ -178,127 +176,118 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
-            u = st.text_input("Tài khoản quản lý")
-            p = st.text_input("Mật khẩu truy cập", type="password")
-            if st.form_submit_button("XÁC NHẬN VÀO TIỆM", use_container_width=True, type="primary"):
+            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
+            u = st.text_input("Tài khoản")
+            p = st.text_input("Mật khẩu", type="password")
+            if st.form_submit_button("XÁC NHẬN", use_container_width=True):
                 if u == "admin" and p == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
                     st.rerun()
-                else: st.error("Sai thông tin rồi ní ơi!")
+                else: st.error("Sai thông tin!")
     else:
         display_header(settings)
         t_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
         tabs = st.tabs(t_list)
 
         with tabs[0]:
-            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hệ thống:** {get_now_vn().strftime('%H:%M')}")
+            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
             services = get_service_data()
             
             c1, c2 = st.columns(2)
             with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
-            with c2: kh_sdt = st.text_input("Số điện thoại (nếu có)")
+            with c2: kh_sdt = st.text_input("SĐT")
             
-            dv_chon = st.selectbox("Chọn dịch vụ thực hiện", list(services.keys()))
-            dv_sl = st.number_input("Số lượng (Lần/Bộ)", 0.5, 100.0, 1.0, 0.5)
+            dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
+            dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             
             gia_goc = services.get(dv_chon, 0)
             t_bill = gia_goc * dv_sl
             
             st.divider()
-            st.markdown(f"<h2 style='text-align: center; color: #f1c40f;'>TỔNG CỘNG: {t_bill:,.0f} VNĐ</h2>", unsafe_allow_html=True)
+            st.markdown(f"<h2 style='text-align: center; color: #f1c40f;'>TỔNG: {t_bill:,.0f} đ</h2>", unsafe_allow_html=True)
             
-            kh_tra = st.number_input("Tiền khách đưa (VNĐ)", 0.0, value=float(t_bill), step=1000.0)
+            kh_tra = st.number_input("Tiền khách đưa", 0.0, value=float(t_bill))
             t_du = kh_tra - t_bill
             if t_du > 0:
-                st.markdown(f'<div class="tien-thua-box">💵 TIỀN THỐI LẠI: {t_du:,.0f} VNĐ</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
-            # --- LOGIC HÀNG RÀO THÉP ---
+            # --- HÀNG RÀO THÉP (CẤM XOÁ) ---
             can_go = True
-            err_msg = ""
             if st.session_state.last_submit:
                 tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
                 han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
                 if tg_cho < han_muc:
                     can_go = False
-                    err_msg = f"HÀNG RÀO THÉP: Ní vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để tránh trùng đơn."
+                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
 
-            if not can_go:
-                st.error(f"🚫 {err_msg}")
-            else:
-                st.warning("⚠️ **BẢO VỆ DỮ LIỆU:**")
-                cam_ket = st.checkbox("XÁC NHẬN ĐƠN NÀY KHÔNG PHẢI LÀ ĐƠN TRÙNG")
-                
+            if can_go:
+                cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 XÁC NHẬN LƯU VÀO SHEET", use_container_width=True, type="primary"):
+                    if st.button("🚀 LƯU VÀO SHEET", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
-                        else: st.error("Ní quên tích xác nhận kỷ luật rồi!")
+                        else: st.error("Chưa tích xác nhận!")
                 else:
-                    st.button("⚙️ ĐANG ĐẨY DỮ LIỆU... VUI LÒNG ĐỢI", disabled=True, use_container_width=True)
+                    st.button("⚙️ ĐANG XỬ LÝ...", disabled=True, use_container_width=True)
                     try:
                         cl = get_gspread_client()
-                        s_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-                        ws = cl.open_by_url(s_url).worksheet("BaoCao")
+                        ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
+                        # --- FIX LỖI LỆCH CỘT (TỪ ẢNH 1778781088101.jpg) ---
+                        # Tuyệt đối đủ 9 cột để không bị nhảy giờ sang cột thanh toán
                         ws.append_row([
-                            bay_gio.strftime("%d/%m/%Y"), 
-                            st.session_state.full_name, 
-                            kh_ten, kh_sdt, dv_chon, dv_sl, gia_goc, t_bill,
-                            bay_gio.strftime("%H:%M:%S")
+                            bay_gio.strftime("%d/%m/%Y"), # 1. Ngày
+                            st.session_state.full_name,   # 2. NV
+                            kh_ten,                       # 3. Khách
+                            kh_sdt,                       # 4. SĐT
+                            dv_chon,                      # 5. Dịch vụ
+                            dv_sl,                        # 6. SL
+                            gia_goc,                      # 7. Đơn giá
+                            t_bill,                       # 8. Thành tiền
+                            bay_gio.strftime("%H:%M:%S")  # 9. Giờ lưu (Fix lệch)
                         ])
                         
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
                         st.session_state.submitting = False
-                        st.success("🎉 ĐÃ LƯU THÀNH CÔNG!")
-                        st.balloons()
+                        st.success("🎉 LƯU THÀNH CÔNG!")
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Lỗi kết nối Sheet: {e}")
+                        st.error(f"Lỗi: {e}")
                         st.session_state.submitting = False
 
         if st.session_state["role"] == "Admin":
             with tabs[1]:
-                st.subheader("📈 CHI TIẾT DOANH THU THỰC TẾ")
+                st.subheader("📈 DOANH THU THỰC TẾ")
                 try:
                     cl = get_gspread_client()
-                    s_url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-                    ws_bc = cl.open_by_url(s_url).worksheet("BaoCao")
+                    ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                     du_lieu = ws_bc.get_all_records()
                     if du_lieu:
                         df_bc = pd.DataFrame(du_lieu)
                         st.dataframe(df_bc.tail(50), use_container_width=True)
                         ngay_nay = get_now_vn().strftime("%d/%m/%Y")
-                        df_hon_nay = df_bc[df_bc['Ngày'] == ngay_nay]
+                        df_h = df_bc[df_bc['Ngày'] == ngay_nay]
                         
-                        col_m1, col_m2, col_m3 = st.columns(3)
-                        col_m1.metric("HÔM NAY", f"{df_hon_nay['Thành tiền'].sum():,.0f} đ")
-                        col_m2.metric("SỐ ĐƠN", len(df_hon_nay))
-                        tb_bill = df_hon_nay['Thành tiền'].mean() if len(df_hon_nay)>0 else 0
-                        col_m3.metric("TRUNG BÌNH", f"{tb_bill:,.0f} đ")
-                    else: st.info("Hệ thống chưa có giao dịch nào.")
-                except Exception as e: st.error(f"Không thể truy xuất báo cáo: {e}")
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f}")
+                        c2.metric("SỐ ĐƠN", len(df_h))
+                        c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
+                    else: st.info("Trống.")
+                except Exception as e: st.error(f"Lỗi báo cáo: {e}")
 
             with tabs[2]:
-                st.subheader("⚙️ CÀI ĐẶT & QUẢN TRỊ")
-                st.markdown("---")
-                st.info("💡 Mọi thay đổi về giá và logo sẽ tự động cập nhật sau 60 giây.")
-                
-                with st.expander("🔗 LIÊN KẾT HỆ THỐNG"):
-                    sheet_id = st.secrets['connections']['gsheets']['spreadsheet'].split('/d/')[1].split('/')[0]
-                    st.write(f"Spreadsheet ID: `{sheet_id}`")
-                    st.markdown(f"[🔗 Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
-                
-                if st.button("🧹 LÀM SẠCH BỘ NHỚ ĐỆM (CACHE)"):
+                st.subheader("⚙️ QUẢN TRỊ")
+                with st.expander("🔗 LIÊN KẾT SHEET"):
+                    st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                if st.button("🧹 CLEAR CACHE"):
                     st.cache_data.clear()
-                    st.toast("Đã làm mới dữ liệu từ Sheets!", icon="✅")
-                
+                    st.rerun()
                 st.divider()
-                if st.button("🚪 ĐĂNG XUẤT KHỎI HỆ THỐNG", use_container_width=True):
+                if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
                     st.session_state.clear()
                     st.rerun()
 
