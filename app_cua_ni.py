@@ -8,7 +8,7 @@ import pytz
 import hashlib
 
 # ==========================================
-# 1. GIAO DIỆN CHUẨN LKTV - KHÔI PHỤC ĐỦ THÔNG TIN
+# 1. GIAO DIỆN CHUẨN LKTV - KHÔNG ĐƯỢC SAI LỆCH
 # ==========================================
 st.set_page_config(page_title="LKTV DETAILING - 2026", layout="centered", page_icon="🧼")
 
@@ -30,12 +30,10 @@ st.markdown("""
         .sdt-tiem { font-size: 18px; color: #f1c40f; font-weight: 700; margin-top: 5px; }
         .slogan { font-size: 15px; color: #f1c40f; font-weight: 500; font-style: italic; margin-top: 10px; border-top: 1px solid #ffffff30; padding-top: 10px; }
 
-        /* Fix Tab rõ nét */
         .stTabs [data-baseweb="tab"] { height: 50px; background-color: #ffffff; border-radius: 10px 10px 0 0; }
         .stTabs [data-baseweb="tab"] p { color: #000000 !important; font-weight: 700 !important; }
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; }
 
-        /* Khung hiển thị tiền thừa */
         .tien-thua-box {
             background-color: #d4edda; color: #155724; padding: 15px; border-radius: 10px;
             text-align: center; font-size: 22px; font-weight: bold; border: 3px dashed #28a745;
@@ -67,8 +65,7 @@ def get_settings():
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-        ws = sh.worksheet("ThietLap")
-        return {row[0]: row[1] for row in ws.get_all_values() if len(row) > 1}
+        return {row[0]: row[1] for row in sh.worksheet("ThietLap").get_all_values() if len(row) > 1}
     except: return {"TenTiem": "LKTV DETAILING"}
 
 @st.cache_data(ttl=60)
@@ -80,7 +77,7 @@ def get_service_data():
     except: return {"Rửa xe": 50000}
 
 # ==========================================
-# 2. HIỂN THỊ BẢNG HIỆU (BỔ SUNG SĐT)
+# 2. HIỂN THỊ BẢNG HIỆU (ĐẦY ĐỦ THÔNG TIN)
 # ==========================================
 def display_header(settings):
     logo_url = format_drive_link(settings.get('Logo', ''))
@@ -100,19 +97,21 @@ def main():
         st.session_state.update({"logged_in": False, "role": None, "user": None})
 
     if not st.session_state["logged_in"]:
-        display_header(settings) # Hiện bảng hiệu đầy đủ ở trang Login
+        display_header(settings)
         with st.form("login_form"):
-            st.markdown("### 🔐 ĐĂNG NHẬP")
+            st.markdown("### 🔐 ĐĂNG NHẬP HỆ THỐNG")
             u_input = st.text_input("Tên đăng nhập")
             p_input = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("VÀO NHÀ", use_container_width=True, type="primary"):
                 if u_input == "admin" and p_input == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "user": "Chủ Tiệm"})
                     st.rerun()
-                st.error("Sai thông tài khoản!")
+                st.error("Sai mật khẩu rồi ní ơi!")
     else:
         display_header(settings)
-        tabs = st.tabs(["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"])
+        # --- KHÔI PHỤC ĐẦY ĐỦ 3 TAB CHO ADMIN ---
+        tab_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
+        tabs = st.tabs(tab_list)
 
         with tabs[0]:
             services = get_service_data()
@@ -121,14 +120,12 @@ def main():
             dv = st.selectbox("Dịch vụ", list(services.keys()))
             sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             
-            # Tính tiền tự động
             don_gia = services.get(dv, 0)
             tong_bill = don_gia * sl
             
             st.divider()
             st.markdown(f"### 🧾 TỔNG THANH TOÁN: `{tong_bill:,.0f} VNĐ`")
             
-            # Ô thanh toán & Tiền thừa (Đúng thứ tự ní yêu cầu)
             khach_dua = st.number_input("Khách thanh toán (VNĐ)", min_value=0.0, value=float(tong_bill), step=1000.0)
             tien_thua = khach_dua - tong_bill
             
@@ -136,8 +133,33 @@ def main():
                 st.markdown(f'<div class="tien-thua-box">💵 Trả lại khách: {tien_thua:,.0f} VNĐ</div>', unsafe_allow_html=True)
 
             if st.button("🚀 NHẬP LIỆU NGAY", use_container_width=True, type="primary"):
-                # (Phần lưu GSheets giữ nguyên)
-                st.success("Đã ghi nhận!")
+                try:
+                    client = get_gspread_client()
+                    sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    ws = sh.worksheet("BaoCao")
+                    now = get_now_vn()
+                    ws.append_row([now.strftime("%d/%m/%Y"), st.session_state['user'], kh, sdt, dv, sl, don_gia, tong_bill, tong_bill, now.strftime("%H:%M:%S")])
+                    st.success("Đã ghi nhận thành công!")
+                    st.balloons()
+                except Exception as e: st.error(f"Lỗi: {e}")
+
+        # --- KHÔI PHỤC NỘI DUNG TAB BÁO CÁO & CÀI ĐẶT ---
+        if st.session_state["role"] == "Admin":
+            with tabs[1]:
+                st.subheader("📊 Lịch sử gần đây")
+                try:
+                    client = get_gspread_client()
+                    sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    df = pd.DataFrame(sh.worksheet("BaoCao").get_all_records())
+                    if not df.empty: st.dataframe(df.head(20), use_container_width=True)
+                except: st.warning("Không tải được báo cáo.")
+            with tabs[2]:
+                st.subheader("⚙️ Cài đặt hệ thống")
+                st.info("Phần này dùng để quản lý cấu hình tiệm.")
+
+        if st.sidebar.button("🚪 Đăng xuất"):
+            st.session_state.update({"logged_in": False})
+            st.rerun()
 
 if __name__ == "__main__": main()
     
