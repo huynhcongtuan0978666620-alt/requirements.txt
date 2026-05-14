@@ -101,6 +101,12 @@ def display_header(settings):
 
 def main():
     settings = get_settings()
+        # Khởi tạo bộ nhớ hàng rào nếu chưa có
+    if "last_submit" not in st.session_state:
+        st.session_state.last_submit = None
+    if "submit_count" not in st.session_state:
+        st.session_state.submit_count = 0
+        
     if "logged_in" not in st.session_state:
         st.session_state.update({"logged_in": False, "role": None, "user": None, "full_name": None, "phone": None, "submitting": False})
 
@@ -143,7 +149,27 @@ def main():
             
             don_gia = services.get(dv, 0)
             tong_bill = don_gia * sl
-            st.divider()
+            st.divider()         # === BƯỚC 2: TÍNH TOÁN HÀNG RÀO THÉP ===
+        can_submit = True
+        wait_msg = ""
+        
+        if st.session_state.last_submit:
+            # Lấy thời gian hiện tại theo múi giờ Việt Nam
+            now = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
+            # Tính số phút chênh lệch giữa hiện tại và lần bấm lưu cuối
+            diff = (now - st.session_state.last_submit).total_seconds() / 60
+            
+            # ĐIỀU KIỆN HÀNG RÀO:
+            # Nếu mới có 1 đơn (đơn kế là đơn 2): chờ 3 phút
+            # Nếu đã có từ 2 đơn trở lên (đơn kế là đơn 3+): chờ 5 phút
+            required = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
+            
+            if diff < required:
+                can_submit = False
+                # Tính số phút còn lại phải chờ
+                remaining = round(required - diff, 1)
+                wait_msg = f"HÀNG RÀO THÉP: Ní vui lòng đợi thêm {remaining} phút để nhập đơn tiếp theo."
+                
             st.markdown(f"### 🧾 TỔNG THANH TOÁN: `{tong_bill:,.0f} VNĐ`")
             
             khach_dua = st.number_input("Khách thanh toán (VNĐ)", min_value=0.0, value=float(tong_bill), step=1000.0)
@@ -152,10 +178,22 @@ def main():
                 st.markdown(f'<div class="tien-thua-box">💵 Trả lại khách: {tien_thua:,.0f} VNĐ</div>', unsafe_allow_html=True)
 
             # --- CƠ CHẾ KHÓA NÚT CHỐNG TRÙNG TUYỆT ĐỐI ---
+                    # === BƯỚC 3: NÚT LƯU CÓ HÀNG RÀO THÉP ===
+        if not can_submit:
+            st.error(f"🚫 {wait_msg}")
+        else:
+            st.warning("⚠️ KIỂM TRA TRÙNG ĐƠN:")
+            confirm_thep = st.checkbox("TÔI XÁC NHẬN ĐƠN NÀY KHÔNG TRÙNG")
+            
             if not st.session_state.get('submitting', False):
-                if st.button("🚀 LƯU ĐƠN HÀNG", use_container_width=True, type="primary"):
-                    st.session_state.submitting = True
-                    st.rerun() # Load lại để khóa nút ngay lập tức
+                if st.button("🚀 XÁC NHẬN LƯU ĐƠN", use_container_width=True, type="primary"):
+                    if confirm_thep:
+                        st.session_state.submitting = True
+                        st.rerun()
+                    else:
+                        st.error("Ní chưa tích xác nhận kỷ luật kìa!")
+                        
+        
             else:
                 # Trạng thái đang xử lý - Nút bị vô hiệu hóa
                 st.button("⏳ ĐANG XỬ LÝ... VUI LÒNG ĐỢI", use_container_width=True, disabled=True)
@@ -183,7 +221,10 @@ def main():
                     
                     st.success(f"✅ ĐÃ LƯU THÀNH CÔNG!")
                     st.balloons()
-                    
+                    # Cập nhật thời gian và số đơn để kích hoạt hàng rào cho lần sau
+                        st.session_state.last_submit = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
+                        st.session_state.submit_count += 1
+        
                     # Thời gian chờ "nguội" máy 2 giây trước khi mở lại nút
                     time.sleep(2)
                     st.session_state.submitting = False
