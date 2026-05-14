@@ -102,7 +102,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings) # Hiện bảng hiệu đầy đủ ở trang Login
         with st.form("login_form"):
-            st.markdown("### 🔐 ĐĂNG NHẬP HỆ THỐNG")
+            st.markdown("### 🔐 ĐĂNG NHẬP")
             u_input = st.text_input("Tên đăng nhập")
             p_input = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("VÀO NHÀ", use_container_width=True, type="primary"):
