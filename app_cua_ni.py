@@ -7,7 +7,7 @@ import time
 import pytz 
 
 # ==========================================
-# 1. CẤU HÌNH GIAO DIỆN & CSS (BẢN CHIẾN THUẬT ĐẨY NỘI DUNG)
+# 1. CẤU HÌNH GIAO DIỆN & CSS (CHIẾN THUẬT ĐẨY NỘI DUNG)
 # ==========================================
 st.set_page_config(page_title="Hệ Thống Lab 2026", layout="centered", page_icon="🧪")
 
@@ -18,7 +18,6 @@ st.markdown("""
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
         /* 2. Đẩy nội dung lên sát mép trên và tạo khoảng trống cực lớn ở dưới đáy (250px) */
-        /* Mục đích: Để nút 'Manage app' chỉ đè lên khoảng trắng, không che chữ */
         .main .block-container {
             padding-top: 1rem !important; 
             padding-bottom: 250px !important; 
@@ -94,26 +93,39 @@ if "logged_in" not in st.session_state:
     })
 
 # ==========================================
-# 5. MÀN HÌNH ĐĂNG NHẬP
+# 5. MÀN HÌNH ĐĂNG NHẬP (CẬP NHẬT HIỆU ỨNG MỚI)
 # ==========================================
 def login_screen():
     st.markdown("<h2 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h2>", unsafe_allow_html=True)
     with st.form("login_form"):
         user = st.text_input("Tên đăng nhập (SĐT)")
         password = st.text_input("Mật khẩu", type="password")
-        if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
+        submit = st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True)
+        
+        if submit:
+            # 1. Xử lý logic Admin
             if user == "admin" and password == "2026":
+                st.success("✨ Chúc mừng bạn đã đăng nhập thành công")
+                st.balloons() # Bắn pháo hoa
+                time.sleep(2) # Chậm lại 2s theo ý ní
                 st.session_state.update({"logged_in": True, "role": "admin", "username": "Chủ tiệm"})
                 st.rerun()
+            
+            # 2. Xử lý logic Nhân viên
             else:
                 success, name = check_login(user, password)
                 if success:
+                    st.success("✨ Chúc mừng bạn đã đăng nhập thành công")
+                    st.balloons() # Bắn pháo hoa
+                    time.sleep(2) # Chậm lại 2s
                     st.session_state.update({"logged_in": True, "role": "staff", "username": name})
                     st.rerun()
-                else: st.error("Sai thông tin rồi ní ơi!")
+                else:
+                    # Hiện mặt buồn và thông báo sai mật khẩu
+                    st.error("😔 Bạn đã nhập sai rồi, kiểm tra lại đi nhé")
 
 # ==========================================
-# 6. GIAO DIỆN CHÍNH & THIẾT QUÂN LUẬT
+# 6. GIAO DIỆN CHÍNH & THIẾT QUÂN LUẬT (GIỮ NGUYÊN)
 # ==========================================
 def main_app():
     client = get_gspread_client()
@@ -206,4 +218,4 @@ if not st.session_state["logged_in"]:
     login_screen()
 else:
     main_app()
-    
+                    
