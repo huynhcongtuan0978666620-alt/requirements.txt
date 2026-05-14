@@ -5,9 +5,10 @@ import pandas as pd
 from datetime import datetime
 import pytz
 import hashlib
+import time
 
 # ==========================================
-# 1. GIAO DIỆN CHUẨN LKTV - CÂN CHỈNH GIỮA
+# 1. GIAO DIỆN CHUẨN LKTV - CHỐNG TRÙNG ĐƠN
 # ==========================================
 st.set_page_config(page_title="LKTV DETAILING - 2026", layout="centered", page_icon="🧼")
 
@@ -29,29 +30,10 @@ st.markdown("""
         .sdt-tiem { font-size: 18px; color: #f1c40f; font-weight: 700; margin-top: 5px; }
         .slogan { font-size: 15px; color: #f1c40f; font-weight: 500; font-style: italic; margin-top: 10px; border-top: 1px solid #ffffff30; padding-top: 10px; }
 
-        /* --- PHẦN QUAN TRỌNG: CÂN GIỮA VÀ DÀN ĐỀU 3 TAB --- */
-        .stTabs [data-baseweb="tab-list"] {
-            display: flex;
-            justify-content: center; /* Căn giữa toàn bộ cụm Tab */
-            gap: 10px;
-            width: 100%;
-        }
-        .stTabs [data-baseweb="tab"] {
-            flex: 1; /* Chia đều độ rộng cho các Tab */
-            height: 50px;
-            background-color: #ffffff;
-            border-radius: 10px 10px 0 0;
-            max-width: 150px; /* Khống chế độ rộng tối đa để không quá bè */
-        }
-        .stTabs [data-baseweb="tab"] p { 
-            color: #000000 !important; 
-            font-weight: 700 !important;
-            text-align: center;
-            width: 100%;
-        }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { 
-            background-color: #f1c40f !important; 
-        }
+        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 10px; width: 100%; }
+        .stTabs [data-baseweb="tab"] { flex: 1; height: 50px; background-color: #ffffff; border-radius: 10px 10px 0 0; max-width: 150px; }
+        .stTabs [data-baseweb="tab"] p { color: #000000 !important; font-weight: 700 !important; text-align: center; width: 100%; }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; }
 
         .tien-thua-box {
             background-color: #d4edda; color: #155724; padding: 15px; border-radius: 10px;
@@ -61,7 +43,7 @@ st.markdown("""
     </style>
     """, unsafe_allow_html=True)
 
-# --- HÀM HỆ THỐNG GIỮ NGUYÊN 100% ---
+# --- HÀM HỆ THỐNG ---
 def hash_password(password): 
     return hashlib.sha256(str(password).strip().encode()).hexdigest()
 
@@ -148,7 +130,6 @@ def main():
                 st.error("Thông tin đăng nhập không đúng!")
     else:
         display_header(settings)
-        # Tab list hiển thị theo quyền
         tab_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
         tabs = st.tabs(tab_list)
 
@@ -170,17 +151,37 @@ def main():
             if tien_thua > 0:
                 st.markdown(f'<div class="tien-thua-box">💵 Trả lại khách: {tien_thua:,.0f} VNĐ</div>', unsafe_allow_html=True)
 
+            # --- CẢI TIẾN CHỐNG TRÙNG ĐƠN TẠI ĐÂY ---
             if st.button("🚀 LƯU ĐƠN HÀNG", use_container_width=True, type="primary"):
-                try:
-                    client = get_gspread_client()
-                    sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                    ws = sh.worksheet("BaoCao")
-                    now = get_now_vn()
-                    nv_info = f"{st.session_state['full_name']} ({st.session_state['phone']})"
-                    ws.append_row([now.strftime("%d/%m/%Y"), nv_info, kh, sdt_kh, dv, sl, don_gia, tong_bill, tong_bill, now.strftime("%H:%M:%S")])
-                    st.success(f"Đã lưu đơn thành công cho {st.session_state['full_name']}!")
-                    st.balloons()
-                except Exception as e: st.error(f"Lỗi: {e}")
+                # Tạo một biến tạm để kiểm tra trong 1 lần chạy
+                with st.spinner('Hệ thống đang lưu, ní đợi xíu...'):
+                    try:
+                        client = get_gspread_client()
+                        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                        ws = sh.worksheet("BaoCao")
+                        now = get_now_vn()
+                        nv_info = f"{st.session_state['full_name']} ({st.session_state['phone']})"
+                        
+                        # Thêm dữ liệu
+                        ws.append_row([
+                            now.strftime("%d/%m/%Y"), 
+                            nv_info, 
+                            kh, 
+                            sdt_kh, 
+                            dv, 
+                            sl, 
+                            don_gia, 
+                            tong_bill, 
+                            tong_bill, 
+                            now.strftime("%H:%M:%S")
+                        ])
+                        
+                        st.success(f"Đã lưu đơn thành công!")
+                        st.balloons()
+                        # Dừng 1 giây để tránh việc nhấn liên tục
+                        time.sleep(1) 
+                    except Exception as e: 
+                        st.error(f"Lỗi: {e}")
 
         if st.session_state["role"] == "Admin":
             with tabs[1]:
@@ -199,7 +200,6 @@ def main():
                     new_pass = st.text_input("Nhập mật khẩu cấp cho nhân viên", type="password")
                     if new_pass:
                         st.code(hash_password(new_pass), language="text")
-                        st.caption("Dán mã này vào cột 'Mật khẩu' trên Google Sheets.")
 
                 with st.expander("👥 DANH SÁCH NHÂN SỰ"):
                     users_data = get_all_users()
