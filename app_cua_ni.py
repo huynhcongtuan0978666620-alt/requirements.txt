@@ -180,10 +180,45 @@ def main():
             u = st.text_input("Tài khoản")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN", use_container_width=True):
+            if st.form_submit_button("XÁC NHẬN", use_container_width=True):
+                # 1. ƯU TIÊN ADMIN (Mật khẩu cứng)
                 if u == "admin" and p == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
                     st.rerun()
-                else: st.error("Sai thông tin!")
+                
+                # 2. KIỂM TRA NHÂN VIÊN (Dùng SĐT làm tài khoản)
+                else:
+                    try:
+                        cl = get_gspread_client()
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                        ws_user = sh.worksheet("NhanVien")
+                        user_list = ws_user.get_all_records()
+                        
+                        found_user = None
+                        for row in user_list:
+                            # Khớp SĐT (Cột A) và Mật khẩu (Cột B)
+                            sdt_sheet = str(row.get('Tên Nhân Viên', '')).strip()
+                            pass_sheet = str(row.get('Mật Khẩu', '')).strip()
+                            
+                            if u.strip() == sdt_sheet and p.strip() == pass_sheet:
+                                found_user = row
+                                break
+                        
+                        if found_user:
+                            # Lấy tên hiển thị từ cột C (Trạng Thái)
+                            ten_that = found_user.get('Trạng Thái', 'Nhân viên')
+                            st.session_state.update({
+                                "logged_in": True, 
+                                "role": "NhanVien", 
+                                "full_name": ten_that
+                            })
+                            st.success(f"Chào mừng {ten_that}!")
+                            st.rerun()
+                        else:
+                            st.error("SĐT hoặc Mật khẩu không đúng!")
+                    except Exception as e:
+                        st.error(f"Lỗi: {e}")
+
     else:
         display_header(settings)
         t_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
