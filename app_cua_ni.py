@@ -283,9 +283,38 @@ def main():
                 st.subheader("⚙️ QUẢN TRỊ")
                 with st.expander("🔗 LIÊN KẾT SHEET"):
                     st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                
                 if st.button("🧹 CLEAR CACHE"):
                     st.cache_data.clear()
                     st.rerun()
+                
+                st.divider()
+                st.markdown("### 👥 QUẢN LÝ NHÂN SỰ")
+                with st.expander("🎫 Tạo/Xem mã nhân viên"):
+                    try:
+                        cl = get_gspread_client()
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                        ws_user = sh.worksheet("NhanVien")
+                        
+                        with st.form("add_user_form", clear_on_submit=True):
+                            new_name = st.text_input("Họ và tên nhân viên")
+                            new_code = st.text_input("Mã đăng nhập (VD: nv01)")
+                            if st.form_submit_button("CẤP MÃ MỚI"):
+                                if new_name and new_code:
+                                    ws_user.append_row([new_name, new_code, "NhanVien"])
+                                    st.success(f"Đã cấp mã cho {new_name}!")
+                                    st.cache_data.clear()
+                                else:
+                                    st.error("Vui lòng nhập đủ tên và mã!")
+                        
+                        st.write("---")
+                        st.write("**Danh sách nhân sự hiện tại:**")
+                        user_data = ws_user.get_all_records()
+                        if user_data:
+                            st.table(pd.DataFrame(user_data))
+                    except Exception as e:
+                        st.warning("Ní ơi, hãy tạo thêm Sheet tên 'NhanVien' với các cột chuẩn để quản lý nhé!")
+                
                 st.divider()
                 if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
                     st.session_state.clear()
@@ -293,4 +322,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+        
