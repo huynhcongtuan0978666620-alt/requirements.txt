@@ -196,13 +196,14 @@ def main():
                         
                         found_user = None
                         for row in user_list:
-                            # Khớp SĐT (Cột A) và Mật khẩu (Cột B)
-                            sdt_sheet = str(row.get('Tên Nhân Viên', '')).strip()
-                            pass_sheet = str(row.get('Mật Khẩu', '')).strip()
+                            # --- CHỈNH LẠI ĐÚNG TÊN CỘT TRÊN SHEET CỦA NÍ ---
+                            sdt_sheet = str(row.get('Số Điện Thoại', '')).strip() # Cột A
+                            pass_sheet = str(row.get('Mật Khẩu', '')).strip()    # Cột B
                             
                             if u.strip() == sdt_sheet and p.strip() == pass_sheet:
                                 found_user = row
                                 break
+
                         
                         if found_user:
                             # Lấy tên hiển thị từ cột C (Trạng Thái)
