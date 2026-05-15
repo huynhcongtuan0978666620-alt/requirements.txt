@@ -207,7 +207,7 @@ def main():
                         
                         if found_user:
                             # Lấy tên hiển thị từ cột C (Tên Nhân Viên)
-                            ten_that = found_user.get('Tên Nhân Viên ', 'Nhân viên')
+                            ten_that = found_user.get('Tên Nhân Viên','Nhân viên')
                             st.session_state.update({
                                 "logged_in": True, 
                                 "role": "NhanVien", 
