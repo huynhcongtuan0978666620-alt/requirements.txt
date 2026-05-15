@@ -206,8 +206,8 @@ def main():
 
                         
                         if found_user:
-                            # Lấy tên hiển thị từ cột C (Trạng Thái)
-                            ten_that = found_user.get('Trạng Thái', 'Nhân viên')
+                            # Lấy tên hiển thị từ cột C (Tên Nhân Viên)
+                            ten_that = found_user.get('Tên Nhân Viên ', 'Nhân viên')
                             st.session_state.update({
                                 "logged_in": True, 
                                 "role": "NhanVien", 
@@ -337,7 +337,7 @@ def main():
                         ws_user = sh.worksheet("NhanVien")
                         
                         with st.form("add_user_form", clear_on_submit=True):
-                            new_name = st.text_input("Họ và tên nhân viên")
+                            new_name = st.text_input("Số điện thoại nhân viên")
                             new_code = st.text_input("Mã đăng nhập (VD: nv01)")
                             if st.form_submit_button("CẤP MÃ MỚI"):
                                 if new_name and new_code:
