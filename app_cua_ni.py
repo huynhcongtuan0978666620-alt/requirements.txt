@@ -199,6 +199,9 @@ def main():
             
             dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
+            # --- CẤY GHÉP: Ô NHẬP GHI CHÚ ---
+            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
+            
             
             gia_goc = services.get(dv_chon, 0)
             t_bill = gia_goc * dv_sl
@@ -235,19 +238,20 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # --- FIX LỖI LỆCH CỘT (TỪ ẢNH 1778781088101.jpg) ---
-                        # Tuyệt đối đủ 9 cột để không bị nhảy giờ sang cột thanh toán
+                        # --- CẬP NHẬT ĐỦ 10 CỘT ĐỂ KHÔNG BỊ LỆCH ---
                         ws.append_row([
                             bay_gio.strftime("%d/%m/%Y"), # 1. Ngày
-                            st.session_state.full_name,   # 2. NV
-                            kh_ten,                       # 3. Khách
+                            st.session_state.full_name,   # 2. Nhân viên
+                            kh_ten,                       # 3. Tên khách
                             kh_sdt,                       # 4. SĐT
                             dv_chon,                      # 5. Dịch vụ
                             dv_sl,                        # 6. SL
                             gia_goc,                      # 7. Đơn giá
-                            t_bill,                       # 8. Thành tiền
-                            bay_gio.strftime("%H:%M:%S")  # 9. Giờ lưu (Fix lệch)
+                            t_bill,                       # 8. Thành tiền (Đã thanh toán)
+                            bay_gio.strftime("%H:%M:%S"), # 9. Giờ lưu
+                            ghi_chu                       # 10. Nội dung Ghi chú thật sự
                         ])
+
                         
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
