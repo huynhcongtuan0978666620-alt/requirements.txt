@@ -180,7 +180,6 @@ def main():
             u = st.text_input("Tài khoản")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN", use_container_width=True):
-            if st.form_submit_button("XÁC NHẬN", use_container_width=True):
                 # 1. ƯU TIÊN ADMIN (Mật khẩu cứng)
                 if u == "admin" and p == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
