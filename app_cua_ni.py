@@ -196,13 +196,19 @@ def main():
                         
                         found_user = None
                         for row in user_list:
-                            # --- CHỈNH LẠI ĐÚNG TÊN CỘT TRÊN SHEET CỦA NÍ ---
-                            sdt_sheet = str(row.get('Số Điện Thoại', '')).strip() # Cột A
-                            pass_sheet = str(row.get('Mật Khẩu', '')).strip()    # Cột B
+                            # 1. Lấy dữ liệu từ Sheet và ép về kiểu chữ, xóa sạch khoảng trắng
+                            sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
+                            sdt_nhap = str(u).strip()
                             
-                            if u.strip() == sdt_sheet and p.strip() == pass_sheet:
-                                found_user = row
-                                break
+                            # 2. BÍ KÍP: Cắt hết số 0 ở đầu của cả 2 bên để so sánh phần "ruột"
+                            # Ví dụ: '097' thành '97', '97' vẫn là '97' -> Khớp 100%
+                            if sdt_nhap.lstrip('0') == sdt_sheet.lstrip('0') and sdt_nhap.lstrip('0') != "":
+                                pass_sheet = str(row.get('Mật Khẩu', '')).strip()
+                                
+                                if p.strip() == pass_sheet:
+                                    found_user = row
+                                    break
+
 
                         
                         if found_user:
