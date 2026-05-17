@@ -135,17 +135,24 @@ def get_gspread_client():
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=10) # Hạ thấp thời gian cache xuống 10 giây để thử nghiệm cho nhanh
 def get_settings():
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         sh = client.open_by_url(url)
         rows = sh.worksheet("ThietLap").get_all_values()
-        return {row[0]: row[1] for row in rows if len(row) > 1}
-    except Exception:
-        return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131 Trần Bình Trọng", "SDT": "0978.888.888"}
-
+        
+        # Đọc dữ liệu thực tế từ Sheet và làm sạch khoảng trắng từ khóa
+        return {str(row[0]).strip(): row[1] for row in rows if len(row) > 1}
+    except Exception as e:
+        # Nếu lỗi kết nối, vẫn giữ từ khóa 'Logo' mặc định để không bị lỗi vỡ giao diện
+        return {
+            "TenTiem": "SALON KIM HIỀN", 
+            "Diachi": "131 Trần Bình Trọng", 
+            "SDT": "0978.888.888",
+            "Logo": ""
+        }
 @st.cache_data(ttl=60)
 def get_service_data():
     try:
