@@ -129,8 +129,6 @@ def format_drive_link(link):
             return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
 
-
-
 def get_gspread_client():
     creds_info = st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
@@ -171,7 +169,6 @@ def display_header(settings):
             <div class="slogan">{settings.get('Slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
         </div>
     """, unsafe_allow_html=True)
-
 
 # --- 3. HÀM CHÍNH ---
 def main():
