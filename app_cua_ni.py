@@ -7,7 +7,7 @@ import pytz
 import hashlib
 import time
 
-# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV (KHÔNG XOÁ CŨ) ---
+# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV (ÉP FIX GIAO DIỆN) ---
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
     layout="centered", 
@@ -17,96 +17,71 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN CÁC THÀNH PHẦN THỪA */
+        /* ẨN CÁC THÀNH PHẦN THỪA KHÔNG CẦN THIẾT */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
-        /* BẢNG HIỆU LKTV V25.5 QUAY TRỞ LẠI */
-        .bang-hieu-lktv {
+        /* BOX BẢNG HIỆU THUẦN CSS - KHÓA MÀU NỀN TỐI TUYỆT ĐỐI */
+        .bang-hieu-container {
             text-align: center;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: white; 
-            padding: 25px; 
-            border-radius: 20px;
-            margin-bottom: 25px; 
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.4);
-            border: 1px solid #ffffff20;
-        }
-        .logo-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .logo-img-style img { 
-            width: 120px !important; 
-            height: 120px !important; 
-            object-fit: cover !important; 
-            border-radius: 50% !important; 
-            border: 4px solid #f1c40f !important; 
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
-        }
-        .ten-tiem { 
-            font-size: 32px; 
-            font-weight: 900; 
-            color: #ffffff; 
-            text-transform: uppercase; 
-            margin-bottom: 5px; 
-            letter-spacing: 3px;
-        }
-        .thong-tin-phu { 
-            font-size: 16px; 
-            color: #ecf0f1; 
-            opacity: 0.9; 
-            margin-bottom: 4px; 
-        }
-        .slogan { 
-            font-size: 17px; 
-            color: #f1c40f; 
-            font-weight: 600; 
-            font-style: italic; 
-            margin-top: 15px; 
-            border-top: 1px solid #ffffff20; 
-            padding-top: 10px; 
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
+            padding: 30px 20px !important; 
+            border-radius: 20px !important;
+            margin-bottom: 25px !important; 
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.5) !important;
+            border: 1px solid #ffffff20 !important;
+            display: block !important;
         }
         
-        /* CẤU TRÚC TABS V25.5 */
-        .stTabs [data-baseweb="tab-list"] { 
-            display: flex; 
-            justify-content: center; 
-            gap: 15px; 
-            width: 100%; 
+        /* ÉP LOGO TRÒN GIỮA KHUNG BẤT CHẤP THIẾT BỊ */
+        .logo-tron {
+            width: 120px !important;
+            height: 120px !important;
+            border-radius: 50% !important;
+            border: 4px solid #f1c40f !important;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important;
+            object-fit: cover !important;
+            margin: 0 auto 15px auto !important;
+            display: block !important;
         }
-        .stTabs [data-baseweb="tab"] { 
-            flex: 1; 
-            height: 60px; 
-            background-color: #ffffff; 
-            border-radius: 15px 15px 0 0; 
-            border: 1px solid #dee2e6;
+        
+        /* ÉP CHỮ MÀU TRẮNG SÁNG, KHÔNG BỊ CHÌM VÀO NỀN LIGHT MODE */
+        .ten-tiem-st { 
+            font-size: 32px !important; 
+            font-weight: 900 !important; 
+            color: #ffffff !important; 
+            text-transform: uppercase !important; 
+            margin: 5px 0 !important; 
+            letter-spacing: 2px !important;
+            line-height: 1.3 !important;
         }
-        .stTabs [data-baseweb="tab"] p { 
-            color: #1a1a1a !important; 
-            font-weight: 800 !important; 
-            font-size: 17px; 
-            text-align: center;
+        .thong-tin-st { 
+            font-size: 15px !important; 
+            color: #e0e6ed !important; 
+            margin: 4px 0 !important; 
+            font-weight: 400 !important;
         }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { 
-            background-color: #f1c40f !important; 
-            border-bottom: 5px solid #d4ac0d; 
+        .slogan-st { 
+            font-size: 17px !important; 
+            color: #f1c40f !important; 
+            font-weight: 600 !important; 
+            font-style: italic !important; 
+            margin-top: 15px !important; 
+            border-top: 1px solid #ffffff20 !important; 
+            padding-top: 10px !important; 
         }
+        
+        /* TABS ĐỒNG BỘ */
+        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
+        .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6;}
+        .stTabs [data-baseweb="tab"] p { color: #1a1a1a !important; font-weight: 800 !important; font-size: 17px; text-align: center;}
+        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border-bottom: 5px solid #d4ac0d; }
 
-        /* BOX TIỀN THỪA CÓ HIỆU ỨNG PULSE */
+        /* BOX TIỀN THỪA PULSE */
         .tien-thua-box {
-            background-color: #d4edda; 
-            color: #155724; 
-            padding: 25px; 
-            border-radius: 15px;
-            text-align: center; 
-            font-size: 26px; 
-            font-weight: 800; 
-            border: 4px dashed #28a745;
-            margin: 20px 0; 
-            animation: pulse-steel 2.5s infinite;
+            background-color: #d4edda; color: #155724; padding: 25px; border-radius: 15px;
+            text-align: center; font-size: 26px; font-weight: 800; border: 4px dashed #28a745;
+            margin: 20px 0; animation: pulse-steel 2.5s infinite;
         }
         @keyframes pulse-steel { 
             0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);} 
@@ -116,13 +91,12 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HÀM HỆ THỐNG (GIỮ NGUYÊN) ---
+# --- 2. HÀM HỆ THỐNG ---
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
 def format_drive_link(link):
     if not link or not isinstance(link, str): return ""
-    # Loại bỏ khoảng trắng thừa thãi trong link nếu có
     link = link.strip()
     if 'drive.google.com' in link:
         f_id = ""
@@ -131,7 +105,6 @@ def format_drive_link(link):
         elif 'id=' in link: 
             f_id = link.split('id=')[1].split('&')[0]
         
-        # CHUẨN XUẤT ẢNH GỐC KHÔNG QUA TRÌNH DUYỆT ĐỆM
         if f_id: 
             return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
@@ -142,21 +115,20 @@ def get_gspread_client():
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
-@st.cache_data(ttl=5) # Giảm mạnh cache xuống 5s để cập nhật tức thì
+@st.cache_data(ttl=5)
 def get_settings():
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         sh = client.open_by_url(url)
         rows = sh.worksheet("ThietLap").get_all_values()
-        
-        # BÍ KÍP QUAN TRỌNG: Quét sạch khoảng trắng của cả Từ khóa (Cột A) và Giá trị (Cột B)
         return {str(row[0]).strip().lower(): str(row[1]).strip() for row in rows if len(row) > 1}
     except Exception as e:
         return {
             "tentiem": "SALON KIM HIỀN", 
-            "diachi": "131 Trần Bình Trọng", 
-            "sdt": "0978.888.888",
+            "diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
+            "sdt": "0978888888",
+            "slogan": "\"Nơi Bạn Đặt Niềm Tin\"",
             "logo": ""
         }
 
@@ -171,23 +143,18 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-    # Tìm kiếm không phân biệt chữ hoa chữ thường nhờ ép .lower() ở hàm nạp dữ liệu
     l_url = format_drive_link(settings.get('logo', ''))
     
-    # Bắt đầu dựng giao diện bảng hiệu
-    st.markdown('<div class="bang-hieu-lktv">', unsafe_allow_html=True)
+    # KHÓA TOÀN BỘ LOGO VÀ BẢNG HIỆU VÀO TRONG HTML THUẦN ĐỂ KHÔNG BỊ LỖI PHÂN RÃ
+    logo_html = f'<img src="{l_url}" class="logo-tron">' if l_url else ''
     
-    # Dùng st.image chính chủ lồng trong khung CSS tròn để đảm bảo hiển thị 100%
-    if l_url:
-        st.markdown('<div class="logo-container-div"><div class="logo-img-style">', unsafe_allow_html=True)
-        st.image(l_url, width=120)
-        st.markdown('</div></div>', unsafe_allow_html=True)
-        
     st.markdown(f"""
-            <div class="ten-tiem">{settings.get('tentiem', 'SALON KIM HIỀN')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('diachi', '131 Trần Bình Trọng')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('sdt', '0978.888.888')}</div>
-            <div class="slogan">{settings.get('slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
+        <div class="bang-hieu-container">
+            {logo_html}
+            <div class="ten-tiem-st">{settings.get('tentiem', 'SALON KIM HIỀN')}</div>
+            <div class="thong-tin-st">📍 {settings.get('diachi', '131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)')}</div>
+            <div class="thong-tin-st">📞 {settings.get('sdt', '0978888888')}</div>
+            <div class="slogan-st">{settings.get('slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -208,13 +175,9 @@ def main():
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN", use_container_width=True):
-            
-                # 1. ƯU TIÊN ADMIN (Mật khẩu cứng)
                 if u == "admin" and p == "2026":
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
                     st.rerun()
-                
-                # 2. KIỂM TRA NHÂN VIÊN (Dùng SĐT làm tài khoản)
                 else:
                     try:
                         cl = get_gspread_client()
@@ -227,10 +190,8 @@ def main():
                             sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
                             sdt_nhap = str(u).strip()
                             
-                            # Cắt hết số 0 ở đầu của cả 2 bên để so sánh phần "ruột"
                             if sdt_nhap.lstrip('0') == sdt_sheet.lstrip('0') and sdt_nhap.lstrip('0') != "":
                                 pass_sheet = str(row.get('Mật Khẩu', '')).strip()
-                                
                                 if p.strip() == pass_sheet:
                                     found_user = row
                                     break
@@ -265,7 +226,6 @@ def main():
             
             dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
-            
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
             
             gia_goc = services.get(dv_chon, 0)
@@ -279,7 +239,6 @@ def main():
             if t_du > 0:
                 st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
-            # --- HÀNG RÀO THÉP ---
             can_go = True
             if st.session_state.last_submit:
                 tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
@@ -376,7 +335,7 @@ def main():
                                     time.sleep(1)
                                     st.rerun()
                                 else:
-                                    st.error("Vui lòng nhập đủ SĐT, Mật khẩu và Tên thật nhân viên!")
+                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
                         
                         st.write("---")
                         st.write("**Danh sách nhân sự hiện tại:**")
@@ -393,4 +352,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-                    
