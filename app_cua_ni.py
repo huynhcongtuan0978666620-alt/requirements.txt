@@ -209,7 +209,7 @@ def main():
 
         with tabs[0]:
             # KHU VỰC THÔNG TIN & NÚT THOÁT NHANH CHO NHÂN VIÊN / ADMIN
-            c_info, c_logout = st.columns([3, 1])
+
             with c_info:
                 st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
             with c_logout:
@@ -275,7 +275,11 @@ def main():
                             bay_gio.strftime("%H:%M:%S"), 
                             ghi_chu                       
                         ])
-
+# Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
+            st.divider()
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
                         st.session_state.submitting = False
