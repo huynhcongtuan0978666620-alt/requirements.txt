@@ -7,7 +7,7 @@ import pytz
 import hashlib
 import time
 
-# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 HOÀN HẢO ---
+# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
     layout="centered", 
@@ -17,11 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN CÁC THÀNH PHẦN THỪA KHÔNG CẦN THIẾT */
+        /* ẨN THÀNH PHẦN THỪA */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
-        /* BOX BẢNG HIỆU ĐỈNH CAO KHỚP HOÀN TOÀN */
+        /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
@@ -66,7 +66,7 @@ st.markdown("""
             padding-top: 10px !important; 
         }
         
-        /* CẤU TRÚC TABS MƯỢT MÀ */
+        /* TABS ĐỒNG BỘ */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6;}
         .stTabs [data-baseweb="tab"] p { color: #1a1a1a !important; font-weight: 800 !important; font-size: 17px; text-align: center;}
@@ -91,7 +91,6 @@ def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
 def format_drive_link(link):
-    """ Hàm bẻ gãy mọi cấu trúc link xem trước của Drive thành link trực tiếp """
     if not link or not isinstance(link, str): return ""
     link = link.strip()
     if 'drive.google.com' in link:
@@ -139,7 +138,6 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-    # Lấy link từ Sheet và ép xử lý qua bộ chuyển đổi Direct Link
     raw_logo = settings.get('Logo', '')
     cleaned_logo = format_drive_link(raw_logo)
     
@@ -240,7 +238,7 @@ def main():
                 han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
                 if tg_cho < han_muc:
                     can_go = False
-                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} minutes.")
+                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
 
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
