@@ -119,10 +119,16 @@ def format_drive_link(link):
     if not link or not isinstance(link, str): return ""
     if 'drive.google.com' in link:
         f_id = ""
-        if 'file/d/' in link: f_id = link.split('file/d/')[1].split('/')[0]
-        elif 'id=' in link: f_id = link.split('id=')[1].split('&')[0]
-        if f_id: return f'https://lh3.googleusercontent.com/d/{f_id}'
+        if 'file/d/' in link: 
+            f_id = link.split('file/d/')[1].split('/')[0]
+        elif 'id=' in link: 
+            f_id = link.split('id=')[1].split('&')[0]
+        
+        # --- BÍ KÍP MỚI: DÙNG LINK ĐƯỜNG THẲNG CHUẨN GOOGLE API ---
+        if f_id: 
+            return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
+
 
 def get_gspread_client():
     creds_info = st.secrets["connections"]["gsheets"]
