@@ -124,10 +124,11 @@ def format_drive_link(link):
         elif 'id=' in link: 
             f_id = link.split('id=')[1].split('&')[0]
         
-        # --- BÍ KÍP MỚI: DÙNG LINK ĐƯỜNG THẲNG CHUẨN GOOGLE API ---
+        # --- ÉP TRẢ VỀ LINK ẢNH THÔ CHUẨN GOOGLE API ---
         if f_id: 
             return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
+
 
 
 def get_gspread_client():
@@ -158,7 +159,9 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-    l_url = format_drive_link(settings.get('LogoURL', ''))
+def display_header(settings):
+    # SỬA 'LogoURL' THÀNH 'Logo' ĐỂ KHỚP 100% VỚI SHEET THIETLAP CỦA NÍ
+    l_url = format_drive_link(settings.get('Logo', ''))
     st.markdown(f"""
         <div class="bang-hieu-lktv">
             <img src="{l_url}" class="logo-img">
@@ -168,6 +171,7 @@ def display_header(settings):
             <div class="slogan">{settings.get('Slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
         </div>
     """, unsafe_allow_html=True)
+
 
 # --- 3. HÀM CHÍNH ---
 def main():
