@@ -245,6 +245,10 @@ def main():
                 if tg_cho < han_muc:
                     can_go = False
                     st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
+            with c_logout:
+                if st.button("🚪 THOÁT", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
+                    st.session_state.clear()
+                    st.rerun()
 
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
