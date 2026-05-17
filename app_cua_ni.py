@@ -7,6 +7,7 @@ import pytz
 import hashlib
 import time
 import base64
+import re
 
 # --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
 st.set_page_config(
@@ -18,7 +19,7 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN THÀNH PHẦN THỪA */
+        /* ẨN THÀNH PHẦN THỪA KHÔNG CẦN THIẾT */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
@@ -97,28 +98,33 @@ def get_gspread_client():
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
+def extract_drive_id(link):
+    """ Dùng công nghệ RegEx để quét bóc tách ID tuyệt đối không sai sót lệch chuỗi """
+    if not link or not isinstance(link, str): return ""
+    link = link.strip()
+    
+    # Biểu thức chính quy quét mọi định dạng cấu trúc ID của Google Drive
+    match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link)
+    if match:
+        return match.group(2)
+    
+    # Trường hợp dán chuỗi ID thô sạch hoàn toàn
+    if len(link) >= 33 and '/' not in link and '=' not in link:
+        return link
+    return ""
+
 @st.cache_data(ttl=300)
 def load_drive_image_via_api(drive_link):
-    """ Dùng chính quyền Bot nội bộ để tải ảnh trực tiếp từ API Drive, vượt qua CORS hoàn toàn """
-    if not drive_link or not isinstance(drive_link, str): return ""
-    
-    # Trích xuất File ID từ link
-    f_id = ""
-    if 'file/d/' in drive_link: 
-        f_id = drive_link.split('file/d/')[1].split('/')[0]
-    elif 'id=' in drive_link: 
-        f_id = drive_link.split('id=')[1].split('&')[0]
-    else:
-        f_id = drive_link.strip() # Trường hợp dán mỗi ID thô
-        
+    """ Gọi API nội bộ bằng quyền Bot bốc dỡ dữ liệu ảnh băm sang chuỗi Base64 """
+    f_id = extract_drive_id(drive_link)
     if not f_id: return ""
     
     try:
-        # Tận dụng gspread client để lấy credentials chuẩn của Google Auth
+        # Sử dụng phiên xác thực an toàn từ gspread tài khoản Bot của ní
         client = get_gspread_client()
         auth_session = client.auth.session
         
-        # Gọi trực tiếp API Drive bằng luồng Header đã được xác thực mã hóa
+        # Bắn lệnh gọi trực tiếp tới lõi lưu trữ của Google Drive
         api_url = f"https://www.googleapis.com/drive/v3/files/{f_id}?alt=media"
         response = auth_session.get(api_url, timeout=15)
         
@@ -159,11 +165,11 @@ def get_service_data():
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
     
-    # Dùng hàm API cao cấp để bốc dỡ ảnh qua tài khoản Bot
+    # Nạp ảnh quét ID tuyệt đối bằng API
     base64_logo = load_drive_image_via_api(raw_logo)
     
     if not base64_logo:
-        # Nếu chưa nạp kịp hoặc lỗi, hiển thị một ảnh động loading nhẹ nhàng
+        # Nếu chưa tải kịp, giữ khung tròn bằng một pixel trong suốt để không vỡ CSS
         base64_logo = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
     st.markdown(f"""
