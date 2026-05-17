@@ -32,14 +32,19 @@ st.markdown("""
             box-shadow: 0px 10px 30px rgba(0,0,0,0.4);
             border: 1px solid #ffffff20;
         }
-        .logo-img { 
-            width: 120px; 
-            height: 120px; 
-            object-fit: cover; 
-            border-radius: 50%; 
-            border: 4px solid #f1c40f; 
-            margin-bottom: 12px; 
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .logo-img-style img { 
+            width: 120px !important; 
+            height: 120px !important; 
+            object-fit: cover !important; 
+            border-radius: 50% !important; 
+            border: 4px solid #f1c40f !important; 
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
         }
         .ten-tiem { 
             font-size: 32px; 
@@ -117,6 +122,8 @@ def get_now_vn():
 
 def format_drive_link(link):
     if not link or not isinstance(link, str): return ""
+    # Loại bỏ khoảng trắng thừa thãi trong link nếu có
+    link = link.strip()
     if 'drive.google.com' in link:
         f_id = ""
         if 'file/d/' in link: 
@@ -124,7 +131,7 @@ def format_drive_link(link):
         elif 'id=' in link: 
             f_id = link.split('id=')[1].split('&')[0]
         
-        # --- ÉP TRẢ VỀ LINK ẢNH THÔ CHUẨN GOOGLE API ---
+        # CHUẨN XUẤT ẢNH GỐC KHÔNG QUA TRÌNH DUYỆT ĐỆM
         if f_id: 
             return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
@@ -135,7 +142,7 @@ def get_gspread_client():
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
-@st.cache_data(ttl=10) # Hạ thấp thời gian cache xuống 10 giây để thử nghiệm cho nhanh
+@st.cache_data(ttl=5) # Giảm mạnh cache xuống 5s để cập nhật tức thì
 def get_settings():
     try:
         client = get_gspread_client()
@@ -143,16 +150,16 @@ def get_settings():
         sh = client.open_by_url(url)
         rows = sh.worksheet("ThietLap").get_all_values()
         
-        # Đọc dữ liệu thực tế từ Sheet và làm sạch khoảng trắng từ khóa
-        return {str(row[0]).strip(): row[1] for row in rows if len(row) > 1}
+        # BÍ KÍP QUAN TRỌNG: Quét sạch khoảng trắng của cả Từ khóa (Cột A) và Giá trị (Cột B)
+        return {str(row[0]).strip().lower(): str(row[1]).strip() for row in rows if len(row) > 1}
     except Exception as e:
-        # Nếu lỗi kết nối, vẫn giữ từ khóa 'Logo' mặc định để không bị lỗi vỡ giao diện
         return {
-            "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131 Trần Bình Trọng", 
-            "SDT": "0978.888.888",
-            "Logo": ""
+            "tentiem": "SALON KIM HIỀN", 
+            "diachi": "131 Trần Bình Trọng", 
+            "sdt": "0978.888.888",
+            "logo": ""
         }
+
 @st.cache_data(ttl=60)
 def get_service_data():
     try:
@@ -164,15 +171,23 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-    # SỬA 'LogoURL' THÀNH 'Logo' ĐỂ KHỚP 100% VỚI SHEET THIETLAP CỦA NÍ
-    l_url = format_drive_link(settings.get('Logo', ''))
+    # Tìm kiếm không phân biệt chữ hoa chữ thường nhờ ép .lower() ở hàm nạp dữ liệu
+    l_url = format_drive_link(settings.get('logo', ''))
+    
+    # Bắt đầu dựng giao diện bảng hiệu
+    st.markdown('<div class="bang-hieu-lktv">', unsafe_allow_html=True)
+    
+    # Dùng st.image chính chủ lồng trong khung CSS tròn để đảm bảo hiển thị 100%
+    if l_url:
+        st.markdown('<div class="logo-container-div"><div class="logo-img-style">', unsafe_allow_html=True)
+        st.image(l_url, width=120)
+        st.markdown('</div></div>', unsafe_allow_html=True)
+        
     st.markdown(f"""
-        <div class="bang-hieu-lktv">
-            <img src="{l_url}" class="logo-img">
-            <div class="ten-tiem">{settings.get('TenTiem')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('Diachi')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT')}</div>
-            <div class="slogan">{settings.get('Slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
+            <div class="ten-tiem">{settings.get('tentiem', 'SALON KIM HIỀN')}</div>
+            <div class="thong-tin-phu">📍 {settings.get('diachi', '131 Trần Bình Trọng')}</div>
+            <div class="thong-tin-phu">📞 {settings.get('sdt', '0978.888.888')}</div>
+            <div class="slogan">{settings.get('slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -221,7 +236,6 @@ def main():
                                     break
 
                         if found_user:
-                            # Lấy chuẩn xác tên từ cột 'Tên Nhân Viên'
                             ten_that = found_user.get('Tên Nhân Viên', 'Nhân viên')
                             st.session_state.update({
                                 "logged_in": True, 
@@ -252,7 +266,6 @@ def main():
             dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             
-            # --- CẤY GHÉP: Ô NHẬP GHI CHÚ CHỮ THẬT ---
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
             
             gia_goc = services.get(dv_chon, 0)
@@ -266,7 +279,7 @@ def main():
             if t_du > 0:
                 st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
-            # --- HÀNG RÀO THÉP (CẤM XOÁ) ---
+            # --- HÀNG RÀO THÉP ---
             can_go = True
             if st.session_state.last_submit:
                 tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
@@ -290,18 +303,17 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # --- THỨ TỰ 10 CỘT KHỚP HOÀN HẢO VỚI PHẦN SỬA ĐỔI CỦA NÍ ---
                         ws.append_row([
-                            bay_gio.strftime("%d/%m/%Y"), # 1. Ngày
-                            st.session_state.full_name,   # 2. Nhân viên
-                            kh_ten,                       # 3. Tên khách
-                            kh_sdt,                       # 4. SĐT
-                            dv_chon,                      # 5. Dịch vụ
-                            dv_sl,                        # 6. SL
-                            gia_goc,                      # 7. Đơn giá
-                            t_bill,                       # 8. Thành tiền (Đã thanh toán)
-                            bay_gio.strftime("%H:%M:%S"), # 9. Giờ lưu
-                            ghi_chu                       # 10. Nội dung Ghi chú
+                            bay_gio.strftime("%d/%m/%Y"), 
+                            st.session_state.full_name,   
+                            kh_ten,                       
+                            kh_sdt,                       
+                            dv_chon,                      
+                            dv_sl,                        
+                            gia_goc,                      
+                            t_bill,                       
+                            bay_gio.strftime("%H:%M:%S"), 
+                            ghi_chu                       
                         ])
 
                         st.session_state.last_submit = bay_gio
@@ -351,7 +363,6 @@ def main():
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                         ws_user = sh.worksheet("NhanVien")
                         
-                        # ĐỒNG BỘ 3 CỘT: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên
                         with st.form("add_user_form", clear_on_submit=True):
                             new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
                             new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
@@ -365,7 +376,7 @@ def main():
                                     time.sleep(1)
                                     st.rerun()
                                 else:
-                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
+                                    st.error("Vui lòng nhập đủ SĐT, Mật khẩu và Tên thật nhân viên!")
                         
                         st.write("---")
                         st.write("**Danh sách nhân sự hiện tại:**")
@@ -382,4 +393,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+                    
