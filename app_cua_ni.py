@@ -157,7 +157,6 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-def display_header(settings):
     # SỬA 'LogoURL' THÀNH 'Logo' ĐỂ KHỚP 100% VỚI SHEET THIETLAP CỦA NÍ
     l_url = format_drive_link(settings.get('Logo', ''))
     st.markdown(f"""
