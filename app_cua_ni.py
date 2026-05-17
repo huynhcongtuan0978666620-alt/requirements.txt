@@ -217,7 +217,7 @@ def main():
             
             dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
-            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
+            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             
             gia_goc = services.get(dv_chon, 0)
             t_bill = gia_goc * dv_sl
@@ -241,7 +241,7 @@ def main():
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 LƯU VÀO SHEET", use_container_width=True, type="primary"):
+                    if st.button("🚀 LƯU VÀO", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
