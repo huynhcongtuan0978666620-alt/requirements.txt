@@ -7,7 +7,7 @@ import pytz
 import hashlib
 import time
 
-# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
+# --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 HOÀN HẢO ---
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
     layout="centered", 
@@ -17,52 +17,53 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN CÁC THÀNH PHẦN THỪA */
+        /* ẨN CÁC THÀNH PHẦN THỪA KHÔNG CẦN THIẾT */
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
-        /* BẢNG HIỆU LKTV V25.0 HOÀN HẢO KHỚP 100% */
+        /* BOX BẢNG HIỆU ĐỈNH CAO KHỚP HOÀN TOÀN */
         .bang-hieu-lktv {
             text-align: center;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%);
-            color: white; 
-            padding: 25px; 
-            border-radius: 20px;
-            margin-bottom: 25px; 
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.4);
-            border: 1px solid #ffffff20;
+            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
+            color: white !important; 
+            padding: 25px !important; 
+            border-radius: 20px !important;
+            margin-bottom: 25px !important; 
+            box-shadow: 0px 10px 30px rgba(0,0,0,0.4) !important;
+            border: 1px solid #ffffff20 !important;
         }
         .logo-img { 
-            width: 120px; 
-            height: 120px; 
-            object-fit: cover; 
-            border-radius: 50%; 
-            border: 4px solid #f1c40f; 
-            margin-bottom: 12px; 
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5);
+            width: 120px !important; 
+            height: 120px !important; 
+            object-fit: cover !important; 
+            border-radius: 50% !important; 
+            border: 4px solid #f1c40f !important; 
+            margin: 0 auto 12px auto !important; 
+            display: block !important;
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
         }
         .ten-tiem { 
-            font-size: 32px; 
-            font-weight: 900; 
+            font-size: 32px !important; 
+            font-weight: 900 !important; 
             color: #ffffff !important; 
-            text-transform: uppercase; 
-            margin-bottom: 5px; 
-            letter-spacing: 3px;
+            text-transform: uppercase !important; 
+            margin-bottom: 5px !important; 
+            letter-spacing: 3px !important;
         }
         .thong-tin-phu { 
-            font-size: 16px; 
+            font-size: 16px !important; 
             color: #ecf0f1 !important; 
-            opacity: 0.9; 
-            margin-bottom: 4px; 
+            opacity: 0.9 !important; 
+            margin: 4px 0 !important; 
         }
         .slogan { 
-            font-size: 17px; 
+            font-size: 17px !important; 
             color: #f1c40f !important; 
-            font-weight: 600; 
-            font-style: italic; 
-            margin-top: 15px; 
-            border-top: 1px solid #ffffff20; 
-            padding-top: 10px; 
+            font-weight: 600 !important; 
+            font-style: italic !important; 
+            margin-top: 15px !important; 
+            border-top: 1px solid #ffffff20 !important; 
+            padding-top: 10px !important; 
         }
         
         /* CẤU TRÚC TABS MƯỢT MÀ */
@@ -89,27 +90,41 @@ st.markdown("""
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
+def format_drive_link(link):
+    """ Hàm bẻ gãy mọi cấu trúc link xem trước của Drive thành link trực tiếp """
+    if not link or not isinstance(link, str): return ""
+    link = link.strip()
+    if 'drive.google.com' in link:
+        f_id = ""
+        if 'file/d/' in link: 
+            f_id = link.split('file/d/')[1].split('/')[0]
+        elif 'id=' in link: 
+            f_id = link.split('id=')[1].split('&')[0]
+        
+        if f_id: 
+            return f'https://drive.google.com/uc?export=view&id={f_id}'
+    return link
+
 def get_gspread_client():
     creds_info = st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
 
-@st.cache_data(ttl=10)
+@st.cache_data(ttl=5)
 def get_settings():
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         sh = client.open_by_url(url)
         rows = sh.worksheet("ThietLap").get_all_values()
-        
-        # Trả về từ khóa giữ nguyên cấu trúc chữ của bản 25.0
         return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
     except Exception:
         return {
             "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG", 
-            "SDT": "0978.888.888",
+            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
+            "SDT": "0978888888",
+            "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"",
             "Logo": ""
         }
 
@@ -124,16 +139,17 @@ def get_service_data():
     except: return {}
 
 def display_header(settings):
-    # GỌI ĐÚNG CÁCH GỐC CỦA V25.0: Đọc trực tiếp biến từ Sheet không qua hàm định dạng
-    l_url = settings.get('Logo', '')
+    # Lấy link từ Sheet và ép xử lý qua bộ chuyển đổi Direct Link
+    raw_logo = settings.get('Logo', '')
+    cleaned_logo = format_drive_link(raw_logo)
     
     st.markdown(f"""
         <div class="bang-hieu-lktv">
-            <img src="{l_url}" class="logo-img">
+            <img src="{cleaned_logo}" class="logo-img">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131 Trần Bình Trọng')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0978.888.888')}</div>
-            <div class="slogan">{settings.get('Slogan', 'Đẳng Cấp Chăm Sóc Xe')}</div>
+            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)')}</div>
+            <div class="thong-tin-phu">📞 {settings.get('SDT', '0978888888')}</div>
+            <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
         </div>
     """, unsafe_allow_html=True)
 
@@ -224,7 +240,7 @@ def main():
                 han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
                 if tg_cho < han_muc:
                     can_go = False
-                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
+                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} minutes.")
 
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
