@@ -98,13 +98,12 @@ def get_gspread_client():
     return gspread.authorize(creds)
 
 def format_drive_direct_url(link):
-    """ Chuyển đổi link Drive thành link xuất trực tiếp tốc độ cao, an toàn tuyệt đối cho máy chủ """
+    """ Chuyển đổi link Drive thành link xuất trực tiếp thông minh tốc độ cao """
     if not link or not isinstance(link, str): return ""
     link = link.strip()
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link)
     if match:
         f_id = match.group(2)
-        # Sử dụng API render ảnh trực tiếp của Google, bỏ qua luồng tải nhị phân nặng nề của máy chủ
         return f"https://lh3.googleusercontent.com/d/{f_id}"
     return ""
 
@@ -138,8 +137,6 @@ def get_service_data():
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
     direct_logo_url = format_drive_direct_url(raw_logo)
-    
-    # Ảnh loading dự phòng dạng tròn để không bao giờ bị vỡ giao diện kể cả khi mất mạng
     fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
     st.markdown(f"""
