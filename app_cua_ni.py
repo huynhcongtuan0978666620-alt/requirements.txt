@@ -22,7 +22,7 @@ st.markdown("""
         header, footer, .stAppDeployButton {display: none !important; visibility: hidden !important;}
         [data-testid="stStatusWidget"], [data-testid="stToolbar"] {display: none !important;}
         
-        /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
+        /* BẢNG HIỆU LKTV HOÀF HẢO KHỚP 100% */
         .bang-hieu-lktv {
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
@@ -208,7 +208,15 @@ def main():
         tabs = st.tabs(t_list)
 
         with tabs[0]:
-            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
+            # KHU VỰC THÔNG TIN & NÚT THOÁT NHANH CHO NHÂN VIÊN / ADMIN
+            c_info, c_logout = st.columns([3, 1])
+            with c_info:
+                st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
+            with c_logout:
+                if st.button("🚪 THOÁT", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
+                    st.session_state.clear()
+                    st.rerun()
+                    
             services = get_service_data()
             
             c1, c2 = st.columns(2)
