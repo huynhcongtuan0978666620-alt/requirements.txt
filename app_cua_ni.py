@@ -208,15 +208,8 @@ def main():
         tabs = st.tabs(t_list)
 
         with tabs[0]:
-            # KHU VỰC THÔNG TIN & NÚT THOÁT NHANH CHO NHÂN VIÊN / ADMIN
-
-            with c_info:
-                st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
-            with c_logout:
-
-                if st.button("🚪 THOÁT APP", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
-                    st.session_state.clear()
-                    st.rerun()
+            # THANH THÔNG TIN CA LÀM VIỆC TRẢI DÀI TRÊN ĐẦU TRANG MƯỢT MÀ
+            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
                     
             services = get_service_data()
             
@@ -246,7 +239,6 @@ def main():
                 if tg_cho < han_muc:
                     can_go = False
                     st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
-
 
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
@@ -285,11 +277,13 @@ def main():
                     except Exception as e:
                         st.error(f"Lỗi lưu đơn: {e}")
                         st.session_state.submitting = False
-# Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
+
+            # NÚT THOÁT APP ĐƯỢC CHỐT HẠ Ở ĐÁY TAB NHẬP LIỆU CỰC KỲ AN TOÀN
             st.divider()
-            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
                 st.session_state.clear()
                 st.rerun()
+
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.subheader("📈 DOANH THU THỰC TẾ")
