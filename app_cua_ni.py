@@ -177,7 +177,7 @@ def main():
         display_header(settings)
         with st.form("login_section"):
             st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
-            u = st.text_input("Tài khoản")
+            u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN", use_container_width=True):
             
@@ -196,12 +196,10 @@ def main():
                         
                         found_user = None
                         for row in user_list:
-                            # 1. Lấy dữ liệu từ Sheet và ép về kiểu chữ, xóa sạch khoảng trắng
                             sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
                             sdt_nhap = str(u).strip()
                             
-                            # 2. BÍ KÍP: Cắt hết số 0 ở đầu của cả 2 bên để so sánh phần "ruột"
-                            # Ví dụ: '097' thành '97', '97' vẫn là '97' -> Khớp 100%
+                            # Cắt hết số 0 ở đầu của cả 2 bên để so sánh phần "ruột"
                             if sdt_nhap.lstrip('0') == sdt_sheet.lstrip('0') and sdt_nhap.lstrip('0') != "":
                                 pass_sheet = str(row.get('Mật Khẩu', '')).strip()
                                 
@@ -209,22 +207,21 @@ def main():
                                     found_user = row
                                     break
 
-
-                        
                         if found_user:
-                            # Lấy tên hiển thị từ cột C (Tên Nhân Viên)
-                            ten_that = found_user.get('Tên Nhân Viên','Nhân viên')
+                            # Lấy chuẩn xác tên từ cột 'Tên Nhân Viên'
+                            ten_that = found_user.get('Tên Nhân Viên', 'Nhân viên')
                             st.session_state.update({
                                 "logged_in": True, 
                                 "role": "NhanVien", 
                                 "full_name": ten_that
                             })
                             st.success(f"Chào mừng {ten_that}!")
+                            time.sleep(1)
                             st.rerun()
                         else:
                             st.error("SĐT hoặc Mật khẩu không đúng!")
                     except Exception as e:
-                        st.error(f"Lỗi: {e}")
+                        st.error(f"Lỗi đăng nhập: {e}")
 
     else:
         display_header(settings)
@@ -241,9 +238,9 @@ def main():
             
             dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
-            # --- CẤY GHÉP: Ô NHẬP GHI CHÚ ---
-            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
             
+            # --- CẤY GHÉP: Ô NHẬP GHI CHÚ CHỮ THẬT ---
+            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hẹn quay lại, xe trầy nhẹ...")
             
             gia_goc = services.get(dv_chon, 0)
             t_bill = gia_goc * dv_sl
@@ -280,7 +277,7 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # --- CẬP NHẬT ĐỦ 10 CỘT ĐỂ KHÔNG BỊ LỆCH ---
+                        # --- THỨ TỰ 10 CỘT KHỚP HOÀN HẢO VỚI PHẦN SỬA ĐỔI CỦA NÍ ---
                         ws.append_row([
                             bay_gio.strftime("%d/%m/%Y"), # 1. Ngày
                             st.session_state.full_name,   # 2. Nhân viên
@@ -291,10 +288,9 @@ def main():
                             gia_goc,                      # 7. Đơn giá
                             t_bill,                       # 8. Thành tiền (Đã thanh toán)
                             bay_gio.strftime("%H:%M:%S"), # 9. Giờ lưu
-                            ghi_chu                       # 10. Nội dung Ghi chú thật sự
+                            ghi_chu                       # 10. Nội dung Ghi chú
                         ])
 
-                        
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
                         st.session_state.submitting = False
@@ -302,7 +298,7 @@ def main():
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
-                        st.error(f"Lỗi: {e}")
+                        st.error(f"Lỗi lưu đơn: {e}")
                         st.session_state.submitting = False
 
         if st.session_state["role"] == "Admin":
@@ -342,16 +338,21 @@ def main():
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                         ws_user = sh.worksheet("NhanVien")
                         
+                        # ĐỒNG BỘ 3 CỘT: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên
                         with st.form("add_user_form", clear_on_submit=True):
-                            new_name = st.text_input("Số điện thoại nhân viên")
-                            new_code = st.text_input("Mã đăng nhập (VD: nv01)")
+                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
+                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
+                            new_name = st.text_input("Tên thật nhân viên (Hiển thị khi lên đơn)")
+                            
                             if st.form_submit_button("CẤP MÃ MỚI"):
-                                if new_name and new_code:
-                                    ws_user.append_row([new_name, new_code, "NhanVien"])
-                                    st.success(f"Đã cấp mã cho {new_name}!")
+                                if new_sdt and new_code and new_name:
+                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
+                                    st.success(f"Đã cấp tài khoản thành công cho {new_name}!")
                                     st.cache_data.clear()
+                                    time.sleep(1)
+                                    st.rerun()
                                 else:
-                                    st.error("Vui lòng nhập đủ tên và mã!")
+                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
                         
                         st.write("---")
                         st.write("**Danh sách nhân sự hiện tại:**")
@@ -359,7 +360,7 @@ def main():
                         if user_data:
                             st.table(pd.DataFrame(user_data))
                     except Exception as e:
-                        st.warning("Ní ơi, hãy tạo thêm Sheet tên 'NhanVien' với các cột chuẩn để quản lý nhé!")
+                        st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
                 
                 st.divider()
                 if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
@@ -368,4 +369,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-        
+    
