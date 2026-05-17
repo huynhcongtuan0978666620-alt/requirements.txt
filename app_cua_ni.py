@@ -282,14 +282,14 @@ def main():
                         st.success("🎉 LƯU THÀNH CÔNG!")
                         time.sleep(1)
                         st.rerun()
-                # Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
-                if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
-                    st.session_state.clear()
-                    st.rerun()
                     except Exception as e:
                         st.error(f"Lỗi lưu đơn: {e}")
                         st.session_state.submitting = False
-
+# Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
+            st.divider()
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.subheader("📈 DOANH THU THỰC TẾ")
