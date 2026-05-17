@@ -212,7 +212,6 @@ def main():
             c_info, c_logout = st.columns([3, 1])
             with c_info:
                 st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
-
             with c_logout:
                 st.divider()
                 if st.button("🚪 THOÁT APP", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
