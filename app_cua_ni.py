@@ -6,6 +6,10 @@ from datetime import datetime
 import pytz
 import hashlib
 import time
+import requests
+import io
+import base64
+from PIL import Image
 
 # --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
 st.set_page_config(
@@ -104,6 +108,23 @@ def format_drive_link(link):
             return f'https://drive.google.com/uc?export=view&id={f_id}'
     return link
 
+@st.cache_data(ttl=300)
+def load_image_as_base64(drive_link):
+    """ Tải ảnh từ Drive về server và mã hóa sang Base64 để lọt qua bộ chặn của trình duyệt """
+    cleaned_url = format_drive_link(drive_link)
+    if not cleaned_url:
+        return ""
+    try:
+        # Giả lập User-Agent để tránh bị Google chặn bot tải ảnh
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
+        response = requests.get(cleaned_url, headers=headers, timeout=10)
+        if response.status_code == 200:
+            encoded_string = base64.b64encode(response.content).decode()
+            return f"data:image/png;base64,{encoded_string}"
+    except Exception:
+        pass
+    return ""
+
 def get_gspread_client():
     creds_info = st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
@@ -139,11 +160,17 @@ def get_service_data():
 
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
-    cleaned_logo = format_drive_link(raw_logo)
     
+    # Mã hóa trực tiếp ảnh sang chuỗi nội bộ Base64
+    base64_logo = load_image_as_base64(raw_logo)
+    
+    # Nếu mã hóa thất bại thì dùng ảnh trống tạm thời chứ không để lỗi giao diện
+    if not base64_logo:
+        base64_logo = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+
     st.markdown(f"""
         <div class="bang-hieu-lktv">
-            <img src="{cleaned_logo}" class="logo-img">
+            <img src="{base64_logo}" class="logo-img">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)')}</div>
             <div class="thong-tin-phu">📞 {settings.get('SDT', '0978888888')}</div>
