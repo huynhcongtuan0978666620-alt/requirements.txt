@@ -6,10 +6,7 @@ from datetime import datetime
 import pytz
 import hashlib
 import time
-import requests
-import io
 import base64
-from PIL import Image
 
 # --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
 st.set_page_config(
@@ -94,42 +91,43 @@ st.markdown("""
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
-def format_drive_link(link):
-    if not link or not isinstance(link, str): return ""
-    link = link.strip()
-    if 'drive.google.com' in link:
-        f_id = ""
-        if 'file/d/' in link: 
-            f_id = link.split('file/d/')[1].split('/')[0]
-        elif 'id=' in link: 
-            f_id = link.split('id=')[1].split('&')[0]
-        
-        if f_id: 
-            return f'https://drive.google.com/uc?export=view&id={f_id}'
-    return link
+def get_gspread_client():
+    creds_info = st.secrets["connections"]["gsheets"]
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+    return gspread.authorize(creds)
 
 @st.cache_data(ttl=300)
-def load_image_as_base64(drive_link):
-    """ Tải ảnh từ Drive về server và mã hóa sang Base64 để lọt qua bộ chặn của trình duyệt """
-    cleaned_url = format_drive_link(drive_link)
-    if not cleaned_url:
-        return ""
+def load_drive_image_via_api(drive_link):
+    """ Dùng chính quyền Bot nội bộ để tải ảnh trực tiếp từ API Drive, vượt qua CORS hoàn toàn """
+    if not drive_link or not isinstance(drive_link, str): return ""
+    
+    # Trích xuất File ID từ link
+    f_id = ""
+    if 'file/d/' in drive_link: 
+        f_id = drive_link.split('file/d/')[1].split('/')[0]
+    elif 'id=' in drive_link: 
+        f_id = drive_link.split('id=')[1].split('&')[0]
+    else:
+        f_id = drive_link.strip() # Trường hợp dán mỗi ID thô
+        
+    if not f_id: return ""
+    
     try:
-        # Giả lập User-Agent để tránh bị Google chặn bot tải ảnh
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"}
-        response = requests.get(cleaned_url, headers=headers, timeout=10)
+        # Tận dụng gspread client để lấy credentials chuẩn của Google Auth
+        client = get_gspread_client()
+        auth_session = client.auth.session
+        
+        # Gọi trực tiếp API Drive bằng luồng Header đã được xác thực mã hóa
+        api_url = f"https://www.googleapis.com/drive/v3/files/{f_id}?alt=media"
+        response = auth_session.get(api_url, timeout=15)
+        
         if response.status_code == 200:
             encoded_string = base64.b64encode(response.content).decode()
             return f"data:image/png;base64,{encoded_string}"
     except Exception:
         pass
     return ""
-
-def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-    return gspread.authorize(creds)
 
 @st.cache_data(ttl=5)
 def get_settings():
@@ -161,11 +159,11 @@ def get_service_data():
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
     
-    # Mã hóa trực tiếp ảnh sang chuỗi nội bộ Base64
-    base64_logo = load_image_as_base64(raw_logo)
+    # Dùng hàm API cao cấp để bốc dỡ ảnh qua tài khoản Bot
+    base64_logo = load_drive_image_via_api(raw_logo)
     
-    # Nếu mã hóa thất bại thì dùng ảnh trống tạm thời chứ không để lỗi giao diện
     if not base64_logo:
+        # Nếu chưa nạp kịp hoặc lỗi, hiển thị một ảnh động loading nhẹ nhàng
         base64_logo = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
 
     st.markdown(f"""
