@@ -8,6 +8,7 @@ import hashlib
 import time
 import base64
 import re
+import io
 
 # --- 1. CẤU HÌNH GIAO DIỆN CHUẨN LKTV V25.0 NGUYÊN BẢN ---
 st.set_page_config(
@@ -28,22 +29,30 @@ st.markdown("""
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
             color: white !important; 
-            padding: 25px !important; 
+            padding: 25px 25px 15px 25px !important; 
             border-radius: 20px !important;
             margin-bottom: 25px !important; 
             box-shadow: 0px 10px 30px rgba(0,0,0,0.4) !important;
             border: 1px solid #ffffff20 !important;
         }
-        .logo-img { 
+        
+        /* CANH GIỮA VÙNG CHỨA LOGO CHÍNH CHỦ ST.IMAGE */
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px !important;
+        }
+        /* BO TRÒN VÀ TẠO VIỀN VÀNG KHỚP 100% STYLE CŨ */
+        .logo-container img { 
             width: 120px !important; 
             height: 120px !important; 
             object-fit: cover !important; 
             border-radius: 50% !important; 
             border: 4px solid #f1c40f !important; 
-            margin: 0 auto 12px auto !important; 
-            display: block !important;
             box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
         }
+        
         .ten-tiem { 
             font-size: 32px !important; 
             font-weight: 900 !important; 
@@ -51,12 +60,14 @@ st.markdown("""
             text-transform: uppercase !important; 
             margin-bottom: 5px !important; 
             letter-spacing: 3px !important;
+            text-align: center;
         }
         .thong-tin-phu { 
             font-size: 16px !important; 
             color: #ecf0f1 !important; 
             opacity: 0.9 !important; 
             margin: 4px 0 !important; 
+            text-align: center;
         }
         .slogan { 
             font-size: 17px !important; 
@@ -66,6 +77,7 @@ st.markdown("""
             margin-top: 15px !important; 
             border-top: 1px solid #ffffff20 !important; 
             padding-top: 10px !important; 
+            text-align: center;
         }
         
         /* TABS ĐỒNG BỘ */
@@ -99,41 +111,28 @@ def get_gspread_client():
     return gspread.authorize(creds)
 
 def extract_drive_id(link):
-    """ Dùng công nghệ RegEx để quét bóc tách ID tuyệt đối không sai sót lệch chuỗi """
     if not link or not isinstance(link, str): return ""
     link = link.strip()
-    
-    # Biểu thức chính quy quét mọi định dạng cấu trúc ID của Google Drive
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link)
-    if match:
-        return match.group(2)
-    
-    # Trường hợp dán chuỗi ID thô sạch hoàn toàn
-    if len(link) >= 33 and '/' not in link and '=' not in link:
-        return link
+    if match: return match.group(2)
+    if len(link) >= 33 and '/' not in link and '=' not in link: return link
     return ""
 
-@st.cache_data(ttl=300)
-def load_drive_image_via_api(drive_link):
-    """ Gọi API nội bộ bằng quyền Bot bốc dỡ dữ liệu ảnh băm sang chuỗi Base64 """
+@st.cache_data(ttl=600)
+def load_drive_image_bytes(drive_link):
+    """ Tải ảnh từ API Drive bằng quyền Bot về dạng chuỗi Bytes thô an toàn tuyệt đối """
     f_id = extract_drive_id(drive_link)
-    if not f_id: return ""
-    
+    if not f_id: return None
     try:
-        # Sử dụng phiên xác thực an toàn từ gspread tài khoản Bot của ní
         client = get_gspread_client()
         auth_session = client.auth.session
-        
-        # Bắn lệnh gọi trực tiếp tới lõi lưu trữ của Google Drive
         api_url = f"https://www.googleapis.com/drive/v3/files/{f_id}?alt=media"
         response = auth_session.get(api_url, timeout=15)
-        
         if response.status_code == 200:
-            encoded_string = base64.b64encode(response.content).decode()
-            return f"data:image/png;base64,{encoded_string}"
+            return response.content
     except Exception:
         pass
-    return ""
+    return None
 
 @st.cache_data(ttl=5)
 def get_settings():
@@ -164,17 +163,21 @@ def get_service_data():
 
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
+    img_bytes = load_drive_image_bytes(raw_logo)
     
-    # Nạp ảnh quét ID tuyệt đối bằng API
-    base64_logo = load_drive_image_via_api(raw_logo)
+    # BẮT ĐẦU DỰNG KHUNG BẢNG HIỆU LKTV
+    st.markdown('<div class="bang-hieu-lktv">', unsafe_allow_html=True)
     
-    if not base64_logo:
-        # Nếu chưa tải kịp, giữ khung tròn bằng một pixel trong suốt để không vỡ CSS
-        base64_logo = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-
+    # Nút thắt tối cao: Sử dụng hàm st.image chính chủ của Streamlit để vượt qua rào cản CSP
+    if img_bytes:
+        st.markdown('<div class="logo-container">', unsafe_allow_html=True)
+        st.image(io.BytesIO(img_bytes), width=120)
+        st.markdown('</div>', unsafe_allow_html=True)
+    else:
+        # Nếu chưa nạp được ảnh, chừa khoảng trống nhỏ cho cân đối bảng hiệu
+        st.markdown('<div style="height:10px;"></div>', unsafe_allow_html=True)
+        
     st.markdown(f"""
-        <div class="bang-hieu-lktv">
-            <img src="{base64_logo}" class="logo-img">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)')}</div>
             <div class="thong-tin-phu">📞 {settings.get('SDT', '0978888888')}</div>
@@ -280,99 +283,4 @@ def main():
                             st.rerun()
                         else: st.error("Chưa tích xác nhận!")
                 else:
-                    st.button("⚙️ ĐANG XỬ LÝ...", disabled=True, use_container_width=True)
-                    try:
-                        cl = get_gspread_client()
-                        ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
-                        bay_gio = get_now_vn()
-                        
-                        ws.append_row([
-                            bay_gio.strftime("%d/%m/%Y"), 
-                            st.session_state.full_name,   
-                            kh_ten,                       
-                            kh_sdt,                       
-                            dv_chon,                      
-                            dv_sl,                        
-                            gia_goc,                      
-                            t_bill,                       
-                            bay_gio.strftime("%H:%M:%S"), 
-                            ghi_chu                       
-                        ])
-
-                        st.session_state.last_submit = bay_gio
-                        st.session_state.submit_count += 1
-                        st.session_state.submitting = False
-                        st.success("🎉 LƯU THÀNH CÔNG!")
-                        time.sleep(1)
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Lỗi lưu đơn: {e}")
-                        st.session_state.submitting = False
-
-        if st.session_state["role"] == "Admin":
-            with tabs[1]:
-                st.subheader("📈 DOANH THU THỰC TẾ")
-                try:
-                    cl = get_gspread_client()
-                    ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
-                    du_lieu = ws_bc.get_all_records()
-                    if du_lieu:
-                        df_bc = pd.DataFrame(du_lieu)
-                        st.dataframe(df_bc.tail(50), use_container_width=True)
-                        ngay_nay = get_now_vn().strftime("%d/%m/%Y")
-                        df_h = df_bc[df_bc['Ngày'] == ngay_nay]
-                        
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f}")
-                        c2.metric("SỐ ĐƠN", len(df_h))
-                        c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
-                    else: st.info("Trống.")
-                except Exception as e: st.error(f"Lỗi báo cáo: {e}")
-
-            with tabs[2]:
-                st.subheader("⚙️ QUẢN TRỊ")
-                with st.expander("🔗 LIÊN KẾT SHEET"):
-                    st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
-                
-                if st.button("🧹 CLEAR CACHE"):
-                    st.cache_data.clear()
-                    st.rerun()
-                
-                st.divider()
-                st.markdown("### 👥 QUẢN LÝ NHÂN SỰ")
-                with st.expander("🎫 Tạo/Xem mã nhân viên"):
-                    try:
-                        cl = get_gspread_client()
-                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        ws_user = sh.worksheet("NhanVien")
-                        
-                        with st.form("add_user_form", clear_on_submit=True):
-                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
-                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
-                            new_name = st.text_input("Tên thật nhân viên (Hiển thị khi lên đơn)")
-                            
-                            if st.form_submit_button("CẤP MÃ MỚI"):
-                                if new_sdt and new_code and new_name:
-                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
-                                    st.success(f"Đã cấp tài khoản thành công cho {new_name}!")
-                                    st.cache_data.clear()
-                                    time.sleep(1)
-                                    st.rerun()
-                                else:
-                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
-                        
-                        st.write("---")
-                        st.write("**Danh sách nhân sự hiện tại:**")
-                        user_data = ws_user.get_all_records()
-                        if user_data:
-                            st.table(pd.DataFrame(user_data))
-                    except Exception as e:
-                        st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
-                
-                st.divider()
-                if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
-                    st.session_state.clear()
-                    st.rerun()
-
-if __name__ == "__main__":
-    main()
+                    st
