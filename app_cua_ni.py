@@ -275,7 +275,7 @@ def main():
                             bay_gio.strftime("%H:%M:%S"), 
                             ghi_chu                       
                         ])
-# Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
+            # Đưa xuống đáy Tab Nhập liệu, cách ra một đoạn bằng divider
             st.divider()
             if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
                 st.session_state.clear()
