@@ -25,24 +25,29 @@ st.markdown("""
         .bang-hieu-container {
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
-            padding: 30px 20px !important; 
+            padding: 25px 20px 30px 20px !important; 
             border-radius: 20px !important;
             margin-bottom: 25px !important; 
             box-shadow: 0px 10px 30px rgba(0,0,0,0.5) !important;
             border: 1px solid #ffffff20 !important;
-            display: block !important;
         }
         
-        /* ÉP LOGO TRÒN GIỮA KHUNG BẤT CHẤP THIẾT BỊ */
-        .logo-tron {
+        /* KHUNG CHỨA LOGO CHÍNH CHỦ STREAMLIT */
+        .logo-wrapper {
+            display: flex !important;
+            justify-content: center !important;
+            align-items: center !important;
+            margin-bottom: 15px !important;
+        }
+        
+        /* CẤU HÌNH BIẾN ẢNH CHÍNH CHỦ THÀNH TRÒN VÀNG */
+        .logo-wrapper data-testid="stImage" img, .logo-wrapper img {
             width: 120px !important;
             height: 120px !important;
             border-radius: 50% !important;
             border: 4px solid #f1c40f !important;
             box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important;
             object-fit: cover !important;
-            margin: 0 auto 15px auto !important;
-            display: block !important;
         }
         
         /* ÉP CHỮ MÀU TRẮNG SÁNG, KHÔNG BỊ CHÌM VÀO NỀN LIGHT MODE */
@@ -145,12 +150,15 @@ def get_service_data():
 def display_header(settings):
     l_url = format_drive_link(settings.get('logo', ''))
     
-    # KHÓA TOÀN BỘ LOGO VÀ BẢNG HIỆU VÀO TRONG HTML THUẦN ĐỂ KHÔNG BỊ LỖI PHÂN RÃ
-    logo_html = f'<img src="{l_url}" class="logo-tron">' if l_url else ''
+    # TÁCH RIÊNG LOGO RA KHỎI HTML - SỬ DỤNG LỆNH ST.IMAGE CHÍNH CHỦ
+    if l_url:
+        st.markdown('<div class="logo-wrapper">', unsafe_allow_html=True)
+        st.image(l_url, width=120)
+        st.markdown('</div>', unsafe_allow_html=True)
     
+    # PHẦN THÔNG TIN BẢNG HIỆU
     st.markdown(f"""
-        <div class="bang-hieu-container">
-            {logo_html}
+        <div class="bang-hieu-container" style="margin-top: -25px;">
             <div class="ten-tiem-st">{settings.get('tentiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-st">📍 {settings.get('diachi', '131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)')}</div>
             <div class="thong-tin-st">📞 {settings.get('sdt', '0978888888')}</div>
@@ -335,7 +343,7 @@ def main():
                                     time.sleep(1)
                                     st.rerun()
                                 else:
-                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
+                                    st.error("Vui lòng nhập đủ SĐT, Mật khẩu và Tên thật nhân viên!")
                         
                         st.write("---")
                         st.write("**Danh sách nhân sự hiện tại:**")
