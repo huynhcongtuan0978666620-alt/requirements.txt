@@ -351,7 +351,7 @@ def main():
                         st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
                 
                 st.divider()
-                if st.button("🚪 ĐĂNG XUẤT", use_container_width=True):
+                if st.button("🚪 THOÁT RA", use_container_width=True):
                     st.session_state.clear()
                     st.rerun()
 
