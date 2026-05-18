@@ -17,11 +17,14 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ========================================================= */
-        /* 🎨 HỘP CLONE MANAGE APP - SỬA LỖI ĐỒNG SIZE TUYỆT ĐỐI V6    */
-        /* ========================================================= */
+import streamlit as st
 
-        /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
+# =========================================================
+# 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
+# =========================================================
+st.markdown("""
+    <style>
+        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
         header, footer, .stAppDeployButton {
             display: none !important;
             visibility: hidden !important;
@@ -37,44 +40,108 @@ st.markdown("""
             padding: 0 !important;
         }
 
-        /* 3. ĐỒNG BỘ SIZE THEO TỌA ĐỘ SÁT ĐÁY (FIX HỦT CHIỀU CAO) */
-        body::after {
-            content: "KIM HIỀN SALON  >" !important;
+        /* 3. THIẾT KẾ NÚT BẤM SAO Y BẢN CHÍNH (ĐỒNG SIZE TUYỆT ĐỐI) */
+        .clone-manage-btn {
             position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
             
-            /* 💥 TUYỆT CHIÊU: KHÓA CHẶT ĐỈNH VÀ ĐÁY THEO KHUNG HỆ THỐNG GỐC */
-            bottom: 0 !important;       
-            top: auto !important;
-            height: auto !important;    /* Tháo bỏ chiều cao cố định cũ */
+            /* Đồng bộ tọa độ cao và khoảng đệm chân viền khít rịt theo bản V6 */
+            height: auto !important;
+            padding-top: 10px !important;
+            padding-bottom: 12px !important;
+            width: calc(100% - 150px) !important;
             
-            /* Đồng bộ khoảng cách đệm từ chân màn hình lên y hệt thanh gốc */
-            padding-top: 10px !important;    
-            padding-bottom: 12px !important; /* Tràn khít mép dưới điện thoại */
+            /* Thiết kế màu sắc, font chữ giống hệt thanh bên phải */
+            background-color: #131824 !important;
+            color: #e0e0e0 !important;
+            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
+            font-size: 14px !important;
+            font-weight: 400 !important;
+            border-top-right-radius: 4px !important;
             
-            left: 0 !important;         /* Ghim góc trái */
-            width: calc(100% - 150px) !important; /* Chừa đúng khoảng cho Manage app */
-            
-            /* Màu nền và bo góc chuẩn chỉ */
-            background-color: #131824 !important; 
-            border-top-right-radius: 4px !important; 
-            
-            /* Phông chữ, cỡ chữ, màu sắc đồng điệu 100% */
-            color: #e0e0e0 !important;   
-            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important; 
-            font-size: 14px !important;  
-            font-weight: 400 !important; 
-            
-            /* Canh chữ nằm ngay ngắn giữa hộp */
+            /* Căn giữa chữ và biến con trỏ thành dạng click bấm */
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
-            box-sizing: border-box !important;
+            cursor: pointer !important;
+            user-select: none !important;
             
             border: none !important;
             box-shadow: none !important;
-            
             z-index: 9999 !important;
+            -webkit-tap-highlight-color: transparent; /* Xóa viền xanh khi chạm trên điện thoại */
         }
+
+        /* 4. ĐỊNH HÌNH HẠT PHÁO HOA BAY LÊN */
+        .firework-particle {
+            position: fixed !important;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            pointer-events: none !important;
+            z-index: 10000 !important;
+            animation: explode 0.8s ease-out forwards;
+        }
+
+        @keyframes explode {
+            0% {
+                transform: translate(0, 0) scale(1);
+                opacity: 1;
+            }
+            100% {
+                /* Pháo hoa bung tỏa rộng ra xung quanh tầm nhìn */
+                transform: translate(var(--x), var(--y)) scale(0.2);
+                opacity: 0;
+            }
+        }
+    </style>
+
+    <div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN SALON &nbsp;&nbsp;&gt;</div>
+
+    <script>
+        function createFirework(e) {
+            // Xác định tâm nổ ngay vị trí ngón tay thợ vừa ấn vào nút
+            const clickX = e.clientX;
+            const clickY = e.clientY;
+            
+            // Bắn ra 40 hạt pháo hoa đa sắc màu rực rỡ
+            const particleCount = 40;
+            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                
+                // Chọn màu ngẫu nhiên cho từng hạt pháo
+                const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.backgroundColor = randomColor;
+                
+                // Định vị hạt pháo xuất phát từ điểm chạm
+                particle.style.left = clickX + 'px';
+                particle.style.top = clickY + 'px';
+                
+                // Tính toán góc nổ và lực bay ngẫu nhiên 360 độ góc tròn
+                const angle = Math.random() * Math.PI * 2;
+                const velocity = Math.random() * 120 + 40; 
+                const x = Math.cos(angle) * velocity;
+                const y = Math.sin(angle) * velocity;
+                
+                // Truyền tọa độ đích vào biến CSS để chạy mượt mà
+                particle.style.setProperty('--x', x + 'px');
+                particle.style.setProperty('--y', y + 'px');
+                
+                document.body.appendChild(particle);
+                
+                // Tự động dọn dẹp hạt pháo sau khi nổ xong để nhẹ máy, mượt app
+                setTimeout(() => {
+                    particle.remove();
+                }, 800);
+            }
+        }
+    </script>
+""", unsafe_allow_html=True)
+
 
 
 
