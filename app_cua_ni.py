@@ -99,7 +99,7 @@ st.markdown("""
             100% {transform: scale(1);} 
         }
 
-        /* THIẾT KẾ PHÔI HOÁ ĐƠN ĐIỆN TỬ LKTV */
+        /* THIẾT KẾ PHÔI HOÁ ĐƠN ĐIỆN TỬ LKTV CỔ ĐIỂN */
         .hoa-don-khung {
             background-color: #ffffff !important; color: #000000 !important; padding: 25px !important;
             border-radius: 10px !important; border: 2px solid #ddd !important; font-family: 'Courier New', Courier, monospace !important;
@@ -112,7 +112,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# --- 2. HÀM HỆ THỐNG ---
+# --- 2. HÀM HỆ THỐNG ĐỒNG BỘ ---
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
@@ -147,7 +147,9 @@ def get_settings():
             "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"",
             "Logo": ""
         }
-
+        # =====================================================================
+# 👉 ĐOẠN 2 BẮT ĐẦU TỪ ĐÂY (DÁN SÁT LỀ TRÁI, NỐI TIẾP NGAY DƯỚI ĐOẠN 1)
+# =====================================================================
 @st.cache_data(ttl=60)
 def get_service_data():
     try:
@@ -198,7 +200,6 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
-# --- 3. HÀM CHÍNH ---
 def main():
     if "last_submit" not in st.session_state: st.session_state.last_submit = None
     if "submit_count" not in st.session_state: st.session_state.submit_count = 0
@@ -206,7 +207,6 @@ def main():
     if "logged_in" not in st.session_state:
         st.session_state.update({"logged_in": False, "role": None, "full_name": None})
     
-    # Khởi tạo giỏ hàng động và bộ lưu trữ hóa đơn vừa in
     if "gio_hang" not in st.session_state: st.session_state.gio_hang = []
     if "bill_vua_in" not in st.session_state: st.session_state.bill_vua_in = None
 
@@ -301,8 +301,11 @@ def main():
                             "tiem_cong_tho": t_cong_tho_item
                         })
                         st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
-                        st.session_state.bill_vua_in = None # Reset hóa đơn cũ khi có đơn mới
-            
+                        st.session_state.bill_vua_in = None
+                        
+            # =====================================================================
+# 👉 ĐOẠN 3 BẮT ĐẦU TỪ ĐÂY (DÁN SÁT LỀ TRÁI, NỐI TIẾP NGAY DƯỚI ĐOẠN 2)
+# =====================================================================
             t_bill = 0.0
             t_cong_tho = 0.0
             
@@ -385,7 +388,6 @@ def main():
                         
                         ws.append_rows(rows_to_append)
 
-                        # TẠO PHÔI HOÁ ĐƠN ĐỂ XUẤT RA ẢNH TRÊN MÀN HÌNH
                         html_items = ""
                         for idx, item in enumerate(st.session_state.gio_hang):
                             html_items += f"""
@@ -404,8 +406,63 @@ def main():
                                 <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                             </div>
                             <div style="border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
-                                <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span
-        with tabs[2]:
+                                <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
+                                <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
+                            </div>
+                            <div class="hd-items">{html_items}</div>
+                            <div style="font-size: 14px; font-weight: bold;">
+                                <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
+                                <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
+                                <div class="hd-row" style="color: green;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #000; padding-top: 10px;">
+                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> 🙏 Xin cảm ơn và hẹn gặp lại quý khách! 🙏
+                            </div>
+                        </div>"""
+
+                        st.session_state.gio_hang = []
+                        st.session_state.last_submit = bay_gio
+                        st.session_state.submit_count += 1
+                        st.session_state.submitting = False
+                        st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ PHÍA DƯỚI!")
+                        time.sleep(0.5)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Lỗi lưu đơn: {e}")
+                        st.session_state.submitting = False
+
+            if st.session_state.bill_vua_in:
+                st.markdown("---")
+                st.markdown("### 📸 HOÁ ĐƠN ĐIỆN TỬ VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+
+            st.divider()
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
+
+        if st.session_state["role"] == "Admin":
+            with tabs[1]:
+                st.subheader("📈 DOANH THU THỰC TẾ")
+                try:
+                    cl = get_gspread_client()
+                    ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                    du_lieu = ws_bc.get_all_records()
+                    if du_lieu:
+                        df_bc = pd.DataFrame(du_lieu)
+                        st.dataframe(df_bc.tail(50), use_container_width=True)
+                        ngay_nay = get_now_vn().strftime("%d/%m/%Y")
+                        df_h = df_bc[df_bc['Ngày'] == ngay_nay]
+                        
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f}")
+                        c2.metric("SỐ ĐƠN", len(df_h))
+                        c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
+                    else: st.info("Trống.")
+                except Exception as e: st.error(f"Lỗi báo cáo: {e}")
+
+            with tabs[2]:
                 st.subheader("⚙️ QUẢN TRỊ")
                 with st.expander("🔗 LIÊN KẾT SHEET"):
                     st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
@@ -453,3 +510,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
