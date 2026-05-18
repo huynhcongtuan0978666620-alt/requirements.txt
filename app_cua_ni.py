@@ -146,7 +146,7 @@ def get_service_data():
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
                     try:
-                        # Làm sạch chuỗi %, biến đổi dấu phẩy của Việt Nam thành dấu chấm thập phân
+                        # Làm sạch chuỗi %, biến đổi dấu phẩy thành dấu chấm thập phân
                         raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
                         hoa_hong = float(raw_hh)
                         # Nếu người dùng nhập dạng phần trăm Excel (ví dụ 0.2 tương ứng 20%)
@@ -155,13 +155,13 @@ def get_service_data():
                     except:
                         hoa_hong = 0.0
                 
-                # Đóng gói dữ liệu dạng Nested Dictionary (Từ điển lồng nhau)
+                # Đóng gói dữ liệu dạng Nested Dictionary
                 danh_sach_dv[ten_dv] = {
                     "gia": gia_goc,
                     "hoa_hong": hoa_hong
                 }
         return danh_sach_dv
-    exceptException as e: 
+    except Exception as e: 
         return {}
 
 def display_header(settings):
@@ -242,12 +242,13 @@ def main():
                     
             services = get_service_data()
             
+            # Đọc danh sách khóa (Tên dịch vụ) từ cấu trúc dữ liệu mới
+            dv_list = list(services.keys())
+            
             c1, c2 = st.columns(2)
             with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("SĐT")
             
-            # Đọc danh sách khóa (Tên dịch vụ) từ cấu trúc dữ liệu mới
-            dv_list = list(services.keys())
             dv_chon = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
@@ -383,4 +384,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-                
+    
