@@ -22,7 +22,7 @@ import streamlit as st
 # =========================================================
     st.markdown("""
 <style>
-/* 1. AN THANH PHAN THUA HE THONG */
+/* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
 header, footer, .stAppDeployButton {
     display: none !important;
     visibility: hidden !important;
@@ -31,14 +31,14 @@ header, footer, .stAppDeployButton {
     display: none !important;
 }
 
-/* 2. DAM BAO KHONG GIAN FULL MAN HINH */
+/* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
 html, body, .stApp {
     height: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
 }
 
-/* 3. THIET KE NUT BAM CLONE MANAGE APP (DONG SIZE TUYET DOI) */
+/* 3. THIẾT KẾ NÚT BẤM CLONE MANAGE APP (ĐỒNG SIZE TUYỆT ĐỐI V7) */
 .clone-manage-btn {
     position: fixed !important;
     bottom: 0 !important;
@@ -64,7 +64,7 @@ html, body, .stApp {
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 4. HIEU UNG HAT PHAO HOA */
+/* 4. HIỆU ỨNG HẠT PHÁO HOA */
 .firework-particle {
     position: fixed !important;
     width: 6px;
@@ -103,7 +103,7 @@ function createFirework(e) {
     }
 }
 </script>
-""", unsafe_allow_html=True)
+    """, unsafe_allow_html=True)
 
 
         /* TABS ĐỒNG BỘ */
