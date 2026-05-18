@@ -21,124 +21,90 @@ import streamlit as st
 # 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
 # =========================================================
 st.markdown("""
-    <style>
-        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
-        header, footer, .stAppDeployButton {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
-            display: none !important;
-        }
+<style>
+/* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
+header, footer, .stAppDeployButton {
+    display: none !important;
+    visibility: hidden !important;
+}
+[data-testid="stStatusWidget"], [data-testid="stToolbar"] {
+    display: none !important;
+}
 
-        /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
-        html, body, .stApp {
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
+/* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
+html, body, .stApp {
+    height: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
 
-        /* 3. THIẾT KẾ NÚT BẤM SAO Y BẢN CHÍNH (ĐỒNG SIZE TUYỆT ĐỐI) */
-        .clone-manage-btn {
-            position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
-            
-            /* Đồng bộ tọa độ cao và khoảng đệm chân viền khít rịt theo bản V6 */
-            height: auto !important;
-            padding-top: 10px !important;
-            padding-bottom: 12px !important;
-            width: calc(100% - 150px) !important;
-            
-            /* Thiết kế màu sắc, font chữ giống hệt thanh bên phải */
-            background-color: #131824 !important;
-            color: #e0e0e0 !important;
-            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
-            font-size: 14px !important;
-            font-weight: 400 !important;
-            border-top-right-radius: 4px !important;
-            
-            /* Căn giữa chữ và biến con trỏ thành dạng click bấm */
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            cursor: pointer !important;
-            user-select: none !important;
-            
-            border: none !important;
-            box-shadow: none !important;
-            z-index: 9999 !important;
-            -webkit-tap-highlight-color: transparent; /* Xóa viền xanh khi chạm trên điện thoại */
-        }
+/* 3. THIẾT KẾ NÚT BẤM CLONE MANAGE APP */
+.clone-manage-btn {
+    position: fixed !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    height: auto !important;
+    padding-top: 10px !important;
+    padding-bottom: 12px !important;
+    width: calc(100% - 150px) !important;
+    background-color: #131824 !important;
+    color: #e0e0e0 !important;
+    font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 400 !important;
+    border-top-right-radius: 4px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    z-index: 9999 !important;
+    -webkit-tap-highlight-color: transparent;
+}
 
-        /* 4. ĐỊNH HÌNH HẠT PHÁO HOA BAY LÊN */
-        .firework-particle {
-            position: fixed !important;
-            width: 6px;
-            height: 6px;
-            border-radius: 50%;
-            pointer-events: none !important;
-            z-index: 10000 !important;
-            animation: explode 0.8s ease-out forwards;
-        }
+/* 4. HIỆU ỨNG HẠT PHÁO HOA */
+.firework-particle {
+    position: fixed !important;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none !important;
+    z-index: 10000 !important;
+    animation: explode 0.8s ease-out forwards;
+}
+@keyframes explode {
+    0% { transform: translate(0, 0) scale(1); opacity: 1; }
+    100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; }
+}
+</style>
 
-        @keyframes explode {
-            0% {
-                transform: translate(0, 0) scale(1);
-                opacity: 1;
-            }
-            100% {
-                /* Pháo hoa bung tỏa rộng ra xung quanh tầm nhìn */
-                transform: translate(var(--x), var(--y)) scale(0.2);
-                opacity: 0;
-            }
-        }
-    </style>
+<div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN SALON &nbsp;&nbsp;&gt;</div>
 
-    <div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN SALON &nbsp;&nbsp;&gt;</div>
-
-    <script>
-        function createFirework(e) {
-            // Xác định tâm nổ ngay vị trí ngón tay thợ vừa ấn vào nút
-            const clickX = e.clientX;
-            const clickY = e.clientY;
-            
-            // Bắn ra 40 hạt pháo hoa đa sắc màu rực rỡ
-            const particleCount = 40;
-            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
-
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                
-                // Chọn màu ngẫu nhiên cho từng hạt pháo
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.backgroundColor = randomColor;
-                
-                // Định vị hạt pháo xuất phát từ điểm chạm
-                particle.style.left = clickX + 'px';
-                particle.style.top = clickY + 'px';
-                
-                // Tính toán góc nổ và lực bay ngẫu nhiên 360 độ góc tròn
-                const angle = Math.random() * Math.PI * 2;
-                const velocity = Math.random() * 120 + 40; 
-                const x = Math.cos(angle) * velocity;
-                const y = Math.sin(angle) * velocity;
-                
-                // Truyền tọa độ đích vào biến CSS để chạy mượt mà
-                particle.style.setProperty('--x', x + 'px');
-                particle.style.setProperty('--y', y + 'px');
-                
-                document.body.appendChild(particle);
-                
-                // Tự động dọn dẹp hạt pháo sau khi nổ xong để nhẹ máy, mượt app
-                setTimeout(() => {
-                    particle.remove();
-                }, 800);
-            }
-        }
-    </script>
+<script>
+function createFirework(e) {
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const particleCount = 40;
+    const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = clickX + 'px';
+        particle.style.top = clickY + 'px';
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 120 + 40; 
+        particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
+        particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
+        document.body.appendChild(particle);
+        setTimeout(() => { particle.remove(); }, 800);
+    }
+}
+</script>
 """, unsafe_allow_html=True)
+
 
 
 
