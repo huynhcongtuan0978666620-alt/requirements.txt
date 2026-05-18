@@ -101,13 +101,29 @@ st.markdown("""
 
         /* THIẾT KẾ PHÔI HOÁ ĐƠN ĐIỆN TỬ LKTV CỔ ĐIỂN */
         .hoa-don-khung {
-            background-color: #ffffff !important; color: #000000 !important; padding: 25px !important;
-            border-radius: 10px !important; border: 2px solid #ddd !important; font-family: 'Courier New', Courier, monospace !important;
+            background-color: #ffffff !important; color: #000000 !important; padding: 22px !important;
+            border-radius: 12px !important; border: 2px solid #ccc !important; font-family: 'monospace', 'Courier New', Courier !important;
             box-shadow: 0px 4px 15px rgba(0,0,0,0.1) !important; margin-top: 20px !important;
         }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
-        .hd-row { display: flex; justify-content: space-between; margin-bottom: 6px; font-size: 14px; }
+        
+        /* CẤU TRÚC ĐÒNG BỘ ÉP CHẶT 1 HÀNG KHÔNG CHO XUỐNG DÒNG */
+        .hd-row { 
+            display: flex !important; 
+            justify-content: space-between !important; 
+            align-items: center !important;
+            margin-bottom: 8px !important; 
+            font-size: 13px !important; 
+            white-space: nowrap !important; 
+            overflow: hidden !important;
+            width: 100% !important;
+        }
+        .hd-row span:first-child {
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
+            padding-right: 5px !important;
+        }
         .hd-items { border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
     </style>
 """, unsafe_allow_html=True)
@@ -204,6 +220,7 @@ def main():
     if "last_submit" not in st.session_state: st.session_state.last_submit = None
     if "submit_count" not in st.session_state: st.session_state.submit_count = 0
     if "submitting" not in st.session_state: st.session_state.submitting = False
+    if "adding_cart" not in st.session_state: st.session_state.adding_cart = False
     if "logged_in" not in st.session_state:
         st.session_state.update({"logged_in": False, "role": None, "full_name": None})
     
@@ -273,37 +290,44 @@ def main():
             box_chon_dv = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
             box_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
-            if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
-                if box_sl <= 0:
-                    st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
-                else:
-                    da_co = False
-                    for item in st.session_state.gio_hang:
-                        if item["dich_vu"] == box_chon_dv:
-                            da_co = True
-                            break
-                    
-                    if da_co:
-                        st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã có trong giỏ đơn này rồi ní ơi! Không thể thêm trùng lặp. Nếu muốn thay đổi số lượng, hãy bấm nút 'Xóa' ở danh sách phía dưới và chọn thêm lại nhé!")
+            if st.session_state.adding_cart:
+                st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
+            else:
+                if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                    if box_sl <= 0:
+                        st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
                     else:
-                        info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                        gia_goc = info_dv.get("gia", 0.0)
-                        phan_tram_hh = info_dv.get("hoa_hong", 0.0)
-                        t_bill_item = gia_goc * box_sl
-                        t_cong_tho_item = t_bill_item * (phan_tram_hh / 100.0)
+                        st.session_state.adding_cart = True
+                        da_co = False
+                        for item in st.session_state.gio_hang:
+                            if item["dich_vu"] == box_chon_dv:
+                                da_co = True
+                                break
                         
-                        st.session_state.gio_hang.append({
-                            "dich_vu": box_chon_dv,
-                            "so_luong": box_sl,
-                            "don_gia": gia_goc,
-                            "thanh_tien": t_bill_item,
-                            "phan_tram_hh": phan_tram_hh,
-                            "tiem_cong_tho": t_cong_tho_item
-                        })
-                        st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
-                        st.session_state.bill_vua_in = None
-                        
-            # =====================================================================
+                        if da_co:
+                            st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã có trong giỏ đơn này rồi ní ơi! Không thể thêm trùng lặp.")
+                            st.session_state.adding_cart = False
+                        else:
+                            info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                            gia_goc = info_dv.get("gia", 0.0)
+                            phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                            t_bill_item = gia_goc * box_sl
+                            t_cong_tho_item = t_bill_item * (phan_tram_hh / 100.0)
+                            
+                            st.session_state.gio_hang.append({
+                                "dich_vu": box_chon_dv,
+                                "so_luong": box_sl,
+                                "don_gia": gia_goc,
+                                "thanh_tien": t_bill_item,
+                                "phan_tram_hh": phan_tram_hh,
+                                "tiem_cong_tho": t_cong_tho_item
+                            })
+                            st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
+                            st.session_state.bill_vua_in = None
+                            st.session_state.adding_cart = False
+                            time.sleep(0.2)
+                            st.rerun()
+        # =====================================================================
 # 👉 ĐOẠN 3 BẮT ĐẦU TỪ ĐÂY (DÁN SÁT LỀ TRÁI, NỐI TIẾP NGAY DƯỚI ĐOẠN 2)
 # =====================================================================
             t_bill = 0.0
@@ -388,6 +412,7 @@ def main():
                         
                         ws.append_rows(rows_to_append)
 
+                        # KHÚC HIỂN THỊ MÓN ÉP CHẶT TRÊN 1 HÀNG DUY NHẤT
                         html_items = ""
                         for idx, item in enumerate(st.session_state.gio_hang):
                             html_items += f"""
