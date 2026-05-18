@@ -17,11 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-            /* ========================================================= */
-        /* 🛡️ CHIÊU CUỐI: CÔ LẬP THANH MANAGE APP VÀO VÙNG ĐẤT CHẾT    */
+        /* ========================================================= */
+        /* 🎨 THIẾT KẾ HỘP CHÀO MỪNG - ĐÓNG KHUNG VIỀN SÁNG CHUẨN V2 */
         /* ========================================================= */
 
-        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG MẶC ĐỊNH */
+        /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
         header, footer, .stAppDeployButton {
             display: none !important;
             visibility: hidden !important;
@@ -30,17 +30,47 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. CO NGẮN VÀ ĐẨY TOÀN BỘ APP LÊN TRÊN ĐỂ CÔ LẬP THANH ĐEN */
-        html, body {
-            height: calc(100vh - 65px) !important; /* Thu hẹp chiều cao màn hình hiển thị */
-            padding-bottom: 65px !important;       /* Tạo khoảng khoảng trống an toàn dưới đáy */
-            overflow-x: hidden !important;
+        /* 2. TRẢ LẠI GIAO DIỆN FULL MÀN HÌNH CHUẨN */
+        html, body, .stApp {
+            height: 100% !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
-        .stApp {
-            bottom: 65px !important; /* Giữ chặt chân App không cho chạm vào vùng thanh đen */
+        /* 3. ĐÓNG KHUNG GỌN GÀNG VÀ TẠO VIỀN SÁNG CHE THANH ĐEN */
+        body::after {
+            content: "👋 Chào Mừng Bạn Đến Nhà Của KIM HIỀN" !important;
+            position: fixed !important;
+            bottom: 10px !important;  /* Nâng lên một chút để tạo độ thoáng */
+            right: 10px !important;  /* Ghim chặt góc phải */
+            
+            /* Kích thước gọn gàng, vừa đủ bao Ma... App gốc */
+            width: 250px !important; 
+            height: 40px !important; 
+            
+            /* Giao diện màu đen mờ (Acrylic) sang trọng, tiệp màu gốc */
+            background: rgba(17, 24, 39, 0.95) !important; 
+            backdrop-filter: blur(4px) !important;
+            border-radius: 10px !important; /* Bo góc mềm mại */
+            
+            /* ✨ ĐIỂM NHẤN: VIỀN SÁNG VÀNG KIM NEON ✨ */
+            border: 2px solid rgba(255, 193, 7, 0.5) !important; 
+            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3) !important; /* Tạo độ tỏa sáng */
+            
+            /* Cấu hình chữ chào mừng nằm ngay lề trái */
+            color: #d1d5db !important; /* Màu xám bạc sang trọng */
+            font-family: 'Inter', sans-serif !important;
+            font-size: 11px !important;
+            font-weight: 600 !important;
+            display: flex !important;
+            align-items: center !important;
+            padding-left: 12px !important; /* Đẩy chữ qua trái, nhường góc phải cho nút bấm */
+            box-sizing: border-box !important;
+            
+            /* Đặt z-index để nút Manage app hiển thị ĐÈ LÊN TRÊN lớp nền này */
+            z-index: 9998 !important; 
         }
-        
+
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
