@@ -109,7 +109,7 @@ function createFirework(e) {
 
 
 
-        /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
+/* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
             text-align: center;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
