@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🎨 DẢI BĂNG ĐÔ NGUYÊN KHỐI - TRÀN MÀN HÌNH ĐỒNG BỘ 100%   */
+        /* 🎨 HỘP CHÀO MỪNG CLONE MANAGE APP - ĐỐI XỨNG TUYỆT ĐỐI V5   */
         /* ========================================================= */
 
         /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
@@ -30,48 +30,51 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
+        /* 2. TRẢ LẠI GIAO DIỆN FULL MÀN HÌNH CHUẨN */
         html, body, .stApp {
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        /* 3. ĐỔ NỀN NGUYÊN KHỐI TRÀN ĐÁY - NUỐT TRỌN THANH MANAGE APP */
+        /* 3. THIẾT KẾ HỘP BÊN TRÁI GIỐNG HỆT 100% THẰNG BÊN PHẢI */
         body::after {
-            content: "✨ KIM HIỀN SALON - NƠI BẠN ĐẶT NIỀM TIN ✨" !important;
+            /* Nội dung chữ viết hoa thanh lịch kèm dấu ">" đối xứng */
+            content: "KIM HIỀN SALON  >" !important;
+            
             position: fixed !important;
-            bottom: 0 !important;
-            left: 0 !important;
+            bottom: 0 !important;       /* Sát đáy bằng khít nhau */
+            left: 0 !important;         /* Nằm góc trái màn hình */
             
-            /* Tràn hết 100% chiều ngang màn hình điện thoại */
-            width: 100% !important; 
-            height: 40px !important; /* Chiều cao bao khít, nuốt trọn thanh đen */
+            /* Kích thước đồng bộ hoàn hảo */
+            width: 155px !important;    /* Chiều rộng tương đương nút gốc */
+            height: 36px !important;    /* Chiều cao khớp từng milimét */
             
-            /* Màu nền đen tuyền đồng nhất tuyệt đối với thanh gốc */
+            /* Sao chép màu nền đen mờ Acrylic đặc trưng của Streamlit Cloud */
             background-color: #131824 !important; 
             
-            /* ✨ ĐƯỜNG VIỀN LED VÀNG KIM CHẠY CĂNG NGANG TOÀN BỘ MÀN HÌNH ✨ */
-            border-top: 2px solid rgba(255, 193, 7, 0.7) !important;
-            box-shadow: 0 -4px 12px rgba(255, 193, 7, 0.25) !important;
+            /* Bo góc trên bên phải nhẹ nhàng giống hệt bản gốc */
+            border-top-right-radius: 4px !important; 
             
-            /* Cấu hình chữ chạy dài từ trái qua phải */
-            color: #ffffff !important;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
-            font-size: 11px !important;
-            font-weight: bold !important;
-            text-transform: uppercase !important;
-            letter-spacing: 1px !important;
+            /* Đồng bộ font chữ, màu sắc xám bạc hệ thống */
+            color: #e0e0e0 !important;   
+            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important; 
+            font-size: 14px !important;  /* Cỡ chữ bằng khít nhau */
+            font-weight: 400 !important; /* Độ thanh mảnh của chữ */
             
-            /* Canh chữ nằm thẳng hàng theo chiều dọc, đẩy nhẹ sang trái */
+            /* Canh chữ nằm chính giữa hộp */
             display: flex !important;
             align-items: center !important;
-            padding-left: 16px !important;
+            justify-content: center !important;
             box-sizing: border-box !important;
             
-            /* Đặt lớp nền nằm ngay dưới nút bấm hệ thống một bậc để nút vẫn hoạt động */
-            z-index: 9998 !important; 
+            /* Xóa sạch mọi đường viền hay bóng mờ theo ý ní */
+            border: none !important;
+            box-shadow: none !important;
+            
+            z-index: 9999 !important;
         }
+
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
