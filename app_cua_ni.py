@@ -406,7 +406,7 @@ def main():
                         c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
                     else: st.info("Trống.")
                 except Exception as e: st.error(f"Lỗi báo cáo: {e}")
-                    with tabs[2]:
+            with tabs[2]:
                 st.subheader("⚙️ QUẢN TRỊ")
                 with st.expander("🔗 LIÊN KẾT SHEET"):
                     st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
