@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🎨 HỘP CHÀO MỪNG SONG SONG - GÓC TRÁI ĐỐI XỨNG CHUẨN V3    */
+        /* 🎨 HỘP CHÀO MỪNG ĐỒNG BỘ SONG SONG ĐÁY MÀN HÌNH CHUẨN V4   */
         /* ========================================================= */
 
         /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
@@ -30,45 +30,48 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. TRẢ LẠI GIAO DIỆN FULL MÀN HÌNH CHUẨN */
+        /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
         html, body, .stApp {
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        /* 3. ĐẨY HỘP QUA TRÁI - SONG SONG VÀ NGANG HÀNG VỚI THANH ĐEN */
+        /* 3. TẠO THANH NỀN TRÁI SONG SONG VÀ KHỚP KHÍT VỚI MANAGE APP */
         body::after {
-            content: "👋 Chào Mừng Bạn Đến Nhà Của KIM HIỀN" !important;
+            content: "✨ KIM HIỀN SALON ✨" !important;
             position: fixed !important;
-            bottom: 0 !important;     /* Ghim sát đáy giống thanh đen */
-            left: 0 !important;       /* Dạt hẳn sang góc trái để không bị đè */
+            bottom: 0 !important;       /* Nằm sát đáy 100% */
+            left: 0 !important;         /* Ghim bên góc trái */
             
-            /* Kích thước bóp gọn, cao bằng chuẩn thanh đen */
-            width: calc(100% - 160px) !important; /* Chừa khoảng trống bên phải cho Manage app */
-            height: 36px !important;              /* Chiều cao khớp 100% với thanh đen */
+            /* Cấu hình chiều rộng chừa đúng khoảng cho thanh Manage app */
+            width: calc(100% - 152px) !important; 
+            height: 38px !important;    /* Khớp tuyệt đối chiều cao thanh đen */
             
-            /* Giao diện Acrylic màu đen tiệp màu 100% */
-            background: #131824 !important; 
-            border-top: 1px solid rgba(255, 193, 7, 0.4) !important; /* Đường chỉ vàng sang trọng */
+            /* Màu nền đen tuyền đồng bộ với hệ thống */
+            background-color: #131824 !important; 
             
-            /* ✨ VIỀN SÁNG VÀNG KIM BO GÓC TRÊN TRÁI ĐỂ TẠO ĐIỂM NHẤN ✨ */
-            border-right: 2px solid rgba(255, 193, 7, 0.5) !important;
-            border-top-right-radius: 8px !important;
-            box-shadow: 2px -2px 10px rgba(255, 193, 7, 0.2) !important;
+            /* ✨ ĐƯỜNG VIỀN LED VÀNG KIM SANG TRỌNG CHẠY NGANG ✨ */
+            border-top: 2px solid rgba(255, 193, 7, 0.6) !important;
+            box-shadow: 0 -3px 10px rgba(255, 193, 7, 0.2) !important;
             
-            /* Cấu hình chữ chào mừng căn giữa điệu nghệ */
+            /* Định hình cỡ chữ nhỏ gọn, không bao giờ bị lệch dòng */
             color: #ffffff !important;
-            font-family: 'Inter', sans-serif !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             font-size: 11px !important;
-            font-weight: 600 !important;
+            font-weight: bold !important;
+            text-transform: uppercase !important; /* Viết hoa cho uy tín */
+            letter-spacing: 1px !important;      /* Giãn chữ đều đẹp */
+            
+            /* Canh chữ nằm chính giữa hộp theo chiều dọc */
             display: flex !important;
             align-items: center !important;
-            padding-left: 15px !important;
+            padding-left: 20px !important;
             box-sizing: border-box !important;
             
-            z-index: 9999 !important; 
+            z-index: 9999 !important;
         }
+
 
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
