@@ -20,7 +20,7 @@ import streamlit as st
 # =========================================================
 # 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
 # =========================================================
-     st.markdown("""
+st.markdown("""
 <style>
 /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
 header, footer, .stAppDeployButton {
@@ -103,7 +103,8 @@ function createFirework(e) {
     }
 }
 </script>
-    """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
+
 
 
         /* TABS ĐỒNG BỘ */
