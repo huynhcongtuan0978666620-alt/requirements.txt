@@ -17,20 +17,27 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ẨN THÀNH PHẦN THỪA VÀ KHÓA CHẶT NÚT MANAGE APP CỦA STREAMLIT */
-header, footer, .stAppDeployButton, #tabs-bui-three-id-brand {
+        /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
+header, footer, .stAppDeployButton {
     display: none !important; 
     visibility: hidden !important;
 }
 [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
     display: none !important;
 }
-/* TRIỆT TIÊU NÚT MANAGE APP GÓC DƯỚI BÊN PHẢI */
-div[data-testid="stAppViewerToolbar"] {
+
+/* 2. CHẶT TẬN GỐC THANH MANAGE APP (QUÉT TOÀN BỘ LỚP STREAMLIT CÓ MÃ VIERWER) */
+div[class*="stAppViewerToolbar"], 
+div[data-testid="stAppViewerToolbar"],
+footer + div {
     display: none !important;
     visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
 }
-        
+
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
             text-align: center;
