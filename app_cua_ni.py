@@ -43,7 +43,7 @@ st.markdown("""
             box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
         }
         .ten-tiem { 
-            font-size: 32px !important; 
+            font-size: 26px !important; 
             font-weight: 900 !important; 
             color: #ffffff !important; 
             text-transform: uppercase !important; 
