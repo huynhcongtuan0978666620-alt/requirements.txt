@@ -20,90 +20,91 @@ import streamlit as st
 # =========================================================
 # 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
 # =========================================================
-st.markdown("""
-<style>
-/* 1. AN THANH PHAN THUA HE THONG */
-header, footer, .stAppDeployButton {
-    display: none !important;
-    visibility: hidden !important;
-}
-[data-testid="stStatusWidget"], [data-testid="stToolbar"] {
-    display: none !important;
-}
-
-/* 2. DAM BAO KHONG GIAN FULL MAN HINH */
-html, body, .stApp {
-    height: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-}
-
-/* 3. THIET KE NUT BAM CLONE MANAGE APP */
-.clone-manage-btn {
-    position: fixed !important;
-    bottom: 0 !important;
-    left: 0 !important;
-    height: auto !important;
-    padding-top: 10px !important;
-    padding-bottom: 12px !important;
-    width: calc(100% - 150px) !important;
-    background-color: #131824 !important;
-    color: #e0e0e0 !important;
-    font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 400 !important;
-    border-top-right-radius: 4px !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    cursor: pointer !important;
-    user-select: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    z-index: 9999 !important;
-    -webkit-tap-highlight-color: transparent;
-}
-
-/* 4. HIEU UNG HAT PHAO HOA */
-.firework-particle {
-    position: fixed !important;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    pointer-events: none !important;
-    z-index: 10000 !important;
-    animation: explode 0.8s ease-out forwards;
-}
-@keyframes explode {
-    0% { transform: translate(0, 0) scale(1); opacity: 1; }
-    100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; }
-}
-</style>
-
-<div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN SALON &nbsp;&nbsp;&gt;</div>
-
-<script>
-function createFirework(e) {
-    const clickX = e.clientX;
-    const clickY = e.clientY;
-    const particleCount = 40;
-    const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.className = 'firework-particle';
-        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-        particle.style.left = clickX + 'px';
-        particle.style.top = clickY + 'px';
-        const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 120 + 40; 
-        particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-        particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-        document.body.appendChild(particle);
-        setTimeout(() => { particle.remove(); }, 800);
+    st.markdown("""
+    <style>
+    /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
+    header, footer, .stAppDeployButton {
+        display: none !important;
+        visibility: hidden !important;
     }
-}
-</script>
-""", unsafe_allow_html=True)
+    [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
+        display: none !important;
+    }
+
+    /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
+    html, body, .stApp {
+        height: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    /* 3. THIẾT KẾ NÚT BẤM CLONE MANAGE APP (ĐỒNG SIZE TUYỆT ĐỐI) */
+    .clone-manage-btn {
+        position: fixed !important;
+        bottom: 0 !important;
+        left: 0 !important;
+        height: auto !important;
+        padding-top: 10px !important;
+        padding-bottom: 12px !important;
+        width: calc(100% - 150px) !important;
+        background-color: #131824 !important;
+        color: #e0e0e0 !important;
+        font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
+        font-size: 14px !important;
+        font-weight: 400 !important;
+        border-top-right-radius: 4px !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        cursor: pointer !important;
+        user-select: none !important;
+        border: none !important;
+        box-shadow: none !important;
+        z-index: 9999 !important;
+        -webkit-tap-highlight-color: transparent;
+    }
+
+    /* 4. HIỆU ỨNG HẠT PHÁO HOA */
+    .firework-particle {
+        position: fixed !important;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        pointer-events: none !important;
+        z-index: 10000 !important;
+        animation: explode 0.8s ease-out forwards;
+    }
+    @keyframes explode {
+        0% { transform: translate(0, 0) scale(1); opacity: 1; }
+        100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; }
+    }
+    </style>
+
+    <div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN SALON &nbsp;&nbsp;&gt;</div>
+
+    <script>
+    function createFirework(e) {
+        const clickX = e.clientX;
+        const clickY = e.clientY;
+        const particleCount = 40;
+        const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'firework-particle';
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            particle.style.left = clickX + 'px';
+            particle.style.top = clickY + 'px';
+            const angle = Math.random() * Math.PI * 2;
+            const velocity = Math.random() * 120 + 40; 
+            particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
+            particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
+            document.body.appendChild(particle);
+            setTimeout(() => { particle.remove(); }, 800);
+        }
+    }
+    </script>
+    """, unsafe_allow_html=True)
+
 
 
         
