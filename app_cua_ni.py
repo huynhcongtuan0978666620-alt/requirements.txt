@@ -38,7 +38,7 @@ html, body, .stApp {
     padding: 0 !important;
 }
 
-/* 3. THIẾT KẾ NÚT BẤM CLONE MANAGE APP */
+/* 3. THIẾT KẾ NÚT BẤM CLONE MANAGE APP (ĐỒNG SIZE TUYỆT ĐỐI) */
 .clone-manage-btn {
     position: fixed !important;
     bottom: 0 !important;
@@ -105,54 +105,6 @@ function createFirework(e) {
 </script>
 """, unsafe_allow_html=True)
 
-
-
-
-
-/* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
-        .bang-hieu-lktv {
-            text-align: center;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
-            color: white !important; 
-            padding: 25px !important; 
-            border-radius: 20px !important;
-            margin-bottom: 25px !important; 
-            box-shadow: 0px 10px 30px rgba(0,0,0,0.4) !important;
-            border: 1px solid #ffffff20 !important;
-        }
-        .logo-img { 
-            width: 120px !important; 
-            height: 120px !important; 
-            object-fit: cover !important; 
-            border-radius: 50% !important; 
-            border: 4px solid #f1c40f !important; 
-            margin: 0 auto 12px auto !important; 
-            display: block !important;
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
-        }
-        .ten-tiem { 
-            font-size: 26px !important; 
-            font-weight: 900 !important; 
-            color: #ffffff !important; 
-            text-transform: uppercase !important; 
-            margin-bottom: 5px !important; 
-            letter-spacing: 3px !important;
-        }
-        .thong-tin-phu { 
-            font-size: 16px !important; 
-            color: #ecf0f1 !important; 
-            opacity: 0.9 !important; 
-            margin: 4px 0 !important; 
-        }
-        .slogan { 
-            font-size: 17px !important; 
-            color: #f1c40f !important; 
-            font-weight: 600 !important; 
-            font-style: italic !important; 
-            margin-top: 15px !important; 
-            border-top: 1px solid #ffffff20 !important; 
-            padding-top: 10px !important; 
-        }
         
         /* TABS ĐỒNG BỘ */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
