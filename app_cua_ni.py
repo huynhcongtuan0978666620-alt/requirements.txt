@@ -588,3 +588,37 @@ def main():
 if __name__ == "__main__":
     main()
     
+
+
+# =====================================================================
+# 🛸 THẦN CHÚ JAVASCRIPT - ĐỤC THỦNG SHADOW DOM DIỆT TẬN GỐC THANH ĐEN
+# =====================================================================
+st.components.v1.html("""
+    <script>
+        function triet_tieu_thanh_den() {
+            // 1. Tìm màng bảo vệ Shadow DOM của Streamlit Cloud
+            const host = window.parent.document.querySelector('st-app-viewer-toolbar');
+            if (host && host.shadowRoot) {
+                // Nếu tìm thấy, ẩn ngay lập tức phần tử cha chứa nó
+                host.style.display = 'none';
+                host.style.visibility = 'hidden';
+            }
+            
+            // 2. Dự phòng quét diện rộng tất cả các thẻ có id hoặc class liên quan
+            const shadowHosts = window.parent.document.querySelectorAll('*');
+            shadowHosts.forEach(el => {
+                if (el.tagName.toLowerCase().includes('viewer-toolbar') || el.shadowRoot) {
+                    const shadowRoot = el.shadowRoot;
+                    if (shadowRoot) {
+                        const toolbar = shadowRoot.querySelector('.viewer-toolbar') || shadowRoot.querySelector('[class*="toolbar"]');
+                        if (toolbar) { toolbar.style.display = 'none'; }
+                    }
+                }
+            });
+        }
+
+        // Chạy liên tục mỗi 0.5 giây để đảm bảo thợ không bao giờ nhìn thấy nó hiện lên
+        setInterval(triet_tieu_thanh_den, 500);
+    </script>
+""", height=0, width=0)
+    
