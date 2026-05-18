@@ -20,7 +20,7 @@ import streamlit as st
 # =========================================================
 # 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
 # =========================================================
-st.write("""
+    st.markdown("""
 <style>
 /* 1. AN THANH PHAN THUA HE THONG */
 header, footer, .stAppDeployButton {
@@ -104,6 +104,7 @@ function createFirework(e) {
 }
 </script>
 """, unsafe_allow_html=True)
+
 
         /* TABS ĐỒNG BỘ */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
