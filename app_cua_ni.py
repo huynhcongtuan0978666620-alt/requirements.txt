@@ -73,7 +73,22 @@ st.markdown("""
         .stTabs [data-baseweb="tab"] p { color: #1a1a1a !important; font-weight: 800 !important; font-size: 17px; text-align: center;}
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border-bottom: 5px solid #d4ac0d; }
 
-        /* BOX TIỀN THỪA PULSE */
+        /* TIÊU ĐỀ NHÃN PHÍA TRÊN BOX ĐÓNG KHUNG */
+        .nhan-tieu-de {
+            text-align: center; font-size: 16px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #ffffff;
+        }
+
+        /* NÂNG CẤP ĐỒNG BỘ BOX TRỰC QUAN ÔM TRỌN SỐ TIỀN */
+        .tong-don-box {
+            background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 15px;
+            text-align: center; border: 4px dashed #ffc107; font-size: 24px; font-weight: 900;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        }
+        .cong-tho-box {
+            background-color: #e2e3e5; color: #28a745; padding: 15px; border-radius: 15px;
+            text-align: center; border: 4px dashed #6c757d; font-size: 24px; font-weight: 900;
+            box-shadow: 0px 4px 10px rgba(0,0,0,0.05);
+        }
         .tien-thua-box {
             background-color: #d4edda; color: #155724; padding: 25px; border-radius: 15px;
             text-align: center; font-size: 26px; font-weight: 800; border: 4px dashed #28a745;
@@ -146,16 +161,13 @@ def get_service_data():
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
                     try:
-                        # Làm sạch chuỗi %, biến đổi dấu phẩy thành dấu chấm thập phân
                         raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
                         hoa_hong = float(raw_hh)
-                        # Nếu người dùng nhập dạng phần trăm Excel (ví dụ 0.2 tương ứng 20%)
                         if hoa_hong < 1.0 and hoa_hong > 0:
                             hoa_hong = hoa_hong * 100
                     except:
                         hoa_hong = 0.0
                 
-                # Đóng gói dữ liệu dạng Nested Dictionary
                 danh_sach_dv[ten_dv] = {
                     "gia": gia_goc,
                     "hoa_hong": hoa_hong
@@ -251,23 +263,27 @@ def main():
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             
-            # TRÍ TUỆ NHÂN TẠO TÍNH TOÁN DÒNG TIỀN SONG SONG
             info_dv = services.get(dv_chon, {"gia": 0.0, "hoa_hong": 0.0})
             gia_goc = info_dv.get("gia", 0.0)
             phan_tram_hh = info_dv.get("hoa_hong", 0.0)
             
             t_bill = gia_goc * dv_sl
-            # Công thức tính tiền công thực nhận của thợ
             t_cong_tho = t_bill * (phan_tram_hh / 100.0)
             
             st.divider()
             
-            # GIAO DIỆN HIỂN THỊ SONG SONG MINH BẠCH
+            # CẬP NHẬT GIAO DIỆN ĐỒNG BỘ: KHUNG ĐỨT ÔM TRỌN SỐ TIỀN 
             col_bill1, col_bill2 = st.columns(2)
             with col_bill1:
-                st.markdown(f"<h3 style='text-align: center; color: #f1c40f; margin:0;'>TỔNG ĐƠN KHÁCH</h3><h2 style='text-align: center; color: #ffffff; margin:0;'>{t_bill:,.0f} đ</h2>", unsafe_allow_html=True)
+                st.markdown(f"""
+                    <div class="nhan-tieu-de" style="color: #ffc107;">Tổng Đơn Khách</div>
+                    <div class="tong-don-box">{t_bill:,.0f} đ</div>
+                """, unsafe_allow_html=True)
             with col_bill2:
-                st.markdown(f"<h3 style='text-align: center; color: #28a745; margin:0;'>CÔNG THỢ ({phan_tram_hh:,.0f}%)</h3><h2 style='text-align: center; color: #28a745; margin:0;'>{t_cong_tho:,.0f} đ</h2>", unsafe_allow_html=True)
+                st.markdown(f"""
+                    <div class="nhan-tieu-de" style="color: #a0a5a9;">Tiền công thợ ({phan_tram_hh:,.0f}%)</div>
+                    <div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>
+                """, unsafe_allow_html=True)
             
             st.write("")
             kh_tra = st.number_input("Tiền khách đưa", 0.0, value=float(t_bill))
@@ -298,7 +314,7 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # ĐẨY THẲNG DỮ LIỆU CÔNG THỢ VÀO CỘT THỨ 11 (CỘT K)
+                        # LƯU VÀO SHEET ĐỒNG BỘ TIỀN CÔNG THỢ (CỘT K)
                         ws.append_row([
                             bay_gio.strftime("%d/%m/%Y"), 
                             st.session_state.full_name,   
@@ -310,7 +326,7 @@ def main():
                             t_bill,                       
                             bay_gio.strftime("%H:%M:%S"), 
                             ghi_chu,
-                            t_cong_tho # Lưu Tiền công thợ vào cột K
+                            t_cong_tho 
                         ])
 
                         st.session_state.last_submit = bay_gio
@@ -395,4 +411,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-                                     
+                    
