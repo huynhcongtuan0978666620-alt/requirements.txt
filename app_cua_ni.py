@@ -4,7 +4,6 @@ from google.oauth2.service_account import Credentials
 import pandas as pd
 from datetime import datetime
 import pytz
-import hashlib
 import time
 import re
 
@@ -113,7 +112,6 @@ def get_gspread_client():
     return gspread.authorize(creds)
 
 def format_drive_direct_url(link):
-    """ Chuyển đổi link Drive thành link xuất trực tiếp thông minh tốc độ cao """
     if not link or not isinstance(link, str): return ""
     link = link.strip()
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link)
@@ -141,7 +139,6 @@ def get_settings():
 
 @st.cache_data(ttl=60)
 def get_service_data():
-    """ BỘ NÃO V26.0: Đọc cấu trúc 3 cột (Tên sản phẩm | Đơn Giá | Tiền Công Thợ %) """
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
@@ -149,7 +146,7 @@ def get_service_data():
         rows = sh.worksheet("DanhMuc").get_all_values()
         
         danh_sach_dv = {}
-        for row in rows[1:]:  # Bỏ qua dòng tiêu đề đầu tiên
+        for row in rows[1:]:
             if len(row) >= 2:
                 ten_dv = str(row[0]).strip()
                 try:
@@ -197,6 +194,9 @@ def main():
     if "submitting" not in st.session_state: st.session_state.submitting = False
     if "logged_in" not in st.session_state:
         st.session_state.update({"logged_in": False, "role": None, "full_name": None})
+    
+    # Khởi tạo giỏ hàng động
+    if "gio_hang" not in st.session_state: st.session_state.gio_hang = []
 
     settings = get_settings()
 
@@ -221,7 +221,6 @@ def main():
                         for row in user_list:
                             sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
                             sdt_nhap = str(u).strip()
-                            
                             if sdt_nhap.lstrip('0') == sdt_sheet.lstrip('0') and sdt_nhap.lstrip('0') != "":
                                 pass_sheet = str(row.get('Mật Khẩu', '')).strip()
                                 if p.strip() == pass_sheet:
@@ -258,20 +257,52 @@ def main():
             with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("SĐT")
             
-            dv_chon = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
+            st.markdown("#### 🛒 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
+            box_chon_dv = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
+            box_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
-            # ĐỔI MẶC ĐỊNH SỐ LƯỢNG VỀ 0.00 VÀ LIMIT MIN LÀ 0.00 THEO YÊU CẦU THỰC CHIẾN
-            dv_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
-            ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
+            if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if box_sl <= 0:
+                    st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
+                else:
+                    info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                    gia_goc = info_dv.get("gia", 0.0)
+                    phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                    t_bill_item = gia_goc * box_sl
+                    t_cong_tho_item = t_bill_item * (phan_tram_hh / 100.0)
+                    
+                    st.session_state.gio_hang.append({
+                        "dich_vu": box_chon_dv,
+                        "so_luong": box_sl,
+                        "don_gia": gia_goc,
+                        "thanh_tien": t_bill_item,
+                        "phan_tram_hh": phan_tram_hh,
+                        "tiem_cong_tho": t_cong_tho_item
+                    })
+                    st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
             
-            info_dv = services.get(dv_chon, {"gia": 0.0, "hoa_hong": 0.0})
-            gia_goc = info_dv.get("gia", 0.0)
-            phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+            t_bill = 0.0
+            t_cong_tho = 0.0
             
-            # Logic tính toán: Nếu số lượng bằng 0, tiền mặc định ra 0 đ
-            t_bill = gia_goc * dv_sl
-            t_cong_tho = t_bill * (phan_tram_hh / 100.0)
+            if len(st.session_state.gio_hang) > 0:
+                st.markdown("---")
+                st.markdown(f"📋 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
+                
+                for idx, item in enumerate(st.session_state.gio_hang):
+                    col_item1, col_item2, col_item3 = st.columns([5, 3, 2])
+                    with col_item1:
+                        st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
+                    with col_item2:
+                        st.markdown(f"{item['thanh_tien']:,.0f} đ (Công: {item['tiem_cong_tho']:,.0f} đ)")
+                    with col_item3:
+                        if st.button("❌ Xóa", key=f"del_{idx}", use_container_width=True):
+                            st.session_state.gio_hang.pop(idx)
+                            st.rerun()
+                    
+                    t_bill += item['thanh_tien']
+                    t_cong_tho += item['tiem_cong_tho']
             
+            ghi_chu = st.text_input("Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             st.divider()
             
             col_bill1, col_bill2 = st.columns(2)
@@ -282,7 +313,7 @@ def main():
                 """, unsafe_allow_html=True)
             with col_bill2:
                 st.markdown(f"""
-                    <div class="nhan-tieu-de" style="color: #a0a5a9;">Tiền công thợ ({phan_tram_hh:,.0f}%)</div>
+                    <div class="nhan-tieu-de" style="color: #a0a5a9;">Tiền công thợ tổng</div>
                     <div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>
                 """, unsafe_allow_html=True)
             
@@ -293,10 +324,9 @@ def main():
                 st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
             can_go = True
-            # HÀNG RÀO AN TOÀN BỔ SUNG: Không cho lưu nếu chưa nhập số lượng (số lượng = 0)
-            if dv_sl <= 0:
+            if len(st.session_state.gio_hang) == 0:
                 can_go = False
-                st.warning("⚠️ Nhắc nhở: Vui lòng nhập Số lượng dịch vụ lớn hơn 0 để lưu đơn.")
+                st.warning("⚠️ Nhắc nhở: Giỏ hàng đang trống! Vui lòng chọn dịch vụ và bấm 'Thêm vào giỏ đơn' trước khi Lưu.")
             
             if st.session_state.last_submit and can_go:
                 tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
@@ -308,37 +338,47 @@ def main():
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 LƯU VÀO ĐỒNG BỘ", use_container_width=True, type="primary"):
+                    if st.button("🚀 LƯU VÀO ĐỒNG BỘ ĐƠN HÀNG", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
                         else: st.error("Chưa tích xác nhận!")
                 else:
-                    st.button("⚙️ ĐANG XỬ LÝ...", disabled=True, use_container_width=True)
+                    st.button("⚙️ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                     try:
                         cl = get_gspread_client()
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        ws.append_row([
-                            bay_gio.strftime("%d/%m/%Y"), 
-                            st.session_state.full_name,   
-                            kh_ten,                       
-                            kh_sdt,                       
-                            dv_chon,                      
-                            dv_sl,                        
-                            gia_goc,                      
-                            t_bill,                       
-                            bay_gio.strftime("%H:%M:%S"), 
-                            ghi_chu,
-                            t_cong_tho 
-                        ])
+                        # Sinh Mã Đơn Hàng chuẩn chỉnh
+                        ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
+                        
+                        # KHỚP CHUẨN ĐÚNG 12 CỘT (Cột L là Mã hoá đơn)
+                        rows_to_append = []
+                        for item in st.session_state.gio_hang:
+                            rows_to_append.append([
+                                bay_gio.strftime("%d/%m/%Y"),       # A: Ngày
+                                st.session_state.full_name,         # B: Người làm
+                                kh_ten,                             # C: Tên khách hàng
+                                kh_sdt,                             # D: SĐT khách hàng
+                                item['dich_vu'],                    # E: Dịch vụ
+                                item['so_luong'],                   # F: Số lượng
+                                item['don_gia'],                    # G: Đơn giá
+                                item['thanh_tien'],                 # H: Thành tiền
+                                bay_gio.strftime("%H:%M:%S"),       # I: Giờ lưu
+                                ghi_chu,                            # J: Ghi chú
+                                item['tiem_cong_tho'],              # K: Tiền công thợ
+                                ma_hd                               # L: Mã hoá đơn (Đã đổi chữ thường theo yêu cầu)
+                            ])
+                        
+                        ws.append_rows(rows_to_append)
 
+                        st.session_state.gio_hang = []
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
                         st.session_state.submitting = False
-                        st.success("🎉 LƯU THÀNH CÔNG VÀ ĐÃ GHI NHẬN CÔNG THỢ!")
-                        time.sleep(1)
+                        st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! MÃ ĐƠN ĐÃ ĐƯỢC CHÈN VÀO CỘT 'Mã hoá đơn'!")
+                        time.sleep(1.5)
                         st.rerun()
                     except Exception as e:
                         st.error(f"Lỗi lưu đơn: {e}")
@@ -381,39 +421,4 @@ def main():
                 st.divider()
                 st.markdown("### 👥 QUẢN LÝ NHÂN SỰ")
                 with st.expander("🎫 Tạo/Xem mã nhân viên"):
-                    try:
-                        cl = get_gspread_client()
-                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        ws_user = sh.worksheet("NhanVien")
-                        
-                        with st.form("add_user_form", clear_on_submit=True):
-                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
-                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
-                            new_name = st.text_input("Tên thật nhân viên (Hiển thị khi lên đơn)")
-                            
-                            if st.form_submit_button("CẤP MÃ MỚI"):
-                                if new_sdt and new_code and new_name:
-                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
-                                    st.success(f"Đã cấp tài khoản thành công cho {new_name}!")
-                                    st.cache_data.clear()
-                                    time.sleep(1)
-                                    st.rerun()
-                                else:
-                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
-                        
-                        st.write("---")
-                        st.write("**Danh sách nhân sự hiện tại:**")
-                        user_data = ws_user.get_all_records()
-                        if user_data:
-                            st.table(pd.DataFrame(user_data))
-                    except Exception as e:
-                        st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
-                
-                st.divider()
-                if st.button("🚪 THOÁT RA", use_container_width=True):
-                    st.session_state.clear()
-                    st.rerun()
-
-if __name__ == "__main__":
-    main()
-        
+           
