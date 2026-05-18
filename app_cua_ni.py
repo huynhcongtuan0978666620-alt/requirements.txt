@@ -350,10 +350,8 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # Sinh Mã Đơn Hàng chuẩn chỉnh
                         ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
                         
-                        # KHỚP CHUẨN ĐÚNG 12 CỘT (Cột L là Mã hoá đơn)
                         rows_to_append = []
                         for item in st.session_state.gio_hang:
                             rows_to_append.append([
@@ -368,7 +366,7 @@ def main():
                                 bay_gio.strftime("%H:%M:%S"),       # I: Giờ lưu
                                 ghi_chu,                            # J: Ghi chú
                                 item['tiem_cong_tho'],              # K: Tiền công thợ
-                                ma_hd                               # L: Mã hoá đơn (Đã đổi chữ thường theo yêu cầu)
+                                ma_hd                               # L: Mã hoá đơn
                             ])
                         
                         ws.append_rows(rows_to_append)
@@ -421,4 +419,6 @@ def main():
                 st.divider()
                 st.markdown("### 👥 QUẢN LÝ NHÂN SỰ")
                 with st.expander("🎫 Tạo/Xem mã nhân viên"):
-           
+                    try:
+                        cl = get_gspread_client()
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]
