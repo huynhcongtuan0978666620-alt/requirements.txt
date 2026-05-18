@@ -241,8 +241,6 @@ def main():
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
                     
             services = get_service_data()
-            
-            # Đọc danh sách khóa (Tên dịch vụ) từ cấu trúc dữ liệu mới
             dv_list = list(services.keys())
             
             c1, c2 = st.columns(2)
@@ -253,14 +251,25 @@ def main():
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             
-            # Truy xuất giá gốc từ Dictionary lồng nhau một cách an toàn
+            # TRÍ TUỆ NHÂN TẠO TÍNH TOÁN DÒNG TIỀN SONG SONG
             info_dv = services.get(dv_chon, {"gia": 0.0, "hoa_hong": 0.0})
             gia_goc = info_dv.get("gia", 0.0)
+            phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+            
             t_bill = gia_goc * dv_sl
+            # Công thức tính tiền công thực nhận của thợ
+            t_cong_tho = t_bill * (phan_tram_hh / 100.0)
             
             st.divider()
-            st.markdown(f"<h2 style='text-align: center; color: #f1c40f;'>TỔNG: {t_bill:,.0f} đ</h2>", unsafe_allow_html=True)
             
+            # GIAO DIỆN HIỂN THỊ SONG SONG MINH BẠCH
+            col_bill1, col_bill2 = st.columns(2)
+            with col_bill1:
+                st.markdown(f"<h3 style='text-align: center; color: #f1c40f; margin:0;'>TỔNG ĐƠN KHÁCH</h3><h2 style='text-align: center; color: #ffffff; margin:0;'>{t_bill:,.0f} đ</h2>", unsafe_allow_html=True)
+            with col_bill2:
+                st.markdown(f"<h3 style='text-align: center; color: #28a745; margin:0;'>CÔNG THỢ ({phan_tram_hh:,.0f}%)</h3><h2 style='text-align: center; color: #28a745; margin:0;'>{t_cong_tho:,.0f} đ</h2>", unsafe_allow_html=True)
+            
+            st.write("")
             kh_tra = st.number_input("Tiền khách đưa", 0.0, value=float(t_bill))
             t_du = kh_tra - t_bill
             if t_du > 0:
@@ -277,7 +286,7 @@ def main():
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 LƯU VÀO", use_container_width=True, type="primary"):
+                    if st.button("🚀 LƯU VÀO ĐỒNG BỘ", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
@@ -289,6 +298,7 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
+                        # ĐẨY THẲNG DỮ LIỆU CÔNG THỢ VÀO CỘT THỨ 11 (CỘT K)
                         ws.append_row([
                             bay_gio.strftime("%d/%m/%Y"), 
                             st.session_state.full_name,   
@@ -299,13 +309,14 @@ def main():
                             gia_goc,                      
                             t_bill,                       
                             bay_gio.strftime("%H:%M:%S"), 
-                            ghi_chu                       
+                            ghi_chu,
+                            t_cong_tho # Lưu Tiền công thợ vào cột K
                         ])
 
                         st.session_state.last_submit = bay_gio
                         st.session_state.submit_count += 1
                         st.session_state.submitting = False
-                        st.success("🎉 LƯU THÀNH CÔNG!")
+                        st.success("🎉 LƯU THÀNH CÔNG VÀ ĐÃ GHI NHẬN CÔNG THỢ!")
                         time.sleep(1)
                         st.rerun()
                     except Exception as e:
@@ -313,7 +324,7 @@ def main():
                         st.session_state.submitting = False
 
             st.divider()
-            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
@@ -384,4 +395,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
+                                     
