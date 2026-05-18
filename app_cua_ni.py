@@ -265,21 +265,31 @@ def main():
                 if box_sl <= 0:
                     st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
                 else:
-                    info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                    gia_goc = info_dv.get("gia", 0.0)
-                    phan_tram_hh = info_dv.get("hoa_hong", 0.0)
-                    t_bill_item = gia_goc * box_sl
-                    t_cong_tho_item = t_bill_item * (phan_tram_hh / 100.0)
+                    # KIỂM TRA TRÙNG LẶP DỊCH VỤ TRONG GIỎ HÀNG
+                    da_co = False
+                    for item in st.session_state.gio_hang:
+                        if item["dich_vu"] == box_chon_dv:
+                            da_co = True
+                            break
                     
-                    st.session_state.gio_hang.append({
-                        "dich_vu": box_chon_dv,
-                        "so_luong": box_sl,
-                        "don_gia": gia_goc,
-                        "thanh_tien": t_bill_item,
-                        "phan_tram_hh": phan_tram_hh,
-                        "tiem_cong_tho": t_cong_tho_item
-                    })
-                    st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
+                    if da_co:
+                        st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã có trong giỏ đơn này rồi ní ơi! Không thể thêm trùng lặp. Nếu muốn thay đổi số lượng, hãy bấm nút 'Xóa' ở danh sách phía dưới và chọn thêm lại nhé!")
+                    else:
+                        info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                        gia_goc = info_dv.get("gia", 0.0)
+                        phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                        t_bill_item = gia_goc * box_sl
+                        t_cong_tho_item = t_bill_item * (phan_tram_hh / 100.0)
+                        
+                        st.session_state.gio_hang.append({
+                            "dich_vu": box_chon_dv,
+                            "so_luong": box_sl,
+                            "don_gia": gia_goc,
+                            "thanh_tien": t_bill_item,
+                            "phan_tram_hh": phan_tram_hh,
+                            "tiem_cong_tho": t_cong_tho_item
+                        })
+                        st.success(f"Đã thêm {box_sl} x {box_chon_dv} vào giỏ hàng thành công!")
             
             t_bill = 0.0
             t_cong_tho = 0.0
