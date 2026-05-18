@@ -421,5 +421,4 @@ def main():
                 with st.expander("🎫 Tạo/Xem mã nhân viên"):
                     try:
                         cl = get_gspread_client()
-                        # ĐÃ VÁ LỖI NGOẶC ĐƠN CHÍ MẠNG Ở DÒNG NÀY (BỔ SUNG DẤU ) CUỐI HÀM)
-    
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]
