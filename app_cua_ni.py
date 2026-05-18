@@ -17,7 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
+        /* ================================================================= */
+/* 🚨 ĐOẠN CSS TỔNG LỰC TRUY QUÉT - DIỆT TẬN GỐC THANH MANAGE APP 🚨 */
+/* ================================================================= */
+
+        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
 header, footer, .stAppDeployButton {
     display: none !important; 
     visibility: hidden !important;
@@ -26,16 +30,20 @@ header, footer, .stAppDeployButton {
     display: none !important;
 }
 
-/* 2. CHẶT TẬN GỐC THANH MANAGE APP (QUÉT TOÀN BỘ LỚP STREAMLIT CÓ MÃ VIERWER) */
+/* 2. TRUY QUÉT TOÀN DIỆN DIỆT THANH MANAGE APP (KHÔNG CHO SÓT MỘT THẰNG NÀO) */
 div[class*="stAppViewerToolbar"], 
 div[data-testid="stAppViewerToolbar"],
-footer + div {
+[class*="ViewerToolbar"],
+[class*="StyledAppViewerToolbar"],
+footer + div,
+div[style*="position: fixed"][style*="bottom: 0"][style*="right: 0"] {
     display: none !important;
     visibility: hidden !important;
+    opacity: 0 !important;
     height: 0 !important;
     width: 0 !important;
-    opacity: 0 !important;
     pointer-events: none !important;
+    transform: scale(0) !important;
 }
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
