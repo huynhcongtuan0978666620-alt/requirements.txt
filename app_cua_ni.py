@@ -15,8 +15,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown("""
-    <style>
 import streamlit as st
 
 # =========================================================
