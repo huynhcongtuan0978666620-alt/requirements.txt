@@ -126,13 +126,43 @@ def get_settings():
 
 @st.cache_data(ttl=60)
 def get_service_data():
+    """ BỘ NÃO V26.0: Đọc cấu trúc 3 cột (Tên sản phẩm | Đơn Giá | Tiền Công Thợ %) """
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         sh = client.open_by_url(url)
         rows = sh.worksheet("DanhMuc").get_all_values()
-        return {row[0]: float(row[1]) for row in rows[1:] if len(row) > 1}
-    except: return {}
+        
+        danh_sach_dv = {}
+        for row in rows[1:]:  # Bỏ qua dòng tiêu đề đầu tiên
+            if len(row) >= 2:
+                ten_dv = str(row[0]).strip()
+                try:
+                    gia_goc = float(str(row[1]).replace(',', '').strip())
+                except:
+                    gia_goc = 0.0
+                
+                # Mặc định hoa hồng là 0 nếu không nhập gì ở cột C
+                hoa_hong = 0.0
+                if len(row) >= 3 and row[2]:
+                    try:
+                        # Làm sạch chuỗi %, biến đổi dấu phẩy của Việt Nam thành dấu chấm thập phân
+                        raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
+                        hoa_hong = float(raw_hh)
+                        # Nếu người dùng nhập dạng phần trăm Excel (ví dụ 0.2 tương ứng 20%)
+                        if hoa_hong < 1.0 and hoa_hong > 0:
+                            hoa_hong = hoa_hong * 100
+                    except:
+                        hoa_hong = 0.0
+                
+                # Đóng gói dữ liệu dạng Nested Dictionary (Từ điển lồng nhau)
+                danh_sach_dv[ten_dv] = {
+                    "gia": gia_goc,
+                    "hoa_hong": hoa_hong
+                }
+        return danh_sach_dv
+    exceptException as e: 
+        return {}
 
 def display_header(settings):
     raw_logo = settings.get('Logo', '')
@@ -208,7 +238,6 @@ def main():
         tabs = st.tabs(t_list)
 
         with tabs[0]:
-            # THANH THÔNG TIN CA LÀM VIỆC TRẢI DÀI TRÊN ĐẦU TRANG MƯỢT MÀ
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ:** {get_now_vn().strftime('%H:%M')}")
                     
             services = get_service_data()
@@ -217,11 +246,15 @@ def main():
             with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("SĐT")
             
-            dv_chon = st.selectbox("Dịch vụ", list(services.keys()))
+            # Đọc danh sách khóa (Tên dịch vụ) từ cấu trúc dữ liệu mới
+            dv_list = list(services.keys())
+            dv_chon = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
             dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             
-            gia_goc = services.get(dv_chon, 0)
+            # Truy xuất giá gốc từ Dictionary lồng nhau một cách an toàn
+            info_dv = services.get(dv_chon, {"gia": 0.0, "hoa_hong": 0.0})
+            gia_goc = info_dv.get("gia", 0.0)
             t_bill = gia_goc * dv_sl
             
             st.divider()
@@ -278,7 +311,6 @@ def main():
                         st.error(f"Lỗi lưu đơn: {e}")
                         st.session_state.submitting = False
 
-            # NÚT THOÁT APP ĐƯỢC CHỐT HẠ Ở ĐÁY TAB NHẬP LIỆU CỰC KỲ AN TOÀN
             st.divider()
             if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True, help="Đăng xuất tài khoản hiện tại"):
                 st.session_state.clear()
@@ -351,3 +383,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
