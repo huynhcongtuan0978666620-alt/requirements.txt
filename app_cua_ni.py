@@ -18,59 +18,36 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🚨 BLOCK CSS BỌC THÉP - QUÉT SẠCH THÀNH PHẦN THỪA & MANAGE APP 🚨 */
+        /* 🛡️ TẤM CHIÊN BẢO VỆ - ĐÈ BẸP VÀ CHE KHUẤT THANH MANAGE APP */
         /* ========================================================= */
 
-        /* 1. ẨN TOÀN BỘ THANH TIÊU ĐỀ, CHÂN TRANG VÀ NÚT DEPLOY */
-        header, 
-        footer, 
-        .stAppDeployButton,
-        [data-testid="stHeader"],
-        [data-testid="stFooter"] {
+        /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
+        header, footer, .stAppDeployButton {
             display: none !important;
             visibility: hidden !important;
+        }
+        [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
+            display: none !important;
         }
 
-        /* 2. KHÓA CHẶT THANH TOOLBAR VÀ TIỆN ÍCH TRẠNG THÁI MỚI */
-        [data-testid="stStatusWidget"],
-        [data-testid="stToolbar"],
-        [class*="stToolbar"],
-        [class*="stDecoration"] {
-            display: none !important;
-            visibility: hidden !important;
+        /* 2. ĐÈ BẸP DIỆN TÍCH CUỘN KHÔNG CHO THANH ĐEN CÓ CHỖ ĐỨNG */
+        .stApp {
+            margin-bottom: 60px !important; /* Đẩy toàn bộ nội dung App lên cách đáy 60px */
         }
 
-        /* 3. DIỆT TẬN GỐC THANH MANAGE APP GÓC DƯỚI BÊN PHẢI */
-        div[class*="stAppViewerToolbar"],
-        div[data-testid="stAppViewerToolbar"],
-        [class*="ViewerToolbar"],
-        [class*="StyledAppViewerToolbar"],
-        footer + div,
-        div[style*="position: fixed"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            height: 0 !important;
-            width: 0 !important;
-            pointer-events: none !important;
-            transform: scale(0) !important;
+        /* 3. TẠO TẤM BÊ TÔNG TRẮNG PHỦ TRÊN CÙNG ĐỂ CHE CHẾT THANH ĐEN */
+        body::after {
+            content: "" !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            height: 55px !important; /* Chiều cao vừa đủ để bao trọn thanh đen */
+            background-color: #ffffff !important; /* Đổi thành #1e293b nếu dùng giao diện tối */
+            z-index: 999999 !important; /* Đặt lớp hiển thị ở mức tối cao để đè lên tất cả */
+            pointer-events: auto !important; /* Biến vùng này thành vùng tàng hình chặn mọi cú bấm */
         }
 
-        /* 2. TRUY QUÉT TOÀN DIỆN DIỆT THANH MANAGE APP (CÚ PHÁP SỬA LỖI) */
-        div[class*="stAppViewerToolbar"],
-        div[data-testid="stAppViewerToolbar"],
-        [class*="ViewerToolbar"],
-        [class*="StyledAppViewerToolbar"],
-        footer + div,
-        div[style*="position: fixed"] {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            height: 0 !important;
-            width: 0 !important;
-            pointer-events: none !important;
-            transform: scale(0) !important;
-        }
 
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
