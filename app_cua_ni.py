@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🎨 HỘP CHÀO MỪNG CLONE MANAGE APP - ĐỐI XỨNG TUYỆT ĐỐI V5   */
+        /* 🎨 HỘP CLONE MANAGE APP - SỬA LỖI ĐỒNG SIZE TUYỆT ĐỐI V6    */
         /* ========================================================= */
 
         /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
@@ -30,50 +30,52 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. TRẢ LẠI GIAO DIỆN FULL MÀN HÌNH CHUẨN */
+        /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
         html, body, .stApp {
             height: 100% !important;
             margin: 0 !important;
             padding: 0 !important;
         }
 
-        /* 3. THIẾT KẾ HỘP BÊN TRÁI GIỐNG HỆT 100% THẰNG BÊN PHẢI */
+        /* 3. ĐỒNG BỘ SIZE THEO TỌA ĐỘ SÁT ĐÁY (FIX HỦT CHIỀU CAO) */
         body::after {
-            /* Nội dung chữ viết hoa thanh lịch kèm dấu ">" đối xứng */
             content: "KIM HIỀN SALON  >" !important;
-            
             position: fixed !important;
-            bottom: 0 !important;       /* Sát đáy bằng khít nhau */
-            left: 0 !important;         /* Nằm góc trái màn hình */
             
-            /* Kích thước đồng bộ hoàn hảo */
-            width: 155px !important;    /* Chiều rộng tương đương nút gốc */
-            height: 36px !important;    /* Chiều cao khớp từng milimét */
+            /* 💥 TUYỆT CHIÊU: KHÓA CHẶT ĐỈNH VÀ ĐÁY THEO KHUNG HỆ THỐNG GỐC */
+            bottom: 0 !important;       
+            top: auto !important;
+            height: auto !important;    /* Tháo bỏ chiều cao cố định cũ */
             
-            /* Sao chép màu nền đen mờ Acrylic đặc trưng của Streamlit Cloud */
+            /* Đồng bộ khoảng cách đệm từ chân màn hình lên y hệt thanh gốc */
+            padding-top: 10px !important;    
+            padding-bottom: 12px !important; /* Tràn khít mép dưới điện thoại */
+            
+            left: 0 !important;         /* Ghim góc trái */
+            width: calc(100% - 150px) !important; /* Chừa đúng khoảng cho Manage app */
+            
+            /* Màu nền và bo góc chuẩn chỉ */
             background-color: #131824 !important; 
-            
-            /* Bo góc trên bên phải nhẹ nhàng giống hệt bản gốc */
             border-top-right-radius: 4px !important; 
             
-            /* Đồng bộ font chữ, màu sắc xám bạc hệ thống */
+            /* Phông chữ, cỡ chữ, màu sắc đồng điệu 100% */
             color: #e0e0e0 !important;   
             font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important; 
-            font-size: 14px !important;  /* Cỡ chữ bằng khít nhau */
-            font-weight: 400 !important; /* Độ thanh mảnh của chữ */
+            font-size: 14px !important;  
+            font-weight: 400 !important; 
             
-            /* Canh chữ nằm chính giữa hộp */
+            /* Canh chữ nằm ngay ngắn giữa hộp */
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
             box-sizing: border-box !important;
             
-            /* Xóa sạch mọi đường viền hay bóng mờ theo ý ní */
             border: none !important;
             box-shadow: none !important;
             
             z-index: 9999 !important;
         }
+
 
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
