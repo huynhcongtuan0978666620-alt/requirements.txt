@@ -17,11 +17,11 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ========================================================= */
-        /* 🛡️ TẤM CHIÊN BẢO VỆ - ĐÈ BẸP VÀ CHE KHUẤT THANH MANAGE APP */
+            /* ========================================================= */
+        /* 🛡️ CHIÊU CUỐI: CÔ LẬP THANH MANAGE APP VÀO VÙNG ĐẤT CHẾT    */
         /* ========================================================= */
 
-        /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
+        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG MẶC ĐỊNH */
         header, footer, .stAppDeployButton {
             display: none !important;
             visibility: hidden !important;
@@ -30,25 +30,17 @@ st.markdown("""
             display: none !important;
         }
 
-        /* 2. ĐÈ BẸP DIỆN TÍCH CUỘN KHÔNG CHO THANH ĐEN CÓ CHỖ ĐỨNG */
+        /* 2. CO NGẮN VÀ ĐẨY TOÀN BỘ APP LÊN TRÊN ĐỂ CÔ LẬP THANH ĐEN */
+        html, body {
+            height: calc(100vh - 65px) !important; /* Thu hẹp chiều cao màn hình hiển thị */
+            padding-bottom: 65px !important;       /* Tạo khoảng khoảng trống an toàn dưới đáy */
+            overflow-x: hidden !important;
+        }
+
         .stApp {
-            margin-bottom: 60px !important; /* Đẩy toàn bộ nội dung App lên cách đáy 60px */
+            bottom: 65px !important; /* Giữ chặt chân App không cho chạm vào vùng thanh đen */
         }
-
-        /* 3. TẠO TẤM BÊ TÔNG TRẮNG PHỦ TRÊN CÙNG ĐỂ CHE CHẾT THANH ĐEN */
-        body::after {
-            content: "" !important;
-            position: fixed !important;
-            bottom: 0 !important;
-            right: 0 !important;
-            width: 100% !important;
-            height: 55px !important; /* Chiều cao vừa đủ để bao trọn thanh đen */
-            background-color: #ffffff !important; /* Đổi thành #1e293b nếu dùng giao diện tối */
-            z-index: 999999 !important; /* Đặt lớp hiển thị ở mức tối cao để đè lên tất cả */
-            pointer-events: auto !important; /* Biến vùng này thành vùng tàng hình chặn mọi cú bấm */
-        }
-
-
+        
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
