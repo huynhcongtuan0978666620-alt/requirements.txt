@@ -157,7 +157,6 @@ def get_service_data():
                 except:
                     gia_goc = 0.0
                 
-                # Mặc định hoa hồng là 0 nếu không nhập gì ở cột C
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
                     try:
@@ -260,19 +259,21 @@ def main():
             with c2: kh_sdt = st.text_input("SĐT")
             
             dv_chon = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
-            dv_sl = st.number_input("Số lượng", 0.5, 100.0, 1.0, 0.5)
+            
+            # ĐỔI MẶC ĐỊNH SỐ LƯỢNG VỀ 0.00 VÀ LIMIT MIN LÀ 0.00 THEO YÊU CẦU THỰC CHIẾN
+            dv_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             ghi_chu = st.text_input("Ghi chú thêm (nếu có)", placeholder="Ví dụ: Khách hàng rất hài lòng")
             
             info_dv = services.get(dv_chon, {"gia": 0.0, "hoa_hong": 0.0})
             gia_goc = info_dv.get("gia", 0.0)
             phan_tram_hh = info_dv.get("hoa_hong", 0.0)
             
+            # Logic tính toán: Nếu số lượng bằng 0, tiền mặc định ra 0 đ
             t_bill = gia_goc * dv_sl
             t_cong_tho = t_bill * (phan_tram_hh / 100.0)
             
             st.divider()
             
-            # CẬP NHẬT GIAO DIỆN ĐỒNG BỘ: KHUNG ĐỨT ÔM TRỌN SỐ TIỀN 
             col_bill1, col_bill2 = st.columns(2)
             with col_bill1:
                 st.markdown(f"""
@@ -292,7 +293,12 @@ def main():
                 st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
             can_go = True
-            if st.session_state.last_submit:
+            # HÀNG RÀO AN TOÀN BỔ SUNG: Không cho lưu nếu chưa nhập số lượng (số lượng = 0)
+            if dv_sl <= 0:
+                can_go = False
+                st.warning("⚠️ Nhắc nhở: Vui lòng nhập Số lượng dịch vụ lớn hơn 0 để lưu đơn.")
+            
+            if st.session_state.last_submit and can_go:
                 tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
                 han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
                 if tg_cho < han_muc:
@@ -314,7 +320,6 @@ def main():
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                         bay_gio = get_now_vn()
                         
-                        # LƯU VÀO SHEET ĐỒNG BỘ TIỀN CÔNG THỢ (CỘT K)
                         ws.append_row([
                             bay_gio.strftime("%d/%m/%Y"), 
                             st.session_state.full_name,   
@@ -411,4 +416,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-                    
+        
