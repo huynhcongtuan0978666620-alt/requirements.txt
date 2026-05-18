@@ -406,8 +406,7 @@ def main():
                         c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
                     else: st.info("Trống.")
                 except Exception as e: st.error(f"Lỗi báo cáo: {e}")
-
-            with tabs[2]:
+                with tabs[2]:
                 st.subheader("⚙️ QUẢN TRỊ")
                 with st.expander("🔗 LIÊN KẾT SHEET"):
                     st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
@@ -421,4 +420,38 @@ def main():
                 with st.expander("🎫 Tạo/Xem mã nhân viên"):
                     try:
                         cl = get_gspread_client()
-                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                        ws_user = sh.worksheet("NhanVien")
+                        
+                        with st.form("add_user_form", clear_on_submit=True):
+                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
+                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
+                            new_name = st.text_input("Tên thật nhân viên (Hiển thị khi lên đơn)")
+                            
+                            if st.form_submit_button("CẤP MÃ MỚI"):
+                                if new_sdt and new_code and new_name:
+                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
+                                    st.success(f"Đã cấp tài khoản thành công cho {new_name}!")
+                                    st.cache_data.clear()
+                                    time.sleep(1)
+                                    st.rerun()
+                                else:
+                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
+                        
+                        st.write("---")
+                        st.write("**Danh sách nhân sự hiện tại:**")
+                        user_data = ws_user.get_all_records()
+                        if user_data:
+                            st.table(pd.DataFrame(user_data))
+                    except Exception as e:
+                        st.error(f"Lỗi hệ thống nhân sự: {e}")
+                        st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
+                
+                st.divider()
+                if st.button("🚪 THOÁT RA", use_container_width=True):
+                    st.session_state.clear()
+                    st.rerun()
+
+if __name__ == "__main__":
+    main()
+    
