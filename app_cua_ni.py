@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🎨 THIẾT KẾ HỘP CHÀO MỪNG - ĐÓNG KHUNG VIỀN SÁNG CHUẨN V2 */
+        /* 🎨 HỘP CHÀO MỪNG SONG SONG - GÓC TRÁI ĐỐI XỨNG CHUẨN V3    */
         /* ========================================================= */
 
         /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
@@ -37,38 +37,37 @@ st.markdown("""
             padding: 0 !important;
         }
 
-        /* 3. ĐÓNG KHUNG GỌN GÀNG VÀ TẠO VIỀN SÁNG CHE THANH ĐEN */
+        /* 3. ĐẨY HỘP QUA TRÁI - SONG SONG VÀ NGANG HÀNG VỚI THANH ĐEN */
         body::after {
             content: "👋 Chào Mừng Bạn Đến Nhà Của KIM HIỀN" !important;
             position: fixed !important;
-            bottom: 10px !important;  /* Nâng lên một chút để tạo độ thoáng */
-            right: 10px !important;  /* Ghim chặt góc phải */
+            bottom: 0 !important;     /* Ghim sát đáy giống thanh đen */
+            left: 0 !important;       /* Dạt hẳn sang góc trái để không bị đè */
             
-            /* Kích thước gọn gàng, vừa đủ bao Ma... App gốc */
-            width: 250px !important; 
-            height: 40px !important; 
+            /* Kích thước bóp gọn, cao bằng chuẩn thanh đen */
+            width: calc(100% - 160px) !important; /* Chừa khoảng trống bên phải cho Manage app */
+            height: 36px !important;              /* Chiều cao khớp 100% với thanh đen */
             
-            /* Giao diện màu đen mờ (Acrylic) sang trọng, tiệp màu gốc */
-            background: rgba(17, 24, 39, 0.95) !important; 
-            backdrop-filter: blur(4px) !important;
-            border-radius: 10px !important; /* Bo góc mềm mại */
+            /* Giao diện Acrylic màu đen tiệp màu 100% */
+            background: #131824 !important; 
+            border-top: 1px solid rgba(255, 193, 7, 0.4) !important; /* Đường chỉ vàng sang trọng */
             
-            /* ✨ ĐIỂM NHẤN: VIỀN SÁNG VÀNG KIM NEON ✨ */
-            border: 2px solid rgba(255, 193, 7, 0.5) !important; 
-            box-shadow: 0 0 15px rgba(255, 193, 7, 0.3) !important; /* Tạo độ tỏa sáng */
+            /* ✨ VIỀN SÁNG VÀNG KIM BO GÓC TRÊN TRÁI ĐỂ TẠO ĐIỂM NHẤN ✨ */
+            border-right: 2px solid rgba(255, 193, 7, 0.5) !important;
+            border-top-right-radius: 8px !important;
+            box-shadow: 2px -2px 10px rgba(255, 193, 7, 0.2) !important;
             
-            /* Cấu hình chữ chào mừng nằm ngay lề trái */
-            color: #d1d5db !important; /* Màu xám bạc sang trọng */
+            /* Cấu hình chữ chào mừng căn giữa điệu nghệ */
+            color: #ffffff !important;
             font-family: 'Inter', sans-serif !important;
             font-size: 11px !important;
             font-weight: 600 !important;
             display: flex !important;
             align-items: center !important;
-            padding-left: 12px !important; /* Đẩy chữ qua trái, nhường góc phải cho nút bấm */
+            padding-left: 15px !important;
             box-sizing: border-box !important;
             
-            /* Đặt z-index để nút Manage app hiển thị ĐÈ LÊN TRÊN lớp nền này */
-            z-index: 9998 !important; 
+            z-index: 9999 !important; 
         }
 
 
