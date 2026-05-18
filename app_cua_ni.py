@@ -18,7 +18,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* ========================================================= */
-        /* 🎨 HỘP CHÀO MỪNG ĐỒNG BỘ SONG SONG ĐÁY MÀN HÌNH CHUẨN V4   */
+        /* 🎨 DẢI BĂNG ĐÔ NGUYÊN KHỐI - TRÀN MÀN HÌNH ĐỒNG BỘ 100%   */
         /* ========================================================= */
 
         /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
@@ -37,40 +37,42 @@ st.markdown("""
             padding: 0 !important;
         }
 
-        /* 3. TẠO THANH NỀN TRÁI SONG SONG VÀ KHỚP KHÍT VỚI MANAGE APP */
+        /* 3. ĐỔ NỀN NGUYÊN KHỐI TRÀN ĐÁY - NUỐT TRỌN THANH MANAGE APP */
         body::after {
-            content: "✨ KIM HIỀN SALON ✨" !important;
+            content: "✨ KIM HIỀN SALON - NƠI BẠN ĐẶT NIỀM TIN ✨" !important;
             position: fixed !important;
-            bottom: 0 !important;       /* Nằm sát đáy 100% */
-            left: 0 !important;         /* Ghim bên góc trái */
+            bottom: 0 !important;
+            left: 0 !important;
             
-            /* Cấu hình chiều rộng chừa đúng khoảng cho thanh Manage app */
-            width: calc(100% - 152px) !important; 
-            height: 38px !important;    /* Khớp tuyệt đối chiều cao thanh đen */
+            /* Tràn hết 100% chiều ngang màn hình điện thoại */
+            width: 100% !important; 
+            height: 40px !important; /* Chiều cao bao khít, nuốt trọn thanh đen */
             
-            /* Màu nền đen tuyền đồng bộ với hệ thống */
+            /* Màu nền đen tuyền đồng nhất tuyệt đối với thanh gốc */
             background-color: #131824 !important; 
             
-            /* ✨ ĐƯỜNG VIỀN LED VÀNG KIM SANG TRỌNG CHẠY NGANG ✨ */
-            border-top: 2px solid rgba(255, 193, 7, 0.6) !important;
-            box-shadow: 0 -3px 10px rgba(255, 193, 7, 0.2) !important;
+            /* ✨ ĐƯỜNG VIỀN LED VÀNG KIM CHẠY CĂNG NGANG TOÀN BỘ MÀN HÌNH ✨ */
+            border-top: 2px solid rgba(255, 193, 7, 0.7) !important;
+            box-shadow: 0 -4px 12px rgba(255, 193, 7, 0.25) !important;
             
-            /* Định hình cỡ chữ nhỏ gọn, không bao giờ bị lệch dòng */
+            /* Cấu hình chữ chạy dài từ trái qua phải */
             color: #ffffff !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
             font-size: 11px !important;
             font-weight: bold !important;
-            text-transform: uppercase !important; /* Viết hoa cho uy tín */
-            letter-spacing: 1px !important;      /* Giãn chữ đều đẹp */
+            text-transform: uppercase !important;
+            letter-spacing: 1px !important;
             
-            /* Canh chữ nằm chính giữa hộp theo chiều dọc */
+            /* Canh chữ nằm thẳng hàng theo chiều dọc, đẩy nhẹ sang trái */
             display: flex !important;
             align-items: center !important;
-            padding-left: 20px !important;
+            padding-left: 16px !important;
             box-sizing: border-box !important;
             
-            z-index: 9999 !important;
+            /* Đặt lớp nền nằm ngay dưới nút bấm hệ thống một bậc để nút vẫn hoạt động */
+            z-index: 9998 !important; 
         }
+
 
 
 
