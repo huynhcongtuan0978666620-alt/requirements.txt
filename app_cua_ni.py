@@ -20,7 +20,7 @@ import streamlit as st
 # =========================================================
 # 🎆 ĐOẠN 1: GIAO DIỆN CLONE ĐỒNG SIZE & HIỆU ỨNG PHÁO HOA V7
 # =========================================================
-st.markdown("""
+st.write("""
 <style>
 /* 1. AN THANH PHAN THUA HE THONG */
 header, footer, .stAppDeployButton {
@@ -38,7 +38,7 @@ html, body, .stApp {
     padding: 0 !important;
 }
 
-/* 3. THIET KE NUT BAM CLONE MANAGE APP (DONG SIZE TUYET DOI V7) */
+/* 3. THIET KE NUT BAM CLONE MANAGE APP (DONG SIZE TUYET DOI) */
 .clone-manage-btn {
     position: fixed !important;
     bottom: 0 !important;
@@ -105,10 +105,6 @@ function createFirework(e) {
 </script>
 """, unsafe_allow_html=True)
 
-
-
-
-        
         /* TABS ĐỒNG BỘ */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6;}
