@@ -17,34 +17,61 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ================================================================= */
-/* 🚨 ĐOẠN CSS TỔNG LỰC TRUY QUÉT - DIỆT TẬN GỐC THANH MANAGE APP 🚨 */
-/* ================================================================= */
+        /* ========================================================= */
+        /* 🚨 BLOCK CSS BỌC THÉP - QUÉT SẠCH THÀNH PHẦN THỪA & MANAGE APP 🚨 */
+        /* ========================================================= */
 
-        /* 1. ẨN THÀNH PHẦN THỪA HỆ THỐNG */
-header, footer, .stAppDeployButton {
-    display: none !important; 
-    visibility: hidden !important;
-}
-[data-testid="stStatusWidget"], [data-testid="stToolbar"] {
-    display: none !important;
-}
+        /* 1. ẨN TOÀN BỘ THANH TIÊU ĐỀ, CHÂN TRANG VÀ NÚT DEPLOY */
+        header, 
+        footer, 
+        .stAppDeployButton,
+        [data-testid="stHeader"],
+        [data-testid="stFooter"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
 
-/* 2. TRUY QUÉT TOÀN DIỆN DIỆT THANH MANAGE APP (KHÔNG CHO SÓT MỘT THẰNG NÀO) */
-div[class*="stAppViewerToolbar"], 
-div[data-testid="stAppViewerToolbar"],
-[class*="ViewerToolbar"],
-[class*="StyledAppViewerToolbar"],
-footer + div,
-div[style*="position: fixed"][style*="bottom: 0"][style*="right: 0"] {
-    display: none !important;
-    visibility: hidden !important;
-    opacity: 0 !important;
-    height: 0 !important;
-    width: 0 !important;
-    pointer-events: none !important;
-    transform: scale(0) !important;
-}
+        /* 2. KHÓA CHẶT THANH TOOLBAR VÀ TIỆN ÍCH TRẠNG THÁI MỚI */
+        [data-testid="stStatusWidget"],
+        [data-testid="stToolbar"],
+        [class*="stToolbar"],
+        [class*="stDecoration"] {
+            display: none !important;
+            visibility: hidden !important;
+        }
+
+        /* 3. DIỆT TẬN GỐC THANH MANAGE APP GÓC DƯỚI BÊN PHẢI */
+        div[class*="stAppViewerToolbar"],
+        div[data-testid="stAppViewerToolbar"],
+        [class*="ViewerToolbar"],
+        [class*="StyledAppViewerToolbar"],
+        footer + div,
+        div[style*="position: fixed"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            width: 0 !important;
+            pointer-events: none !important;
+            transform: scale(0) !important;
+        }
+
+        /* 2. TRUY QUÉT TOÀN DIỆN DIỆT THANH MANAGE APP (CÚ PHÁP SỬA LỖI) */
+        div[class*="stAppViewerToolbar"],
+        div[data-testid="stAppViewerToolbar"],
+        [class*="ViewerToolbar"],
+        [class*="StyledAppViewerToolbar"],
+        footer + div,
+        div[style*="position: fixed"] {
+            display: none !important;
+            visibility: hidden !important;
+            opacity: 0 !important;
+            height: 0 !important;
+            width: 0 !important;
+            pointer-events: none !important;
+            transform: scale(0) !important;
+        }
+
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
