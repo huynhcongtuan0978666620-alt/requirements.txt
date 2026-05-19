@@ -17,45 +17,42 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-/* ==========================================
-BẢNG HIỆU KIM HIỀN SALON THỰC TẾ - CHỮ ĐỎ NỀN VÀNG
-========================================== */
+    /* ==========================================
+   BẢNG HIỆU KIM HIỀN SALON LÊN ĐỈNH MÀN HÌNH
+   ========================================== */
 
 /* 1. ĐẨY TOÀN BỘ APP XUỐNG ĐỂ KHÔNG BỊ BANNER CHE */
 .stApp {
-    padding-top: 52px !important;
+    padding-top: 50px !important;
 }
 
-/* 2. THIẾT KẾ BẢNG HIỆU THEO PHONG CÁCH NGOÀI ĐỜI */
+/* 2. THIẾT KẾ THANH BANNER ĐỈNH (FULL CHIỀU NGANG) */
 .clone-manage-btn {
     position: fixed !important;
     top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 46px !important;
-    background: #f1c40f !important; /* Nền vàng tươi chuẩn bảng hiệu ngoài trời */
-    color: #800020 !important; /* Chữ màu đỏ Bordeaux sang trọng giống thực tế */
-    font-family: 'Arial Alternative', 'Helvetica Neue', 'Arial', sans-serif !important;
-    font-size: 17px !important;
-    font-weight: 900 !important; /* Chữ siêu đậm nét */
+    height: 42px !important;
+    background-color: #131824 !important;
+    color: #e0e0e0 !important;
+    font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
     letter-spacing: 0.5px !important;
-
-    /* TẠO VIỀN TRẮNG VÀ ĐỔ BÓNG 3D CHO CHỮ NỔI LÊN */
-    -webkit-text-stroke: 1px #ffffff !important; /* Viền trắng chạy quanh chữ */
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important; /* Đổ bóng nhẹ phía sau cho có độ dày */
-
-    border-bottom: 3px solid #800020 !important; /* Chỉ viền dưới đáy màu đỏ bordeaux giữ tông */
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
     user-select: none !important;
-    box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important;
+    border: none !important;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.2) !important;
     z-index: 99999 !important;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 3. HIỆU ỨNG HẠT PHÁO HOA KHI CHẠM */
+/* 3. HIỆU ỨNG HẠT PHÁO HOA */
 .firework-particle {
     position: fixed !important;
     width: 6px;
@@ -66,7 +63,7 @@ BẢNG HIỆU KIM HIỀN SALON THỰC TẾ - CHỮ ĐỎ NỀN VÀNG
 }
 </style>
 
-<div class="clone-manage-btn" onclick="createFirework(event)">KIM HIỀN</div>
+<div class="clone-manage-btn" onclick="createFirework(event)">✨ KIM HIỀN SALON ✨</div>
 
 <script>
 if (!window.fireworkStylesAdded) {
@@ -79,7 +76,7 @@ if (!window.fireworkStylesAdded) {
 function createFirework(e) {
     const clickX = e.clientX;
     const clickY = e.clientY;
-    const particleCount = 40;
+    const particleCount = 35;
     const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
@@ -89,7 +86,7 @@ function createFirework(e) {
         particle.style.top = clickY + 'px';
         particle.style.animation = 'explode 0.7s ease-out forwards';
         const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 120 + 40; 
+        const velocity = Math.random() * 100 + 30; 
         particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
         particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
         document.body.appendChild(particle);
@@ -97,7 +94,7 @@ function createFirework(e) {
     }
 }
 </script>
-
+<style>
 
         /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
 header, footer, .stAppDeployButton {
