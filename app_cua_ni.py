@@ -72,7 +72,6 @@ if (!window.fireworkStylesAdded) {
     document.head.appendChild(style);
     window.fireworkStylesAdded = true;
 }
-
     function createFirework(e) {
         const clickX = e.clientX;
         const clickY = e.clientY;
