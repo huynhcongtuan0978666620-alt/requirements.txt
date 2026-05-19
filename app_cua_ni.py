@@ -17,42 +17,57 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* ==========================================
-   BẢNG HIỆU KIM HIỀN SALON LÊN ĐỈNH MÀN HÌNH
+/* ==========================================
+   CẶP BANNER SONG SONG - ĐỈNH VÀ ĐÁY MÀN HÌNH
    ========================================== */
 
-/* 1. ĐẨY TOÀN BỘ APP XUỐNG ĐỂ KHÔNG BỊ BANNER CHE */
+/* 1. ĐẨY CẢ TRÊN VÀ DƯỚI ĐỂ APP KHÔNG BỊ BANNER CHE */
 .stApp {
-    padding-top: 50px !important;
+    padding-top: 52px !important;
+    padding-bottom: 52px !important;
 }
 
-/* 2. THIẾT KẾ THANH BANNER ĐỈNH (FULL CHIỀU NGANG) */
-.clone-manage-btn {
+/* 2. CẤU HÌNH CHUNG CHO CẢ HAI BANNER */
+.banner-top, .banner-bottom {
     position: fixed !important;
-    top: 0 !important;
     left: 0 !important;
     right: 0 !important;
-    height: 42px !important;
-    background-color: #000000 !important;
-    color: #fcfcfc !important;
-    font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
-    font-size: 14px !important;
-    font-weight: 600 !important;
+    height: 46px !important;
+    background: #f1c40f !important; /* Nền vàng tươi chuẩn bảng hiệu */
+    color: #800020 !important; /* Chữ màu đỏ Bordeaux giống thực tế */
+    font-family: 'Arial Alternative', 'Helvetica Neue', 'Arial', sans-serif !important;
+    font-size: 17px !important;
+    font-weight: 900 !important; /* Chữ siêu đậm nét */
     letter-spacing: 0.5px !important;
-    border-bottom-left-radius: 8px !important;
-    border-bottom-right-radius: 8px !important;
+
+    /* TẠO VIỀN TRẮNG VÀ ĐỔ BÓNG 3D CHO CHỮ NỔI LÊN */
+    -webkit-text-stroke: 1px #ffffff !important; 
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important; 
+
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
     cursor: pointer !important;
     user-select: none !important;
-    border: none !important;
-    box-shadow: 0px 2px 8px rgba(0,0,0,0.2) !important;
     z-index: 99999 !important;
     -webkit-tap-highlight-color: transparent;
 }
 
-/* 3. HIỆU ỨNG HẠT PHÁO HOA */
+/* 3. ĐỊNH VỊ BANNER TRÊN ĐỈNH */
+.banner-top {
+    top: 0 !important;
+    border-bottom: 3px solid #800020 !important; /* Chỉ viền dưới màu đỏ bordeaux */
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* 4. ĐỊNH VỊ BANNER DƯỚI ĐÁY */
+.banner-bottom {
+    bottom: 0 !important;
+    border-top: 3px solid #800020 !important; /* Chỉ viền trên màu đỏ bordeaux */
+    box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important;
+}
+
+/* 5. HIỆU ỨNG HẠT PHÁO HOA KHI CHẠM */
 .firework-particle {
     position: fixed !important;
     width: 6px;
@@ -63,7 +78,8 @@ st.markdown("""
 }
 </style>
 
-<div class="clone-manage-btn" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+<div class="banner-top" onclick="createFirework(event)">KIM HIỀN</div>
+<div class="banner-bottom" onclick="createFirework(event)">KIM HIỀN</div>
 
 <script>
 if (!window.fireworkStylesAdded) {
@@ -76,7 +92,7 @@ if (!window.fireworkStylesAdded) {
 function createFirework(e) {
     const clickX = e.clientX;
     const clickY = e.clientY;
-    const particleCount = 35;
+    const particleCount = 40;
     const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
@@ -86,7 +102,7 @@ function createFirework(e) {
         particle.style.top = clickY + 'px';
         particle.style.animation = 'explode 0.7s ease-out forwards';
         const angle = Math.random() * Math.PI * 2;
-        const velocity = Math.random() * 100 + 30; 
+        const velocity = Math.random() * 120 + 40; 
         particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
         particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
         document.body.appendChild(particle);
