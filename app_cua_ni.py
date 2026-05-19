@@ -17,6 +17,85 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+    /* ==========================================
+   BẢNG HIỆU KIM HIỀN SALON LÊN ĐỈNH MÀN HÌNH
+   ========================================== */
+
+/* 1. ĐẨY TOÀN BỘ APP XUỐNG ĐỂ KHÔNG BỊ BANNER CHE */
+.stApp {
+    padding-top: 50px !important;
+}
+
+/* 2. THIẾT KẾ THANH BANNER ĐỈNH (FULL CHIỀU NGANG) */
+.clone-manage-btn {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: 42px !important;
+    background-color: #131824 !important;
+    color: #e0e0e0 !important;
+    font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    letter-spacing: 0.5px !important;
+    border-bottom-left-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    user-select: none !important;
+    border: none !important;
+    box-shadow: 0px 2px 8px rgba(0,0,0,0.2) !important;
+    z-index: 99999 !important;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* 3. HIỆU ỨNG HẠT PHÁO HOA */
+.firework-particle {
+    position: fixed !important;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    pointer-events: none !important;
+    z-index: 100000 !important;
+}
+</style>
+
+<div class="clone-manage-btn" onclick="createFirework(event)">✨ KIM HIỀN SALON ✨</div>
+
+<script>
+if (!window.fireworkStylesAdded) {
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
+    document.head.appendChild(style);
+    window.fireworkStylesAdded = true;
+}
+
+function createFirework(e) {
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    const particleCount = 35;
+    const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.className = 'firework-particle';
+        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+        particle.style.left = clickX + 'px';
+        particle.style.top = clickY + 'px';
+        particle.style.animation = 'explode 0.7s ease-out forwards';
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = Math.random() * 100 + 30; 
+        particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
+        particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
+        document.body.appendChild(particle);
+        setTimeout(() => { particle.remove(); }, 700);
+    }
+}
+</script>
+<style>
+
         /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
 header, footer, .stAppDeployButton {
     display: none !important; 
