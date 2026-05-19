@@ -34,6 +34,14 @@ st.markdown("""
             padding-bottom: 53px !important;
         }
 
+        /* XỬ LÝ TRIỆT ĐỂ LỖI CHỮ HOANG _arrow_right VÀ _arrow_down TRÊN st.expander */
+        [data-testid="stExpander"] details summary span p {
+            display: inline-block !important;
+        }
+        [data-testid="stExpander"] svg + div {
+            display: none !important;
+        }
+
         /* Ẩn triệt để các thành phần thừa của Streamlit */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
@@ -362,7 +370,6 @@ def main():
                 st.markdown(f"📋 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
-                    # Tối ưu tỷ lệ cột [4.5, 3.5, 2] thành [5, 3.5, 1.5] để chữ "Xóa" không bị rớt dòng gây vỡ layout
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
                     with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
                     with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
@@ -498,7 +505,6 @@ def main():
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.subheader("⚙️ HỆ THỐNG QUẢN TRỊ")
-                # Đã sửa triệt để lỗi hiển thị text thô ":arrow_right:" thành Emoji thực tế
                 with st.expander("LIÊN KẾT GOOGLE SHEET GỐC"):
                     st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
@@ -508,7 +514,7 @@ def main():
                 
                 st.divider()
                 st.markdown("### 👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
-                with st.expander("Cấp tài khoản mới / Xem danh sách"):
+                with st.expander("Cập nhật tài khoản mới / Xem danh sách"):
                     try:
                         cl = get_gspread_client()
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
