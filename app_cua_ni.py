@@ -33,7 +33,7 @@ st.markdown("""
     left: 0 !important;
     right: 0 !important;
     height: 46px !important;
-    background: #f1c40f !important; /* Nền vàng tươi chuẩn bảng hiệu */
+    background: #fefefe !important; /* Nền vàng tươi chuẩn bảng hiệu */
     color: #800020 !important; /* Chữ màu đỏ Bordeaux giống thực tế */
     font-family: 'Arial Alternative', 'Helvetica Neue', 'Arial', sans-serif !important;
     font-size: 17px !important;
