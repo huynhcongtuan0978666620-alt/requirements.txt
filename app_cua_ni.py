@@ -17,66 +17,26 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* ========================================================= */
-        /* 🎨 HỘP CLONE MANAGE APP - SỬA LỖI ĐỒNG SIZE TUYỆT ĐỐI V6    */
-        /* ========================================================= */
+        /* 1. ẨN THÀNH PHẦN THỪA CƠ BẢN */
+header, footer, .stAppDeployButton {
+    display: none !important; 
+    visibility: hidden !important;
+}
+[data-testid="stStatusWidget"], [data-testid="stToolbar"] {
+    display: none !important;
+}
 
-        /* 1. ẨN THÀNH PHẦN THỪA KHÔNG LIÊN QUAN */
-        header, footer, .stAppDeployButton {
-            display: none !important;
-            visibility: hidden !important;
-        }
-        [data-testid="stStatusWidget"], [data-testid="stToolbar"] {
-            display: none !important;
-        }
-
-        /* 2. ĐẢM BẢO KHÔNG GIAN FULL MÀN HÌNH */
-        html, body, .stApp {
-            height: 100% !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-
-        /* 3. ĐỒNG BỘ SIZE THEO TỌA ĐỘ SÁT ĐÁY (FIX HỦT CHIỀU CAO) */
-        body::after {
-            content: "KIM HIỀN SALON  >" !important;
-            position: fixed !important;
-            
-            /* 💥 TUYỆT CHIÊU: KHÓA CHẶT ĐỈNH VÀ ĐÁY THEO KHUNG HỆ THỐNG GỐC */
-            bottom: 0 !important;       
-            top: auto !important;
-            height: auto !important;    /* Tháo bỏ chiều cao cố định cũ */
-            
-            /* Đồng bộ khoảng cách đệm từ chân màn hình lên y hệt thanh gốc */
-            padding-top: 10px !important;    
-            padding-bottom: 12px !important; /* Tràn khít mép dưới điện thoại */
-            
-            left: 0 !important;         /* Ghim góc trái */
-            width: calc(100% - 150px) !important; /* Chừa đúng khoảng cho Manage app */
-            
-            /* Màu nền và bo góc chuẩn chỉ */
-            background-color: #131824 !important; 
-            border-top-right-radius: 4px !important; 
-            
-            /* Phông chữ, cỡ chữ, màu sắc đồng điệu 100% */
-            color: #e0e0e0 !important;   
-            font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important; 
-            font-size: 14px !important;  
-            font-weight: 400 !important; 
-            
-            /* Canh chữ nằm ngay ngắn giữa hộp */
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            box-sizing: border-box !important;
-            
-            border: none !important;
-            box-shadow: none !important;
-            
-            z-index: 9999 !important;
-        }
-
-
+/* 2. CHẶT TẬN GỐC THANH MANAGE APP (QUÉT TOÀN BỘ LỚP STREAMLIT CÓ MÃ VIERWER) */
+div[class*="stAppViewerToolbar"], 
+div[data-testid="stAppViewerToolbar"],
+footer + div {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
 
         /* BẢNG HIỆU LKTV HOÀN HẢO KHỚP 100% */
         .bang-hieu-lktv {
@@ -386,6 +346,7 @@ def main():
                             st.rerun()
         # =====================================================================
 # 👉 ĐOẠN 3 BẮT ĐẦU TỪ ĐÂY (DÁN SÁT LỀ TRÁI, NỐI TIẾP NGAY DƯỚI ĐOẠN 2)
+# 👉 ĐOẠN 3 BẮT ĐẦU TỪ ĐÂY (DÁN SÁT LỀ TRÁI, NỐI TIẾP NGAY DƯỚI ĐOẠN 2)
 # =====================================================================
             t_bill = 0.0
             t_cong_tho = 0.0
@@ -434,4 +395,162 @@ def main():
             if len(st.session_state.gio_hang) == 0:
                 can_go = False
                 if st.session_state.bill_vua_in is None:
-              
+                    st.warning("⚠️ Nhắc nhở: Giỏ hàng đang trống! Vui lòng chọn dịch vụ và bấm 'Thêm vào giỏ đơn' trước khi Lưu.")
+            
+            if st.session_state.last_submit and can_go:
+                tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
+                han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
+                if tg_cho < han_muc:
+                    can_go = False
+                    st.error(f"🚫 HÀNG RÀO THÉP: Chờ {round(han_muc - tg_cho, 1)} phút.")
+
+            if can_go:
+                cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
+                if not st.session_state.submitting:
+                    if st.button("🚀 LƯU VÀO ĐỒNG BỘ ĐƠN HÀNG", use_container_width=True, type="primary"):
+                        if cam_ket:
+                            st.session_state.submitting = True
+                            st.rerun()
+                        else: st.error("Chưa tích xác nhận!")
+                else:
+                    st.button("⚙️ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
+                    try:
+                        cl = get_gspread_client()
+                        ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                        bay_gio = get_now_vn()
+                        ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
+                        
+                        rows_to_append = []
+                        for item in st.session_state.gio_hang:
+                            rows_to_append.append([
+                                bay_gio.strftime("%d/%m/%Y"), b_name:=st.session_state.full_name, kh_ten, kh_sdt,
+                                item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
+                                bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
+                            ])
+                        
+                        ws.append_rows(rows_to_append)
+
+                        # KHÚC HIỂN THỊ MÓN ÉP CHẶT TRÊN 1 HÀNG DUY NHẤT
+                        html_items = ""
+                        for idx, item in enumerate(st.session_state.gio_hang):
+                            html_items += f"""
+                            <div class="hd-row">
+                                <span>{idx+1}. {item['dich_vu']} (x{item['so_luong']})</span>
+                                <span>{item['thanh_tien']:,.0f} đ</span>
+                            </div>"""
+
+                        st.session_state.bill_vua_in = f"""
+                        <div class="hoa-don-khung">
+                            <div class="hd-header">
+                                <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+                                <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
+                                <div style="font-size: 11px;">📞 {settings.get('SDT', '0978888888')}</div>
+                                <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
+                                <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
+                            </div>
+                            <div style="border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
+                                <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
+                                <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
+                            </div>
+                            <div class="hd-items">{html_items}</div>
+                            <div style="font-size: 14px; font-weight: bold;">
+                                <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
+                                <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
+                                <div class="hd-row" style="color: green;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                            </div>
+                            <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #000; padding-top: 10px;">
+                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> 🙏 Xin cảm ơn và hẹn gặp lại quý khách! 🙏
+                            </div>
+                        </div>"""
+
+                        st.session_state.gio_hang = []
+                        st.session_state.last_submit = bay_gio
+                        st.session_state.submit_count += 1
+                        st.session_state.submitting = False
+                        st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ PHÍA DƯỚI!")
+                        time.sleep(0.5)
+                        st.rerun()
+                    except Exception as e:
+                        st.error(f"Lỗi lưu đơn: {e}")
+                        st.session_state.submitting = False
+
+            if st.session_state.bill_vua_in:
+                st.markdown("---")
+                st.markdown("### 📸 HOÁ ĐƠN ĐIỆN TỬ VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+
+            st.divider()
+            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
+
+        if st.session_state["role"] == "Admin":
+            with tabs[1]:
+                st.subheader("📈 DOANH THU THỰC TẾ")
+                try:
+                    cl = get_gspread_client()
+                    ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                    du_lieu = ws_bc.get_all_records()
+                    if du_lieu:
+                        df_bc = pd.DataFrame(du_lieu)
+                        st.dataframe(df_bc.tail(50), use_container_width=True)
+                        ngay_nay = get_now_vn().strftime("%d/%m/%Y")
+                        df_h = df_bc[df_bc['Ngày'] == ngay_nay]
+                        
+                        c1, c2, c3 = st.columns(3)
+                        c1.metric("HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f}")
+                        c2.metric("SỐ ĐƠN", len(df_h))
+                        c3.metric("TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f}")
+                    else: st.info("Trống.")
+                except Exception as e: st.error(f"Lỗi báo cáo: {e}")
+
+            with tabs[2]:
+                st.subheader("⚙️ QUẢN TRỊ")
+                with st.expander("🔗 LIÊN KẾT SHEET"):
+                    st.markdown(f"[Mở File Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                
+                if st.button("🧹 CLEAR CACHE"):
+                    st.cache_data.clear()
+                    st.rerun()
+                
+                st.divider()
+                st.markdown("### 👥 QUẢN LÝ NHÂN SỰ")
+                with st.expander("🎫 Tạo/Xem mã nhân viên"):
+                    try:
+                        cl = get_gspread_client()
+                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                        ws_user = sh.worksheet("NhanVien")
+                        
+                        with st.form("add_user_form", clear_on_submit=True):
+                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
+                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
+                            new_name = st.text_input("Tên thật nhân viên (Hiển thị khi lên đơn)")
+                            
+                            if st.form_submit_button("CẤP MÃ MỚI"):
+                                if new_sdt and new_code and new_name:
+                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
+                                    st.success(f"Đã cấp tài khoản thành công cho {new_name}!")
+                                    st.cache_data.clear()
+                                    time.sleep(1)
+                                    st.rerun()
+                                else:
+                                    st.error("Vui lòng nhập đầy đủ SĐT, Mật khẩu và Tên thật nhân viên!")
+                        
+                        st.write("---")
+                        st.write("**Danh sách nhân sự hiện tại:**")
+                        user_data = ws_user.get_all_records()
+                        if user_data:
+                            st.table(pd.DataFrame(user_data))
+                    except Exception as e:
+                        st.error(f"Lỗi hệ thống nhân sự: {e}")
+                        st.warning("Ní ơi, hãy kiểm tra tiêu đề Sheet 'NhanVien' phải là: Số Điện Thoại | Mật Khẩu | Tên Nhân Viên")
+                
+                st.divider()
+                if st.button("🚪 THOÁT RA", use_container_width=True):
+                    st.session_state.clear()
+                    st.rerun()
+
+if __name__ == "__main__":
+    main()
+    
