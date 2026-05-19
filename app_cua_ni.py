@@ -41,7 +41,7 @@ st.markdown("""
     letter-spacing: 0.5px !important;
 
     /* TẠO VIỀN TRẮNG VÀ ĐỔ BÓNG 3D CHO CHỮ NỔI LÊN */
-    -webkit-text-stroke: 1px #7d8f15 !important; 
+    -webkit-text-stroke: 1px #deff05 !important; 
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important; 
 
     display: flex !important;
