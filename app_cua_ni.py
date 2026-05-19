@@ -242,24 +242,59 @@ def main():
                     try:
                         cl = get_gspread_client()
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        user_list = sh.worksheet("NhanVien").get_all_records()
+                        user_sheet = sh.worksheet("NhanVien")
                         
-                        found_user = None
-                        for row in user_list:
-                            sdt_sheet = str(row.get('Số Điện Thoại', '')).strip().lstrip('0')
-                            sdt_nhap = str(u).strip().lstrip('0')
-                            if sdt_nhap == sdt_sheet and sdt_nhap != "":
-                                if p.strip() == str(row.get('Mật Khẩu', '')).strip():
-                                    found_user = row
-                                    break
-                        if found_user:
-                            ten_that = found_user.get('Tên Nhân Viên', 'Nhân viên')
-                            st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
-                            st.success(f"Chào mừng {ten_that}!")
-                            time.sleep(0.5)
-                            st.rerun()
+                        # Đọc an toàn để tránh lệch hoặc sai tên tiêu đề cột trên Google Sheets
+                        raw_data = user_sheet.get_all_values()
+                        if len(raw_data) > 0:
+                            headers = [str(h).strip() for h in raw_data[0]]
+                            
+                            # Tìm vị trí chính xác của từng cột bằng cách chuẩn hóa chuỗi dữ liệu
+                            col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
+                            col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
+                            col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
+                            
+                            if col_sdt_idx == -1 or col_mk_idx == -1:
+                                # Nếu không tìm thấy cột thông minh thì fallback về cơ chế cũ để tránh lỗi crash hệ thống
+                                user_list = user_sheet.get_all_records()
+                                found_user = None
+                                for row in user_list:
+                                    sdt_sheet = str(row.get('Số Điện Thoại', row.get('SĐT', ''))).strip().lstrip('0')
+                                    sdt_nhap = str(u).strip().lstrip('0')
+                                    if sdt_nhap == sdt_sheet and sdt_nhap != "":
+                                        if p.strip() == str(row.get('Mật Khẩu', row.get('Mật khẩu', ''))).strip():
+                                            found_user = row
+                                            break
+                                if found_user:
+                                    ten_that = found_user.get('Tên Nhân Viên', found_user.get('Tên nhân viên', 'Nhân viên'))
+                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
+                                    st.success(f"Chào mừng {ten_that}!")
+                                    time.sleep(0.5)
+                                    st.rerun()
+                                else:
+                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
+                            else:
+                                # Cơ chế quét mảng thô (Chống 100% lỗi KeyError cực kỳ an toàn)
+                                found_row = None
+                                sdt_nhap = str(u).strip().lstrip('0')
+                                for r in raw_data[1:]:
+                                    if len(r) > max(col_sdt_idx, col_mk_idx):
+                                        sdt_sheet = str(r[col_sdt_idx]).strip().lstrip('0')
+                                        mk_sheet = str(r[col_mk_idx]).strip()
+                                        if sdt_nhap == sdt_sheet and p.strip() == mk_sheet and sdt_nhap != "":
+                                            found_row = r
+                                            break
+                                            
+                                if found_row:
+                                    ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
+                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
+                                    st.success(f"Chào mừng {ten_that}!")
+                                    time.sleep(0.5)
+                                    st.rerun()
+                                else:
+                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                         else:
-                            st.error("Tài khoản hoặc Mật khẩu không chính xác!")
+                            st.error("Bảng dữ liệu Nhân Viên trên Google Sheets đang trống!")
                     except Exception as e:
                         st.error(f"Lỗi cổng kết nối: {e}")
 
@@ -327,11 +362,12 @@ def main():
                 st.markdown(f"📋 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
-                    col_item1, col_item2, col_item3 = st.columns([5, 3, 2])
+                    # Tối ưu tỷ lệ cột [4.5, 3.5, 2] thành [5, 3.5, 1.5] để chữ "Xóa" không bị rớt dòng gây vỡ layout
+                    col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
                     with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
-                    with col_item2: st.markdown(f"{item['thanh_tien']:,.0f} đ (Công: {item['tiem_cong_tho']:,.0f} đ)")
+                    with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
                     with col_item3:
-                        if st.button("❌ Xóa", key=f"del_{idx}", use_container_width=True):
+                        if st.button("❌Xóa", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.session_state.bill_vua_in = None
                             st.rerun()
@@ -462,7 +498,8 @@ def main():
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.subheader("⚙️ HỆ THỐNG QUẢN TRỊ")
-                with st.expander("🔗 LIÊN KẾT GOOGLE SHEET GỐC"):
+                # Đã sửa triệt để lỗi hiển thị text thô ":arrow_right:" thành Emoji thực tế
+                with st.expander("➡️ LIÊN KẾT GOOGLE SHEET GỐC"):
                     st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
                 if st.button("🧹 LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
@@ -471,7 +508,7 @@ def main():
                 
                 st.divider()
                 st.markdown("### 👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
-                with st.expander("🎫 Cấp tài khoản mới / Xem danh sách"):
+                with st.expander("➡️ Cấp tài khoản mới / Xem danh sách"):
                     try:
                         cl = get_gspread_client()
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
