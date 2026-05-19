@@ -389,7 +389,7 @@ def main():
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if box_sl <= 0:
                         st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
                     else:
@@ -486,7 +486,7 @@ def main():
             if can_go:
                 cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 LƯU VÀO ĐỒNG BỘ ĐƠN HÀNG", use_container_width=True, type="primary"):
+                    if st.button("🚀 CHỐT ĐƠN", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
@@ -523,7 +523,7 @@ def main():
                             <div class="hd-header">
                                 <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                                 <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
-                                <div style="font-size: 11px;">📞 {settings.get('SDT', '0978888888')}</div>
+                                <div style="font-size: 11px;">📞 {settings.get('SDT', '0947.58.1516')}</div>
                                 <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
                                 <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                             </div>
@@ -539,7 +539,7 @@ def main():
                                 <div class="hd-row" style="color: green;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
                             </div>
                             <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #000; padding-top: 10px;">
-                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> 🙏 Xin cảm ơn và hẹn gặp lại quý khách! 🙏
+                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Xin cảm ơn và hẹn gặp lại quý khách! ♥️
                             </div>
                         </div>"""
 
@@ -556,11 +556,11 @@ def main():
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
-                st.markdown("### 📸 HOÁ ĐƠN ĐIỆN TỬ VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown("### 📸 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
-            if st.button("🚪 THOÁT APP TÀI KHOẢN", use_container_width=True):
+            if st.button("🚪 THOÁT APP", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
