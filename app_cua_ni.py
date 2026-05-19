@@ -8,7 +8,7 @@ import time
 import re
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS ĐỒNG BỘ (LKTV V25.0 CLEAN)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS ĐỒNG BỘ FONT TOÀN DIỆN (INTER FONT)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
@@ -19,7 +19,16 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* Toàn bộ cấu trúc giao diện */
+        /* -----------------------------------------------------------------
+           1. ĐỒNG BỘ FONT CHỮ TOÀN DIỆN HỆ THỐNG (TOÀN BỘ APP)
+        ----------------------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        /* Ép font Inter vào toàn bộ các thành phần hiển thị của Streamlit */
+        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
         .stApp {
             padding-top: 53px !important;
             padding-bottom: 53px !important;
@@ -33,11 +42,12 @@ st.markdown("""
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
-        /* Khối Banner song song cố định Đỉnh & Đáy */
+        /* -----------------------------------------------------------------
+           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
+        ----------------------------------------------------------------- */
         .banner-top, .banner-bottom {
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
             background: #000000 !important; color: #f6f7f0 !important;
-            font-family: 'Arial Alternative', 'Helvetica Neue', Arial, sans-serif !important;
             font-size: 20px !important; font-weight: 900 !important; letter-spacing: 0.5px !important;
             -webkit-text-stroke: 1px #000000 !important; 
             text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) !important; 
@@ -51,7 +61,9 @@ st.markdown("""
         /* Hạt pháo hoa khi chạm */
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
-        /* Bảng hiệu điện tử của tiệm */
+        /* -----------------------------------------------------------------
+           3. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM
+        ----------------------------------------------------------------- */
         .bang-hieu-lktv {
             text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 20px !important;
             background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
@@ -62,29 +74,34 @@ st.markdown("""
             border: 4px solid #f1c40f !important; margin: 0 auto 12px auto !important; display: block !important;
             box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
         }
-        .ten-tiem { font-size: 26px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 5px !important; letter-spacing: 3px !important; }
-        .thong-tin-phu { font-size: 16px !important; color: #ecf0f1 !important; opacity: 0.9 !important; margin: 4px 0 !important; }
-        .slogan { font-size: 17px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid #ffffff20 !important; padding-top: 10px !important; }
+        .ten-tiem { font-size: 26px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 5px !important; letter-spacing: 2px !important; }
+        .thong-tin-phu { font-size: 15px !important; color: #ecf0f1 !important; opacity: 0.9 !important; margin: 4px 0 !important; font-weight: 400; }
+        .slogan { font-size: 16px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid #ffffff20 !important; padding-top: 10px !important; }
         
-        /* Định dạng các thanh Tabs điều hướng */
+        /* -----------------------------------------------------------------
+           4. ĐỊNH DẠNG TABS & TIÊU ĐỀ ĐÓNG KHUNG
+        ----------------------------------------------------------------- */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6; }
         .stTabs [data-baseweb="tab"] p { color: #1a1a1a !important; font-weight: 800 !important; font-size: 17px; text-align: center; }
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border-bottom: 5px solid #d4ac0d; }
 
-        /* Tiêu đề nhãn đóng khung */
-        .nhan-tieu-de { text-align: center; font-size: 16px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #ffffff; }
+        .nhan-tieu-de { text-align: center; font-size: 15px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #ffffff; letter-spacing: 1px; }
 
-        /* Các khối hiển thị tiền tệ trực quan */
+        /* -----------------------------------------------------------------
+           5. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
+        ----------------------------------------------------------------- */
         .tong-don-box { background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 15px; text-align: center; border: 4px dashed #ffc107; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }
         .cong-tho-box { background-color: #e2e3e5; color: #28a745; padding: 15px; border-radius: 15px; text-align: center; border: 4px dashed #6c757d; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }
-        .tien-thua-box { background-color: #d4edda; color: #155724; padding: 25px; border-radius: 15px; text-align: center; font-size: 26px; font-weight: 800; border: 4px dashed #28a745; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
+        .tien-thua-box { background-color: #d4edda; color: #155724; padding: 25px; border-radius: 15px; text-align: center; font-size: 26px; font-weight: 900; border: 4px dashed #28a745; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
         @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);} 70% {transform: scale(1.03); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);} 100% {transform: scale(1);} }
 
-        /* Phôi hóa đơn LKTV Classic */
-        .hoa-don-khung { background-color: #ffffff !important; color: #000000 !important; padding: 22px !important; border-radius: 12px !important; border: 2px solid #ccc !important; font-family: 'monospace', 'Courier New', Courier !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.1) !important; margin-top: 20px !important; }
+        /* -----------------------------------------------------------------
+           6. PHÔI HÓA ĐƠN LKTV CLASSIC (GIỮ STYLE MONOSPACE ĐỂ CHUẨN CỘT)
+        ----------------------------------------------------------------- */
+        .hoa-don-khung { background-color: #ffffff !important; color: #000000 !important; padding: 22px !important; border-radius: 12px !important; border: 2px solid #ccc !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.1) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
-        .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; }
+        .hd-title { font-size: 21px; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; font-weight: 900; }
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
         .hd-items { border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
