@@ -63,8 +63,10 @@ st.markdown("""
 /* 4. ĐỊNH VỊ BANNER DƯỚI ĐÁY */
 .banner-bottom {
     bottom: 0 !important;
-    border-top: 3px solid #000000 !important; /* Chỉ viền trên màu đỏ bordeaux */
+    border-top: 3px solid #000000 !important;
     box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important;
+    justify-content: flex-start !important; /* Thêm dòng này để dời sang trái */
+    padding-left: 15px !important; /* Cách lề trái 1 tí cho đẹp */
 }
 
 /* 5. HIỆU ỨNG HẠT PHÁO HOA KHI CHẠM */
