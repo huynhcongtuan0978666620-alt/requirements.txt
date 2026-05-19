@@ -401,14 +401,24 @@ def main():
             with c2: kh_sdt = st.text_input("SĐT")
             
             st.markdown("#### 🛒 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            box_chon_dv = st.selectbox("Dịch vụ", dv_list if dv_list else ["Không có dữ liệu"])
+            
+            # Ô CHỌN NÂNG CẤP - TỰ ĐỘNG TÌM KIẾM MỜ THÔNG MINH (CÂN 3000+ MÓN)
+            box_chon_dv = st.selectbox(
+                "Dịch vụ", 
+                options=dv_list if dv_list else ["Không có dữ liệu"],
+                index=None,
+                placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
+            )
             box_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
                 if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
-                    if box_sl <= 0:
+                    # Khóa chặn an toàn: Nếu nhân viên chưa gõ chọn món mà nhấn nút sẽ báo nhắc nhở
+                    if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
+                        st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
+                    elif box_sl <= 0:
                         st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
                     else:
                         st.session_state.adding_cart = True
