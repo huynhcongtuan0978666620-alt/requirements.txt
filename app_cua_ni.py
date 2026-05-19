@@ -34,12 +34,17 @@ st.markdown("""
             padding-bottom: 53px !important;
         }
 
-        /* XỬ LÝ TRIỆT ĐỂ LỖI CHỮ HOANG _arrow_right VÀ _arrow_down TRÊN st.expander */
+        /* XỬ LÝ TRIỆT ĐỂ LỖI CHỮ HOANG _arrow_right VÀ _arrow_down TRÊN st.expander & st.tabs */
         [data-testid="stExpander"] details summary span p {
             display: inline-block !important;
         }
         [data-testid="stExpander"] svg + div {
             display: none !important;
+        }
+        /* Ẩn triệt để text icon mũi tên hoang phát sinh tự động trong cấu trúc html cũ */
+        [data-testid="stExpander"] [data-testid="stMarkdown"] p::text, 
+        .stTabs [data-baseweb="tab"] p::text {
+            content: "" !important;
         }
 
         /* Ẩn triệt để các thành phần thừa của Streamlit */
@@ -115,8 +120,8 @@ st.markdown("""
         .hd-items { border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
     </style>
 
-    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    <div class="banner-bottom" onclick="createFirework(event)">👉 SALON KIM HIỀN ⭐</div>
+    <div class="banner-top" onclick="createFirework(event)">SALON KIM HIỀN</div>
+    <div class="banner-bottom" onclick="createFirework(event)">SALON KIM HIỀN</div>
 
     <script>
         if (!window.fireworkStylesAdded) {
@@ -239,7 +244,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
@@ -252,18 +257,15 @@ def main():
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                         user_sheet = sh.worksheet("NhanVien")
                         
-                        # Đọc an toàn để tránh lệch hoặc sai tên tiêu đề cột trên Google Sheets
                         raw_data = user_sheet.get_all_values()
                         if len(raw_data) > 0:
                             headers = [str(h).strip() for h in raw_data[0]]
                             
-                            # Tìm vị trí chính xác của từng cột bằng cách chuẩn hóa chuỗi dữ liệu
                             col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
                             col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
                             col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
                             
                             if col_sdt_idx == -1 or col_mk_idx == -1:
-                                # Nếu không tìm thấy cột thông minh thì fallback về cơ chế cũ để tránh lỗi crash hệ thống
                                 user_list = user_sheet.get_all_records()
                                 found_user = None
                                 for row in user_list:
@@ -282,7 +284,6 @@ def main():
                                 else:
                                     st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                             else:
-                                # Cơ chế quét mảng thô (Chống 100% lỗi KeyError cực kỳ an toàn)
                                 found_row = None
                                 sdt_nhap = str(u).strip().lstrip('0')
                                 for r in raw_data[1:]:
@@ -309,7 +310,8 @@ def main():
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
         display_header(settings)
-        t_list = ["📝 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["📝 NHẬP LIỆU"]
+        # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi tiêu đề các Tab để ngăn lỗi _arrow
+        t_list = ["NHẬP LIỆU", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["NHẬP LIỆU"]
         tabs = st.tabs(t_list)
 
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
@@ -322,9 +324,8 @@ def main():
             with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("SĐT khách")
             
-            st.markdown("#### 🛒 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
+            st.markdown("#### CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             
-            # Ô chọn thông minh dạng Gõ chữ tìm kiếm mờ (Fuzzy Search)
             box_chon_dv = st.selectbox(
                 "Dịch vụ", 
                 options=dv_list if dv_list else ["Không có dữ liệu"],
@@ -334,9 +335,9 @@ def main():
             box_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
-                st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
+                st.button("ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
                         st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
                     elif box_sl <= 0:
@@ -367,14 +368,14 @@ def main():
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
-                st.markdown(f"📋 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
+                st.markdown(f"**CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
                     with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
                     with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
                     with col_item3:
-                        if st.button("❌Xóa", key=f"del_{idx}", use_container_width=True):
+                        if st.button("Xóa", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.session_state.bill_vua_in = None
                             st.rerun()
@@ -418,7 +419,7 @@ def main():
                             st.rerun()
                         else: st.error("Chưa tích chọn ô xác nhận cam kết!")
                 else:
-                    st.button("⚙️ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
+                    st.button("ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                     try:
                         cl = get_gspread_client()
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -472,11 +473,11 @@ def main():
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
-                st.markdown("### 📸 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown("### HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
-            if st.button("🚪 THOÁT APP MÁY", use_container_width=True):
+            if st.button("THOÁT APP MÁY", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
@@ -484,7 +485,7 @@ def main():
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
-                st.subheader("📈 DOANH THU THỰC TẾ")
+                st.subheader("DOANH THU THỰC TẾ")
                 try:
                     cl = get_gspread_client()
                     ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -504,16 +505,18 @@ def main():
 
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
-                st.subheader("⚙️ HỆ THỐNG QUẢN TRỊ")
+                st.subheader("HỆ THỐNG QUẢN TRỊ")
+                # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi expander
                 with st.expander("LIÊN KẾT GOOGLE SHEET GỐC"):
                     st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
-                if st.button("🧹 LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
+                if st.button("LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
                 
                 st.divider()
-                st.markdown("### 👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
+                st.markdown("### QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
+                # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi expander
                 with st.expander("Cập nhật tài khoản mới / Xem danh sách"):
                     try:
                         cl = get_gspread_client()
@@ -543,7 +546,7 @@ def main():
                         st.error(f"Lỗi hệ thống nhân sự: {e}")
                 
                 st.divider()
-                if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
+                if st.button("THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
                     st.session_state.clear()
                     st.rerun()
 
