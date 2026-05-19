@@ -72,29 +72,6 @@ if (!window.fireworkStylesAdded) {
     document.head.appendChild(style);
     window.fireworkStylesAdded = true;
 }
-    function createFirework(e) {
-        const clickX = e.clientX;
-        const clickY = e.clientY;
-        const particleCount = 40;
-        const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
-        for (let i = 0; i < particleCount; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'firework-particle';
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            particle.style.left = clickX + 'px';
-            particle.style.top = clickY + 'px';
-            particle.style.animation = 'explode 0.7s ease-out forwards';
-            const angle = Math.random() * Math.PI * 2;
-            const velocity = Math.random() * 120 + 40; 
-            particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-            particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-            document.body.appendChild(particle);
-            setTimeout(() => { particle.remove(); }, 700);
-        }
-    }
-    </script>
-""", unsafe_allow_html=True)
-
 
 function createFirework(e) {
     const clickX = e.clientX;
