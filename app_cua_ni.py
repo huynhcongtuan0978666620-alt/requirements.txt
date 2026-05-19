@@ -23,8 +23,8 @@ st.markdown("""
 
 /* 1. ĐẨY CẢ TRÊN VÀ DƯỚI ĐỂ APP KHÔNG BỊ BANNER CHE */
 .stApp {
-    padding-top: 52px !important;
-    padding-bottom: 52px !important;
+    padding-top: 51px !important;
+    padding-bottom: 51px !important;
 }
 
 /* 2. CẤU HÌNH CHUNG CHO CẢ HAI BANNER */
