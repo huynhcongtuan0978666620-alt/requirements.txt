@@ -41,7 +41,7 @@ st.markdown("""
     letter-spacing: 0.5px !important;
 
     /* TẠO VIỀN TRẮNG VÀ ĐỔ BÓNG 3D CHO CHỮ NỔI LÊN */
-    -webkit-text-stroke: 1px #ffffff !important; 
+    -webkit-text-stroke: 1px #7d8f15 !important; 
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important; 
 
     display: flex !important;
@@ -63,7 +63,7 @@ st.markdown("""
 /* 4. ĐỊNH VỊ BANNER DƯỚI ĐÁY */
 .banner-bottom {
     bottom: 0 !important;
-    border-top: 3px solid #800020 !important; /* Chỉ viền trên màu đỏ bordeaux */
+    border-top: 3px solid #7d8f15 !important; /* Chỉ viền trên màu đỏ bordeaux */
     box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important;
 }
 
@@ -78,7 +78,7 @@ st.markdown("""
 }
 </style>
 
-<div class="banner-top" onclick="createFirework(event)">KIM HIỀN</div>
+<div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
 <div class="banner-bottom" onclick="createFirework(event)">KIM HIỀN</div>
 
 <script>
