@@ -56,7 +56,7 @@ st.markdown("""
 /* 3. ĐỊNH VỊ BANNER TRÊN ĐỈNH */
 .banner-top {
     top: 0 !important;
-    border-bottom: 3px solid #800020 !important; /* Chỉ viền dưới màu đỏ bordeaux */
+    border-bottom: 3px solid #7d8f15 !important; /* Chỉ viền dưới màu đỏ bordeaux */
     box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important;
 }
 
