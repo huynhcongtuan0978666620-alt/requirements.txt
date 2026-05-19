@@ -23,8 +23,8 @@ st.markdown("""
 
 /* 1. ĐẨY CẢ TRÊN VÀ DƯỚI ĐỂ APP KHÔNG BỊ BANNER CHE */
 .stApp {
-    padding-top: 50px !important;
-    padding-bottom: 50px !important;
+    padding-top: 53px !important;
+    padding-bottom: 53px !important;
 }
 
 /* 2. CẤU HÌNH CHUNG CHO CẢ HAI BANNER */
@@ -32,7 +32,7 @@ st.markdown("""
     position: fixed !important;
     left: 0 !important;
     right: 0 !important;
-    height: 46px !important;
+    height: 48px !important;
     background: #000000 !important; /* Nền vàng tươi chuẩn bảng hiệu */
     color: #f6f7f0 !important; /* Chữ màu đỏ Bordeaux giống thực tế */
     font-family: 'Arial Alternative', 'Helvetica Neue', 'Arial', sans-serif !important;
@@ -42,7 +42,7 @@ st.markdown("""
 
     /* TẠO VIỀN TRẮNG VÀ ĐỔ BÓNG 3D CHO CHỮ NỔI LÊN */
     -webkit-text-stroke: 1px #000000 !important; 
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3) !important; 
+    text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) !important; 
 
     display: flex !important;
     align-items: center !important;
