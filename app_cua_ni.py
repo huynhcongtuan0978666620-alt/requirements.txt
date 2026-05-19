@@ -33,7 +33,7 @@ st.markdown("""
     left: 0 !important;
     right: 0 !important;
     height: 42px !important;
-    background-color: #ecf0a8 !important;
+    background-color: #000000 !important;
     color: #800020 !important;
     font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-size: 14px !important;
@@ -63,7 +63,7 @@ st.markdown("""
 }
 </style>
 
-<div class="clone-manage-btn" onclick="createFirework(event)">✨ KIM HIỀN SALON ✨</div>
+<div class="clone-manage-btn" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
 
 <script>
 if (!window.fireworkStylesAdded) {
