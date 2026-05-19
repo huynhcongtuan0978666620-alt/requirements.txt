@@ -557,7 +557,7 @@ def main():
                                 <div class="hd-row" style="color: green;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
                             </div>
                             <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #000; padding-top: 10px;">
-                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Xin cảm ơn và hẹn gặp lại quý khách! ♥️
+                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
                             </div>
                         </div>"""
 
