@@ -179,8 +179,12 @@ def get_service_data():
         for row in rows[1:]:
             if len(row) >= 2:
                 ten_dv = str(row[0]).strip()
-                try: gia_goc = float(str(row[1]).replace(',', '').strip())
-                except: gia_goc = 0.0
+                if not ten_dv:
+                    continue
+                try: 
+                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
+                except: 
+                    gia_goc = 0.0
                 
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
@@ -189,7 +193,8 @@ def get_service_data():
                         hoa_hong = float(raw_hh)
                         if 0 < hoa_hong < 1.0: 
                             hoa_hong *= 100
-                    except: hoa_hong = 0.0
+                    except: 
+                        hoa_hong = 0.0
                 
                 danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
         return danh_sach_dv
