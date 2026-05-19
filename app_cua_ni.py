@@ -56,14 +56,14 @@ st.markdown("""
 /* 3. ĐỊNH VỊ BANNER TRÊN ĐỈNH */
 .banner-top {
     top: 0 !important;
-    border-bottom: 3px solid #7d8f15 !important; /* Chỉ viền dưới màu đỏ bordeaux */
+    border-bottom: 3px solid #000000 !important; /* Chỉ viền dưới màu đỏ bordeaux */
     box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important;
 }
 
 /* 4. ĐỊNH VỊ BANNER DƯỚI ĐÁY */
 .banner-bottom {
     bottom: 0 !important;
-    border-top: 3px solid #7d8f15 !important; /* Chỉ viền trên màu đỏ bordeaux */
+    border-top: 3px solid #000000 !important; /* Chỉ viền trên màu đỏ bordeaux */
     box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important;
 }
 
@@ -79,7 +79,7 @@ st.markdown("""
 </style>
 
 <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-<div class="banner-bottom" onclick="createFirework(event)">KIM HIỀN</div>
+<div class="banner-bottom" onclick="createFirework(event)">SALON KIM HIỀN        </div>
 
 <script>
 if (!window.fireworkStylesAdded) {
