@@ -34,7 +34,7 @@ st.markdown("""
     right: 0 !important;
     height: 42px !important;
     background-color: #131824 !important;
-    color: #e0e0e0 !important;
+    color: #ecf0a8 !important;
     font-family: Source Sans Pro, -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-size: 14px !important;
     font-weight: 600 !important;
