@@ -499,7 +499,7 @@ def main():
             with tabs[2]:
                 st.subheader("⚙️ HỆ THỐNG QUẢN TRỊ")
                 # Đã sửa triệt để lỗi hiển thị text thô ":arrow_right:" thành Emoji thực tế
-                with st.expander("➡️ LIÊN KẾT GOOGLE SHEET GỐC"):
+                with st.expander("LIÊN KẾT GOOGLE SHEET GỐC"):
                     st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
                 if st.button("🧹 LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
@@ -508,7 +508,7 @@ def main():
                 
                 st.divider()
                 st.markdown("### 👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
-                with st.expander("➡️ Cấp tài khoản mới / Xem danh sách"):
+                with st.expander("Cấp tài khoản mới / Xem danh sách"):
                     try:
                         cl = get_gspread_client()
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
