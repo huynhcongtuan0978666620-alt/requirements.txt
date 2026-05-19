@@ -8,7 +8,7 @@ import time
 import re
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS ĐỒNG BỘ FONT TOÀN DIỆN (INTER FONT)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS PHÁ NÁT LỖI _ARROW HỆ THỐNG
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
@@ -24,7 +24,6 @@ st.markdown("""
         ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-        /* Ép font Inter vào toàn bộ các thành phần hiển thị của Streamlit */
         html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
         }
@@ -34,20 +33,42 @@ st.markdown("""
             padding-bottom: 53px !important;
         }
 
-        /* XỬ LÝ TRIỆT ĐỂ LỖI CHỮ HOANG _arrow_right VÀ _arrow_down TRÊN st.expander & st.tabs */
-        [data-testid="stExpander"] details summary span p {
-            display: inline-block !important;
-        }
-        [data-testid="stExpander"] svg + div {
+        /* -----------------------------------------------------------------
+           XỬ LÝ TRIỆT ĐỂ 100% LỖI CHỮ HOANG _arrow_right / _arrow_down TRÊN EXPANDER
+        ----------------------------------------------------------------- */
+        /* Tìm và diệt tất cả các block chứa text icon thừa sinh tự động trong summary của expander */
+        [data-testid="stExpander"] summary text,
+        [data-testid="stExpander"] summary span[data-testid="stMarkdownContainer"] ~ div,
+        [data-testid="stExpander"] [class*="st-emotion-cache"] svg,
+        [data-testid="stExpander"] summary ::aria-hidden,
+        [data-testid="stExpander"] summary svg {
             display: none !important;
-        }
-        /* Ẩn triệt để text icon mũi tên hoang phát sinh tự động trong cấu trúc html cũ */
-        [data-testid="stExpander"] [data-testid="stMarkdown"] p::text, 
-        .stTabs [data-baseweb="tab"] p::text {
-            content: "" !important;
+            visibility: hidden !important;
+            width: 0 !important;
+            height: 0 !important;
+            opacity: 0 !important;
         }
 
-        /* Ẩn triệt để các thành phần thừa của Streamlit */
+        /* Ép phần text tiêu đề chính của Expander chiếm trọn 100% không bị lệch dồn toa */
+        [data-testid="stExpander"] summary span[data-testid="stMarkdownContainer"] {
+            width: 100% !important;
+            display: block !important;
+            position: relative !important;
+            left: 0 !important;
+            margin: 0 !important;
+            padding: 2px 0 !important;
+        }
+        
+        [data-testid="stExpander"] summary p {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+            margin: 0 !important;
+        }
+
+        /* -----------------------------------------------------------------
+           ẨN TOÀN BỘ LOGO/MENU THỪA CỦA STREAMLIT
+        ----------------------------------------------------------------- */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -71,7 +92,6 @@ st.markdown("""
         .banner-top { top: 0 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important; }
         .banner-bottom { bottom: 0 !important; border-top: 3px solid #7d8f15 !important; box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important; justify-content: flex-start !important; padding-left: 15px !important; }
 
-        /* Hạt pháo hoa khi chạm */
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
         /* -----------------------------------------------------------------
@@ -92,7 +112,7 @@ st.markdown("""
         .slogan { font-size: 16px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid #ffffff20 !important; padding-top: 10px !important; }
         
         /* -----------------------------------------------------------------
-           4. ĐỊNH DẠNG TABS & TIÊU ĐỀ ĐÓNG KHUNG
+           4. ĐỊNH DẠNG TABS NÂNG CẤP KHÔNG CHỨA ICON LỖI
         ----------------------------------------------------------------- */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6; }
@@ -110,7 +130,7 @@ st.markdown("""
         @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);} 70% {transform: scale(1.03); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);} 100% {transform: scale(1);} }
 
         /* -----------------------------------------------------------------
-           6. PHÔI HÓA ĐƠN LKTV CLASSIC (GIỮ STYLE MONOSPACE ĐỂ CHUẨN CỘT)
+           6. PHÔI HÓA ĐƠN LKTV CLASSIC
         ----------------------------------------------------------------- */
         .hoa-don-khung { background-color: #ffffff !important; color: #000000 !important; padding: 22px !important; border-radius: 12px !important; border: 2px solid #ccc !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.1) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
@@ -178,7 +198,7 @@ def get_settings():
         return {
             "TenTiem": "SALON KIM HIỀN", 
             "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
-            "SDT": "0978888888", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
+            "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
         }
 
 @st.cache_data(ttl=60)
@@ -222,7 +242,7 @@ def display_header(settings):
             <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0978888888')}</div>
+            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
             <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
         </div>
     """, unsafe_allow_html=True)
@@ -232,7 +252,6 @@ def display_header(settings):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    # Khởi tạo trạng thái Session toàn cục
     init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None}
     for key, val in init_states.items():
         if key not in st.session_state: 
@@ -310,7 +329,6 @@ def main():
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
         display_header(settings)
-        # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi tiêu đề các Tab để ngăn lỗi _arrow
         t_list = ["NHẬP LIỆU", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["NHẬP LIỆU"]
         tabs = st.tabs(t_list)
 
@@ -396,7 +414,6 @@ def main():
             if t_du > 0:
                 st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
-            # Kiểm soát hàng rào bảo mật chốt đơn trùng lặp
             can_go = True
             if not st.session_state.gio_hang:
                 can_go = False
@@ -506,7 +523,6 @@ def main():
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.subheader("HỆ THỐNG QUẢN TRỊ")
-                # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi expander
                 with st.expander("LIÊN KẾT GOOGLE SHEET GỐC"):
                     st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
@@ -516,7 +532,6 @@ def main():
                 
                 st.divider()
                 st.markdown("### QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
-                # FIX TRIỆT ĐỂ: Xóa sạch emoji khỏi expander
                 with st.expander("Cập nhật tài khoản mới / Xem danh sách"):
                     try:
                         cl = get_gspread_client()
