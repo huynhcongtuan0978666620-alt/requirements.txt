@@ -20,7 +20,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
-           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
+            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
@@ -43,7 +43,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+            2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
         ----------------------------------------------------------------- */
         .the-quan-ly-flat {
             background-color: #ffffff !important;
@@ -65,7 +65,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           3. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
+            3. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
         ----------------------------------------------------------------- */
         .banner-top {
             position: fixed !important; 
@@ -108,7 +108,7 @@ st.markdown("""
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
         /* -----------------------------------------------------------------
-           4. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
+            4. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
         ----------------------------------------------------------------- */
         .bang-hieu-lktv {
             text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
@@ -125,8 +125,8 @@ st.markdown("""
         .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
         .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
-/* -----------------------------------------------------------------
-           5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
+        /* -----------------------------------------------------------------
+            5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
         ----------------------------------------------------------------- */
         /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
         [data-testid="stTabs"] [role="tablist"] div {
@@ -211,7 +211,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
+            6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
         ----------------------------------------------------------------- */
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
@@ -219,7 +219,7 @@ st.markdown("""
         @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
 
         /* -----------------------------------------------------------------
-           7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
+            7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
@@ -228,7 +228,7 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
         /* =================================================================
-           8. ĐOẠN ĐỘ THÊM: PHÒNG CHỐNG CHỮ TÀNG HÌNH DIỆN RỘNG (AN TOÀN TUYỆT ĐỐI)
+            8. ĐOẠN ĐỘ THÊM: PHÒNG CHỐNG CHỮ TÀNG HÌNH DIỆN RỘNG (AN TOÀN TUYỆT ĐỐI)
         ================================================================= */
         /* Đè màu chữ tiêu đề widget lóa trắng thành màu xanh than đậm */
         [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6 {
@@ -251,6 +251,44 @@ st.markdown("""
         div[data-baseweb="select"] div {
             color: #1e293b !important;
             font-weight: 600 !important;
+        }
+
+        /* -----------------------------------------------------------------
+           ĐẶC TRỊ LỖI ĐIỂM MÙ CHỮ TÀNG HÌNH TRÊN NỀN TRẮNG (CẬP NHẬT MỚI NHẤT)
+        ----------------------------------------------------------------- */
+        .khung-noi-dung-mo-rong, 
+        .khung-noi-dung-mo-rong * {
+            color: #111111 !important; /* Đen mun bóng bẩy */
+        }
+
+        /* KHÓA CHẾT MÀU CHỮ CHO CÁC NÚT BẤM LIÊN KẾT (LINK) TRÊN NỀN TRẮNG */
+        div[data-testid="stMarkdownContainer"] a, 
+        div[data-testid="stMarkdownContainer"] a *,
+        button[data-baseweb="button"] p,
+        .stButton > button p {
+            color: #111111 !important; /* Ép chữ "LIÊN KẾT GOOGLE SHEET" và "ĐĂNG KÝ TK" hiện hình màu đen */
+            font-weight: 800 !important; /* Bôi đậm rõ ràng */
+            font-size: 15px !important;
+        }
+
+        /* Đảm bảo khi thợ lấy ngón tay chạm vào nút thì chữ vẫn đen mun, không bị biến màu */
+        div[data-testid="stMarkdownContainer"] a:hover, 
+        div[data-testid="stMarkdownContainer"] a:focus,
+        div[data-testid="stMarkdownContainer"] a:active {
+            color: #000000 !important;
+            text-decoration: none !important;
+        }
+
+        /* Định hình lại cái khung viền nút bấm phụ cho nổi bật hẳn lên */
+        div[data-testid="stMarkdownContainer"] a {
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 1px solid #cbd5e1 !important; /* Thêm viền xám nhẹ quanh nút */
+            background-color: #ffffff !important;
+            padding: 12px !important;
+            border-radius: 12px !important;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
         }
     </style>
 """, unsafe_allow_html=True)
