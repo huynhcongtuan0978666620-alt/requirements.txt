@@ -34,7 +34,29 @@ st.markdown("""
             background-color: #f8f9fa !important;
         }
 
-  
+  /* -----------------------------------------------------------------
+           ĐẶC TRỊ LỖI TIÊU ĐỀ TÀNG HÌNH (MOBILE & DESKTOP)
+        ----------------------------------------------------------------- */
+        /* Ép tất cả các tiêu đề (H1, H2, H3) và các đoạn văn bản trong hệ thống quản trị hiện màu đen */
+        h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, 
+        .stMarkdown p, .stMarkdown span {
+            color: #000000 !important; /* Đen mun sắc sảo */
+            -webkit-text-fill-color: #000000 !important;
+        }
+
+        /* Khóa màu cho tiêu đề đi kèm icon bánh răng */
+        div[data-testid="stMarkdownContainer"] h2, 
+        div[data-testid="stMarkdownContainer"] h3 {
+            color: #000000 !important;
+            font-weight: 900 !important;
+            margin-bottom: 10px !important;
+        }
+
+        /* Đảm bảo khung nội dung không bị ảnh hưởng bởi cơ chế tự đổi màu */
+        .khung-noi-dung-mo-rong h2, 
+        .khung-noi-dung-mo-rong h3 {
+            color: #000000 !important;
+        }
 
         /* -----------------------------------------------------------------
             2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
