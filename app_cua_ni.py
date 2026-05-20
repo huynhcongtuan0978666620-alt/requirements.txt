@@ -65,7 +65,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+           3. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
         ----------------------------------------------------------------- */
         .the-quan-ly-flat {
             background-color: #ffffff !important;
@@ -122,7 +122,7 @@ st.markdown("""
 
 
         /* -----------------------------------------------------------------
-           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
+           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
         ----------------------------------------------------------------- */
         .banner-top {
             position: fixed !important; 
@@ -166,7 +166,7 @@ st.markdown("""
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
         /* -----------------------------------------------------------------
-           3. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
+           5. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
         ----------------------------------------------------------------- */
         .bang-hieu-lktv {
             text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
@@ -210,7 +210,7 @@ st.markdown("""
             text-align: center !important; /* Căn giữa chữ hướng dẫn */
         }
         /* -----------------------------------------------------------------
-           3. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - CHỮ CĂN GIỮA
+           6. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - CHỮ CĂN GIỮA
         ----------------------------------------------------------------- */
         /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
         [data-testid="stTabs"] [role="tablist"] div {
@@ -272,7 +272,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-            5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
+            7. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
         ----------------------------------------------------------------- */
         /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
         [data-testid="stTabs"] [role="tablist"] div {
@@ -357,7 +357,7 @@ st.markdown("""
         }
         
         /* -----------------------------------------------------------------
-           6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
+           8. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
         ----------------------------------------------------------------- */
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
@@ -365,7 +365,7 @@ st.markdown("""
         @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
 
         /* -----------------------------------------------------------------
-           7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
+           9. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
         .hoa-don-khung::before { content: ""; position: absolute; left: 0; right: 0; top: -5px; height: 10px; background-size: 16px 16px; }
