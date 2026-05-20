@@ -165,7 +165,7 @@ st.markdown("""
     </style>
 
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    <div class="banner-bottom" onclick="createFirework(event)"> SALON KIM HIỀN 👉</div>
+    <div class="banner-bottom" onclick="createFirework(event)"> SALON KIM HIỀN 👉👉👉👉👉👉 </div>
 
     <script>
         if (!window.fireworkStylesAdded) {
