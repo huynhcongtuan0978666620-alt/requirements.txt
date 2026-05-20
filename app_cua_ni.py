@@ -432,41 +432,47 @@ def main():
                     t_cong_tho += item['tiem_cong_tho']
 
 
-            ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
-            st.divider()
-            
-            # Khối hiển thị số tiền trực quan
-            col_bill1, col_bill2 = st.columns(2)
-            with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
-            with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
-            
-            st.write("")
-            kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
-            t_du = kh_tra - t_bill
-            if t_du > 0:
-                st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+            # -----------------------------------------------------------------
+            # KHỐI LOGIC HIỂN THỊ THANH TOÁN (BẮT ĐẦU TỪ DÒNG 435 - TỰ ĐỘNG ẨN KHI GIỎ TRỐNG)
+            # -----------------------------------------------------------------
+            if t_bill > 0:
+                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
+                st.divider()
+                
+                # Khối hiển thị số tiền trực quan
+                col_bill1, col_bill2 = st.columns(2)
+                with col_bill1: 
+                    st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill2: 
+                    st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
+                
+                st.write("")
+                kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
+                t_du = kh_tra - t_bill
+                if t_du > 0:
+                    st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
-            can_go = True
-            if not st.session_state.gio_hang:
-                can_go = False
-                if st.session_state.bill_vua_in is None:
-                    st.warning("⚠️ Nhắc nhở: Giỏ hàng đang trống! Vui lòng chọn dịch vụ và bấm 'Thêm vào giỏ đơn'.")
-            
-            if st.session_state.last_submit and can_go:
-                tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
-                han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
-                if tg_cho < han_muc:
-                    can_go = False
-                    st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút.")
+                can_go = True
+                if st.session_state.last_submit:
+                    tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
+                    han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
+                    if tg_cho < han_muc:
+                        can_go = False
+                        st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút.")
 
-            if can_go:
-                cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
-                if not st.session_state.submitting:
-                    if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
-                        if cam_ket:
-                            st.session_state.submitting = True
-                            st.rerun()
-                        else: st.error("Chưa tích chọn ô xác nhận cam kết!")
+                if can_go:
+                    cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
+                    if not st.session_state.submitting:
+                        if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
+                            if cam_ket:
+                                st.session_state.submitting = True
+                                st.rerun()
+                            else: 
+                                st.error("Chưa tích chọn ô xác nhận cam kết!")
+            else:
+                # Nhắc nhở nhẹ nhàng khi tổng tiền bằng 0đ để giao diện sạch sẽ
+                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
+
                 else:
                     st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                     try:
