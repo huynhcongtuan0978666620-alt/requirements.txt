@@ -261,8 +261,6 @@ st.markdown("""
             outline: none !important;
         }
 
-
-
         /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
         .khung-noi-dung-mo-rong {
             background-color: #ffffff !important;
@@ -273,6 +271,91 @@ st.markdown("""
             margin-bottom: 25px !important;
         }
 
+        /* -----------------------------------------------------------------
+            5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
+        ----------------------------------------------------------------- */
+        /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
+        [data-testid="stTabs"] [role="tablist"] div {
+            height: 0px !important;
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        /* Ép thanh chứa Tab dàn hàng ngang khít 100% khung hình, không lo lệch */
+        [data-testid="stTabs"] [role="tablist"] {
+            display: flex !important;
+            width: 100% !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 6px !important; 
+            padding: 0 !important;
+            margin: 0 auto 15px auto !important;
+        }
+
+        /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
+        button[data-baseweb="tab"] {
+            flex: 1 1 100% !important; 
+            height: 54px !important; 
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important; 
+            text-align: center !important;
+            background-color: #e2e8f0 !important; 
+            border-radius: 10px !important; 
+            padding: 10px 4px !important; 
+            border: none !important; 
+            outline: none !important;
+            white-space: nowrap !important; 
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        /* THẦN CHÚ DIỆT LỆCH KHUNG: ÉP TẤT CẢ THẺ CHỮ CON PHẢI RA GIỮA */
+        button[data-baseweb="tab"] p, 
+        button[data-baseweb="tab"] span, 
+        button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
+            color: #334155 !important; 
+            font-size: 16px !important; 
+            font-weight: 700 !important; 
+            text-align: center !important;
+            justify-content: center !important;
+            align-items: center !important;
+            display: flex !important;
+            margin: 0 auto !important; 
+            width: 100% !important;
+        }
+
+        /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #f1c40f !important; 
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
+        }
+        
+        /* Ép chữ của Tab KHI ĐƯỢC CHỌN sang đen mun và siêu đậm để chống lóa */
+        button[data-baseweb="tab"][aria-selected="true"] p,
+        button[data-baseweb="tab"][aria-selected="true"] span,
+        button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
+            color: #000000 !important; 
+            font-weight: 900 !important; 
+            font-size: 16px !important;
+        }
+
+        /* Khử hoàn toàn các đường viền phát sinh khi chạm ngón tay vào */
+        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
+            border: none !important;
+            outline: none !important;
+        }
+
+        .khung-noi-dung-mo-rong {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 20px !important;
+            border-radius: 16px !important;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
+            margin-bottom: 25px !important;
+        }
+        
         /* -----------------------------------------------------------------
            6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
         ----------------------------------------------------------------- */
