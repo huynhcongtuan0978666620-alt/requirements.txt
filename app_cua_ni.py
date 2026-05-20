@@ -65,7 +65,64 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-            3. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
+           3. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+        ----------------------------------------------------------------- */
+        .the-quan-ly-flat {
+            background-color: #ffffff !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            border-left: 6px solid #7d8f15 !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            text-align: center !important;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .nhan-tieu-de {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            margin-bottom: 5px !important;
+            text-transform: uppercase !important;
+        }
+
+        .tong-don-box {
+            background-color: #fef3c7 !important;
+            color: #b45309 !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            border: 2px dashed #fde68a !important;
+        }
+
+        .cong-tho-box {
+            background-color: #f3f4f6 !important;
+            color: #1f2937 !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            border: 2px dashed #e5e7eb !important;
+        }
+
+        .tien-thua-box {
+            background-color: #059669 !important;
+            color: #ffffff !important;
+            padding: 12px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            font-size: 16px !important;
+            font-weight: 700 !important;
+            margin-top: 15px !important;
+            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
+        }
+
+
+        /* -----------------------------------------------------------------
+           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
         ----------------------------------------------------------------- */
         .banner-top {
             position: fixed !important; 
@@ -80,7 +137,7 @@ st.markdown("""
             letter-spacing: 1px !important;
             display: flex !important; 
             align-items: center !important; 
-            justify-content: center !important; 
+            justify-content: center !important; /* Lệnh này giúp chữ ở ĐỈNH căn giữa */
             cursor: pointer !important; 
             user-select: none !important; 
             z-index: 999999 !important; 
@@ -104,6 +161,7 @@ st.markdown("""
             padding-left: 20px !important; 
             -webkit-tap-highlight-color: transparent;
         }
+
 
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
