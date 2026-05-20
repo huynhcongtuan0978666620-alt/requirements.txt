@@ -19,6 +19,32 @@ st.set_page_config(
 
 st.markdown("""
     <style>
+    /* -----------------------------------------------------------------
+           ĐẶC TRỊ LỖI MÙ NHÃN NHẬP LIỆU (INPUT LABELS) TRÊN MOBILE
+        ----------------------------------------------------------------- */
+        /* Ép tất cả nhãn của ô nhập liệu (Input, Textarea, Select) hiện màu đen */
+        label,
+        .stTextInput label,
+        .stNumberInput label,
+        .stSelectbox label,
+        .stDateInput label,
+        div[data-testid="stWidgetLabel"] p {
+            color: #000000 !important; /* Đen tuyền */
+            font-weight: 800 !important; /* Bôi đậm để nhìn rõ */
+            font-size: 15px !important;
+            -webkit-text-fill-color: #000000 !important;
+        }
+
+        /* Đảm bảo các khối chứa nhãn không bị che khuất */
+        div[data-testid="stWidgetLabel"] {
+            margin-bottom: 5px !important;
+        }
+
+        /* Ép màu chữ trong ô nhập liệu (khi thợ gõ chữ) cũng hiện đen */
+        input, textarea {
+            color: #000000 !important;
+            font-weight: 600 !important;
+        }
         /* -----------------------------------------------------------------
             1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
