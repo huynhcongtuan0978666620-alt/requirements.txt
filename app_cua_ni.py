@@ -673,7 +673,7 @@ def main():
                         
                         c1, c2, c3 = st.columns(3)
                         c1.metric("📊 TỔNG DOANH THU HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
-                        c2.metric("🧾 TỔNG SỐ ĐƠN HÀNG", len(df_h))
+                        c2.metric("🧾 TỔNG ĐƠN HÀNG", len(df_h))
                         c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
                     else: 
                         st.info("Chưa có dữ liệu báo cáo đơn hàng.")
