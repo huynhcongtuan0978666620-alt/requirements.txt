@@ -374,15 +374,8 @@ st.markdown("""
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
-
-        /* Ép màu chữ của TẤT CẢ các nhãn (label) ô nhập liệu thành màu đen */
-label, div[data-testid="stWidgetLabel"] p {
-    color: #000000 !important;
-    font-weight: 800 !important; /* Đậm đà cho dễ đọc */
-}
     </style>
 
-st.markdown("""
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
