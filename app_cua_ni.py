@@ -360,7 +360,7 @@ def main():
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
-            # Đổ màu nền cho khung Form Nhập đơn khách
+            # MỞ KHUNG: Bao bọc toàn bộ form nhập thông tin khách và dịch vụ vào một khối thống nhất
             st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
@@ -408,7 +408,7 @@ def main():
                             st.session_state.adding_cart = False
                             time.sleep(0.2)
                             st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True) # Đóng khung nhập liệu
+            st.markdown('</div>', unsafe_allow_html=True) # ĐÓNG KHUNG CHUẨN: Sau khi các nút và ô nhập liệu đã xuất hiện xong
 
             # Quản lý hiển thị danh sách giỏ hàng chờ lưu
             t_bill, t_cong_tho = 0.0, 0.0
@@ -429,6 +429,7 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
                 st.markdown('</div>', unsafe_allow_html=True)
+
             
             ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
             st.divider()
