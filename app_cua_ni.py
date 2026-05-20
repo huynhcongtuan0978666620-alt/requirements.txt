@@ -412,10 +412,10 @@ def main():
 
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
-            st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
+            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
             # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
-            st.markdown('<div class="the-quan-ly-flat">📝 Nhập "ĐƠN HÀNG" bên dưới nhé!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -641,7 +641,7 @@ def main():
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
-                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“ mới!</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 
                 # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ.
                 try:
