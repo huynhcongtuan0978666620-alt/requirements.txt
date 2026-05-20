@@ -590,10 +590,7 @@ def main():
                 st.session_state.clear()
                 st.rerun()
 
-        # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
 # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
-
-
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
@@ -608,11 +605,14 @@ def main():
                     if du_lieu:
                         df_bc = pd.DataFrame(du_lieu)
                         
-                        # Tách 50 dòng cuối và ép chỉ mục chạy từ 1 để không bị hiển thị số 0 cấn mắt
+                        # Tách 50 dòng cuối và xử lý chỉ mục hiển thị
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
                         
-                        # Hiển thị bảng dữ liệu sạch sẽ
+                        # Đặt tên tiêu đề cho cột số thứ tự là "Stt"
+                        df_hien_thi.index.name = "Stt"
+                        
+                        # Hiển thị bảng dữ liệu sạch sẽ lên giao diện
                         st.dataframe(df_hien_thi, use_container_width=True)
                         
                         # Lọc tính toán doanh thu hôm nay dựa trên bảng gốc đầy đủ
@@ -630,7 +630,6 @@ def main():
                 st.markdown('</div>', unsafe_allow_html=True)
 
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (MÀU NỀN TOÀN KHỐI FLAT PANEL)
-
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 
