@@ -497,7 +497,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #000000;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
