@@ -408,17 +408,21 @@ def main():
                             st.rerun()
             st.markdown('</div>', unsafe_allow_html=True) # ĐÓNG KHUNG CHUẨN: Sau khi các nút và ô nhập liệu đã xuất hiện xong
 
-            # Quản lý hiển thị danh sách giỏ hàng chờ lưu
+            # -----------------------------------------------------------------
+            # KHỐI HIỂN THỊ GIỎ HÀNG CHỜ LƯU (ĐÃ XOÁ SẠCH KHUNG TRỐNG DƯ THỪA)
+            # -----------------------------------------------------------------
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
                 st.markdown(f"📦 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
-                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+                # CHÚ Ý: Đã loại bỏ hoàn toàn thẻ div khung trống rỗng ở đây để giao diện liền mạch
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
-                    with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
-                    with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
+                    with col_item1: 
+                        st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
+                    with col_item2: 
+                        st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
                     with col_item3:
                         if st.button("Xóa", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
@@ -426,7 +430,7 @@ def main():
                             st.rerun()
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
-                st.markdown('</div>', unsafe_allow_html=True)
+
 
             ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
             st.divider()
