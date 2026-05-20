@@ -29,7 +29,7 @@ st.markdown("""
         }
 
         .stApp {
-            padding-top: 60px !important;
+            padding-top: 75px !important; /* Đã tăng lên 75px để đẩy nội dung xuống dưới banner */
             padding-bottom: 60px !important;
             background-color: #f8f9fa !important;
         }
@@ -43,19 +43,36 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (BLACK & GOLD EDITION)
+           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
         ----------------------------------------------------------------- */
-        .banner-top, .banner-bottom {
-            position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
-            background: #111111 !important; color: #f1c40f !important;
-            font-size: 18px !important; font-weight: 800 !important; letter-spacing: 2px !important;
-            display: flex !important; align-items: center !important; justify-content: center !important;
-            cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
+        .banner-top {
+            position: fixed !important; 
+            left: 0 !important; 
+            right: 0 !important; 
+            top: 0px !important; /* Đẩy sát đỉnh chuẩn */
+            height: 48px !important;
+            background: #111111 !important; 
+            color: #f1c40f !important;
+            font-size: 15px !important; /* Hạ nhẹ 1 chút để không bị tràn dòng trên mobile */
+            font-weight: 800 !important; 
+            letter-spacing: 1px !important;
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important;
+            cursor: pointer !important; 
+            user-select: none !important; 
+            z-index: 999999 !important; /* Cấp tối cao để không bị đè menu */
             border-bottom: 3px solid #7d8f15 !important;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.2) !important;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
             -webkit-tap-highlight-color: transparent;
         }
+        
         .banner-bottom { 
+            position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
+            background: #111111 !important; color: #f1c40f !important;
+            font-size: 15px !important; font-weight: 800 !important; letter-spacing: 1px !important;
+            display: flex !important; align-items: center !important; 
+            cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
             bottom: 0 !important; 
             top: auto !important;
             border-top: 3px solid #7d8f15 !important; 
@@ -63,7 +80,9 @@ st.markdown("""
             box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
             justify-content: flex-start !important; 
             padding-left: 20px !important; 
+            -webkit-tap-highlight-color: transparent;
         }
+
 
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
