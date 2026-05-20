@@ -202,7 +202,7 @@ st.markdown("""
         /* ĐỔI MÀU NỀN ĐẬM CHẤT KHI BẤM CHỌN VÀO TAB TRỰC TIẾP */
         button[data-baseweb="tab"][aria-selected="true"] {
             background-color: #7d8f15 !important; /* Đổi thành màu xanh rêu thương hiệu của tiệm */
-            color: #ffffff !important; /* Đổi chữ thành màu trắng tinh cho nổi bật */
+            color: #7d8f15 !important; /* Đổi chữ thành màu trắng tinh cho nổi bật */
             font-weight: 800 !important; /* Ép chữ đậm lên */
             border-bottom: 2px solid #7d8f15 !important;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
