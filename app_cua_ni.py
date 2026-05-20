@@ -415,7 +415,7 @@ def main():
             st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
             # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
-            st.markdown('<div class="the-quan-ly-flat">📝 Nhập "ĐƠN HÀNG" bên nhé!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat">📝 Nhập "ĐƠN HÀNG" bên dưới nhé!</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -426,7 +426,7 @@ def main():
             st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             
             box_chon_dv = st.selectbox(
-                "Dịch vụ kỹ thuật", 
+                "📌Dịch vụ", 
                 options=dv_list if dv_list else ["Không có dữ liệu"],
                 index=None,
                 placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
@@ -586,7 +586,7 @@ def main():
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
-            if st.button("🚪 THOÁT APP MÁY", use_container_width=True):
+            if st.button("🚪 THOÁT APP", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
