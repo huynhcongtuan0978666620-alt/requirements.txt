@@ -186,7 +186,28 @@ st.markdown("""
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
             text-align: center !important; /* Căn giữa chữ hướng dẫn */
         }
+        /* -----------------------------------------------------------------
+           3. ĐỔI MÀU NỀN VÀ CHỮ CHO CÁC NÚT TAB (NHẬP LIỆU, BÁO CÁO, CÀI ĐẶT)
+        ----------------------------------------------------------------- */
+        /* Định dạng chung cho tất cả các nút Tab khi ở trạng thái bình thường */
+        button[data-baseweb="tab"] {
+            background-color: #f1f3f5 !important; /* Màu nền xám nhạt cho tab chưa chọn */
+            color: #495057 !important; /* Màu chữ xám tối */
+            border-radius: 8px 8px 0 0 !important; /* Bo tròn nhẹ 2 góc trên của nút */
+            padding: 10px 20px !important;
+            margin-right: 4px !important;
+            transition: all 0.3s ease !important;
+        }
 
+        /* ĐỔI MÀU NỀN ĐẬM CHẤT KHI BẤM CHỌN VÀO TAB TRỰC TIẾP */
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #7d8f15 !important; /* Đổi thành màu xanh rêu thương hiệu của tiệm */
+            color: #ffffff !important; /* Đổi chữ thành màu trắng tinh cho nổi bật */
+            font-weight: 800 !important; /* Ép chữ đậm lên */
+            border-bottom: 2px solid #7d8f15 !important;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        }
+        
 
         /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
         .khung-noi-dung-mo-rong {
