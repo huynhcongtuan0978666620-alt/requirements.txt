@@ -432,7 +432,7 @@ def main():
                     t_cong_tho += item['tiem_cong_tho']
 
             # -----------------------------------------------------------------
-            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ (ĐÃ SỬA LỖI THỤT LỀ DÒNG 478)
+            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS HỢP NHẤT CHUẨN XÁC
             # -----------------------------------------------------------------
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
@@ -470,64 +470,59 @@ def main():
                                 st.error("Chưa tích chọn ô xác nhận cam kết!")
                     else:
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
+                        try:
+                            cl = get_gspread_client()
+                            ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                            bay_gio = get_now_vn()
+                            ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
+                            
+                            rows_to_append = []
+                            html_items = ""
+                            for idx, item in enumerate(st.session_state.gio_hang):
+                                rows_to_append.append([
+                                    bay_gio.strftime("%d/%m/%Y"), b_name:=st.session_state.full_name, kh_ten, kh_sdt,
+                                    item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
+                                    bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
+                                ])
+                                html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
+                            
+                            ws.append_rows(rows_to_append)
+
+                            st.session_state.bill_vua_in = f"""
+                            <div class="hoa-don-khung">
+                                <div class="hd-header">
+                                    <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+                                    <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
+                                    <div style="font-size: 11px;">📞 {settings.get('SDT', '0947.58.1516')}</div>
+                                    <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
+                                    <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
+                                </div>
+                                <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
+                                    <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
+                                    <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                    <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
+                                </div>
+                                <div class="hd-items">{html_items}</div>
+                                <div style="font-size: 14px; font-weight: bold;">
+                                    <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
+                                    <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
+                                    <div class="hd-row" style="color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                                </div>
+                                <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
+                                    {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
+                                </div>
+                            </div>"""
+
+                            st.session_state.update({"gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, "submitting": False})
+                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ!")
+                            time.sleep(0.5)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Lỗi lưu dữ liệu: {e}")
+                            st.session_state.submitting = False
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
-
-
-
-                else:
-                    st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
-                    try:
-                        cl = get_gspread_client()
-                        ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
-                        bay_gio = get_now_vn()
-                        ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
-                        
-                        rows_to_append = []
-                        html_items = ""
-                        for idx, item in enumerate(st.session_state.gio_hang):
-                            rows_to_append.append([
-                                bay_gio.strftime("%d/%m/%Y"), b_name:=st.session_state.full_name, kh_ten, kh_sdt,
-                                item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
-                                bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
-                            ])
-                            html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
-                        
-                        ws.append_rows(rows_to_append)
-
-                        st.session_state.bill_vua_in = f"""
-                        <div class="hoa-don-khung">
-                            <div class="hd-header">
-                                <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-                                <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
-                                <div style="font-size: 11px;">📞 {settings.get('SDT', '0947.58.1516')}</div>
-                                <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
-                                <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
-                            </div>
-                            <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
-                                <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
-                                <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
-                                <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
-                            </div>
-                            <div class="hd-items">{html_items}</div>
-                            <div style="font-size: 14px; font-weight: bold;">
-                                <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
-                                <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
-                                <div class="hd-row" style="color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
-                            </div>
-                            <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
-                                {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
-                            </div>
-                        </div>"""
-
-                        st.session_state.update({"gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, "submitting": False})
-                        st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ!")
-                        time.sleep(0.5)
-                        st.rerun()
-                    except Exception as e:
-                        st.error(f"Lỗi lưu dữ liệu: {e}")
-                        st.session_state.submitting = False
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
@@ -540,6 +535,7 @@ def main():
                 st.rerun()
 
         # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
+
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
