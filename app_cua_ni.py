@@ -10,13 +10,6 @@ import re
 # =====================================================================
 # 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THỜI TRANG HIGH-END (LUXURY FLAT)
 # =====================================================================
-st.set_page_config(
-    page_title="LKTV DETAILING - PREMIUM", 
-    layout="centered", 
-    page_icon="✂️",
-    initial_sidebar_state="collapsed"
-)
-
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
@@ -43,29 +36,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-            2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
-        ----------------------------------------------------------------- */
-        .the-quan-ly-flat {
-            background-color: #ffffff !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            border-left: 6px solid #7d8f15 !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-            text-align: center !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            margin-bottom: 20px !important;
-        }
-        
-        .nhan-tieu-de {
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            margin-bottom: 5px !important;
-            text-transform: uppercase !important;
-        }
-
-        /* -----------------------------------------------------------------
-           3. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+            2. KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
         ----------------------------------------------------------------- */
         .the-quan-ly-flat {
             background-color: #ffffff !important;
@@ -120,195 +91,59 @@ st.markdown("""
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
         }
 
-
         /* -----------------------------------------------------------------
-           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
+            3. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
         ----------------------------------------------------------------- */
-        .banner-top {
-            position: fixed !important; 
-            left: 0 !important; 
-            right: 0 !important; 
-            top: 0px !important; 
-            height: 48px !important;
-            background: #111111 !important; 
-            color: #f1c40f !important;
-            font-size: 15px !important; 
-            font-weight: 800 !important; 
-            letter-spacing: 1px !important;
-            display: flex !important; 
-            align-items: center !important; 
-            justify-content: center !important; /* Lệnh này giúp chữ ở ĐỈNH căn giữa */
-            cursor: pointer !important; 
-            user-select: none !important; 
-            z-index: 999999 !important; 
-            border-bottom: 3px solid #7d8f15 !important;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
-            -webkit-tap-highlight-color: transparent;
-        }
-        
-        .banner-bottom { 
+        .banner-top, .banner-bottom {
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
             background: #111111 !important; color: #f1c40f !important;
             font-size: 15px !important; font-weight: 800 !important; letter-spacing: 1px !important;
-            display: flex !important; align-items: center !important; 
-            cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
-            bottom: 0 !important; 
-            top: auto !important;
-            border-top: 3px solid #7d8f15 !important; 
-            border-bottom: none !important;
-            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
-            justify-content: flex-start !important; 
-            padding-left: 20px !important; 
-            -webkit-tap-highlight-color: transparent;
+            display: flex !important; align-items: center !important; cursor: pointer !important;
+            z-index: 999999 !important; -webkit-tap-highlight-color: transparent;
         }
-
-
-        .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
+        .banner-top { top: 0 !important; justify-content: center !important; border-bottom: 3px solid #7d8f15 !important; }
+        .banner-bottom { bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; padding-left: 20px !important; }
 
         /* -----------------------------------------------------------------
-            4. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
+            4. BẢNG HIỆU & CÁC THÀNH PHẦN KHÁC
         ----------------------------------------------------------------- */
         .bang-hieu-lktv {
             text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
             background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
             color: white !important; box-shadow: 0px 15px 35px rgba(0,0,0,0.25) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
-        .logo-img { 
-            width: 110px !important; height: 110px !important; object-fit: cover !important; border-radius: 50% !important; 
-            border: 4px solid #f1c40f !important; margin: 0 auto 15px auto !important; display: block !important;
-            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important;
-        }
-        .ten-tiem { font-size: 24px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 6px !important; letter-spacing: 2px !important; }
-        .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
-        .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
-        
+
         /* -----------------------------------------------------------------
-            5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
+            5. ĐẶC TRỊ LỖI NUỐT CHỮ TRÊN ĐIỆN THOẠI (FIX TẬN GỐC)
         ----------------------------------------------------------------- */
-        /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
-        [data-testid="stTabs"] [role="tablist"] div {
-            height: 0px !important;
-            background-color: transparent !important;
-            border: none !important;
+        /* Ép chữ luôn luôn Đen bất kể cấu hình nền của điện thoại */
+        .stMarkdown, .stMarkdown a, .stMarkdown p, .stMarkdown span,
+        div[data-styled-with-styled-components="true"] a, 
+        div[data-styled-with-styled-components="true"] span {
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
         }
 
-        /* Ép thanh chứa Tab dàn hàng ngang khít 100% khung hình, không lo lệch */
-        [data-testid="stTabs"] [role="tablist"] {
-            display: flex !important;
-            width: 100% !important;
-            justify-content: center !important;
-            align-items: center !important;
-            gap: 6px !important; 
-            padding: 0 !important;
-            margin: 0 auto 15px auto !important;
-        }
-
-        /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
-        button[data-baseweb="tab"] {
-            flex: 1 1 100% !important; 
-            height: 54px !important; 
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important; 
-            text-align: center !important;
-            background-color: #e2e8f0 !important; 
-            border-radius: 10px !important; 
-            padding: 10px 4px !important; 
-            border: none !important; 
-            outline: none !important;
-            white-space: nowrap !important; 
-            transition: all 0.2s ease-in-out !important;
-        }
-
-        /* THẦN CHÚ DIỆT LỆCH KHUNG: ÉP TẤT CẢ THẺ CHỮ CON PHẢI RA GIỮA */
-        button[data-baseweb="tab"] p, 
-        button[data-baseweb="tab"] span, 
-        button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
-            color: #334155 !important; 
-            font-size: 16px !important; 
-            font-weight: 700 !important; 
-            text-align: center !important;
-            justify-content: center !important;
-            align-items: center !important;
-            display: flex !important;
-            margin: 0 auto !important; 
-            width: 100% !important;
-        }
-
-        /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
-        button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; 
-            border: none !important;
-            outline: none !important;
-            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
-        }
-        
-        /* Ép chữ của Tab KHI ĐƯỢC CHỌN sang đen mun và siêu đậm để chống lóa */
-        button[data-baseweb="tab"][aria-selected="true"] p,
-        button[data-baseweb="tab"][aria-selected="true"] span,
-        button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
-            color: #000000 !important; 
-            font-weight: 900 !important; 
-            font-size: 16px !important;
-        }
-
-        /* Khử hoàn toàn các đường viền phát sinh khi chạm ngón tay vào */
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
-            border: none !important;
-            outline: none !important;
-        }
-
-        .khung-noi-dung-mo-rong {
+        /* Thiết kế lại nút bấm để dễ bấm trên Mobile */
+        .stMarkdown a {
+            display: inline-block !important;
+            padding: 12px 20px !important;
             background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 20px !important;
-            border-radius: 16px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            margin-bottom: 25px !important;
-        }
-
-        /* -----------------------------------------------------------------
-            6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
-        ----------------------------------------------------------------- */
-        .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
-        .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
-        .tien-thua-box { background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
-        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
-
-        /* -----------------------------------------------------------------
-            7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
-        ----------------------------------------------------------------- */
-        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
-        .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
-        .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
-        .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
-        .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
-
-        /* =================================================================
-            8. ĐOẠN ĐỘ THÊM: PHÒNG CHỐNG CHỮ TÀNG HÌNH DIỆN RỘNG (AN TOÀN TUYỆT ĐỐI)
-        ================================================================= */
-        /* Đè màu chữ tiêu đề widget lóa trắng thành màu xanh than đậm */
-        [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6 {
-            color: #0f172a !important;
-            font-weight: 700 !important;
-        }
-        
-        /* Trị dứt điểm lỗi tàng hình chữ trong khối st.warning (Thông báo giỏ hàng trống) */
-        div[data-testid="stNotification"] {
-            background-color: #fef3c7 !important; 
-            border: 2px solid #f59e0b !important; 
+            border: 2px solid #7d8f15 !important;
             border-radius: 10px !important;
-        }
-        div[data-testid="stNotification"] p, div[data-testid="stNotification"] span, div[class*="stAlert"] p {
-            color: #92400e !important; 
+            text-decoration: none !important;
             font-weight: 800 !important;
+            margin: 5px 0 !important;
         }
 
-        /* Chữa luôn chữ mờ trong ô nhập liệu Dropdown chọn thợ/chọn dịch vụ */
-        div[data-baseweb="select"] div {
-            color: #1e293b !important;
-            font-weight: 600 !important;
+        /* Xử lý các khối cảnh báo và thông báo */
+        div[data-testid="stNotification"], div[class*="stAlert"] {
+            background-color: #fef3c7 !important;
+            border: 2px solid #f59e0b !important;
+        }
+        div[data-testid="stNotification"] p, div[class*="stAlert"] p {
+            color: #92400e !important;
+            font-weight: 700 !important;
         }
     </style>
 """, unsafe_allow_html=True)
