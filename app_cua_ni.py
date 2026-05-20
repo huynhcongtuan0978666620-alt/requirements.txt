@@ -431,7 +431,6 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-
             # -----------------------------------------------------------------
             # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ (ĐÃ CĂN CHỈNH THỤT LỀ CHUẨN XÁC)
             # -----------------------------------------------------------------
@@ -474,7 +473,7 @@ def main():
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
-đơn tính tiền.")
+
 
                 else:
                     st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
