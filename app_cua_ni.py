@@ -115,24 +115,22 @@ st.markdown("""
 
         .nhan-tieu-de { text-align: center; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #374151; letter-spacing: 1px; }
 
-        /* -----------------------------------------------------------------
-           5. KHỐI THẺ THIẾT LẬP CÓ MÀU NỀN TOÀN DIỆN (FLAT LUXURY PANEL)
-        ----------------------------------------------------------------- */
+        /* KHỐI THÈ HƯỚNG DẪN FLAT PANEL CÓ CHỨA TEXT CHỈ DẪN */
         .the-quan-ly-flat {
-            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            background: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
             border-left: 6px solid #7d8f15 !important;
-            padding: 16px 20px !important;
-            border-radius: 14px !important;
-            font-size: 16px !important;
-            font-weight: 800 !important;
-            color: #f1c40f !important;
-            margin-top: 20px !important;
+            padding: 14px 16px !important;
+            border-radius: 12px !important;
+            font-size: 14px !important;
+            font-weight: 700 !important;
+            color: #1e293b !important; /* Màu chữ xám tối thanh lịch */
+            margin-top: 10px !important;
             margin-bottom: 15px !important;
-            box-shadow: 0px 8px 20px rgba(15, 23, 42, 0.15) !important;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
+            text-align: center !important; /* Căn giữa chữ hướng dẫn */
         }
+
 
         /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
         .khung-noi-dung-mo-rong {
@@ -360,8 +358,8 @@ def main():
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
-            # MỞ KHUNG: Bao bọc toàn bộ form nhập thông tin khách và dịch vụ vào một khối thống nhất
-            st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+            # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
+            st.markdown('<div class="the-quan-ly-flat">📝 Vui lòng điền đầy đủ THÔNG TIN bên dưới</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -533,7 +531,9 @@ def main():
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+            # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 2
+                st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại BÁO CÁO</div>', unsafe_allow_html=True)
+
                 try:
                     cl = get_gspread_client()
                     ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -558,13 +558,14 @@ def main():
                 
                 # Khối 1: Google Sheets có màu nền đổ bóng sang trọng
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
-                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">🌐 Vui lòng kiểm tra kết nối INTERNET</div>', unsafe_allow_html=True)
+
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 st.write("")
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
-                st.markdown('</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">👥 Vui lòng nhập đầy đủ thông tin NV Mới</div>', unsafe_allow_html=True)
                 
                 # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ
                 st.markdown('<div class="the-quan-ly-flat">👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ</div>', unsafe_allow_html=True)
