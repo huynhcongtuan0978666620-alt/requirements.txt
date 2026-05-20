@@ -49,19 +49,19 @@ st.markdown("""
             position: fixed !important; 
             left: 0 !important; 
             right: 0 !important; 
-            top: 0px !important; /* Đẩy sát đỉnh chuẩn */
+            top: 0px !important; 
             height: 48px !important;
             background: #111111 !important; 
             color: #f1c40f !important;
-            font-size: 15px !important; /* Hạ nhẹ 1 chút để không bị tràn dòng trên mobile */
+            font-size: 15px !important; 
             font-weight: 800 !important; 
             letter-spacing: 1px !important;
             display: flex !important; 
             align-items: center !important; 
-            justify-content: center !important;
+            justify-content: center !important; /* Lệnh này giúp chữ ở ĐỈNH căn giữa */
             cursor: pointer !important; 
             user-select: none !important; 
-            z-index: 999999 !important; /* Cấp tối cao để không bị đè menu */
+            z-index: 999999 !important; 
             border-bottom: 3px solid #7d8f15 !important;
             box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
             -webkit-tap-highlight-color: transparent;
