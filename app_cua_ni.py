@@ -194,7 +194,7 @@ st.markdown("""
             background-color: #f1f3f5 !important; /* Màu nền xám nhạt cho tab chưa chọn */
             color: #495057 !important; /* Màu chữ xám tối */
             border-radius: 8px 8px 0 0 !important; /* Bo tròn nhẹ 2 góc trên của nút */
-            padding: 2px 2px !important;
+            padding: 1px 1px !important;
             margin-right: 4px !important;
             transition: all 0.3s ease !important;
         }
