@@ -187,7 +187,7 @@ st.markdown("""
             text-align: center !important; /* Căn giữa chữ hướng dẫn */
         }
         /* -----------------------------------------------------------------
-           3. ĐỔI MÀU NỀN, CHỮ VÀ KHỬ HOÀN TOÀN VIỀN CHẠY THEO CỦA NÚT TAB
+           3. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - CHỮ CĂN GIỮA
         ----------------------------------------------------------------- */
         /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
         [data-testid="stTabs"] [role="tablist"] div {
@@ -196,34 +196,48 @@ st.markdown("""
             border: none !important;
         }
 
-        /* Định dạng chung cho nút Tab: Trạng thái chưa bấm */
+        /* ÉP THANH CHỨA TAB CHẠY HẾT 100% CHIỀU NGANG, KHÔNG ĐỂ TRỐNG */
+        [data-testid="stTabs"] [role="tablist"] {
+            display: flex !important;
+            width: 100% !important;
+            justify-content: space-between !important;
+            gap: 4px !important; /* Tạo khoảng cách nhỏ vừa phải giữa các nút */
+        }
+
+        /* CẤU HÌNH NÚT TAB: CHIA ĐỀU 1/3 MÀN HÌNH VÀ CĂN CHỮ CHÍNH GIỮA */
         button[data-baseweb="tab"] {
-            background-color: #f1f3f5 !important; /* Nền xám nhạt tinh tế */
+            flex: 1 1 0% !important; /* Thần chú ép 3 nút tự động chia đều diện tích màn hình */
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important; /* Ép chữ và icon ra ngay chính giữa tâm nút */
+            text-align: center !important;
+            background-color: #f1f3f5 !important; /* Nền xám nhạt tinh tế khi chưa chọn */
             color: #495057 !important; /* Chữ xám tối */
-            border-radius: 8px 8px 0 0 !important; /* Bo góc nhẹ phía trên */
-            padding: 1px 1px !important;
-            margin-right: 4px !important;
-            border: none !important; /* Khử viền mặc định */
-            outline: none !important; /* Khử viền khi focus */
+            border-radius: 8px !important; /* Bo tròn đều 4 góc cho ra dáng nút bấm hiện đại */
+            padding: 10px 4px !important; /* Giảm padding ngang xuống tối thiểu để chữ không bị tràn */
+            font-size: 13px !important; /* Kích thước chữ tối ưu cho mobile */
+            border: none !important; 
+            outline: none !important;
+            white-space: nowrap !important; /* Ngăn không cho chữ tự động xuống dòng bậy bạ */
             transition: all 0.2s ease-in-out !important;
         }
 
-        /* HIỆU ỨNG KHI ĐÃ ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MIN Luxury */
+        /* HIỆU ỨNG KHI ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MỊN PREMIUM */
         button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #7d8f15 !important; /* Màu xanh rêu Premium của tiệm */
-            color: #ffffff !important; /* Chữ trắng sáng */
-            font-weight: 800 !important; /* Chữ đậm nổi bật */
-            border: none !important; /* Ép không cho sinh viền mới */
-            outline: none !important;
-            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important; /* Đổ bóng nhẹ màu rêu nhẹ nhàng */
-        }
-
-        /* Khử đường viền xanh rêu bướng bỉnh xuất hiện lúc ngón tay chạm vào (Hover/Focus) */
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active {
+            background-color: #7d8f15 !important; /* Màu xanh rêu thương hiệu của tiệm */
+            color: #ffffff !important; /* Chữ trắng sáng bừng */
+            font-weight: 800 !important; /* Chữ đậm lên trông thấy */
             border: none !important;
             outline: none !important;
-            color: #ffffff !important;
+            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important; /* Đổ bóng rêu nhẹ luxury */
         }
+
+        /* Khử hoàn toàn các đường viền phát sinh khi Hover/Focus chạm ngón tay vào */
+        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
+            border: none !important;
+            outline: none !important;
+        }
+
 
 
         /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
