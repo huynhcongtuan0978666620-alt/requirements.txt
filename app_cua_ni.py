@@ -418,110 +418,56 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
     </style>
 
+/* ĐỒNG BỘ FONT & NỀN */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        html, body, .stApp, div, span, p, h1, h2, h3, h4, input, button, select, textarea {
+            font-family: 'Inter', sans-serif !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
+        }
+        .stApp { padding-top: 75px !important; padding-bottom: 60px !important; background-color: #f8f9fa !important; }
+
+        /* BANNER CỐ ĐỊNH */
+        .banner-top, .banner-bottom {
+            position: fixed !important; left: 0 !important; right: 0 !important;
+            height: 48px !important; background: #111111 !important; color: #f1c40f !important;
+            display: flex !important; align-items: center !important; justify-content: center !important;
+            font-weight: 900 !important; z-index: 999999 !important; cursor: pointer !important;
+        }
+        .banner-top { top: 0 !important; border-bottom: 3px solid #7d8f15 !important; }
+        .banner-bottom { bottom: 0 !important; border-top: 3px solid #7d8f15 !important; }
+
+        /* TABS ĐỒNG BỘ 100% MÀN HÌNH */
+        [data-testid="stTabs"] [role="tablist"] { display: flex !important; width: 100% !important; gap: 4px !important; }
+        button[data-baseweb="tab"] { flex: 1 !important; background-color: #e2e8f0 !important; border-radius: 8px !important; }
+        button[data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; }
+
+        /* KHỐI NỘI DUNG & TIỀN TỆ */
+        .khung-noi-dung-mo-rong { background: #ffffff !important; padding: 20px !important; border-radius: 16px !important; border: 1px solid #e2e8f0 !important; margin-bottom: 25px !important; }
+        .tong-don-box { background: #fef3c7; color: #b45309 !important; padding: 15px; border-radius: 12px; text-align: center; border: 2px dashed #fde68a; font-weight: 900; }
+        .tien-thua-box { background: #059669; color: #ffffff !important; padding: 15px; border-radius: 12px; font-weight: 900; text-align: center; }
+        .tien-thua-box * { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
+    </style>
+
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
     <script>
-        if (!window.fireworkStylesAdded) {
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
-            document.head.appendChild(style);
-            window.fireworkStylesAdded = true;
-        }
         function createFirework(e) {
-            const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
-            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = clickX + 'px'; particle.style.top = clickY + 'px';
-                particle.style.animation = 'explode 0.7s ease-out forwards';
-                const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 120 + 40; 
-                particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-                particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                document.body.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 700);
+            const clickX = e.clientX, clickY = e.clientY;
+            for (let i = 0; i < 20; i++) {
+                const p = document.createElement('div');
+                p.style.position = 'fixed'; p.style.width = '6px'; p.style.height = '6px';
+                p.style.borderRadius = '50%'; p.style.backgroundColor = '#f1c40f';
+                p.style.left = clickX + 'px'; p.style.top = clickY + 'px';
+                p.style.zIndex = '1000000'; document.body.appendChild(p);
+                const angle = Math.random() * Math.PI * 2, dist = Math.random() * 100;
+                p.animate([{transform: 'translate(0,0)', opacity:1}, {transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`, opacity:0}], 
+                {duration: 700, easing: 'ease-out'}).onfinish = () => p.remove();
             }
         }
     </script>
 """, unsafe_allow_html=True)
-# =====================================================================
-# 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
-# =====================================================================
-def get_now_vn():
-    return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
-
-def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
-
-def format_drive_direct_url(link):
-    if not link or not isinstance(link, str): 
-        return ""
-    match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
-    return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
-
-@st.cache_data(ttl=5)
-def get_settings():
-    try:
-        client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("ThietLap").get_all_values()
-        return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
-    except Exception:
-        return {
-            "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
-            "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
-        }
-
-@st.cache_data(ttl=60)
-def get_service_data():
-    try:
-        client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
-        
-        danh_sach_dv = {}
-        for row in rows[1:]:
-            if len(row) >= 2:
-                ten_dv = str(row[0]).strip()
-                if not ten_dv:
-                    continue
-                try: 
-                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
-                except: 
-                    gia_goc = 0.0
-                
-                hoa_hong = 0.0
-                if len(row) >= 3 and row[2]:
-                    try:
-                        raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
-                        hoa_hong = float(raw_hh)
-                        if 0 < hoa_hong < 1.0: 
-                            hoa_hong *= 100
-                    except: 
-                        hoa_hong = 0.0
-                
-                danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
-        return danh_sach_dv
-    except Exception: 
-        return {}
-
-def display_header(settings):
-    direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
-    fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-    st.markdown(f"""
-        <div class="bang-hieu-lktv">
-            <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
-            <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
-            <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
-        </div>
-    """, unsafe_allow_html=True)
 
 
 # =====================================================================
