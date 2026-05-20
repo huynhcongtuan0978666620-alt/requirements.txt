@@ -433,7 +433,7 @@ def main():
 
 
             # -----------------------------------------------------------------
-            # KHỐI LOGIC HIỂN THỊ THANH TOÁN (BẮT ĐẦU TỪ DÒNG 435 - TỰ ĐỘNG ẨN KHI GIỎ TRỐNG)
+            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ (ĐÃ CĂN CHỈNH THỤT LỀ CHUẨN XÁC)
             # -----------------------------------------------------------------
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
@@ -469,9 +469,12 @@ def main():
                                 st.rerun()
                             else: 
                                 st.error("Chưa tích chọn ô xác nhận cam kết!")
+                    else:
+                        st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
             else:
-                # Nhắc nhở nhẹ nhàng khi tổng tiền bằng 0đ để giao diện sạch sẽ
+                # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
+đơn tính tiền.")
 
                 else:
                     st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
