@@ -382,6 +382,7 @@ label, div[data-testid="stWidgetLabel"] p {
 }
     </style>
 
+st.markdown("""
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
