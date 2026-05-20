@@ -17,12 +17,12 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-St.markdown("""
+st.markdown("""
     <style>
         /* -----------------------------------------------------------------
            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG (ĐÃ SỬA TRIỆT ĐỂ LỖI MÀU)
         ----------------------------------------------------------------- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
         html, body, .stApp, h1, h2, h3, h4, h5, h6 {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
@@ -42,17 +42,25 @@ St.markdown("""
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
-        /* KHẮC PHỤC: HIỆN LẠI CHỮ TIÊU ĐỀ NHÃN MÀU TỐI RÕ RÀNG */
-        label, [data-testid="stWidgetLabel"] p, .stMarkdown p {
-            color: #1f2937 !important;
-            font-weight: 600 !important;
+        /* KHẮC PHỤC TRIỆT ĐỂ: ÉP TẤT CẢ TIÊU ĐỀ, NHÃN, CHỮ MARKDOWN SANG XANH THAN ĐẬM (TRÁNH TRẮNG/ĐEN) */
+        label, [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6, span {
+            color: #1a365d !important;
+            font-weight: 700 !important;
         }
 
-        /* KHẮC PHỤC: TRẢ LẠI Ô NHẬP LIỆU NỀN TRẮNG CHỮ ĐEN NGUYÊN BẢN */
-        div[data-baseweb="input"] input, div[data-baseweb="select"] {
+        /* KHẮC PHỤC: ÉP CHỮ TRONG Ô NHẬP LIỆU & DROPDOWN SANG XÁM ĐEN THAN CỦI */
+        div[data-baseweb="input"] input, div[data-baseweb="select"] div, div[data-baseweb="popover"] p {
+            color: #2d3748 !important;
+            font-weight: 600 !important;
+        }
+        div[data-baseweb="input"] input {
             background-color: #ffffff !important;
-            color: #1f2937 !important;
-            border-radius: 8px !important;
+        }
+
+        /* KHẮC PHỤC RIÊNG: ÉP CHỮ MÀU ĐỎ ĐẬM RỰC CHO TẤT CẢ KHỐI CẢNH BÁO/LỖI/THÔNG BÁO */
+        div[data-testid="stNotification"] p, div[class*="stAlert"] p, .stException p, div[data-testid="stNotification"] span {
+            color: #c53030 !important;
+            font-weight: 800 !important;
         }
 
         /* -----------------------------------------------------------------
@@ -75,6 +83,7 @@ St.markdown("""
             font-weight: 700 !important;
             margin-bottom: 5px !important;
             text-transform: uppercase !important;
+            color: #1a365d !important; /* Đồng bộ xanh than đậm */
         }
 
         .tong-don-box {
@@ -90,7 +99,7 @@ St.markdown("""
 
         .cong-tho-box {
             background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
+            color: #1a365d !important; /* Đồng bộ xanh than đậm */
             padding: 15px !important;
             border-radius: 12px !important;
             text-align: center !important;
@@ -134,7 +143,7 @@ St.markdown("""
             justify-content: center !important; /* Căn chữ và icon ra chính giữa tâm nút */
             text-align: center !important;
             background-color: #e9ecef !important;
-            color: #495057 !important;
+            color: #2d3748 !important; /* Đồng bộ chữ tối trung tính */
             border-radius: 8px !important;
             padding: 10px 4px !important;
             font-size: 13px !important;
@@ -157,6 +166,9 @@ St.markdown("""
             border: none !important;
             outline: none !important;
         }
+    </style>
+""", unsafe_allow_html=True)
+
         /* -----------------------------------------------------------------
            2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
         ----------------------------------------------------------------- */
