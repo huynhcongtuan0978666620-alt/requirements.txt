@@ -591,6 +591,7 @@ def main():
                 st.rerun()
 
         # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
+# PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
 
 
         if st.session_state["role"] == "Admin":
@@ -606,7 +607,15 @@ def main():
                     du_lieu = ws_bc.get_all_records()
                     if du_lieu:
                         df_bc = pd.DataFrame(du_lieu)
-                        st.dataframe(df_bc.tail(50), use_container_width=True)
+                        
+                        # Tách 50 dòng cuối và ép chỉ mục chạy từ 1 để không bị hiển thị số 0 cấn mắt
+                        df_hien_thi = df_bc.tail(50).copy()
+                        df_hien_thi.index = range(1, len(df_hien_thi) + 1)
+                        
+                        # Hiển thị bảng dữ liệu sạch sẽ
+                        st.dataframe(df_hien_thi, use_container_width=True)
+                        
+                        # Lọc tính toán doanh thu hôm nay dựa trên bảng gốc đầy đủ
                         ngay_nay = get_now_vn().strftime("%d/%m/%Y")
                         df_h = df_bc[df_bc['Ngày'] == ngay_nay]
                         
@@ -614,11 +623,14 @@ def main():
                         c1.metric("📊 HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
                         c2.metric("🧾 SỐ ĐƠN", len(df_h))
                         c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
-                    else: st.info("Chưa có dữ liệu báo cáo đơn hàng.")
-                except Exception as e: st.error(f"Lỗi truy xuất báo cáo: {e}")
+                    else: 
+                        st.info("Chưa có dữ liệu báo cáo đơn hàng.")
+                except Exception as e: 
+                    st.error(f"Lỗi truy xuất báo cáo: {e}")
                 st.markdown('</div>', unsafe_allow_html=True)
 
             # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (MÀU NỀN TOÀN KHỐI FLAT PANEL)
+
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 
