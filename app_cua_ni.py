@@ -577,9 +577,7 @@ def main():
                     st.rerun()
                 st.markdown('<div class="the-quan-ly-flat">👥 Vui lòng nhập đầy đủ thông tin “NV“ mới!</div>', unsafe_allow_html=True)
                 
-                # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ
-                st.markdown('<div class="the-quan-ly-flat">👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ</div>', unsafe_allow_html=True)
-                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+                # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ.
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
