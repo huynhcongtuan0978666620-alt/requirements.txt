@@ -254,55 +254,40 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           ĐẶC TRỊ LỖI ĐIỂM MÙ CHỮ TÀNG HÌNH TRÊN NỀN TRẮNG (CẬP NHẬT MỚI NHẤT)
+           TẤN CÔNG DIỆN RỘNG: KHÓA CHẾT CHỮ ĐEN MUN CHO TOÀN BỘ NÚT BẤM LIÊN KẾT
         ----------------------------------------------------------------- */
-        .khung-noi-dung-mo-rong, 
+        /* Thần chú tóm gọn mọi lớp con của st.link_button và st.button */
+        [data-testid="stLinkButton"] a,
+        [data-testid="stLinkButton"] a *,
+        [data-testid="stButton"] button,
+        [data-testid="stButton"] button *,
         .khung-noi-dung-mo-rong * {
-            color: #111111 !important; /* Đen mun bóng bẩy */
-        }
-
-        /* KHÓA CHẾT MÀU CHỮ CHO CÁC NÚT BẤM LIÊN KẾT (LINK) TRÊN NỀN TRẮNG */
-        div[data-testid="stMarkdownContainer"] a, 
-        div[data-testid="stMarkdownContainer"] a *,
-        button[data-baseweb="button"] p,
-        .stButton > button p {
-            color: #111111 !important; /* Ép chữ "LIÊN KẾT GOOGLE SHEET" và "ĐĂNG KÝ TK" hiện hình màu đen */
-            font-weight: 800 !important; /* Bôi đậm rõ ràng */
+            color: #111111 !important; /* ÉP CHỮ HIỆN HÌNH ĐEN MUN ĐẬM ĐÀ */
+            font-weight: 800 !important;
             font-size: 15px !important;
+            text-shadow: none !important;
         }
 
-        /* Đảm bảo khi thợ lấy ngón tay chạm vào nút thì chữ vẫn đen mun, không bị biến màu */
-        div[data-testid="stMarkdownContainer"] a:hover, 
-        div[data-testid="stMarkdownContainer"] a:focus,
-        div[data-testid="stMarkdownContainer"] a:active {
+        /* Khóa cứng màu đen khi thợ lấy ngón tay nhấn hoặc di chuột vào */
+        [data-testid="stLinkButton"] a:hover, 
+        [data-testid="stLinkButton"] a:active,
+        [data-testid="stButton"] button:hover,
+        [data-testid="stButton"] button:active {
             color: #000000 !important;
-            text-decoration: none !important;
+            background-color: #f1f5f9 !important; /* Nền xám cực nhẹ khi chạm */
+            border-color: #cbd5e1 !important;
         }
 
-        /* Định hình lại cái khung viền nút bấm phụ cho nổi bật hẳn lên */
-        div[data-testid="stMarkdownContainer"] a {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            border: 1px solid #cbd5e1 !important; /* Thêm viền xám nhẹ quanh nút */
+        /* Bo tròn và định hình lại form cho các nút Link mượt mà hẳn lên */
+        [data-testid="stLinkButton"] a, [data-testid="stButton"] button {
             background-color: #ffffff !important;
-            padding: 12px !important;
+            border: 1px solid #cbd5e1 !important;
             border-radius: 12px !important;
             box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
+            padding: 10px 16px !important;
+            transition: all 0.2s ease-in-out !important;
         }
     </style>
-""", unsafe_allow_html=True)
-
-# ĐẢM BẢO CHỮ st.markdown NÀY THẲNG HÀNG VỚI CÁC LỆNH PYTHON TRÊN VÀ DƯỚI NÓ
-st.markdown("""
-    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    
-    <script>
-        /* Toàn bộ đoạn code Javascript tạo pháo hoa cũ của ní giữ nguyên ở đây */
-        function createFirework(event) {
-            // ... code pháo hoa cũ của ní ...
-        }
-    </script>
 """, unsafe_allow_html=True)
 
 # =====================================================================
