@@ -20,16 +20,16 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
-           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
+            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
         html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
         }
 
         .stApp {
-            padding-top: 75px !important; /* Đã tăng lên 75px để đẩy nội dung xuống dưới banner */
+            padding-top: 75px !important; 
             padding-bottom: 60px !important;
             background-color: #f8f9fa !important;
         }
@@ -40,6 +40,28 @@ st.markdown("""
             display: none !important; 
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        }
+
+        /* -----------------------------------------------------------------
+            2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+        ----------------------------------------------------------------- */
+        .the-quan-ly-flat {
+            background-color: #ffffff !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            border-left: 6px solid #7d8f15 !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            text-align: center !important;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .nhan-tieu-de {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            margin-bottom: 5px !important;
+            text-transform: uppercase !important;
         }
 
         /* -----------------------------------------------------------------
