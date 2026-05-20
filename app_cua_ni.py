@@ -430,7 +430,6 @@ def main():
                     t_cong_tho += item['tiem_cong_tho']
                 st.markdown('</div>', unsafe_allow_html=True)
 
-            
             ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
             st.divider()
             
