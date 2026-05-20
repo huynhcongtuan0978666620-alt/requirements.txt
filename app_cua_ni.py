@@ -341,7 +341,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
@@ -436,7 +436,7 @@ def main():
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
                         st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
                     elif box_sl <= 0:
@@ -641,7 +641,7 @@ def main():
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
-                st.markdown('<div class="the-quan-ly-flat">✍️Đăng ký TK “Nhân Viên“ mới!</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“ mới!</div>', unsafe_allow_html=True)
                 
                 # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ.
                 try:
@@ -655,7 +655,7 @@ def main():
                         new_code = st.text_input("🔑 Mã đăng nhập (Mật khẩu)")
                         new_name = st.text_input("🏷️ Tên nhân viên hiển thị")
                         
-                        if st.form_submit_button("➕ CẤP MÃ MỚI"):
+                        if st.form_submit_button("👌 CẤP MÃ MỚI"):
                             if new_sdt and new_code and new_name:
                                 ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
                                 st.success(f"Đã tạo tài khoản cho {new_name}!")
