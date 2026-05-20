@@ -164,8 +164,8 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
     </style>
 
-    <div class="banner-top" onclick="createFirework(event)">✨ SALON KIM HIỀN MANAGEMENT SYSTEM ✨</div>
-    <div class="banner-bottom" onclick="createFirework(event)">✨ SALON KIM HIỀN 2026</div>
+    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+    <div class="banner-bottom" onclick="createFirework(event)"> SALON KIM HIỀN 👉</div>
 
     <script>
         if (!window.fireworkStylesAdded) {
