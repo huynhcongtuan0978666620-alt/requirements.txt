@@ -201,7 +201,7 @@ st.markdown("""
             background-color: #f1f3f5 !important; /* Nền xám nhạt tinh tế */
             color: #495057 !important; /* Chữ xám tối */
             border-radius: 8px 8px 0 0 !important; /* Bo góc nhẹ phía trên */
-            padding: 10px 20px !important;
+            padding: 1px 1px !important;
             margin-right: 4px !important;
             border: none !important; /* Khử viền mặc định */
             outline: none !important; /* Khử viền khi focus */
