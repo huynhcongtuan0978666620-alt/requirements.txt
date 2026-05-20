@@ -536,6 +536,7 @@ def main():
 
         # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
 
+
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
