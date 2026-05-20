@@ -224,7 +224,7 @@ st.markdown("""
 
         /* HIỆU ỨNG KHI ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MỊN PREMIUM */
         button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #7d8f15 !important; /* Màu xanh rêu thương hiệu của tiệm */
+            background-color: #f1c40f !important; /* Màu xanh rêu thương hiệu của tiệm */
             color: #f1c40f !important; /* Chữ trắng sáng bừng */
             font-weight: 800 !important; /* Chữ đậm lên trông thấy */
             border: none !important;
