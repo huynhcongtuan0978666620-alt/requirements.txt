@@ -432,7 +432,7 @@ def main():
                     t_cong_tho += item['tiem_cong_tho']
 
             # -----------------------------------------------------------------
-            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ (ĐÃ CĂN CHỈNH THỤT LỀ CHUẨN XÁC)
+            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ (ĐÃ SỬA LỖI THỤT LỀ DÒNG 478)
             # -----------------------------------------------------------------
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
@@ -473,6 +473,7 @@ def main():
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
+
 
 
                 else:
