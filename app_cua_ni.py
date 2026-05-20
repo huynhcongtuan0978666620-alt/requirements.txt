@@ -126,7 +126,7 @@ st.markdown("""
         .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
 /* -----------------------------------------------------------------
-           5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CÂN ĐỐI 100% MÀN HÌNH
+           5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
         ----------------------------------------------------------------- */
         /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
         [data-testid="stTabs"] [role="tablist"] div {
@@ -146,44 +146,50 @@ st.markdown("""
             margin: 0 auto 15px auto !important;
         }
 
-        /* ĐỘ LẠI NÚT TAB: TO CAO LỰC LƯỠNG, CHỮ KHÓA NGAY CHÍNH GIỮA TÂM */
+        /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
         button[data-baseweb="tab"] {
-            flex: 1 1 100% !important; /* Thần chú ép 3 nút tự động chia đều diện tích màn hình */
+            flex: 1 1 100% !important; /* Ép 3 nút tự động chia đều diện tích màn hình */
             height: 54px !important; /* Tăng chiều cao nút giúp ngón tay thợ dễ chạm */
-            display: inline-flex !important;
+            display: flex !important;
             align-items: center !important;
-            justify-content: center !important; /* Ép chữ và icon ra ngay chính giữa tâm nút */
+            justify-content: center !important; /* Khóa tâm hàng ngang và hàng dọc */
             text-align: center !important;
-            background-color: #e2e8f0 !important; /* Nền xám nhạt cứng cáp khi chưa chọn */
+            background-color: #e2e8f0 !important; /* Nền xám nhạt khi chưa chọn */
             border-radius: 10px !important; /* Bo tròn đều góc hiện đại */
-            padding: 12px 6px !important; /* Padding tối ưu cân đối */
+            padding: 10px 4px !important; /* Padding cân đối */
             border: none !important; 
             outline: none !important;
-            white-space: nowrap !important; /* Ngăn chữ tự ý xuống dòng bậy bạ */
+            white-space: nowrap !important; /* Ngăn chữ tự ý xuống dòng */
             transition: all 0.2s ease-in-out !important;
         }
 
-        /* Chữ của Tab khi CHƯA BẤM (Màu xám than đậm rõ nét) */
-        button[data-baseweb="tab"] p {
+        /* THẦN CHÚ DIỆT LỆCH KHUNG: ÉP TẤT CẢ THẺ CHỮ CON PHẢI RA GIỮA */
+        button[data-baseweb="tab"] p, 
+        button[data-baseweb="tab"] span, 
+        button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
             color: #334155 !important; 
             font-size: 16px !important; /* Phóng to chữ lên 16px */
             font-weight: 700 !important; /* Bôi đậm */
-            margin: 0 !important;
-            padding: 0 !important;
             text-align: center !important;
+            justify-content: center !important;
+            align-items: center !important;
+            display: flex !important;
+            margin: 0 auto !important; /* Ép khoảng cách hai bên bằng nhau tuyệt đối */
             width: 100% !important;
         }
 
-        /* HIỆU ỨNG KHI ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MỊN FLAT PREMIUM */
+        /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
         button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; /* Nền vàng thương hiệu rực rỡ */
+            background-color: #f1c40f !important; /* Nền vàng thương hiệu */
             border: none !important;
             outline: none !important;
             box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; /* Đổ bóng luxury */
         }
         
-        /* Chữ của Tab KHI ĐƯỢC CHỌN: Ép sang đen mun chống lóa tuyệt đối */
-        button[data-baseweb="tab"][aria-selected="true"] p {
+        /* Ép chữ của Tab KHI ĐƯỢC CHỌN sang đen mun và siêu đậm để chống lóa */
+        button[data-baseweb="tab"][aria-selected="true"] p,
+        button[data-baseweb="tab"][aria-selected="true"] span,
+        button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
             color: #000000 !important; /* Đen tuyền sắc nét trên nền vàng */
             font-weight: 900 !important; /* Đậm tối đa */
             font-size: 16px !important;
