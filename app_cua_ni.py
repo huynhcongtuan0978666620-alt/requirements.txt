@@ -141,25 +141,25 @@ st.markdown("""
             width: 100% !important;
             justify-content: center !important;
             align-items: center !important;
-            gap: 6px !important; /* Khoảng cách vừa vặn giữa 3 nút */
+            gap: 6px !important; 
             padding: 0 !important;
             margin: 0 auto 15px auto !important;
         }
 
         /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
         button[data-baseweb="tab"] {
-            flex: 1 1 100% !important; /* Ép 3 nút tự động chia đều diện tích màn hình */
-            height: 54px !important; /* Tăng chiều cao nút giúp ngón tay thợ dễ chạm */
+            flex: 1 1 100% !important; 
+            height: 54px !important; 
             display: flex !important;
             align-items: center !important;
-            justify-content: center !important; /* Khóa tâm hàng ngang và hàng dọc */
+            justify-content: center !important; 
             text-align: center !important;
-            background-color: #e2e8f0 !important; /* Nền xám nhạt khi chưa chọn */
-            border-radius: 10px !important; /* Bo tròn đều góc hiện đại */
-            padding: 10px 4px !important; /* Padding cân đối */
+            background-color: #e2e8f0 !important; 
+            border-radius: 10px !important; 
+            padding: 10px 4px !important; 
             border: none !important; 
             outline: none !important;
-            white-space: nowrap !important; /* Ngăn chữ tự ý xuống dòng */
+            white-space: nowrap !important; 
             transition: all 0.2s ease-in-out !important;
         }
 
@@ -168,30 +168,30 @@ st.markdown("""
         button[data-baseweb="tab"] span, 
         button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
             color: #334155 !important; 
-            font-size: 16px !important; /* Phóng to chữ lên 16px */
-            font-weight: 700 !important; /* Bôi đậm */
+            font-size: 16px !important; 
+            font-weight: 700 !important; 
             text-align: center !important;
             justify-content: center !important;
             align-items: center !important;
             display: flex !important;
-            margin: 0 auto !important; /* Ép khoảng cách hai bên bằng nhau tuyệt đối */
+            margin: 0 auto !important; 
             width: 100% !important;
         }
 
         /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
         button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; /* Nền vàng thương hiệu */
+            background-color: #f1c40f !important; 
             border: none !important;
             outline: none !important;
-            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; /* Đổ bóng luxury */
+            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
         }
         
         /* Ép chữ của Tab KHI ĐƯỢC CHỌN sang đen mun và siêu đậm để chống lóa */
         button[data-baseweb="tab"][aria-selected="true"] p,
         button[data-baseweb="tab"][aria-selected="true"] span,
         button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
-            color: #000000 !important; /* Đen tuyền sắc nét trên nền vàng */
-            font-weight: 900 !important; /* Đậm tối đa */
+            color: #000000 !important; 
+            font-weight: 900 !important; 
             font-size: 16px !important;
         }
 
@@ -228,7 +228,7 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
         /* =================================================================
-            8. ĐOẠN ĐỘ THÊM: PHÒNG CHỐNG CHỮ TÀNG HÌNH DIỆN RỘNG (AN TOÀN TUYỆT ĐỐI)
+            8. ĐOẠN ĐỘ THÊM: SỬA TRIỆT ĐỂ LỖI CHỮ TÀNG HÌNH TRÊN MOBILE (ĐÃ FIX)
         ================================================================= */
         /* Đè màu chữ tiêu đề widget lóa trắng thành màu xanh than đậm */
         [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6 {
@@ -236,14 +236,14 @@ st.markdown("""
             font-weight: 700 !important;
         }
         
-        /* Trị dứt điểm lỗi tàng hình chữ trong khối st.warning (Thông báo giỏ hàng trống) */
+        /* Trị dứt điểm lỗi tàng hình chữ trong khối st.warning */
         div[data-testid="stNotification"] {
-            background-color: #fef3c7 !important; /* Nền vàng kem dịu mắt */
-            border: 2px solid #f59e0b !important; /* Viền cam hổ phách */
+            background-color: #fef3c7 !important; 
+            border: 2px solid #f59e0b !important; 
             border-radius: 10px !important;
         }
         div[data-testid="stNotification"] p, div[data-testid="stNotification"] span, div[class*="stAlert"] p {
-            color: #92400e !important; /* Ép chữ sang màu NÂU ĐẬM siêu nét */
+            color: #92400e !important; 
             font-weight: 800 !important;
         }
 
@@ -254,38 +254,42 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           TẤN CÔNG DIỆN RỘNG: KHÓA CHẾT CHỮ ĐEN MUN CHO TOÀN BỘ NÚT BẤM LIÊN KẾT
+           TẤN CÔNG TOÀN DIỆN: ÉP CHỮ NÚT TRẮNG HIỆN HÌNH ĐEN MUN 100%
         ----------------------------------------------------------------- */
-        /* Thần chú tóm gọn mọi lớp con của st.link_button và st.button */
+        /* Thần chú buộc các nút bấm chuyển Link (st.link_button) hiện chữ đen đậm */
         [data-testid="stLinkButton"] a,
         [data-testid="stLinkButton"] a *,
         [data-testid="stButton"] button,
         [data-testid="stButton"] button *,
+        .khung-noi-dung-mo-rong,
         .khung-noi-dung-mo-rong * {
-            color: #111111 !important; /* ÉP CHỮ HIỆN HÌNH ĐEN MUN ĐẬM ĐÀ */
-            font-weight: 800 !important;
-            font-size: 15px !important;
+            color: #000000 !important; /* Ép sang đen tuyền sắc nét */
+            -webkit-text-fill-color: #000000 !important; /* Thần chú triệt hạ Dark Mode của Chrome/Safari */
+            font-weight: 900 !important; /* Đẩy độ đậm chữ lên tối đa */
             text-shadow: none !important;
         }
 
-        /* Khóa cứng màu đen khi thợ lấy ngón tay nhấn hoặc di chuột vào */
-        [data-testid="stLinkButton"] a:hover, 
-        [data-testid="stLinkButton"] a:active,
-        [data-testid="stButton"] button:hover,
-        [data-testid="stButton"] button:active {
-            color: #000000 !important;
-            background-color: #f1f5f9 !important; /* Nền xám cực nhẹ khi chạm */
-            border-color: #cbd5e1 !important;
+        /* Khóa cứng định dạng khung viền cho các nút Link mượt mà, đứng form */
+        [data-testid="stLinkButton"] a, [data-testid="stButton"] button {
+            background-color: #ffffff !important; /* Nền trắng tinh khôi */
+            border: 2px solid #2ecc71 !important; /* Đóng khung viền xanh lá dày dặn, sang trọng */
+            border-radius: 12px !important;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
+            padding: 12px 16px !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            text-align: center !important;
+            transition: all 0.2s ease-in-out !important;
         }
 
-        /* Bo tròn và định hình lại form cho các nút Link mượt mà hẳn lên */
-        [data-testid="stLinkButton"] a, [data-testid="stButton"] button {
-            background-color: #ffffff !important;
-            border: 1px solid #cbd5e1 !important;
-            border-radius: 12px !important;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.05) !important;
-            padding: 10px 16px !important;
-            transition: all 0.2s ease-in-out !important;
+        /* Giữ nguyên màu chữ đen mun chống lóa tuyệt đối khi ngón tay thợ chạm vào */
+        [data-testid="stLinkButton"] a:hover *, 
+        [data-testid="stLinkButton"] a:active *,
+        [data-testid="stButton"] button:hover *,
+        [data-testid="stButton"] button:active * {
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important;
         }
     </style>
 """, unsafe_allow_html=True)
