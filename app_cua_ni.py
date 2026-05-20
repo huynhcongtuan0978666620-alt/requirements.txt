@@ -187,27 +187,44 @@ st.markdown("""
             text-align: center !important; /* Căn giữa chữ hướng dẫn */
         }
         /* -----------------------------------------------------------------
-           3. ĐỔI MÀU NỀN VÀ CHỮ CHO CÁC NÚT TAB (NHẬP LIỆU, BÁO CÁO, CÀI ĐẶT)
+           3. ĐỔI MÀU NỀN, CHỮ VÀ KHỬ HOÀN TOÀN VIỀN CHẠY THEO CỦA NÚT TAB
         ----------------------------------------------------------------- */
-        /* Định dạng chung cho tất cả các nút Tab khi ở trạng thái bình thường */
-        button[data-baseweb="tab"] {
-            background-color: #f1f3f5 !important; /* Màu nền xám nhạt cho tab chưa chọn */
-            color: #495057 !important; /* Màu chữ xám tối */
-            border-radius: 8px 8px 0 0 !important; /* Bo tròn nhẹ 2 góc trên của nút */
-            padding: 1px 1px !important;
-            margin-right: 4px !important;
-            transition: all 0.3s ease !important;
+        /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
+        [data-testid="stTabs"] [role="tablist"] div {
+            height: 0px !important;
+            background-color: transparent !important;
+            border: none !important;
         }
 
-        /* ĐỔI MÀU NỀN ĐẬM CHẤT KHI BẤM CHỌN VÀO TAB TRỰC TIẾP */
-        button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #7d8f15 !important; /* Đổi thành màu xanh rêu thương hiệu của tiệm */
-            color: #7d8f15 !important; /* Đổi chữ thành màu trắng tinh cho nổi bật */
-            font-weight: 800 !important; /* Ép chữ đậm lên */
-            border-bottom: 2px solid #7d8f15 !important;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+        /* Định dạng chung cho nút Tab: Trạng thái chưa bấm */
+        button[data-baseweb="tab"] {
+            background-color: #f1f3f5 !important; /* Nền xám nhạt tinh tế */
+            color: #495057 !important; /* Chữ xám tối */
+            border-radius: 8px 8px 0 0 !important; /* Bo góc nhẹ phía trên */
+            padding: 10px 20px !important;
+            margin-right: 4px !important;
+            border: none !important; /* Khử viền mặc định */
+            outline: none !important; /* Khử viền khi focus */
+            transition: all 0.2s ease-in-out !important;
         }
-        
+
+        /* HIỆU ỨNG KHI ĐÃ ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MIN Luxury */
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #7d8f15 !important; /* Màu xanh rêu Premium của tiệm */
+            color: #ffffff !important; /* Chữ trắng sáng */
+            font-weight: 800 !important; /* Chữ đậm nổi bật */
+            border: none !important; /* Ép không cho sinh viền mới */
+            outline: none !important;
+            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important; /* Đổ bóng nhẹ màu rêu nhẹ nhàng */
+        }
+
+        /* Khử đường viền xanh rêu bướng bỉnh xuất hiện lúc ngón tay chạm vào (Hover/Focus) */
+        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active {
+            border: none !important;
+            outline: none !important;
+            color: #ffffff !important;
+        }
+
 
         /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
         .khung-noi-dung-mo-rong {
