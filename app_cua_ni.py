@@ -405,6 +405,82 @@ st.markdown("""
     </script>
 """, unsafe_allow_html=True)
 # =====================================================================
+# 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
+# =====================================================================
+def get_now_vn():
+    return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
+
+def get_gspread_client():
+    creds_info = st.secrets["connections"]["gsheets"]
+    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+    return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
+
+def format_drive_direct_url(link):
+    if not link or not isinstance(link, str): 
+        return ""
+    match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
+    return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
+
+@st.cache_data(ttl=5)
+def get_settings():
+    try:
+        client = get_gspread_client()
+        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        rows = client.open_by_url(url).worksheet("ThietLap").get_all_values()
+        return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
+    except Exception:
+        return {
+            "TenTiem": "SALON KIM HIỀN", 
+            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
+            "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
+        }
+
+@st.cache_data(ttl=60)
+def get_service_data():
+    try:
+        client = get_gspread_client()
+        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
+        
+        danh_sach_dv = {}
+        for row in rows[1:]:
+            if len(row) >= 2:
+                ten_dv = str(row[0]).strip()
+                if not ten_dv:
+                    continue
+                try: 
+                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
+                except: 
+                    gia_goc = 0.0
+                
+                hoa_hong = 0.0
+                if len(row) >= 3 and row[2]:
+                    try:
+                        raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
+                        hoa_hong = float(raw_hh)
+                        if 0 < hoa_hong < 1.0: 
+                            hoa_hong *= 100
+                    except: 
+                        hoa_hong = 0.0
+                
+                danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
+        return danh_sach_dv
+    except Exception: 
+        return {}
+
+def display_header(settings):
+    direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
+    fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+    st.markdown(f"""
+        <div class="bang-hieu-lktv">
+            <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
+            <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
+            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
+            <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
+        </div>
+    """, unsafe_allow_html=True)
+# =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
