@@ -8,7 +8,7 @@ import time
 import re
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THANH LỌC TOÀN DIỆN EXPANDER
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS ĐỒNG BỘ TOÀN DIỆN
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
@@ -33,55 +33,7 @@ st.markdown("""
             padding-bottom: 53px !important;
         }
 
-        /* -----------------------------------------------------------------
-           🎯 ĐỘI ĐẶC NHIỆM CSS: QUÉT SẠCH LỖI CHỮ HOANG _arrow_right / _arrow_down
-        ----------------------------------------------------------------- */
-        /* Cưỡng ép ẩn tất cả các ký tự rác ẩn danh trong nút bấm Summary của Expander */
-        [data-testid="stExpander"] summary div:has(svg),
-        [data-testid="stExpander"] summary svg,
-        [data-testid="stExpander"] summary span:empty,
-        [data-testid="stExpander"] summary [class*="st-emotion-cache"] svg {
-            display: none !important;
-            visibility: hidden !important;
-            width: 0 !important;
-            height: 0 !important;
-            opacity: 0 !important;
-        }
-
-        /* Xử lý triệt để các phần tử text phụ sinh tự động bám đuôi bên trong cấu trúc container */
-        [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] ~ div,
-        [data-testid="stExpander"] summary div:not([data-testid="stMarkdownContainer"]) {
-            font-size: 0px !important;
-            color: transparent !important;
-            line-height: 0 !important;
-            display: inline-block;
-            width: 0px !important;
-            height: 0px !important;
-            overflow: hidden !important;
-        }
-
-        /* Ép phần chứa chữ tiêu đề chính mở rộng tối đa diện tích, căn lề sạch sẽ */
-        [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] {
-            width: 100% !important;
-            flex: 1 1 auto !important;
-            display: block !important;
-            text-align: left !important;
-            margin: 0 !important;
-            padding: 0 !important;
-        }
-        
-        [data-testid="stExpander"] summary p {
-            font-size: 15px !important;
-            font-weight: 700 !important;
-            color: #1a1a1a !important;
-            margin: 0 !important;
-            display: block !important;
-            width: 100% !important;
-        }
-
-        /* -----------------------------------------------------------------
-           ẨN TOÀN BỘ LOGO/MENU THỪA CỦA STREAMLIT
-        ----------------------------------------------------------------- */
+        /* ẨN TOÀN BỘ LOGO/MENU THỪA CỦA STREAMLIT VÀ CÁC ICON HOANG */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -125,7 +77,7 @@ st.markdown("""
         .slogan { font-size: 16px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid #ffffff20 !important; padding-top: 10px !important; }
         
         /* -----------------------------------------------------------------
-           4. ĐỊNH DẠNG TABS NÂNG CẤP KHÔNG CHỨA ICON LỖI
+           4. ĐỊNH DẠNG TABS PHẲNG CAO CẤP
         ----------------------------------------------------------------- */
         .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
         .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6; }
@@ -133,6 +85,20 @@ st.markdown("""
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border-bottom: 5px solid #d4ac0d; }
 
         .nhan-tieu-de { text-align: center; font-size: 15px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #ffffff; letter-spacing: 1px; }
+
+        /* KHỐI CONTAINER THAY THẾ EXPANDER - PHẲNG LÌ, KHÔNG CHỨA LỖI SYSTEM */
+        .the-quan-ly-flat {
+            background: #ffffff !important;
+            border: 1px solid #dee2e6 !important;
+            border-left: 5px solid #7d8f15 !important;
+            padding: 15px 18px !important;
+            border-radius: 8px !important;
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            color: #1a1a1a !important;
+            margin-bottom: 15px !important;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.04) !important;
+        }
 
         /* -----------------------------------------------------------------
            5. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
@@ -533,48 +499,53 @@ def main():
                     else: st.info("Chưa có dữ liệu báo cáo đơn hàng.")
                 except Exception as e: st.error(f"Lỗi truy xuất báo cáo: {e}")
 
-            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
+            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (ĐÃ THAY THẾ EXPANDER LỖI BẰNG KHUNG FLAT CAO CẤP)
             with tabs[2]:
-                st.subheader("HỆ THỐNG QUẢN TRỊ")
-                with st.expander("LIÊN KẾT GOOGLE SHEET GỐC"):
-                    st.markdown(f"[Mở File Google Sheets Tại Đây]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ")
                 
-                if st.button("LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
+                # Khối 1: Google Sheets
+                st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
+                st.markdown(f"👉 [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                
+                st.write("")
+                if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
                 
                 st.divider()
-                st.markdown("### QUẢN LÝ TÀI KHOẢN NHÂN SỰ")
-                with st.expander("Cập nhật tài khoản mới / Xem danh sách"):
-                    try:
-                        cl = get_gspread_client()
-                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        ws_user = sh.worksheet("NhanVien")
+                
+                # Khối 2: Nhân sự
+                st.markdown('<div class="the-quan-ly-flat">👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ</div>', unsafe_allow_html=True)
+                try:
+                    cl = get_gspread_client()
+                    sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    ws_user = sh.worksheet("NhanVien")
+                    
+                    with st.form("add_user_form", clear_on_submit=True):
+                        st.markdown("**Thêm tài khoản nhân viên mới:**")
+                        new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
+                        new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
+                        new_name = st.text_input("Tên nhân viên hiển thị")
                         
-                        with st.form("add_user_form", clear_on_submit=True):
-                            new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
-                            new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
-                            new_name = st.text_input("Tên nhân viên hiển thị")
-                            
-                            if st.form_submit_button("CẤP MÃ MỚI"):
-                                if new_sdt and new_code and new_name:
-                                    ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
-                                    st.success(f"Đã tạo tài khoản cho {new_name}!")
-                                    st.cache_data.clear()
-                                    time.sleep(0.5)
-                                    st.rerun()
-                                else: st.error("Vui lòng không để trống thông tin!")
-                        
-                        st.write("---")
-                        st.write("**Danh sách nhân sự:**")
-                        user_data = ws_user.get_all_records()
-                        if user_data: 
-                            st.table(pd.DataFrame(user_data))
-                    except Exception as e:
-                        st.error(f"Lỗi hệ thống nhân sự: {e}")
+                        if st.form_submit_button("➕ CẤP MÃ MỚI"):
+                            if new_sdt and new_code and new_name:
+                                ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
+                                st.success(f"Đã tạo tài khoản cho {new_name}!")
+                                st.cache_data.clear()
+                                time.sleep(0.5)
+                                st.rerun()
+                            else: st.error("Vui lòng không để trống thông tin!")
+                    
+                    st.write("---")
+                    st.write("**Danh sách nhân sự hiện tại:**")
+                    user_data = ws_user.get_all_records()
+                    if user_data: 
+                        st.table(pd.DataFrame(user_data))
+                except Exception as e:
+                    st.error(f"Lỗi hệ thống nhân sự: {e}")
                 
                 st.divider()
-                if st.button("THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
+                if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
                     st.session_state.clear()
                     st.rerun()
 
