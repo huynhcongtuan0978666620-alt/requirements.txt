@@ -232,8 +232,10 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+# ĐẢM BẢO DÒNG NÀY THỤT LỀ THẲNG HÀNG VỚI CÁC LỆNH TRÊN NÓ
+st.markdown("""
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
+""", unsafe_allow_html=True)
 
     <script>
         if (!window.fireworkStylesAdded) {
