@@ -20,39 +20,26 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
-           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG (ĐÃ CỐ ĐỊNH LỖI MÀU)
+           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
-        html, body, .stApp, h1, h2, h3, h4, h5, h6 {
+        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
         }
 
         .stApp {
-            padding-top: 75px !important; /* Đẩy nội dung xuống dưới banner */
+            padding-top: 75px !important; /* Đã tăng lên 75px để đẩy nội dung xuống dưới banner */
             padding-bottom: 60px !important;
             background-color: #f8f9fa !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG THỪA THÃI */
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
-        }
-
-        /* KHẮC PHỤC TRIỆT ĐỂ: HIỆN LẠI CHỮ TIÊU ĐỀ NHÃN MÀU TỐI RÕ RÀNG */
-        label, [data-testid="stWidgetLabel"] p, .stMarkdown p {
-            color: #1f2937 !important;
-            font-weight: 600 !important;
-        }
-
-        /* KHẮC PHỤC TRIỆT ĐỂ: TRẢ LẠI Ô NHẬP LIỆU NỀN TRẮNG CHỮ ĐEN NGUYÊN BẢN */
-        div[data-baseweb="input"] input, div[data-baseweb="select"] {
-            background-color: #ffffff !important;
-            color: #1f2937 !important;
-            border-radius: 8px !important;
         }
 
         /* -----------------------------------------------------------------
@@ -109,53 +96,6 @@ st.markdown("""
             font-weight: 700 !important;
             margin-top: 15px !important;
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
-        }
-
-        /* -----------------------------------------------------------------
-           3. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - KHỬ VIỀN LỖI
-        ----------------------------------------------------------------- */
-        [data-testid="stTabs"] [role="tablist"] div {
-            height: 0px !important;
-            background-color: transparent !important;
-            border: none !important;
-        }
-
-        [data-testid="stTabs"] [role="tablist"] {
-            display: flex !important;
-            width: 100% !important;
-            justify-content: space-between !important;
-            gap: 4px !important;
-        }
-
-        button[data-baseweb="tab"] {
-            flex: 1 1 0% !important;
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-align: center !important;
-            background-color: #e9ecef !important;
-            color: #495057 !important;
-            border-radius: 8px !important;
-            padding: 10px 4px !important;
-            font-size: 13px !important;
-            border: none !important; 
-            outline: none !important;
-            white-space: nowrap !important;
-            transition: all 0.2s ease-in-out !important;
-        }
-
-        button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #7d8f15 !important;
-            color: #ffffff !important;
-            font-weight: 800 !important;
-            border: none !important;
-            outline: none !important;
-            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important;
-        }
-
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
-            border: none !important;
-            outline: none !important;
         }
 
 
