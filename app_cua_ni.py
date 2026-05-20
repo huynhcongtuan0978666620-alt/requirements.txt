@@ -8,7 +8,7 @@ import time
 import re
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS PHÁ NÁT LỖI _ARROW HỆ THỐNG
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THANH LỌC TOÀN DIỆN EXPANDER
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - IRONCLAD", 
@@ -34,14 +34,13 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           XỬ LÝ TRIỆT ĐỂ 100% LỖI CHỮ HOANG _arrow_right / _arrow_down TRÊN EXPANDER
+           🎯 ĐỘI ĐẶC NHIỆM CSS: QUÉT SẠCH LỖI CHỮ HOANG _arrow_right / _arrow_down
         ----------------------------------------------------------------- */
-        /* Tìm và diệt tất cả các block chứa text icon thừa sinh tự động trong summary của expander */
-        [data-testid="stExpander"] summary text,
-        [data-testid="stExpander"] summary span[data-testid="stMarkdownContainer"] ~ div,
-        [data-testid="stExpander"] [class*="st-emotion-cache"] svg,
-        [data-testid="stExpander"] summary ::aria-hidden,
-        [data-testid="stExpander"] summary svg {
+        /* Cưỡng ép ẩn tất cả các ký tự rác ẩn danh trong nút bấm Summary của Expander */
+        [data-testid="stExpander"] summary div:has(svg),
+        [data-testid="stExpander"] summary svg,
+        [data-testid="stExpander"] summary span:empty,
+        [data-testid="stExpander"] summary [class*="st-emotion-cache"] svg {
             display: none !important;
             visibility: hidden !important;
             width: 0 !important;
@@ -49,14 +48,26 @@ st.markdown("""
             opacity: 0 !important;
         }
 
-        /* Ép phần text tiêu đề chính của Expander chiếm trọn 100% không bị lệch dồn toa */
-        [data-testid="stExpander"] summary span[data-testid="stMarkdownContainer"] {
+        /* Xử lý triệt để các phần tử text phụ sinh tự động bám đuôi bên trong cấu trúc container */
+        [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] ~ div,
+        [data-testid="stExpander"] summary div:not([data-testid="stMarkdownContainer"]) {
+            font-size: 0px !important;
+            color: transparent !important;
+            line-height: 0 !important;
+            display: inline-block;
+            width: 0px !important;
+            height: 0px !important;
+            overflow: hidden !important;
+        }
+
+        /* Ép phần chứa chữ tiêu đề chính mở rộng tối đa diện tích, căn lề sạch sẽ */
+        [data-testid="stExpander"] summary div[data-testid="stMarkdownContainer"] {
             width: 100% !important;
+            flex: 1 1 auto !important;
             display: block !important;
-            position: relative !important;
-            left: 0 !important;
+            text-align: left !important;
             margin: 0 !important;
-            padding: 2px 0 !important;
+            padding: 0 !important;
         }
         
         [data-testid="stExpander"] summary p {
@@ -64,6 +75,8 @@ st.markdown("""
             font-weight: 700 !important;
             color: #1a1a1a !important;
             margin: 0 !important;
+            display: block !important;
+            width: 100% !important;
         }
 
         /* -----------------------------------------------------------------
