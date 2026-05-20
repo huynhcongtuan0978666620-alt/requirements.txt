@@ -359,7 +359,7 @@ def main():
             st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
             # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
-            st.markdown('<div class="the-quan-ly-flat">📝 Vui lòng điền đầy đủ THÔNG TIN bên dưới</div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat">📝 Vui lòng điền đầy đủ “THÔNG TIN“ bên dưới nhé!</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -532,7 +532,7 @@ def main():
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
             # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 2
-                st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại BÁO CÁO</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
 
                 try:
                     cl = get_gspread_client()
@@ -558,14 +558,14 @@ def main():
                 
                 # Khối 1: Google Sheets có màu nền đổ bóng sang trọng
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
-                st.markdown('<div class="the-quan-ly-flat">🌐 Vui lòng kiểm tra kết nối INTERNET</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">🌐 Vui lòng kiểm tra kết nối “INTERNET“ trước nha!</div>', unsafe_allow_html=True)
 
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 st.write("")
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
-                st.markdown('<div class="the-quan-ly-flat">👥 Vui lòng nhập đầy đủ thông tin NV Mới</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">👥 Vui lòng nhập đầy đủ thông tin “NV“ mới!</div>', unsafe_allow_html=True)
                 
                 # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ
                 st.markdown('<div class="the-quan-ly-flat">👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ</div>', unsafe_allow_html=True)
