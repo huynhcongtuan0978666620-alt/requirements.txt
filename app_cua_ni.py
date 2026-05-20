@@ -8,10 +8,10 @@ import time
 import re
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS ĐỒNG BỘ TOÀN DIỆN
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THỜI TRANG HIGH-END (LUXURY FLAT)
 # =====================================================================
 st.set_page_config(
-    page_title="LKTV DETAILING - IRONCLAD", 
+    page_title="LKTV DETAILING - PREMIUM", 
     layout="centered", 
     page_icon="✂️",
     initial_sidebar_state="collapsed"
@@ -20,7 +20,7 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
-           1. ĐỒNG BỘ FONT CHỮ TOÀN DIỆN HỆ THỐNG (TOÀN BỘ APP)
+           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
@@ -29,11 +29,12 @@ st.markdown("""
         }
 
         .stApp {
-            padding-top: 53px !important;
-            padding-bottom: 53px !important;
+            padding-top: 60px !important;
+            padding-bottom: 60px !important;
+            background-color: #f8f9fa !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU THỪA CỦA STREAMLIT VÀ CÁC ICON HOANG */
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -42,85 +43,110 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
+           2. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (BLACK & GOLD EDITION)
         ----------------------------------------------------------------- */
         .banner-top, .banner-bottom {
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
-            background: #000000 !important; color: #f6f7f0 !important;
-            font-size: 20px !important; font-weight: 900 !important; letter-spacing: 0.5px !important;
-            -webkit-text-stroke: 1px #000000 !important; 
-            text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3) !important; 
+            background: #111111 !important; color: #f1c40f !important;
+            font-size: 18px !important; font-weight: 800 !important; letter-spacing: 2px !important;
             display: flex !important; align-items: center !important; justify-content: center !important;
             cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
+            border-bottom: 3px solid #7d8f15 !important;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.2) !important;
             -webkit-tap-highlight-color: transparent;
         }
-        .banner-top { top: 0 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 12px rgba(0,0,0,0.3) !important; }
-        .banner-bottom { bottom: 0 !important; border-top: 3px solid #7d8f15 !important; box-shadow: 0px -4px 12px rgba(0,0,0,0.3) !important; justify-content: flex-start !important; padding-left: 15px !important; }
+        .banner-bottom { 
+            bottom: 0 !important; 
+            top: auto !important;
+            border-top: 3px solid #7d8f15 !important; 
+            border-bottom: none !important;
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
+            justify-content: flex-start !important; 
+            padding-left: 20px !important; 
+        }
 
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
         /* -----------------------------------------------------------------
-           3. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM
+           3. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
         ----------------------------------------------------------------- */
         .bang-hieu-lktv {
-            text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 20px !important;
-            background: linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%) !important;
-            color: white !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.4) !important; border: 1px solid #ffffff20 !important;
+            text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+            color: white !important; box-shadow: 0px 15px 35px rgba(0,0,0,0.25) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
         .logo-img { 
-            width: 120px !important; height: 120px !important; object-fit: cover !important; border-radius: 50% !important; 
-            border: 4px solid #f1c40f !important; margin: 0 auto 12px auto !important; display: block !important;
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.5) !important;
+            width: 110px !important; height: 110px !important; object-fit: cover !important; border-radius: 50% !important; 
+            border: 4px solid #f1c40f !important; margin: 0 auto 15px auto !important; display: block !important;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important;
         }
-        .ten-tiem { font-size: 26px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 5px !important; letter-spacing: 2px !important; }
-        .thong-tin-phu { font-size: 15px !important; color: #ecf0f1 !important; opacity: 0.9 !important; margin: 4px 0 !important; font-weight: 400; }
-        .slogan { font-size: 16px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid #ffffff20 !important; padding-top: 10px !important; }
+        .ten-tiem { font-size: 24px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 6px !important; letter-spacing: 2px !important; }
+        .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
+        .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
         /* -----------------------------------------------------------------
-           4. ĐỊNH DẠNG TABS PHẲNG CAO CẤP
+           4. ĐIỀU CHỈNH TABS THỜI TRANG CAO CẤP
         ----------------------------------------------------------------- */
-        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 15px; width: 100%; }
-        .stTabs [data-baseweb="tab"] { flex: 1; height: 60px; background-color: #ffffff; border-radius: 15px 15px 0 0; border: 1px solid #dee2e6; }
-        .stTabs [data-baseweb="tab"] p { color: #1a1a1a !important; font-weight: 800 !important; font-size: 17px; text-align: center; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border-bottom: 5px solid #d4ac0d; }
+        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 12px; width: 100%; border-bottom: 2px solid #e5e7eb; }
+        .stTabs [data-baseweb="tab"] { flex: 1; height: 54px; background-color: #f3f4f6; border-radius: 14px 14px 0 0; border: 1px solid #e5e7eb; transition: all 0.2s ease; }
+        .stTabs [data-baseweb="tab"] p { color: #4b5563 !important; font-weight: 700 !important; font-size: 15px; text-align: center; }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #111827 !important; border-color: #111827; }
+        .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #f1c40f !important; }
 
-        .nhan-tieu-de { text-align: center; font-size: 15px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #ffffff; letter-spacing: 1px; }
+        .nhan-tieu-de { text-align: center; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #374151; letter-spacing: 1px; }
 
-        /* KHỐI CONTAINER THAY THẾ EXPANDER - PHẲNG LÌ, KHÔNG CHỨA LỖI SYSTEM */
+        /* -----------------------------------------------------------------
+           5. KHỐI THẺ THIẾT LẬP CÓ MÀU NỀN TOÀN DIỆN (FLAT LUXURY PANEL)
+        ----------------------------------------------------------------- */
         .the-quan-ly-flat {
-            background: #ffffff !important;
-            border: 1px solid #dee2e6 !important;
-            border-left: 5px solid #7d8f15 !important;
-            padding: 15px 18px !important;
-            border-radius: 8px !important;
-            font-size: 15px !important;
-            font-weight: 700 !important;
-            color: #1a1a1a !important;
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+            border-left: 6px solid #7d8f15 !important;
+            padding: 16px 20px !important;
+            border-radius: 14px !important;
+            font-size: 16px !important;
+            font-weight: 800 !important;
+            color: #f1c40f !important;
+            margin-top: 20px !important;
             margin-bottom: 15px !important;
-            box-shadow: 0px 2px 6px rgba(0,0,0,0.04) !important;
+            box-shadow: 0px 8px 20px rgba(15, 23, 42, 0.15) !important;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
+        .khung-noi-dung-mo-rong {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            padding: 20px !important;
+            border-radius: 16px !important;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
+            margin-bottom: 25px !important;
         }
 
         /* -----------------------------------------------------------------
-           5. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
+           6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
         ----------------------------------------------------------------- */
-        .tong-don-box { background-color: #fff3cd; color: #856404; padding: 15px; border-radius: 15px; text-align: center; border: 4px dashed #ffc107; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }
-        .cong-tho-box { background-color: #e2e3e5; color: #28a745; padding: 15px; border-radius: 15px; text-align: center; border: 4px dashed #6c757d; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.05); }
-        .tien-thua-box { background-color: #d4edda; color: #155724; padding: 25px; border-radius: 15px; text-align: center; font-size: 26px; font-weight: 900; border: 4px dashed #28a745; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
-        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.4);} 70% {transform: scale(1.03); box-shadow: 0 0 0 15px rgba(40, 167, 69, 0);} 100% {transform: scale(1);} }
+        .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+        .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+        .tien-thua-box { background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
+        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
 
         /* -----------------------------------------------------------------
-           6. PHÔI HÓA ĐƠN LKTV CLASSIC
+           7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
-        .hoa-don-khung { background-color: #ffffff !important; color: #000000 !important; padding: 22px !important; border-radius: 12px !important; border: 2px solid #ccc !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.1) !important; margin-top: 20px !important; }
-        .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #000; padding-bottom: 10px; margin-bottom: 15px; }
-        .hd-title { font-size: 21px; text-transform: uppercase; margin-top: 5px; letter-spacing: 1px; font-weight: 900; }
+        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
+        .hoa-don-khung::before { content: ""; position: absolute; left: 0; right: 0; top: -5px; height: 10px; background-size: 16px 16px; }
+        .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
+        .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
-        .hd-items { border-bottom: 1px dashed #000; padding-bottom: 10px; margin-bottom: 10px; }
+        .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
     </style>
 
-    <div class="banner-top" onclick="createFirework(event)">SALON KIM HIỀN</div>
-    <div class="banner-bottom" onclick="createFirework(event)">SALON KIM HIỀN</div>
+    <div class="banner-top" onclick="createFirework(event)">✨ SALON KIM HIỀN MANAGEMENT SYSTEM ✨</div>
+    <div class="banner-bottom" onclick="createFirework(event)">✨ SALON KIM HIỀN 2026</div>
 
     <script>
         if (!window.fireworkStylesAdded) {
@@ -131,7 +157,7 @@ st.markdown("""
         }
         function createFirework(e) {
             const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
-            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#cc00ff', '#ffffff'];
+            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
             for (let i = 0; i < particleCount; i++) {
                 const particle = document.createElement('div');
                 particle.className = 'firework-particle';
@@ -242,7 +268,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
@@ -308,33 +334,36 @@ def main():
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
         display_header(settings)
-        t_list = ["NHẬP LIỆU", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["NHẬP LIỆU"]
+        t_list = ["🛒 NHẬP LIỆU", "📈 BÁO CÁO", "⚙️ CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["🛒 NHẬP LIỆU"]
         tabs = st.tabs(t_list)
 
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên đứng máy:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
+            
+            # Đổ màu nền cho khung Form Nhập đơn khách
+            st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
             c1, c2 = st.columns(2)
-            with c1: kh_ten = st.text_input("Tên khách hàng", "Khách lẻ")
-            with c2: kh_sdt = st.text_input("SĐT khách")
+            with c1: kh_ten = st.text_input("👤 Tên khách hàng", "Khách lẻ")
+            with c2: kh_sdt = st.text_input("📞 SĐT khách")
             
-            st.markdown("#### CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
+            st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             
             box_chon_dv = st.selectbox(
-                "Dịch vụ", 
+                "Dịch vụ kỹ thuật", 
                 options=dv_list if dv_list else ["Không có dữ liệu"],
                 index=None,
                 placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
             )
-            box_sl = st.number_input("Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
+            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
-                st.button("ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
+                st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("➕ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
                         st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
                     elif box_sl <= 0:
@@ -360,13 +389,15 @@ def main():
                             st.session_state.adding_cart = False
                             time.sleep(0.2)
                             st.rerun()
+            st.markdown('</div>', unsafe_allow_html=True) # Đóng khung nhập liệu
 
             # Quản lý hiển thị danh sách giỏ hàng chờ lưu
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
-                st.markdown(f"**CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
+                st.markdown(f"📦 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
+                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
                     with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
@@ -378,20 +409,21 @@ def main():
                             st.rerun()
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
+                st.markdown('</div>', unsafe_allow_html=True)
             
-            ghi_chu = st.text_input("Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
+            ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
             st.divider()
             
             # Khối hiển thị số tiền trực quan
             col_bill1, col_bill2 = st.columns(2)
-            with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #ffc107;">Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
-            with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #a0a5a9;">Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
+            with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
+            with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
             
             st.write("")
-            kh_tra = st.number_input("Tiền khách đưa", 0.0, value=float(t_bill))
+            kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
             t_du = kh_tra - t_bill
             if t_du > 0:
-                st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
             can_go = True
             if not st.session_state.gio_hang:
@@ -407,15 +439,15 @@ def main():
                     st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút.")
 
             if can_go:
-                cam_ket = st.checkbox("XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
+                cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                 if not st.session_state.submitting:
-                    if st.button("🚀 CHỐT ĐƠN HÀNG", use_container_width=True, type="primary"):
+                    if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
                         if cam_ket:
                             st.session_state.submitting = True
                             st.rerun()
                         else: st.error("Chưa tích chọn ô xác nhận cam kết!")
                 else:
-                    st.button("ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
+                    st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                     try:
                         cl = get_gspread_client()
                         ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -443,7 +475,7 @@ def main():
                                 <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
                                 <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                             </div>
-                            <div style="border-bottom: 1px dashed #000; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
+                            <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
                                 <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
                                 <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
                                 <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
@@ -452,9 +484,9 @@ def main():
                             <div style="font-size: 14px; font-weight: bold;">
                                 <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
                                 <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
-                                <div class="hd-row" style="color: green;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                                <div class="hd-row" style="color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
                             </div>
-                            <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #000; padding-top: 10px;">
+                            <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
                                 {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
                             </div>
                         </div>"""
@@ -469,11 +501,11 @@ def main():
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
-                st.markdown("### HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown("### 🧾 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
-            if st.button("THOÁT APP MÁY", use_container_width=True):
+            if st.button("🚪 THOÁT APP MÁY", use_container_width=True):
                 st.session_state.clear()
                 st.rerun()
 
@@ -481,7 +513,8 @@ def main():
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
-                st.subheader("DOANH THU THỰC TẾ")
+                st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
+                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -493,39 +526,40 @@ def main():
                         df_h = df_bc[df_bc['Ngày'] == ngay_nay]
                         
                         c1, c2, c3 = st.columns(3)
-                        c1.metric("HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
-                        c2.metric("SỐ ĐƠN", len(df_h))
-                        c3.metric("TRUNG BÌNH ĐƠN", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
+                        c1.metric("📊 HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
+                        c2.metric("🧾 SỐ ĐƠN", len(df_h))
+                        c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
                     else: st.info("Chưa có dữ liệu báo cáo đơn hàng.")
                 except Exception as e: st.error(f"Lỗi truy xuất báo cáo: {e}")
+                st.markdown('</div>', unsafe_allow_html=True)
 
-            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (ĐÃ THAY THẾ EXPANDER LỖI BẰNG KHUNG FLAT CAO CẤP)
+            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (MÀU NỀN TOÀN KHỐI FLAT PANEL)
             with tabs[2]:
-                st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ")
+                st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 
-                # Khối 1: Google Sheets
+                # Khối 1: Google Sheets có màu nền đổ bóng sang trọng
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
-                st.markdown(f"👉 [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
-                
+                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
+                st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 st.write("")
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
+                st.markdown('</div>', unsafe_allow_html=True)
                 
-                st.divider()
-                
-                # Khối 2: Nhân sự
+                # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ
                 st.markdown('<div class="the-quan-ly-flat">👥 QUẢN LÝ TÀI KHOẢN NHÂN SỰ</div>', unsafe_allow_html=True)
+                st.markdown('<div class="khung-noi-dung-mo-rong">', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     ws_user = sh.worksheet("NhanVien")
                     
                     with st.form("add_user_form", clear_on_submit=True):
-                        st.markdown("**Thêm tài khoản nhân viên mới:**")
-                        new_sdt = st.text_input("Số điện thoại nhân viên (Tài khoản)")
-                        new_code = st.text_input("Mã đăng nhập (Mật khẩu)")
-                        new_name = st.text_input("Tên nhân viên hiển thị")
+                        st.markdown("**➕ Thêm tài khoản nhân viên mới:**")
+                        new_sdt = st.text_input("📱 Số điện thoại nhân viên (Tài khoản)")
+                        new_code = st.text_input("🔑 Mã đăng nhập (Mật khẩu)")
+                        new_name = st.text_input("🏷️ Tên nhân viên hiển thị")
                         
                         if st.form_submit_button("➕ CẤP MÃ MỚI"):
                             if new_sdt and new_code and new_name:
@@ -533,16 +567,17 @@ def main():
                                 st.success(f"Đã tạo tài khoản cho {new_name}!")
                                 st.cache_data.clear()
                                 time.sleep(0.5)
-                                st.rerun()
+                                r_count = st.rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
                     
                     st.write("---")
-                    st.write("**Danh sách nhân sự hiện tại:**")
+                    st.write("📋 **Danh sách nhân sự hiện tại:**")
                     user_data = ws_user.get_all_records()
                     if user_data: 
                         st.table(pd.DataFrame(user_data))
                 except Exception as e:
                     st.error(f"Lỗi hệ thống nhân sự: {e}")
+                st.markdown('</div>', unsafe_allow_html=True)
                 
                 st.divider()
                 if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
