@@ -254,8 +254,219 @@ st.markdown("""
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
             text-align: center !important; 
         }
+st.markdown("""
+    <style>
+        /* -----------------------------------------------------------------
+           1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG (ĐÃ SỬA TRIỆT ĐỂ LỖI MÀU)
+        ----------------------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
-        /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THÈ QUẢN LÝ */
+        html, body, .stApp, h1, h2, h3, h4, h5, h6 {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        }
+
+        .stApp {
+            padding-top: 75px !important; /* Đẩy nội dung xuống dưới banner */
+            padding-bottom: 60px !important;
+            background-color: #f8f9fa !important;
+        }
+
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG THỪA THÃI */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+            display: none !important; 
+            visibility: hidden !important;
+            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        }
+
+        /* KHẮC PHỤC TRIỆT ĐỂ: ÉP TẤT CẢ TIÊU ĐỀ, NHÃN, CHỮ MARKDOWN SANG XANH THAN ĐẬM (TRÁNH TRẮNG/ĐEN) */
+        label, [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6, span {
+            color: #1a365d !important;
+            font-weight: 700 !important;
+        }
+
+        /* KHẮC PHỤC: ÉP CHỮ TRONG Ô NHẬP LIỆU & DROPDOWN SANG XÁM ĐEN THAN CỦI */
+        div[data-baseweb="input"] input, div[data-baseweb="select"] div, div[data-baseweb="popover"] p {
+            color: #2d3748 !important;
+            font-weight: 600 !important;
+        }
+        div[data-baseweb="input"] input {
+            background-color: #ffffff !important;
+        }
+
+        /* KHẮC PHỤC RIÊNG: ÉP CHỮ MÀU ĐỎ ĐẬM RỰC CHO TẤT CẢ KHỐI CẢNH BÁO/LỖI/THÔNG BÁO */
+        div[data-testid="stNotification"] p, div[class*="stAlert"] p, .stException p, div[data-testid="stNotification"] span {
+            color: #c53030 !important;
+            font-weight: 800 !important;
+        }
+
+        /* -----------------------------------------------------------------
+           2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
+        ----------------------------------------------------------------- */
+        .the-quan-ly-flat {
+            background-color: #ffffff !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            border-left: 6px solid #7d8f15 !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            text-align: center !important;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+            margin-bottom: 20px !important;
+        }
+        
+        .nhan-tieu-de {
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            margin-bottom: 5px !important;
+            text-transform: uppercase !important;
+            color: #1a365d !important; /* Đồng bộ xanh than đậm */
+        }
+
+        .tong-don-box {
+            background-color: #fef3c7 !important;
+            color: #b45309 !important;
+            padding: 15px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            border: 2px dashed #fde68a !important;
+        }
+
+        .cong-tho-box {
+            background-color: #f3f4f6 !important;
+            color: #1a365d !important; /* Đồng bộ xanh than đậm */
+            padding: 15px !important;
+            border-radius: 12px !important;
+            text-align: center !important;
+            font-size: 24px !important;
+            font-weight: 900 !important;
+            border: 2px dashed #e5e7eb !important;
+        }
+
+        .tien-thua-box {
+            background-color: #d1fae5 !important;
+            color: #065f46 !important;
+            padding: 22px !important;
+            border-radius: 16px !important;
+            text-align: center !important;
+            font-size: 26px !important;
+            font-weight: 900 !important;
+            border: 3px dashed #059669 !important;
+            margin: 20px 0;
+            animation: pulse-steel 2.5s infinite;
+        }
+        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
+
+        /* -----------------------------------------------------------------
+           3. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - KHỬ VIỀN LỖI
+        ----------------------------------------------------------------- */
+        [data-testid="stTabs"] [role="tablist"] div {
+            height: 0px !important;
+            background-color: transparent !important;
+            border: none !important;
+        }
+
+        [data-testid="stTabs"] [role="tablist"] {
+            display: flex !important;
+            width: 100% !important;
+            justify-content: space-between !important;
+            gap: 4px !important;
+        }
+
+        button[data-baseweb="tab"] {
+            flex: 1 1 0% !important; /* Thần chú ép 3 nút chia đều diện tích màn hình */
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important; /* Căn chữ và icon ra chính giữa tâm nút */
+            text-align: center !important;
+            background-color: #e9ecef !important;
+            color: #2d3748 !important; /* Đồng bộ chữ tối trung tính */
+            border-radius: 8px !important;
+            padding: 10px 4px !important;
+            font-size: 13px !important;
+            border: none !important; 
+            outline: none !important;
+            white-space: nowrap !important;
+            transition: all 0.2s ease-in-out !important;
+        }
+
+        button[data-baseweb="tab"][aria-selected="true"] {
+            background-color: #7d8f15 !important; /* Màu xanh rêu Premium */
+            color: #ffffff !important;
+            font-weight: 800 !important;
+            border: none !important;
+            outline: none !important;
+            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important;
+        }
+
+        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
+            border: none !important;
+            outline: none !important;
+        }
+
+        /* -----------------------------------------------------------------
+           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
+        ----------------------------------------------------------------- */
+        .banner-top {
+            position: fixed !important; 
+            left: 0 !important; 
+            right: 0 !important; 
+            top: 0px !important; 
+            height: 48px !important;
+            background: #111111 !important; 
+            color: #f1c40f !important;
+            font-size: 15px !important; 
+            font-weight: 800 !important; 
+            letter-spacing: 1px !important;
+            display: flex !important; 
+            align-items: center !important; 
+            justify-content: center !important; 
+            cursor: pointer !important; 
+            user-select: none !important; 
+            z-index: 999999 !important; 
+            border-bottom: 3px solid #7d8f15 !important;
+            box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .banner-bottom { 
+            position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
+            background: #111111 !important; color: #f1c40f !important;
+            font-size: 15px !important; font-weight: 800 !important; letter-spacing: 1px !important;
+            display: flex !important; align-items: center !important; 
+            cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
+            bottom: 0 !important; 
+            top: auto !important;
+            border-top: 3px solid #7d8f15 !important; 
+            border-bottom: none !important;
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
+            justify-content: flex-start !important; 
+            padding-left: 20px !important; 
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
+
+        /* -----------------------------------------------------------------
+           5. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
+        ----------------------------------------------------------------- */
+        .bang-hieu-lktv {
+            text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
+            background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
+            color: white !important; box-shadow: 0px 15px 35px rgba(0,0,0,0.25) !important; 
+            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+        }
+        .logo-img { 
+            width: 110px !important; height: 110px !important; object-fit: cover !important; border-radius: 50% !important; 
+            border: 4px solid #f1c40f !important; margin: 0 auto 15px auto !important; display: block !important;
+            box-shadow: 0 0 20px rgba(241, 196, 15, 0.4) !important;
+        }
+        .ten-tiem { font-size: 24px !important; font-weight: 900 !important; color: #ffffff !important; text-transform: uppercase !important; margin-bottom: 6px !important; letter-spacing: 2px !important; }
+        .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
+        .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
+
         .khung-noi-dung-mo-rong {
             background-color: #ffffff !important;
             border: 1px solid #e2e8f0 !important;
@@ -266,15 +477,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           6. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
-        ----------------------------------------------------------------- */
-        .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
-        .cong-tho-box { background-color: #f3f4f6; color: #1a365d; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
-        .tien-thua-box { background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
-        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
-
-        /* -----------------------------------------------------------------
-           7. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
+           6. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
         .hoa-don-khung::before { content: ""; position: absolute; left: 0; right: 0; top: -5px; height: 10px; background-size: 16px 16px; }
