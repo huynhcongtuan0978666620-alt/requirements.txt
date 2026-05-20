@@ -374,6 +374,12 @@ st.markdown("""
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
+
+        /* Ép màu chữ của TẤT CẢ các nhãn (label) ô nhập liệu thành màu đen */
+label, div[data-testid="stWidgetLabel"] p {
+    color: #000000 !important;
+    font-weight: 800 !important; /* Đậm đà cho dễ đọc */
+}
     </style>
 
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
@@ -497,7 +503,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center; color: #000000;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center; color: #f1c40f;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
