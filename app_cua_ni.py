@@ -19,32 +19,6 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-    /* -----------------------------------------------------------------
-           ĐẶC TRỊ LỖI MÙ NHÃN NHẬP LIỆU (INPUT LABELS) TRÊN MOBILE
-        ----------------------------------------------------------------- */
-        /* Ép tất cả nhãn của ô nhập liệu (Input, Textarea, Select) hiện màu đen */
-        label,
-        .stTextInput label,
-        .stNumberInput label,
-        .stSelectbox label,
-        .stDateInput label,
-        div[data-testid="stWidgetLabel"] p {
-            color: #000000 !important; /* Đen tuyền */
-            font-weight: 800 !important; /* Bôi đậm để nhìn rõ */
-            font-size: 15px !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
-
-        /* Đảm bảo các khối chứa nhãn không bị che khuất */
-        div[data-testid="stWidgetLabel"] {
-            margin-bottom: 5px !important;
-        }
-
-        /* Ép màu chữ trong ô nhập liệu (khi thợ gõ chữ) cũng hiện đen */
-        input, textarea {
-            color: #000000 !important;
-            font-weight: 600 !important;
-        }
         /* -----------------------------------------------------------------
             1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
         ----------------------------------------------------------------- */
@@ -60,28 +34,12 @@ st.markdown("""
             background-color: #f8f9fa !important;
         }
 
-  /* -----------------------------------------------------------------
-           ĐẶC TRỊ LỖI TIÊU ĐỀ TÀNG HÌNH (MOBILE & DESKTOP)
-        ----------------------------------------------------------------- */
-        /* Ép tất cả các tiêu đề (H1, H2, H3) và các đoạn văn bản trong hệ thống quản trị hiện màu đen */
-        h1, h2, h3, h4, .stMarkdown h1, .stMarkdown h2, .stMarkdown h3, 
-        .stMarkdown p, .stMarkdown span {
-            color: #000000 !important; /* Đen mun sắc sảo */
-            -webkit-text-fill-color: #000000 !important;
-        }
-
-        /* Khóa màu cho tiêu đề đi kèm icon bánh răng */
-        div[data-testid="stMarkdownContainer"] h2, 
-        div[data-testid="stMarkdownContainer"] h3 {
-            color: #000000 !important;
-            font-weight: 900 !important;
-            margin-bottom: 10px !important;
-        }
-
-        /* Đảm bảo khung nội dung không bị ảnh hưởng bởi cơ chế tự đổi màu */
-        .khung-noi-dung-mo-rong h2, 
-        .khung-noi-dung-mo-rong h3 {
-            color: #000000 !important;
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+            display: none !important; 
+            visibility: hidden !important;
+            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
         /* -----------------------------------------------------------------
@@ -418,58 +376,34 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
     </style>
 
-/* ĐỒNG BỘ FONT & NỀN */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        html, body, .stApp, div, span, p, h1, h2, h3, h4, input, button, select, textarea {
-            font-family: 'Inter', sans-serif !important;
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
-        .stApp { padding-top: 75px !important; padding-bottom: 60px !important; background-color: #f8f9fa !important; }
-
-        /* BANNER CỐ ĐỊNH */
-        .banner-top, .banner-bottom {
-            position: fixed !important; left: 0 !important; right: 0 !important;
-            height: 48px !important; background: #111111 !important; color: #f1c40f !important;
-            display: flex !important; align-items: center !important; justify-content: center !important;
-            font-weight: 900 !important; z-index: 999999 !important; cursor: pointer !important;
-        }
-        .banner-top { top: 0 !important; border-bottom: 3px solid #7d8f15 !important; }
-        .banner-bottom { bottom: 0 !important; border-top: 3px solid #7d8f15 !important; }
-
-        /* TABS ĐỒNG BỘ 100% MÀN HÌNH */
-        [data-testid="stTabs"] [role="tablist"] { display: flex !important; width: 100% !important; gap: 4px !important; }
-        button[data-baseweb="tab"] { flex: 1 !important; background-color: #e2e8f0 !important; border-radius: 8px !important; }
-        button[data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; }
-
-        /* KHỐI NỘI DUNG & TIỀN TỆ */
-        .khung-noi-dung-mo-rong { background: #ffffff !important; padding: 20px !important; border-radius: 16px !important; border: 1px solid #e2e8f0 !important; margin-bottom: 25px !important; }
-        .tong-don-box { background: #fef3c7; color: #b45309 !important; padding: 15px; border-radius: 12px; text-align: center; border: 2px dashed #fde68a; font-weight: 900; }
-        .tien-thua-box { background: #059669; color: #ffffff !important; padding: 15px; border-radius: 12px; font-weight: 900; text-align: center; }
-        .tien-thua-box * { color: #ffffff !important; -webkit-text-fill-color: #ffffff !important; }
-    </style>
-
     <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
     <script>
+        if (!window.fireworkStylesAdded) {
+            const style = document.createElement('style');
+            style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
+            document.head.appendChild(style);
+            window.fireworkStylesAdded = true;
+        }
         function createFirework(e) {
-            const clickX = e.clientX, clickY = e.clientY;
-            for (let i = 0; i < 20; i++) {
-                const p = document.createElement('div');
-                p.style.position = 'fixed'; p.style.width = '6px'; p.style.height = '6px';
-                p.style.borderRadius = '50%'; p.style.backgroundColor = '#f1c40f';
-                p.style.left = clickX + 'px'; p.style.top = clickY + 'px';
-                p.style.zIndex = '1000000'; document.body.appendChild(p);
-                const angle = Math.random() * Math.PI * 2, dist = Math.random() * 100;
-                p.animate([{transform: 'translate(0,0)', opacity:1}, {transform: `translate(${Math.cos(angle)*dist}px, ${Math.sin(angle)*dist}px)`, opacity:0}], 
-                {duration: 700, easing: 'ease-out'}).onfinish = () => p.remove();
+            const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
+            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'firework-particle';
+                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                particle.style.left = clickX + 'px'; particle.style.top = clickY + 'px';
+                particle.style.animation = 'explode 0.7s ease-out forwards';
+                const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 120 + 40; 
+                particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
+                particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
+                document.body.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 700);
             }
         }
     </script>
 """, unsafe_allow_html=True)
-
-
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
