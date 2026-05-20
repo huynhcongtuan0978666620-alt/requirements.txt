@@ -228,7 +228,7 @@ st.markdown("""
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
         /* =================================================================
-            8. ĐOẠN ĐỘ THÊM: SỬA TRIỆT ĐỂ LỖI CHỮ TÀNG HÌNH TRÊN MOBILE (ĐÃ FIX)
+            8. ĐOẠN ĐỘ THÊM: PHÒNG CHỐNG CHỮ TÀNG HÌNH DIỆN RỘNG (AN TOÀN TUYỆT ĐỐI)
         ================================================================= */
         /* Đè màu chữ tiêu đề widget lóa trắng thành màu xanh than đậm */
         [data-testid="stWidgetLabel"] p, .stMarkdown p, h1, h2, h3, h4, h5, h6 {
@@ -236,7 +236,7 @@ st.markdown("""
             font-weight: 700 !important;
         }
         
-        /* Trị dứt điểm lỗi tàng hình chữ trong khối st.warning */
+        /* Trị dứt điểm lỗi tàng hình chữ trong khối st.warning (Thông báo giỏ hàng trống) */
         div[data-testid="stNotification"] {
             background-color: #fef3c7 !important; 
             border: 2px solid #f59e0b !important; 
@@ -252,48 +252,19 @@ st.markdown("""
             color: #1e293b !important;
             font-weight: 600 !important;
         }
-
-        /* -----------------------------------------------------------------
-           TẤN CÔNG TOÀN DIỆN: ÉP CHỮ NÚT TRẮNG HIỆN HÌNH ĐEN MUN 100%
-        ----------------------------------------------------------------- */
-        /* Thần chú buộc các nút bấm chuyển Link (st.link_button) hiện chữ đen đậm */
-        [data-testid="stLinkButton"] a,
-        [data-testid="stLinkButton"] a *,
-        [data-testid="stButton"] button,
-        [data-testid="stButton"] button *,
-        .khung-noi-dung-mo-rong,
-        .khung-noi-dung-mo-rong * {
-            color: #000000 !important; /* Ép sang đen tuyền sắc nét */
-            -webkit-text-fill-color: #000000 !important; /* Thần chú triệt hạ Dark Mode của Chrome/Safari */
-            font-weight: 900 !important; /* Đẩy độ đậm chữ lên tối đa */
-            text-shadow: none !important;
-        }
-
-        /* Khóa cứng định dạng khung viền cho các nút Link mượt mà, đứng form */
-        [data-testid="stLinkButton"] a, [data-testid="stButton"] button {
-            background-color: #ffffff !important; /* Nền trắng tinh khôi */
-            border: 2px solid #2ecc71 !important; /* Đóng khung viền xanh lá dày dặn, sang trọng */
-            border-radius: 12px !important;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
-            padding: 12px 16px !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            text-align: center !important;
-            transition: all 0.2s ease-in-out !important;
-        }
-
-        /* Giữ nguyên màu chữ đen mun chống lóa tuyệt đối khi ngón tay thợ chạm vào */
-        [data-testid="stLinkButton"] a:hover *, 
-        [data-testid="stLinkButton"] a:active *,
-        [data-testid="stButton"] button:hover *,
-        [data-testid="stButton"] button:active * {
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important;
-        }
     </style>
 """, unsafe_allow_html=True)
 
+# ĐẢM BẢO CHỮ st.markdown NÀY THẲNG HÀNG VỚI CÁC LỆNH PYTHON TRÊN VÀ DƯỚI NÓ
+st.markdown("""
+    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+    
+    <script>
+        function createFirework(event) {
+            // ... code pháo hoa cũ của ní ...
+        }
+    </script>
+""", unsafe_allow_html=True)
 # =====================================================================
 # 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
 # =====================================================================
