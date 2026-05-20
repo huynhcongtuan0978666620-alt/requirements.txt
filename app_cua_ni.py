@@ -426,7 +426,7 @@ def main():
             st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             
             box_chon_dv = st.selectbox(
-                "📌Dịch vụ", 
+                "📌 Dịch vụ", 
                 options=dv_list if dv_list else ["Không có dữ liệu"],
                 index=None,
                 placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
