@@ -125,54 +125,71 @@ st.markdown("""
         .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
         .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
-        /* -----------------------------------------------------------------
-           5. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - SỬA LỖI LÓA CHỮ
+/* -----------------------------------------------------------------
+           5. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CÂN ĐỐI 100% MÀN HÌNH
         ----------------------------------------------------------------- */
+        /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
         [data-testid="stTabs"] [role="tablist"] div {
             height: 0px !important;
             background-color: transparent !important;
             border: none !important;
         }
 
+        /* Ép thanh chứa Tab dàn hàng ngang khít 100% khung hình, không lo lệch */
         [data-testid="stTabs"] [role="tablist"] {
             display: flex !important;
             width: 100% !important;
-            justify-content: space-between !important;
-            gap: 4px !important;
+            justify-content: center !important;
+            align-items: center !important;
+            gap: 6px !important; /* Khoảng cách vừa vặn giữa 3 nút */
+            padding: 0 !important;
+            margin: 0 auto 15px auto !important;
         }
 
+        /* ĐỘ LẠI NÚT TAB: TO CAO LỰC LƯỠNG, CHỮ KHÓA NGAY CHÍNH GIỮA TÂM */
         button[data-baseweb="tab"] {
-            flex: 1 1 0% !important; 
+            flex: 1 1 100% !important; /* Thần chú ép 3 nút tự động chia đều diện tích màn hình */
+            height: 54px !important; /* Tăng chiều cao nút giúp ngón tay thợ dễ chạm */
             display: inline-flex !important;
             align-items: center !important;
-            justify-content: center !important; 
+            justify-content: center !important; /* Ép chữ và icon ra ngay chính giữa tâm nút */
             text-align: center !important;
-            background-color: #f1f3f5 !important; 
-            border-radius: 8px !important; 
-            padding: 10px 4px !important; 
-            font-size: 13px !important; 
+            background-color: #e2e8f0 !important; /* Nền xám nhạt cứng cáp khi chưa chọn */
+            border-radius: 10px !important; /* Bo tròn đều góc hiện đại */
+            padding: 12px 6px !important; /* Padding tối ưu cân đối */
             border: none !important; 
             outline: none !important;
-            white-space: nowrap !important; 
+            white-space: nowrap !important; /* Ngăn chữ tự ý xuống dòng bậy bạ */
             transition: all 0.2s ease-in-out !important;
         }
+
+        /* Chữ của Tab khi CHƯA BẤM (Màu xám than đậm rõ nét) */
         button[data-baseweb="tab"] p {
-            color: #495057 !important; /* Chữ xám tối khi chưa chọn */
-            font-weight: 700 !important;
+            color: #334155 !important; 
+            font-size: 16px !important; /* Phóng to chữ lên 16px */
+            font-weight: 700 !important; /* Bôi đậm */
+            margin: 0 !important;
+            padding: 0 !important;
+            text-align: center !important;
+            width: 100% !important;
         }
 
-        /* ĐÃ SỬA: SỬA LỖI CHỮ VÀNG NỀN VÀNG - ÉP CHỮ SANG ĐEN MUN KHI ACTIVE */
+        /* HIỆU ỨNG KHI ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MỊN FLAT PREMIUM */
         button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; /* Nền vàng thương hiệu */
+            background-color: #f1c40f !important; /* Nền vàng thương hiệu rực rỡ */
             border: none !important;
             outline: none !important;
-            box-shadow: 0 4px 8px rgba(241, 196, 15, 0.3) !important;
+            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; /* Đổ bóng luxury */
         }
+        
+        /* Chữ của Tab KHI ĐƯỢC CHỌN: Ép sang đen mun chống lóa tuyệt đối */
         button[data-baseweb="tab"][aria-selected="true"] p {
-            color: #111111 !important; /* Ép chữ sang ĐEN TUYỀN để nổi bật trên nền vàng */
-            font-weight: 900 !important;
+            color: #000000 !important; /* Đen tuyền sắc nét trên nền vàng */
+            font-weight: 900 !important; /* Đậm tối đa */
+            font-size: 16px !important;
         }
 
+        /* Khử hoàn toàn các đường viền phát sinh khi chạm ngón tay vào */
         button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
             border: none !important;
             outline: none !important;
