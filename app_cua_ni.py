@@ -481,7 +481,30 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
+def gui_email_backup(noi_dung):
+    try:
+        sender_email = "huynhcongtuan0978666620@gmail.com"
+        password = "DÃY_16_KÝ_TỰ_NÍ_VỪA_TẠO" # lwui aesw vqal ytcq
+        receiver_email = "huynhcongtuan0978666620@gmail.com"
+        
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg.attach(MIMEText(noi_dung, 'plain'))
+        
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        print(f"Lỗi gửi mail: {e}")
+    
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
@@ -732,6 +755,16 @@ def main():
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
+                            # ... (Đoạn code chốt đơn cũ của ní)
+ws.append_rows(rows_to_append)
+
+# --- THÊM ĐOẠN NÀY VÀO ---
+noi_dung_mail = f"Đơn hàng mới đã được chốt:\n\nKhách: {kh_ten}\nSĐT: {kh_sdt}\nTổng: {t_bill:,.0f}đ\nNhân viên: {st.session_state.full_name}\n\nChi tiết: {st.session_state.gio_hang}"
+gui_email_backup(noi_dung_mail)
+# -------------------------
+
+st.session_state.update({"gio_hang": [], ...})
+
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
