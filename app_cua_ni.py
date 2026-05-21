@@ -410,6 +410,28 @@ st.markdown("""
             }
         }
     </script>
+    <script>
+        // 1. Script ép Light Mode
+        const lightModeStyle = document.createElement('style');
+        lightModeStyle.innerHTML = `:root { color-scheme: light !important; }`;
+        document.head.appendChild(lightModeStyle);
+
+        // 2. Script hiệu ứng pháo hoa của ní
+        function createFirework(e) {
+            // [Nội dung hàm createFirework của ní]
+        }
+    </script>
+    <script>
+        // 1. Script ép Light Mode
+        const lightModeStyle = document.createElement('style');
+        lightModeStyle.innerHTML = `:root { color-scheme: light !important; }`;
+        document.head.appendChild(lightModeStyle);
+
+        // 2. Script hiệu ứng pháo hoa của ní
+        function createFirework(e) {
+            // [Nội dung hàm createFirework của ní]
+        }
+    </script>
 """, unsafe_allow_html=True)
 # =====================================================================
 # 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
