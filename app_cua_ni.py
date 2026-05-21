@@ -34,14 +34,6 @@ st.markdown("""
             background-color: #f8f9fa !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
-            display: none !important; 
-            visibility: hidden !important;
-            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
-        }
-
         /* -----------------------------------------------------------------
             2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
         ----------------------------------------------------------------- */
