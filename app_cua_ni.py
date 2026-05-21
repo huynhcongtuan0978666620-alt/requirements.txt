@@ -380,6 +380,21 @@ st.markdown("""
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
     <script>
+        // Ép buộc giao diện về Light Mode
+        const style = document.createElement('style');
+        style.innerHTML = `
+            @media (prefers-color-scheme: dark) {
+                :root {
+                    --st-background-color: #ffffff;
+                    --st-primary-color: #f1c40f;
+                    --st-text-color: #000000;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+    
+    <script>
         if (!window.fireworkStylesAdded) {
             const style = document.createElement('style');
             style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
