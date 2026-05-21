@@ -19,45 +19,35 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* -----------------------------------------------------------------
-            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
-        ----------------------------------------------------------------- */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
-
-        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
-            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        /* 1. GỐC RỄ: FONT VÀ NỀN TẢNG */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        html, body, .stApp, div, span, p, h1, h2, h3, h4, label, input, textarea {
+            font-family: 'Inter', sans-serif !important;
+            color: #000000 !important;
+            -webkit-text-fill-color: #000000 !important; 
         }
 
+        /* 2. CHỐNG MÙ CHỮ (TRỊ TẬN GỐC) */
+        /* Chỉ ép màu chữ, KHÔNG ép background-color: transparent để giữ được khối nổi (card) */
         .stApp {
+            background-color: #f8f9fa !important;
             padding-top: 75px !important; 
             padding-bottom: 60px !important;
-            background-color: #f8f9fa !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
-            display: none !important; 
-            visibility: hidden !important;
-            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        /* 3. DỌN DẸP HỆ THỐNG */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"] {
+            display: none !important;
         }
-        /* TẠM BIỆT MÙ CHỮ - LỆNH ÉP MÀU KHÔNG ĐIỀU KIỆN */
-html, body, .stApp, .main, div, p, span, h1, h2, h3, h4, label, input, textarea {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important; /* Trị bệnh mù chữ trên mobile */
-    background-color: transparent !important; /* Loại bỏ màu nền tự động của trình duyệt */
-}
 
-/* Đảm bảo khung nội dung luôn trắng sáng */
-.stApp {
-    background-color: #f8f9fa !important;
-}
+        /* 4. ĐẢM BẢO CÁC Ô NHẬP LIỆU LUÔN TRẮNG SÁNG */
+        div[data-baseweb="base-input"], input {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+        }
 
-/* Ép các ô nhập liệu không bị đổi màu khi focus */
-input:focus, textarea:focus {
-    color: #000000 !important;
-    -webkit-text-fill-color: #000000 !important;
-}
+
 
 
         /* -----------------------------------------------------------------
