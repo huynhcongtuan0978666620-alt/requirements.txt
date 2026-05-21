@@ -34,6 +34,14 @@ st.markdown("""
             background-color: #f8f9fa !important;
         }
 
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+            display: none !important; 
+            visibility: hidden !important;
+            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        }
+
         /* -----------------------------------------------------------------
             2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
         ----------------------------------------------------------------- */
@@ -372,21 +380,6 @@ st.markdown("""
     <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
 
     <script>
-        // Ép buộc giao diện về Light Mode
-        const style = document.createElement('style');
-        style.innerHTML = `
-            @media (prefers-color-scheme: dark) {
-                :root {
-                    --st-background-color: #ffffff;
-                    --st-primary-color: #f1c40f;
-                    --st-text-color: #000000;
-                }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
-    
-    <script>
         if (!window.fireworkStylesAdded) {
             const style = document.createElement('style');
             style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
@@ -408,28 +401,6 @@ st.markdown("""
                 document.body.appendChild(particle);
                 setTimeout(() => { particle.remove(); }, 700);
             }
-        }
-    </script>
-    <script>
-        // 1. Script ép Light Mode
-        const lightModeStyle = document.createElement('style');
-        lightModeStyle.innerHTML = `:root { color-scheme: light !important; }`;
-        document.head.appendChild(lightModeStyle);
-
-        // 2. Script hiệu ứng pháo hoa của ní
-        function createFirework(e) {
-            // [Nội dung hàm createFirework của ní]
-        }
-    </script>
-    <script>
-        // 1. Script ép Light Mode
-        const lightModeStyle = document.createElement('style');
-        lightModeStyle.innerHTML = `:root { color-scheme: light !important; }`;
-        document.head.appendChild(lightModeStyle);
-
-        // 2. Script hiệu ứng pháo hoa của ní
-        function createFirework(e) {
-            // [Nội dung hàm createFirework của ní]
         }
     </script>
 """, unsafe_allow_html=True)
