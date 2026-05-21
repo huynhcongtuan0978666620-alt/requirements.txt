@@ -6,6 +6,9 @@ from datetime import datetime
 import pytz
 import time
 import re
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
 # 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THỜI TRANG HIGH-END (LUXURY FLAT)
@@ -64,28 +67,6 @@ st.markdown("""
             text-transform: uppercase !important;
         }
 
-        /* -----------------------------------------------------------------
-           3. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
-        ----------------------------------------------------------------- */
-        .the-quan-ly-flat {
-            background-color: #ffffff !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            border-left: 6px solid #7d8f15 !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-            text-align: center !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            margin-bottom: 20px !important;
-        }
-        
-        .nhan-tieu-de {
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            margin-bottom: 5px !important;
-            text-transform: uppercase !important;
-        }
-
         .tong-don-box {
             background-color: #fef3c7 !important;
             color: #b45309 !important;
@@ -120,7 +101,6 @@ st.markdown("""
             box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
         }
 
-
         /* -----------------------------------------------------------------
            4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
         ----------------------------------------------------------------- */
@@ -137,7 +117,7 @@ st.markdown("""
             letter-spacing: 1px !important;
             display: flex !important; 
             align-items: center !important; 
-            justify-content: center !important; /* Lệnh này giúp chữ ở ĐỈNH căn giữa */
+            justify-content: center !important; 
             cursor: pointer !important; 
             user-select: none !important; 
             z-index: 999999 !important; 
@@ -161,7 +141,6 @@ st.markdown("""
             padding-left: 20px !important; 
             -webkit-tap-highlight-color: transparent;
         }
-
 
         .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
 
@@ -192,8 +171,6 @@ st.markdown("""
         .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #111827 !important; border-color: #111827; }
         .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #f1c40f !important; }
 
-        .nhan-tieu-de { text-align: center; font-size: 14px; font-weight: 800; text-transform: uppercase; margin-bottom: 8px; color: #374151; letter-spacing: 1px; }
-
         /* KHỐI THÈ HƯỚNG DẪN FLAT PANEL CÓ CHỨA TEXT CHỈ DẪN */
         .the-quan-ly-flat {
             background: #ffffff !important;
@@ -203,15 +180,13 @@ st.markdown("""
             border-radius: 12px !important;
             font-size: 14px !important;
             font-weight: 700 !important;
-            color: #1e293b !important; /* Màu chữ xám tối thanh lịch */
+            color: #1e293b !important; 
             margin-top: 10px !important;
             margin-bottom: 15px !important;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            text-align: center !important; /* Căn giữa chữ hướng dẫn */
+            text-align: center !important; 
         }
-        /* -----------------------------------------------------------------
-           6. ĐỒNG BỘ HIỂN THỊ 3 TAB: CHIA ĐỀU 100% MÀN HÌNH - CHỮ CĂN GIỮA
-        ----------------------------------------------------------------- */
+
         /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
         [data-testid="stTabs"] [role="tablist"] div {
             height: 0px !important;
@@ -224,64 +199,28 @@ st.markdown("""
             display: flex !important;
             width: 100% !important;
             justify-content: space-between !important;
-            gap: 4px !important; /* Tạo khoảng cách nhỏ vừa phải giữa các nút */
+            gap: 4px !important; 
         }
 
-        /* CẤU HÌNH NÚT TAB: CHIA ĐỀU 1/3 MÀN HÌNH VÀ CĂN CHỮ CHÍNH GIỮA */
+        /* CẤU HÌNH NÚT TAB: CHIA ĐỀU MÀN HÌNH VÀ CĂN CHỮ CHÍNH GIỮA */
         button[data-baseweb="tab"] {
-            flex: 1 1 0% !important; /* Thần chú ép 3 nút tự động chia đều diện tích màn hình */
+            flex: 1 1 0% !important; 
             display: inline-flex !important;
             align-items: center !important;
-            justify-content: center !important; /* Ép chữ và icon ra ngay chính giữa tâm nút */
+            justify-content: center !important; 
             text-align: center !important;
-            background-color: #f1f3f5 !important; /* Nền xám nhạt tinh tế khi chưa chọn */
-            color: #495057 !important; /* Chữ xám tối */
-            border-radius: 8px !important; /* Bo tròn đều 4 góc cho ra dáng nút bấm hiện đại */
-            padding: 10px 4px !important; /* Giảm padding ngang xuống tối thiểu để chữ không bị tràn */
-            font-size: 13px !important; /* Kích thước chữ tối ưu cho mobile */
+            background-color: #f1f3f5 !important; 
+            color: #495057 !important; 
+            border-radius: 8px !important; 
+            padding: 10px 4px !important; 
+            font-size: 13px !important; 
             border: none !important; 
             outline: none !important;
-            white-space: nowrap !important; /* Ngăn không cho chữ tự động xuống dòng bậy bạ */
+            white-space: nowrap !important; 
             transition: all 0.2s ease-in-out !important;
         }
 
-        /* HIỆU ỨNG KHI ẤN CHỌN TAB: ĐỔI MÀU NỀN PHẲNG MỊN PREMIUM */
-        button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; /* Màu xanh rêu thương hiệu của tiệm */
-            color: #f1c40f !important; /* Chữ trắng sáng bừng */
-            font-weight: 800 !important; /* Chữ đậm lên trông thấy */
-            border: none !important;
-            outline: none !important;
-            box-shadow: 0 4px 8px rgba(125, 143, 21, 0.2) !important; /* Đổ bóng rêu nhẹ luxury */
-        }
-
-        /* Khử hoàn toàn các đường viền phát sinh khi Hover/Focus chạm ngón tay vào */
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
-            border: none !important;
-            outline: none !important;
-        }
-
-        /* KHỐI NỀN ĐỔ MÀU CHO FORM/NỘI DUNG PHÍA DƯỚI THẺ QUẢN LÝ */
-        .khung-noi-dung-mo-rong {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 20px !important;
-            border-radius: 16px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            margin-bottom: 25px !important;
-        }
-
-        /* -----------------------------------------------------------------
-            7. ĐỒNG BỘ HIỂN THỊ 3 TAB: TO CAO, CHỮ NẰM NGAY CHÍNH GIỮA TÂM
-        ----------------------------------------------------------------- */
-        /* Khử tuyệt đối đường viền đỏ cam chạy theo dưới chân các tab */
-        [data-testid="stTabs"] [role="tablist"] div {
-            height: 0px !important;
-            background-color: transparent !important;
-            border: none !important;
-        }
-
-        /* Ép thanh chứa Tab dàn hàng ngang khít 100% khung hình, không lo lệch */
+        /* ÉP THANH CHỨA TAB DÀN HÀNG NGANG KHÍT 100% KHUNG HÌNH */
         [data-testid="stTabs"] [role="tablist"] {
             display: flex !important;
             width: 100% !important;
@@ -332,7 +271,6 @@ st.markdown("""
             box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
         }
         
-        /* Ép chữ của Tab KHI ĐƯỢC CHỌN sang đen mun và siêu đậm để chống lóa */
         button[data-baseweb="tab"][aria-selected="true"] p,
         button[data-baseweb="tab"][aria-selected="true"] span,
         button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
@@ -341,7 +279,6 @@ st.markdown("""
             font-size: 16px !important;
         }
 
-        /* Khử hoàn toàn các đường viền phát sinh khi chạm ngón tay vào */
         button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
             border: none !important;
             outline: none !important;
@@ -368,7 +305,6 @@ st.markdown("""
            9. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
-        .hoa-don-khung::before { content: ""; position: absolute; left: 0; right: 0; top: -5px; height: 10px; background-size: 16px 16px; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
@@ -404,6 +340,7 @@ st.markdown("""
         }
     </script>
 """, unsafe_allow_html=True)
+
 # =====================================================================
 # 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
 # =====================================================================
@@ -481,7 +418,26 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
-
+def gui_email_backup(noi_dung):
+    try:
+        sender_email = "huynhcongtuan0978666620@gmail.com"
+        password = "lwui aesw vqal ytcq" 
+        receiver_email = "huynhtuankiet199379@gmail.com"
+        
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = f"ĐH SALON KIM HIỀN - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg.attach(MIMEText(noi_dung, 'plain'))
+        
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, password)
+        server.send_message(msg)
+        server.quit()
+    except Exception as e:
+        print(f"Lỗi gửi mail: {e}")
+    
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
@@ -618,17 +574,15 @@ def main():
                             st.session_state.adding_cart = False
                             time.sleep(0.2)
                             st.rerun()
-            st.markdown('</div>', unsafe_allow_html=True) # ĐÓNG KHUNG CHUẨN: Sau khi các nút và ô nhập liệu đã xuất hiện xong
 
             # -----------------------------------------------------------------
-            # KHỐI HIỂN THỊ GIỎ HÀNG CHỜ LƯU (ĐÃ XOÁ SẠCH KHUNG TRỐNG DƯ THỪA)
+            # KHỐI HIỂN THỊ GIỎ HÀNG CHỜ LƯU
             # -----------------------------------------------------------------
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
                 st.markdown(f"📦 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
                 
-                # CHÚ Ý: Đã loại bỏ hoàn toàn thẻ div khung trống rỗng ở đây để giao diện liền mạch
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
                     with col_item1: 
@@ -644,13 +598,12 @@ def main():
                     t_cong_tho += item['tiem_cong_tho']
 
             # -----------------------------------------------------------------
-            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS HỢP NHẤT CHUẨN XÁC
+            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS + EMAIL BACKUP
             # -----------------------------------------------------------------
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
                 st.divider()
                 
-                # Khối hiển thị số tiền trực quan
                 col_bill1, col_bill2 = st.columns(2)
                 with col_bill1: 
                     st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
@@ -690,16 +643,25 @@ def main():
                             
                             rows_to_append = []
                             html_items = ""
+                            chi_tiet_mail = ""
+                            
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
-                                    bay_gio.strftime("%d/%m/%Y"), b_name:=st.session_state.full_name, kh_ten, kh_sdt,
+                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
                                 html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
+                                chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
+                            # 1. Ghi vào Google Sheet
                             ws.append_rows(rows_to_append)
 
+                            # 2. Gửi Email Backup (Đã chuyển Tổng hóa đơn xuống cuối phần danh sách món)
+                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
+                            gui_email_backup(noi_dung_mail)
+
+                            # 3. Tạo hóa đơn hiển thị HTML
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
@@ -712,7 +674,7 @@ def main():
                                 <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
                                     <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
                                     <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
-                                    <div class="hd-row"><span>Nhân viên:</span> <span>{b_name}</span></div>
+                                    <div class="hd-row"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
                                 <div style="font-size: 14px; font-weight: bold;">
@@ -725,15 +687,22 @@ def main():
                                 </div>
                             </div>"""
 
-                            st.session_state.update({"gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, "submitting": False})
-                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ!")
+                            # 4. Cập nhật Session State & Reset giỏ
+                            st.session_state.update({
+                                "gio_hang": [], 
+                                "last_submit": bay_gio, 
+                                "submit_count": st.session_state.submit_count + 1, 
+                                "submitting": False
+                            })
+                            
+                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
                             time.sleep(0.5)
                             st.rerun()
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
+
             else:
-                # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
 
             if st.session_state.bill_vua_in:
@@ -746,12 +715,11 @@ def main():
                 st.session_state.clear()
                 st.rerun()
 
-# PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
+        # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
         if st.session_state["role"] == "Admin":
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-            # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 2
                 st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
 
                 try:
@@ -761,17 +729,12 @@ def main():
                     if du_lieu:
                         df_bc = pd.DataFrame(du_lieu)
                         
-                        # Tách 50 dòng cuối và xử lý chỉ mục hiển thị
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
-                        
-                        # Đặt tên tiêu đề cho cột số thứ tự là "Stt"
                         df_hien_thi.index.name = "Stt"
                         
-                        # Hiển thị bảng dữ liệu sạch sẽ lên giao diện
                         st.dataframe(df_hien_thi, use_container_width=True)
                         
-                        # Lọc tính toán doanh thu hôm nay dựa trên bảng gốc đầy đủ
                         ngay_nay = get_now_vn().strftime("%d/%m/%Y")
                         df_h = df_bc[df_bc['Ngày'] == ngay_nay]
                         
@@ -783,13 +746,10 @@ def main():
                         st.info("Chưa có dữ liệu báo cáo đơn hàng.")
                 except Exception as e: 
                     st.error(f"Lỗi truy xuất báo cáo: {e}")
-                st.markdown('</div>', unsafe_allow_html=True)
 
-            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP (MÀU NỀN TOÀN KHỐI FLAT PANEL)
+            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
-                
-                # Khối 1: Google Sheets có màu nền đổ bóng sang trọng
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
                 
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
@@ -799,7 +759,6 @@ def main():
                     st.rerun()
                 st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 
-                # Khối 2: Nhân sự có màu nền đổ bóng đầy đủ.
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
@@ -817,7 +776,7 @@ def main():
                                 st.success(f"Đã tạo tài khoản cho {new_name}!")
                                 st.cache_data.clear()
                                 time.sleep(0.5)
-                                r_count = st.rerun()
+                                st.rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
                     
                     st.write("---")
@@ -827,7 +786,6 @@ def main():
                         st.table(pd.DataFrame(user_data))
                 except Exception as e:
                     st.error(f"Lỗi hệ thống nhân sự: {e}")
-                st.markdown('</div>', unsafe_allow_html=True)
                 
                 st.divider()
                 if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
