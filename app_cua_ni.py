@@ -437,31 +437,46 @@ def get_settings():
 
 @st.cache_data(ttl=60)
 def get_service_data():
-    try:
-        client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
-        
-        danh_sach_dv = {}
-        for row in rows[1:]:
-            if len(row) >= 2:
-                ten_dv = str(row[0]).strip()
-                if not ten_dv:
-                    continue
-                try: 
-                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
-                except: 
-                    gia_goc = 0.0
-                
-                hoa_hong = 0.0
-                if len(row) >= 3 and row[2]:
-                    try:
-                        raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
-                        hoa_hong = float(raw_hh)
-                        if 0 < hoa_hong < 1.0: 
-                            hoa_hong *= 100
-                    except: 
-                        hoa_hong = 0.0
+                        try:
+                            cl = get_gspread_client()
+                            ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                            bay_gio = get_now_vn()
+                            ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
+                            
+                            rows_to_append = []
+                            html_items = ""
+                            for idx, item in enumerate(st.session_state.gio_hang):
+                                rows_to_append.append([
+                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
+                                    item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
+                                    bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
+                                ])
+                                html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
+                            
+                            # 1. Ghi vào Sheet
+                            ws.append_rows(rows_to_append)
+                            
+                            # 2. Gửi mail backup (chỉ khi ghi sheet thành công)
+                            noi_dung_mail = f"Đơn hàng mới: {ma_hd}\nKhách: {kh_ten}\nSĐT: {kh_sdt}\nTổng: {t_bill:,.0f}đ\nNhân viên: {st.session_state.full_name}"
+                            gui_email_backup(noi_dung_mail)
+
+                            # 3. Tạo thông tin hóa đơn hiển thị
+                            st.session_state.bill_vua_in = f"""... (HTML cũ của ní) ..."""
+
+                            # 4. Reset và làm mới
+                            st.session_state.update({
+                                "gio_hang": [], 
+                                "last_submit": bay_gio, 
+                                "submit_count": st.session_state.submit_count + 1, 
+                                "submitting": False
+                            })
+                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG!")
+                            time.sleep(0.5)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Lỗi hệ thống: {e}")
+                            st.session_state.submitting = False
+
                 
                 danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
         return danh_sach_dv
