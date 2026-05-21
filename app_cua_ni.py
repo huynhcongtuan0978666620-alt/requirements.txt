@@ -763,7 +763,7 @@ noi_dung_mail = f"Đơn hàng mới đã được chốt:\n\nKhách: {kh_ten}\nS
 gui_email_backup(noi_dung_mail)
 # -------------------------
 
-st.session_state.update({"gio_hang": [], ...})
+                            st.session_state.update({"gio_hang": [], ...})
 
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
