@@ -19,36 +19,28 @@ st.set_page_config(
 
 st.markdown("""
     <style>
-        /* 1. GỐC RỄ: FONT VÀ NỀN TẢNG */
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-        
-        html, body, .stApp, div, span, p, h1, h2, h3, h4, label, input, textarea {
-            font-family: 'Inter', sans-serif !important;
-            color: #000000 !important;
-            -webkit-text-fill-color: #000000 !important; 
+        /* -----------------------------------------------------------------
+            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
+        ----------------------------------------------------------------- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
+
+        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
         }
 
-        /* 2. CHỐNG MÙ CHỮ (TRỊ TẬN GỐC) */
-        /* Chỉ ép màu chữ, KHÔNG ép background-color: transparent để giữ được khối nổi (card) */
         .stApp {
-            background-color: #f8f9fa !important;
             padding-top: 75px !important; 
             padding-bottom: 60px !important;
+            background-color: #f8f9fa !important;
         }
 
-        /* 3. DỌN DẸP HỆ THỐNG */
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"] {
-            display: none !important;
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+            display: none !important; 
+            visibility: hidden !important;
+            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
-
-        /* 4. ĐẢM BẢO CÁC Ô NHẬP LIỆU LUÔN TRẮNG SÁNG */
-        div[data-baseweb="base-input"], input {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-        }
-
-
-
 
         /* -----------------------------------------------------------------
             2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
@@ -389,105 +381,7 @@ st.markdown("""
 
     <script>
         if (!window.fireworkStylesAdded) {
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
-            document.head.appendChild(style);
-            window.fireworkStylesAdded = true;
-        }
-        function createFirework(e) {
-            const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
-            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = clickX + 'px'; particle.style.top = clickY + 'px';
-                particle.style.animation = 'explode 0.7s ease-out forwards';
-                const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 120 + 40; 
-                particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-                particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                document.body.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 700);
-            }
-        }
-    </script>
-""", unsafe_allow_html=True)
-# =====================================================================
-# 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
-# =====================================================================
-def get_now_vn():
-    return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
-
-def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
-
-def format_drive_direct_url(link):
-    if not link or not isinstance(link, str): 
-        return ""
-    match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
-    return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
-
-@st.cache_data(ttl=5)
-def get_settings():
-    try:
-        client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("ThietLap").get_all_values()
-        return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
-    except Exception:
-        return {
-            "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
-            "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
-        }
-
-@st.cache_data(ttl=60)
-def get_service_data():
-    try:
-        client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
-        
-        danh_sach_dv = {}
-        for row in rows[1:]:
-            if len(row) >= 2:
-                ten_dv = str(row[0]).strip()
-                if not ten_dv:
-                    continue
-                try: 
-                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
-                except: 
-                    gia_goc = 0.0
-                
-                hoa_hong = 0.0
-                if len(row) >= 3 and row[2]:
-                    try:
-                        raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
-                        hoa_hong = float(raw_hh)
-                        if 0 < hoa_hong < 1.0: 
-                            hoa_hong *= 100
-                    except: 
-                        hoa_hong = 0.0
-                
-                danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
-        return danh_sach_dv
-    except Exception: 
-        return {}
-
-def display_header(settings):
-    direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
-    fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-    st.markdown(f"""
-        <div class="bang-hieu-lktv">
-            <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
-            <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-            <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
-            <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
-        </div>
-    """, unsafe_allow_html=True)
+            const style = document.createElem
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
