@@ -422,12 +422,12 @@ def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
-        receiver_email = "huynhcongtuan0978666620@gmail.com"
+        receiver_email = "huynhtuankiet199379@gmail.com"
         
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg['Subject'] = f"ĐH SALON KIM HIỀN - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         
         server = smtplib.SMTP('smtp.gmail.com', 587)
