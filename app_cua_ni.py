@@ -422,12 +422,12 @@ def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
-        receiver_email = "huynhtuankiet199379@gmail.com"
+        receiver_email = "huynhcongtuan0978666620@gmail.com"
         
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"ĐH SALON KIM HIỀN - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -657,8 +657,8 @@ def main():
                             # 1. Ghi vào Google Sheet
                             ws.append_rows(rows_to_append)
 
-                            # 2. Gửi Email Backup
-                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nTổng hóa đơn: {t_bill:,.0f}đ\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}"
+                            # 2. Gửi Email Backup (Đã chuyển Tổng hóa đơn xuống cuối phần danh sách món)
+                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
                             # 3. Tạo hóa đơn hiển thị HTML
