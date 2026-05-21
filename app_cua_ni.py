@@ -755,15 +755,25 @@ def main():
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
-                            # ... (Đoạn code chốt đơn cũ của ní)
-ws.append_rows(rows_to_append)
+                                                        # ... code cũ của ní ở trên...
+                            ws.append_rows(rows_to_append)
 
-# --- THÊM ĐOẠN NÀY VÀO ---
-noi_dung_mail = f"Đơn hàng mới đã được chốt:\n\nKhách: {kh_ten}\nSĐT: {kh_sdt}\nTổng: {t_bill:,.0f}đ\nNhân viên: {st.session_state.full_name}\n\nChi tiết: {st.session_state.gio_hang}"
-gui_email_backup(noi_dung_mail)
-# -------------------------
-
-                            st.session_state.update({"gio_hang": [], ...})
+                            # --- ĐOẠN BACKUP GỬI MAIL VÀO ĐÂY ---
+                            noi_dung_mail = f"Đơn hàng mới đã được chốt:\n\nKhách: {kh_ten}\nSĐT: {kh_sdt}\nTổng: {t_bill:,.0f}đ\nNhân viên: {st.session_state.full_name}\n\nChi tiết: {st.session_state.gio_hang}"
+                            gui_email_backup(noi_dung_mail)
+                            
+                            # --- ĐOẠN CẬP NHẬT SESSION STATE (Đã sửa lại thụt lề chuẩn) ---
+                            st.session_state.update({
+                                "gio_hang": [], 
+                                "last_submit": bay_gio, 
+                                "submit_count": st.session_state.submit_count + 1, 
+                                "submitting": False
+                            })
+                            
+                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ!")
+                            time.sleep(0.5)
+                            st.rerun()
+                            
 
             else:
                 # Trả về thông báo nhắc nhở khi tổng tiền bằng 0đ
