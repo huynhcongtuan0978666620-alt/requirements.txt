@@ -41,6 +41,24 @@ st.markdown("""
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
+        /* TẠM BIỆT MÙ CHỮ - LỆNH ÉP MÀU KHÔNG ĐIỀU KIỆN */
+html, body, .stApp, .main, div, p, span, h1, h2, h3, h4, label, input, textarea {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important; /* Trị bệnh mù chữ trên mobile */
+    background-color: transparent !important; /* Loại bỏ màu nền tự động của trình duyệt */
+}
+
+/* Đảm bảo khung nội dung luôn trắng sáng */
+.stApp {
+    background-color: #f8f9fa !important;
+}
+
+/* Ép các ô nhập liệu không bị đổi màu khi focus */
+input:focus, textarea:focus {
+    color: #000000 !important;
+    -webkit-text-fill-color: #000000 !important;
+}
+
 
         /* -----------------------------------------------------------------
             2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
