@@ -6,12 +6,13 @@ from datetime import datetime
 import pytz
 import time
 import re
+import random
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (CHỐNG LỚP PHỦ ẨN)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (TỰ ĐỘNG KÍCH NỔ CSS 100%)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -20,7 +21,9 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown("""
+# TẠO HIỆU ỨNG PHÁO HOA TỰ ĐỘNG BẰNG CSS THUẦN (KHÔNG BỊ CHẶN BỞI IFRAME)
+def generate_css_fireworks():
+    css_animation = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
@@ -44,30 +47,18 @@ st.markdown("""
         }
 
         .the-quan-ly-flat {
-            background-color: #ffffff !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            border-left: 6px solid #7d8f15 !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-            text-align: center !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            margin-bottom: 20px !important;
+            background-color: #ffffff !important; padding: 15px !important; border-radius: 12px !important;
+            border-left: 6px solid #7d8f15 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            text-align: center !important; font-weight: 700 !important; font-size: 14px !important; margin-bottom: 20px !important;
         }
         
-        .nhan-tieu-de {
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            margin-bottom: 5px !important;
-            text-transform: uppercase !important;
-        }
+        .nhan-tieu-de { font-size: 13px !important; font-weight: 700 !important; margin-bottom: 5px !important; text-transform: uppercase !important; }
 
         .banner-top {
             position: fixed !important; left: 0 !important; right: 0 !important; top: 0px !important; height: 48px !important;
             background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
             letter-spacing: 1px !important; display: flex !important; align-items: center !important; justify-content: center !important; 
-            cursor: pointer !important; user-select: none !important; z-index: 999999 !important; border-bottom: 3px solid #7d8f15 !important;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important; -webkit-tap-highlight-color: transparent;
+            z-index: 999999 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
         }
         
         .banner-bottom { 
@@ -76,12 +67,6 @@ st.markdown("""
             letter-spacing: 1px !important; display: flex !important; align-items: center !important; z-index: 99999 !important;
             bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; 
             box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; justify-content: flex-start !important; padding-left: 20px !important; 
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .firework-particle { 
-            position: fixed !important; width: 8px !important; height: 8px !important; border-radius: 50% !important; 
-            pointer-events: none !important; z-index: 2000000000 !important;
         }
 
         .bang-hieu-lktv {
@@ -124,70 +109,55 @@ st.markdown("""
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
+
+        /* --- LOGIC ĐỘC LẬP: CSS FIREWORKS ANIMATION --- */
+        .firework-container {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            pointer-events: none; z-index: 9999999; overflow: hidden;
+        }
+        .css-particle {
+            position: absolute; width: 8px; height: 8px; border-radius: 50%;
+            animation: explode-css 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+        }
+        @keyframes explode-css {
+            0% { transform: translate(0, 0) scale(1.5); opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
+        }
     </style>
+    """
+    return css_animation
 
-    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
-
-    <script>
-        if (!window.fireworkStylesAdded) {
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
-            document.head.appendChild(style);
-            window.fireworkStylesAdded = true;
-        }
-        
-        function createFirework(e) {
-            const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
-            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = clickX + 'px'; particle.style.top = clickY + 'px';
-                particle.style.animation = 'explode 0.7s ease-out forwards';
-                const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 120 + 40; 
-                particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-                particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                document.body.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 700);
-            }
-        }
-        
-        window.triggerAutoBoom = function() {
-            const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 3;
-            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff'];
+# HÀM TẠO RA ĐỐNG THẺ DIV HẠT PHÁO HOA BAY LÊN TRÊN GIAO DIỆN CHÍNH KHÔNG DÙNG JS INTERACTION
+def render_fireworks_html():
+    colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c']
+    html_particles = '<div class="firework-container">'
+    
+    # Tạo 3 điểm nổ khác nhau quanh trung tâm màn hình điện thoại
+    centers = [(45, 30), (50, 40), (55, 25)] # (X%, Y%) của màn hình
+    for cx, cy in centers:
+        for _ in range(35): # Mỗi tâm sinh ra 35 hạt pháo hoa
+            angle = random.uniform(0, 2 * 3.14159)
+            distance = random.uniform(50, 220)
+            target_x = int(random.choice([-1, 1]) * (abs(int(100 * (angle % 2)))) + distance * (0.5 if angle > 1.5 else 0.9))
+            target_y = int(random.choice([-1, 1]) * (abs(int(100 * (angle % 3)))) + distance * (0.6 if angle < 2.5 else 0.8))
             
-            for (let t = 0; t < 5; t++) {
-                setTimeout(() => {
-                    const currentX = centerX + (Math.random() * 300 - 150);
-                    const currentY = centerY + (Math.random() * 160 - 80);
-                    
-                    for (let i = 0; i < 50; i++) {
-                        const particle = document.createElement('div');
-                        particle.className = 'firework-particle';
-                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                        particle.style.left = currentX + 'px'; 
-                        particle.style.top = currentY + 'px';
-                        particle.style.animation = 'explode 0.8s ease-out forwards';
-                        
-                        const angle = Math.random() * Math.PI * 2;
-                        const velocity = Math.random() * 190 + 70; 
-                        particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-                        particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                        
-                        (window.top.document.body || document.body).appendChild(particle);
-                        setTimeout(() => { particle.remove(); }, 800);
-                    }
-                }, t * 200);
-            }
-        }
-    </script>
+            # Ép giá trị vector dịch chuyển vào CSS Variable của riêng hạt đó
+            color = random.choice(colors)
+            html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px;"></div>'
+            
+    html_particles += '</div>'
+    return html_particles
+
+# Thực thi chèn CSS nền vào hệ thống
+st.markdown(generate_css_fireworks(), unsafe_allow_html=True)
+
+<div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+<div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
-# 2. HÀM CORE HỆ THỐNG - TỐI ƯU HOÁ CACHE TRÁNH LỖI QUOTA 429
+# 2. HÀM CORE HỆ THỐNG - TỐI ƯU HOÁ TRUY XUẤT (ANTI-LIMIT)
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -202,7 +172,6 @@ def format_drive_direct_url(link):
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
     return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
 
-# Tăng TTL thiết lập lên 15 phút để tiết kiệm request đọc
 @st.cache_data(ttl=900)
 def get_settings():
     try:
@@ -213,7 +182,6 @@ def get_settings():
     except Exception:
         return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN", "SDT": "0947.58.1516"}
 
-# Tăng TTL danh mục lên 10 phút để giảm tải tối đa hạn ngạch Read của Google
 @st.cache_data(ttl=600)
 def get_service_data():
     try:
@@ -238,15 +206,13 @@ def get_service_data():
         return danh_sach_dv
     except Exception: return {}
 
-# Cache danh sách tài khoản nhân viên trong 10 phút
 @st.cache_data(ttl=600)
 def get_nhan_vien_data():
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
         return sh.worksheet("NhanVien").get_all_values()
-    except Exception:
-        return []
+    except Exception: return []
 
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
@@ -287,6 +253,11 @@ def main():
         if key not in st.session_state: st.session_state[key] = val
 
     settings = get_settings()
+
+    # KÍCH HOẠT PHÁO HOA TRỰC TIẾP Ở TẦNG CAO NHẤT KHI TRẠNG THÁI TRIGGER BẰNG TRUE
+    if st.session_state.trigger_boom:
+        st.markdown(render_fireworks_html(), unsafe_allow_html=True)
+        st.session_state.trigger_boom = False # Tự động tắt trạng thái sau khi nổ
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -475,10 +446,10 @@ def main():
                                 </div>
                             </div>"""
 
-                            st.session_state.trigger_boom = True
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
-                                "submit_count": st.session_state.submit_count + 1, "submitting": False
+                                "submit_count": st.session_state.submit_count + 1, 
+                                "submitting": False, "trigger_boom": True # Kích hoạt pháo hoa trực tiếp bằng biến toàn cục
                             })
                             st.rerun()
                             
@@ -487,22 +458,8 @@ def main():
                             st.session_state.submitting = False
             else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
-            if st.session_state.trigger_boom:
-                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
-                st.components.v1.html("""
-                    <script>
-                        setTimeout(function() {
-                            if(window.top && typeof window.top.triggerAutoBoom === 'function') {
-                                window.top.triggerAutoBoom();
-                            } else if (typeof window.triggerAutoBoom === 'function') {
-                                window.triggerAutoBoom();
-                            }
-                        }, 500);
-                    </script>
-                """, height=0)
-                st.session_state.trigger_boom = False
-
             if st.session_state.bill_vua_in:
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
                 st.markdown("---")
                 st.markdown("### 🧾 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
@@ -518,7 +475,6 @@ def main():
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
                 st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
                 
-                # Chỉ đọc dữ liệu báo cáo khi Admin chủ động bấm nút để không tốn Quota chạy ngầm
                 if st.button("🔄 TẢI/CẬP NHẬT DƯ THỪA DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
                         cl = get_gspread_client()
