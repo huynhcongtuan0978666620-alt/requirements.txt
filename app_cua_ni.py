@@ -12,7 +12,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (TỰ ĐỘNG KÍCH NỔ CSS 100%)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (ĐẠI TIỆC PHÁO HOA LẤP LÁNH 1 PHÚT)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -21,7 +21,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# TẠO HIỆU ỨNG PHÁO HOA TỰ ĐỘNG BẰNG CSS THUẦN (KHÔNG BỊ CHẶN BỞI IFRAME)
+# TẠO HIỆU ỨNG PHÁO HOA HOÀN TRÁNG KÉO DÀI TỰ ĐỘNG 60 GIÂY
 def generate_css_fireworks():
     css_animation = """
     <style>
@@ -110,46 +110,56 @@ def generate_css_fireworks():
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* --- LOGIC ĐỘC LẬP: CSS FIREWORKS ANIMATION --- */
+        /* --- SIÊU PHÁO HOA HOẠT HÌNH: TUẦN HOÀN TRONG 60 GIÂY --- */
         .firework-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 9999999; overflow: hidden;
+            background: rgba(0, 0, 0, 0.03); /* Làm tối nền một xíu cực sang trọng */
         }
         .css-particle {
-            position: absolute; width: 8px; height: 8px; border-radius: 50%;
-            animation: explode-css 1.2s cubic-bezier(0.1, 0.8, 0.3, 1) forwards;
+            position: absolute; width: 6px; height: 6px; border-radius: 50%;
+            opacity: 0;
+            /* Chạy lặp đi lặp lại vô hạn trong 60 giây để nhân viên ngắm thỏa thích */
+            animation: explode-mega 2.5s ease-out infinite;
         }
-        @keyframes explode-css {
-            0% { transform: translate(0, 0) scale(1.5); opacity: 1; }
-            80% { opacity: 0.8; }
-            100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
+        @keyframes explode-mega {
+            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 0.8; }
+            100% { transform: translate(var(--cx), var(--cy)) scale(0.2); opacity: 0; }
         }
     </style>
     """
     return css_animation
 
-# HÀM TẠO RA ĐỐNG THẺ DIV HẠT PHÁO HOA BAY LÊN TRÊN GIAO DIỆN CHÍNH KHÔNG DÙNG JS INTERACTION
+# HÀM BẮN HƠN 500 HẠT PHÁO HOA TỪ NHIỀU TÂM KHÁC NHAU TOẢ KHẮP MÀN HÌNH
 def render_fireworks_html():
-    colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c']
+    colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
     html_particles = '<div class="firework-container">'
     
-    # Tạo 3 điểm nổ khác nhau quanh trung tâm màn hình điện thoại
-    centers = [(45, 30), (50, 40), (55, 25)] # (X%, Y%) của màn hình
+    # Tạo 5 tâm nổ phân bổ đều trên toàn diện tích màn hình điện thoại
+    centers = [(20, 30), (40, 50), (50, 25), (60, 65), (80, 35)]
+    
     for cx, cy in centers:
-        for _ in range(35): # Mỗi tâm sinh ra 35 hạt pháo hoa
+        for i in range(100): # Mỗi tâm bắn ra 100 hạt -> Tổng cộng 500 hạt pháo rực rỡ
             angle = random.uniform(0, 2 * 3.14159)
-            distance = random.uniform(50, 220)
-            target_x = int(random.choice([-1, 1]) * (abs(int(100 * (angle % 2)))) + distance * (0.5 if angle > 1.5 else 0.9))
-            target_y = int(random.choice([-1, 1]) * (abs(int(100 * (angle % 3)))) + distance * (0.6 if angle < 2.5 else 0.8))
+            distance = random.uniform(80, 320) # Tăng cự ly bay xa cho pháo bung rộng
             
-            # Ép giá trị vector dịch chuyển vào CSS Variable của riêng hạt đó
+            # Tính toán tọa độ vector bay theo đường tròn lượng giác
+            import math
+            target_x = int(math.cos(angle) * distance)
+            target_y = int(math.sin(angle) * distance)
+            
             color = random.choice(colors)
-            html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px;"></div>'
+            # Tạo độ trễ ngẫu nhiên (delay) cho từng hạt để pháo hoa thi nhau nổ nhấp nhô liên tục
+            delay = round(random.uniform(0, 2.2), 2)
+            
+            html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px; animation-delay: {delay}s;"></div>'
             
     html_particles += '</div>'
     return html_particles
 
-# Thực thi chèn CSS nền và Banner vào hệ thống một cách an toàn
+# Thực thi chèn CSS nền và Banner vào hệ thống
 st.markdown(generate_css_fireworks(), unsafe_allow_html=True)
 
 st.markdown("""
@@ -258,7 +268,8 @@ def main():
     # KÍCH HOẠT PHÁO HOA TRỰC TIẾP Ở TẦNG CAO NHẤT KHI TRẠNG THÁI TRIGGER BẰNG TRUE
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
-        st.session_state.trigger_boom = False # Tự động tắt trạng thái sau khi nổ
+        # Giữ trạng thái nổ lặp lại liên tục cho đến khi người dùng thao tác mới hoặc qua 1 phút
+        # Để an toàn cho luồng rerun tiếp theo, không tắt ngay lập tức, cho biến mất tự nhiên qua CSS
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -387,7 +398,7 @@ def main():
                     han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        st.error(f"🚫 CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút.")
+                        st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để pháo hoa nổ hết.")
 
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
@@ -450,7 +461,7 @@ def main():
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True # Kích hoạt pháo hoa
+                                "submitting": False, "trigger_boom": True 
                             })
                             st.rerun()
                             
