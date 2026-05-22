@@ -1,4 +1,3 @@
-import streamlit as pd
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
@@ -12,7 +11,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THỜI TRANG HIGH-END (LUXURY FLAT)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (ĐÃ ĐẬP TAN LỚP PHỦ ẨN)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -24,18 +23,19 @@ st.set_page_config(
 st.markdown("""
     <style>
         /* -----------------------------------------------------------------
-            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
+            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG GỐC (XỬ LÝ LỖI CHE HIỆU ỨNG)
         ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
-        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
-            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        html, body {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
+            background-color: #f8f9fa !important; /* Đặt nền ở đây để không tạo lớp phủ đè */
         }
 
         .stApp {
             padding-top: 75px !important; 
             padding-bottom: 60px !important;
-            background-color: #f8f9fa !important;
+            background-color: transparent !important; /* Ép trong suốt để lộ pháo hoa phía sau/trước */
         }
 
         /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
@@ -109,7 +109,15 @@ st.markdown("""
             -webkit-tap-highlight-color: transparent;
         }
 
-        .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
+        /* ĐỊNH DẠNG HẠT PHÁO HOA SIÊU NỔ SÁNG CHÓI TRÊN CÙNG TRỰC QUAN */
+        .firework-particle { 
+            position: fixed !important; 
+            width: 8px !important; 
+            height: 8px !important; 
+            border-radius: 50% !important; 
+            pointer-events: none !important; 
+            z-index: 2000000000 !important; /* Đẩy lên tầng cao nhất, thách thức mọi lớp phủ */
+        }
 
         /* -----------------------------------------------------------------
            5. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
@@ -130,7 +138,7 @@ st.markdown("""
         .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
         /* -----------------------------------------------------------------
-           4. ĐIỀU CHỈNH TABS THỜI TRANG CAO CẤP
+           6. ĐIỀU CHỈNH TABS THỜI TRANG CAO CẤP
         ----------------------------------------------------------------- */
         [data-testid="stTabs"] [role="tablist"] div {
             height: 0px !important;
@@ -184,19 +192,6 @@ st.markdown("""
             outline: none !important;
             box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
         }
-        
-        button[data-baseweb="tab"][aria-selected="true"] p,
-        button[data-baseweb="tab"][aria-selected="true"] span,
-        button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
-            color: #000000 !important; 
-            font-weight: 900 !important; 
-            font-size: 16px !important;
-        }
-
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
-            border: none !important;
-            outline: none !important;
-        }
 
         /* -----------------------------------------------------------------
            8. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
@@ -209,11 +204,10 @@ st.markdown("""
         /* -----------------------------------------------------------------
            9. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
         ----------------------------------------------------------------- */
-        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
+        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
-        .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
     </style>
 
@@ -227,6 +221,7 @@ st.markdown("""
             document.head.appendChild(style);
             window.fireworkStylesAdded = true;
         }
+        
         function createFirework(e) {
             const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
             const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
@@ -244,16 +239,16 @@ st.markdown("""
             }
         }
         
-        // HÀM TỰ ĐỘNG BẮN PHÁO HOA TOÀN MÀN HÌNH CHUẨN XÁC
+        // HÀM TỰ ĐỘNG BẮN PHÁO HOA TOÀN MÀN HÌNH CHUẨN XÁC (TẤN CÔNG THẲNG VÀO WINDOW GỐC)
         window.triggerAutoBoom = function() {
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 3;
             const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff'];
             
-            for (let t = 0; t < 4; t++) {
+            for (let t = 0; t < 5; t++) {
                 setTimeout(() => {
-                    const currentX = centerX + (Math.random() * 200 - 100);
-                    const currentY = centerY + (Math.random() * 100 - 50);
+                    const currentX = centerX + (Math.random() * 300 - 150);
+                    const currentY = centerY + (Math.random() * 160 - 80);
                     
                     for (let i = 0; i < 50; i++) {
                         const particle = document.createElement('div');
@@ -264,14 +259,16 @@ st.markdown("""
                         particle.style.animation = 'explode 0.8s ease-out forwards';
                         
                         const angle = Math.random() * Math.PI * 2;
-                        const velocity = Math.random() * 180 + 70; 
+                        const velocity = Math.random() * 190 + 70; 
                         particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
                         particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                        document.body.appendChild(particle);
+                        
+                        // Tìm cửa sổ cao nhất có thể tiếp cận để không bị khuất sau bất kỳ div nào
+                        (window.top.document.body || document.body).appendChild(particle);
                         
                         setTimeout(() => { particle.remove(); }, 800);
                     }
-                }, t * 250);
+                }, t * 200);
             }
         }
     </script>
@@ -401,56 +398,35 @@ def main():
                         cl = get_gspread_client()
                         sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                         user_sheet = sh.worksheet("NhanVien")
-                        
                         raw_data = user_sheet.get_all_values()
                         if len(raw_data) > 0:
                             headers = [str(h).strip() for h in raw_data[0]]
-                            
                             col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
                             col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
                             col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
                             
-                            if col_sdt_idx == -1 or col_mk_idx == -1:
-                                user_list = user_sheet.get_all_records()
-                                found_user = None
-                                for row in user_list:
-                                    sdt_sheet = str(row.get('Số Điện Thoại', row.get('SĐT', ''))).strip().lstrip('0')
-                                    sdt_nhap = str(u).strip().lstrip('0')
-                                    if sdt_nhap == sdt_sheet and sdt_nhap != "":
-                                        if p.strip() == str(row.get('Mật Khẩu', row.get('Mật khẩu', ''))).strip():
-                                            found_user = row
-                                            break
-                                if found_user:
-                                    ten_that = found_user.get('Tên Nhân Viên', found_user.get('Tên nhân viên', 'Nhân viên'))
-                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
-                                    st.success(f"Chào mừng {ten_that}!")
-                                    time.sleep(0.5)
-                                    st.rerun()
-                                else:
-                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
+                            found_row = None
+                            sdt_nhap = str(u).strip().lstrip('0')
+                            for r in raw_data[1:]:
+                                if len(r) > max(col_sdt_idx, col_mk_idx):
+                                    sdt_sheet = str(r[col_sdt_idx]).strip().lstrip('0')
+                                    mk_sheet = str(r[col_mk_idx]).strip()
+                                    if sdt_nhap == sdt_sheet and p.strip() == mk_sheet and sdt_nhap != "":
+                                        found_row = r
+                                        break
+                                        
+                            if found_row:
+                                ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
+                                st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
+                                st.success(f"Chào mừng {ten_that}!")
+                                time.sleep(0.5)
+                                st.rerun()
                             else:
-                                found_row = None
-                                sdt_nhap = str(u).strip().lstrip('0')
-                                for r in raw_data[1:]:
-                                    if len(r) > max(col_sdt_idx, col_mk_idx):
-                                        sdt_sheet = str(r[col_sdt_idx]).strip().lstrip('0')
-                                        mk_sheet = str(r[col_mk_idx]).strip()
-                                        if sdt_nhap == sdt_sheet and p.strip() == mk_sheet and sdt_nhap != "":
-                                            found_row = r
-                                            break
-                                            
-                                if found_row:
-                                    ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
-                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
-                                    st.success(f"Chào mừng {ten_that}!")
-                                    time.sleep(0.5)
-                                    st.rerun()
-                                else:
-                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
+                                st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                         else:
-                            st.error("Bảng dữ liệu Nhân Viên trên Google Sheets đang trống!")
+                            st.error("Bảng dữ liệu dữ liệu Nhân Viên trống!")
                     except Exception as e:
-                        st.error(f"Lỗi cổng kết nối: {e}")
+                        st.error(f"Lỗi kết nối đăng nhập: {e}")
 
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
@@ -461,7 +437,7 @@ def main():
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
-            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHẾ!</div>', unsafe_allow_html=True)
             
             services = get_service_data()
             dv_list = list(services.keys())
@@ -471,12 +447,7 @@ def main():
             with c2: kh_sdt = st.text_input("📞 SĐT khách")
             
             st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            box_chon_dv = st.selectbox(
-                "📌 Dịch vụ", 
-                options=dv_list if dv_list else ["Không có dữ liệu"],
-                index=None,
-                placeholder="Gõ chữ để tìm nhanh..."
-            )
+            box_chon_dv = st.selectbox("📌 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
             box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
             
             if st.session_state.adding_cart:
@@ -517,10 +488,8 @@ def main():
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
-                    with col_item1: 
-                        st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
-                    with col_item2: 
-                        st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
+                    with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
+                    with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
                     with col_item3:
                         if st.button("Xóa", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
@@ -535,10 +504,8 @@ def main():
                 st.divider()
                 
                 col_bill1, col_bill2 = st.columns(2)
-                with col_bill1: 
-                    st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
-                with col_bill2: 
-                    st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
                 
                 st.write("")
                 kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
@@ -561,8 +528,7 @@ def main():
                             if cam_ket:
                                 st.session_state.submitting = True
                                 st.rerun()
-                            else: 
-                                st.error("Chưa tích chọn ô xác nhận cam kết!")
+                            else: st.error("Chưa tích chọn ô xác nhận cam kết!")
                     else:
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                         try:
@@ -584,14 +550,10 @@ def main():
                                 html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
-                            # 1. Ghi dữ liệu lên Sheet
                             ws.append_rows(rows_to_append)
-
-                            # 2. Gửi Email Backup dữ liệu
                             noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
-                            # 3. SỬA LỖI: DÙNG ĐÚNG CÚ PHÁP f-string ĐỂ KHÔNG BỊ NUỐT MẤT KHUNG HÓA ĐƠN
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
@@ -617,37 +579,31 @@ def main():
                                 </div>
                             </div>"""
 
-                            # Kích hoạt trạng thái nổ pháo hoa độc lập
                             st.session_state.trigger_boom = True
-
-                            # 4. Cập nhật state hệ thống và giải phóng giỏ hàng
                             st.session_state.update({
-                                "gio_hang": [], 
-                                "last_submit": bay_gio, 
-                                "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False
+                                "gio_hang": [], "last_submit": bay_gio, 
+                                "submit_count": st.session_state.submit_count + 1, "submitting": False
                             })
                             st.rerun()
                             
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
-
             else:
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
-            # HIỂN THỊ THÔNG BÁO THÀNH CÔNG VÀ KÍCH HOẠT PHÁO HOA ĐỘC LẬP CHỐNG NUỐT SCRIPT
+            # KÍCH HOẠT PHÁO HOA ĐỘC LẬP - ĐẨY LÊN WINDOW TOP GỐC TRÌNH DUYỆT
             if st.session_state.trigger_boom:
                 st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
                 st.components.v1.html("""
                     <script>
                         setTimeout(function() {
-                            if(window.parent && typeof window.parent.triggerAutoBoom === 'function') {
-                                window.parent.triggerAutoBoom();
+                            if(window.top && typeof window.top.triggerAutoBoom === 'function') {
+                                window.top.triggerAutoBoom();
                             } else if (typeof window.triggerAutoBoom === 'function') {
                                 window.triggerAutoBoom();
                             }
-                        }, 100);
+                        }, 500); /* Chờ 500ms để app ổn định trạng thái */
                     </script>
                 """, height=0)
                 st.session_state.trigger_boom = False
@@ -664,11 +620,9 @@ def main():
 
         # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
         if st.session_state["role"] == "Admin":
-            # TAB 2: DOANH THU REALTIME
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
                 st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
-
                 try:
                     cl = get_gspread_client()
                     ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -682,39 +636,31 @@ def main():
                         
                         ngay_nay = get_now_vn().strftime("%d/%m/%Y")
                         df_h = df_bc[df_bc['Ngày'] == ngay_nay]
-                        
                         c1, c2, c3 = st.columns(3)
                         c1.metric("📊 TỔNG DOANH THU HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
                         c2.metric("🧾 TỔNG ĐƠN HÀNG", len(df_h))
                         c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
-                    else: 
-                        st.info("Chưa có dữ liệu báo cáo đơn hàng.")
-                except Exception as e: 
-                    st.error(f"Lỗi truy xuất báo cáo: {e}")
+                    else: st.info("Chưa có dữ liệu báo cáo.")
+                except Exception as e: st.error(f"Lỗi truy xuất báo cáo: {e}")
 
-            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
-                st.write("")
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
                     
-                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     ws_user = sh.worksheet("NhanVien")
-                    
                     with st.form("add_user_form", clear_on_submit=True):
-                        st.markdown("**➕ Thêm tài khoản nhân viên mới:**")
                         new_sdt = st.text_input("📱 Số điện thoại nhân viên (Tài khoản)")
                         new_code = st.text_input("🔑 Mã đăng nhập (Mật khẩu)")
                         new_name = st.text_input("🏷️ Tên nhân viên hiển thị")
-                        
                         if st.form_submit_button("👌 CẤP MÃ MỚI"):
                             if new_sdt and new_code and new_name:
                                 ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
@@ -723,14 +669,10 @@ def main():
                                 time.sleep(0.5)
                                 st.rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
-                    
-                    st.write("---")
-                    st.write("📋 **Danh sách nhân sự hiện tại:**")
+                    st.write("📋 **Danh sách nhân sự:**")
                     user_data = ws_user.get_all_records()
-                    if user_data: 
-                        st.table(pd.DataFrame(user_data))
-                except Exception as e:
-                    st.error(f"Lỗi hệ thống nhân sự: {e}")
+                    if user_data: st.table(pd.DataFrame(user_data))
+                except Exception as e: st.error(f"Lỗi hệ thống nhân sự: {e}")
                 
                 st.divider()
                 if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
