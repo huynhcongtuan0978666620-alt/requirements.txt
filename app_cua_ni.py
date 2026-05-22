@@ -102,7 +102,7 @@ st.markdown("""
         }
 
         /* -----------------------------------------------------------------
-           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
+           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY
         ----------------------------------------------------------------- */
         .banner-top {
             position: fixed !important; 
@@ -165,62 +165,12 @@ st.markdown("""
         /* -----------------------------------------------------------------
            4. ĐIỀU CHỈNH TABS THỜI TRANG CAO CẤP
         ----------------------------------------------------------------- */
-        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 12px; width: 100%; border-bottom: 2px solid #e5e7eb; }
-        .stTabs [data-baseweb="tab"] { flex: 1; height: 54px; background-color: #f3f4f6; border-radius: 14px 14px 0 0; border: 1px solid #e5e7eb; transition: all 0.2s ease; }
-        .stTabs [data-baseweb="tab"] p { color: #4b5563 !important; font-weight: 700 !important; font-size: 15px; text-align: center; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #111827 !important; border-color: #111827; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #f1c40f !important; }
-
-        /* KHỐI THÈ HƯỚNG DẪN FLAT PANEL CÓ CHỨA TEXT CHỈ DẪN */
-        .the-quan-ly-flat {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-left: 6px solid #7d8f15 !important;
-            padding: 14px 16px !important;
-            border-radius: 12px !important;
-            font-size: 14px !important;
-            font-weight: 700 !important;
-            color: #334155 !important; 
-            margin-top: 10px !important;
-            margin-bottom: 15px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            text-align: center !important; 
-        }
-
-        /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
         [data-testid="stTabs"] [role="tablist"] div {
             height: 0px !important;
             background-color: transparent !important;
             border: none !important;
         }
 
-        /* ÉP THANH CHỨA TAB CHẠY HẾT 100% CHIỀU NGANG, KHÔNG ĐỂ TRỐNG */
-        [data-testid="stTabs"] [role="tablist"] {
-            display: flex !important;
-            width: 100% !important;
-            justify-content: space-between !important;
-            gap: 4px !important; 
-        }
-
-        /* CẤU HÌNH NÚT TAB: CHIA ĐỀU MÀN HÌNH VÀ CĂN CHỮ CHÍNH GIỮA */
-        button[data-baseweb="tab"] {
-            flex: 1 1 0% !important; 
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important; 
-            text-align: center !important;
-            background-color: #f1f3f5 !important; 
-            color: #495057 !important; 
-            border-radius: 8px !important; 
-            padding: 10px 4px !important; 
-            font-size: 13px !important; 
-            border: none !important; 
-            outline: none !important;
-            white-space: nowrap !important; 
-            transition: all 0.2s ease-in-out !important;
-        }
-
-        /* ÉP THANH CHỨA TAB DÀN HÀNG NGANG KHÍT 100% KHUNG HÌNH */
         [data-testid="stTabs"] [role="tablist"] {
             display: flex !important;
             width: 100% !important;
@@ -231,7 +181,6 @@ st.markdown("""
             margin: 0 auto 15px auto !important;
         }
 
-        /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
         button[data-baseweb="tab"] {
             flex: 1 1 100% !important; 
             height: 54px !important; 
@@ -248,7 +197,6 @@ st.markdown("""
             transition: all 0.2s ease-in-out !important;
         }
 
-        /* THẦN CHÚ DIỆT LỆCH KHUNG: ÉP TẤT CẢ THẺ CHỮ CON PHẢI RA GIỮA */
         button[data-baseweb="tab"] p, 
         button[data-baseweb="tab"] span, 
         button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
@@ -263,7 +211,6 @@ st.markdown("""
             width: 100% !important;
         }
 
-        /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
         button[data-baseweb="tab"][aria-selected="true"] {
             background-color: #f1c40f !important; 
             border: none !important;
@@ -284,15 +231,6 @@ st.markdown("""
             outline: none !important;
         }
 
-        .khung-noi-dung-mo-rong {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 20px !important;
-            border-radius: 16px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            margin-bottom: 25px !important;
-        }
-        
         /* -----------------------------------------------------------------
            8. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
         ----------------------------------------------------------------- */
@@ -400,7 +338,7 @@ def get_settings():
     except Exception:
         return {
             "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
+            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG", 
             "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
         }
 
@@ -655,8 +593,6 @@ def main():
                     if not st.session_state.submitting:
                         if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
-                                # TUYỆT CHIÊU: PHUN PHÁO HOA NGAY LÚC BẤM NÚT TRÊN TRÌNH DUYỆT TRƯỚC KHI RERUN KHÓA
-                                st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
                                 st.session_state.submitting = True
                                 st.rerun()
                             else: 
@@ -664,9 +600,6 @@ def main():
                     else:
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                         try:
-                            # TIẾP TỤC DUY TRÌ BẮN THÊM TRẬN NỮA KHI ĐANG LOADING
-                            st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
-                            
                             cl = get_gspread_client()
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                             bay_gio = get_now_vn()
@@ -685,16 +618,23 @@ def main():
                                 html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
-                            # 1. Ghi vào Google Sheet
+                            # 1. Ghi dữ liệu lên Sheet
                             ws.append_rows(rows_to_append)
 
-                            # 2. Gửi Email Backup
+                            # 2. Gửi Email Backup dữ liệu
                             noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
-                            # 3. Tạo hóa đơn hiển thị HTML
+                            # 3. ĐẬP THẲNG SCRIPT PHÁO HOA VÀO BÊN TRONG PHÔI HÓA ĐƠN HTML ĐỂ ÉP TRÌNH DUYỆT PHẢI NỔ
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
+                                <script>
+                                    setTimeout(function() {{
+                                        if(typeof window.triggerAutoBoom === 'function') {{
+                                            window.triggerAutoBoom();
+                                        }}
+                                    }}, 300);
+                                </script>
                                 <div class="hd-header">
                                     <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                                     <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
@@ -718,7 +658,7 @@ def main():
                                 </div>
                             </div>"""
 
-                            # 4. Lưu trạng thái và reset giỏ hàng (BỎ HẲN LỆNH ST.RERUN ĐỂ GIỮ NGUYÊN PHÁO HOA)
+                            # 4. Cập nhật state hệ thống và giải phóng giỏ hàng
                             st.session_state.update({
                                 "gio_hang": [], 
                                 "last_submit": bay_gio, 
@@ -727,9 +667,6 @@ def main():
                             })
                             
                             st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
-                            
-                            # TRẬN PHÁO HOA CUỐI ĂN MỪNG KHI TOÀN BỘ TIẾN TRÌNH HOÀN TẤT MƯỢT MÀ
-                            st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
                             
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
