@@ -149,9 +149,10 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Thực thi chèn CSS nền vào hệ thống
+# Thực thi chèn CSS nền và Banner vào hệ thống một cách an toàn
 st.markdown(generate_css_fireworks(), unsafe_allow_html=True)
 
+st.markdown("""
 <div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
 <div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
@@ -449,7 +450,7 @@ def main():
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True # Kích hoạt pháo hoa trực tiếp bằng biến toàn cục
+                                "submitting": False, "trigger_boom": True # Kích hoạt pháo hoa
                             })
                             st.rerun()
                             
