@@ -254,7 +254,7 @@ def display_header(settings):
             <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
+            <div class="thong-tin-phu">☎️ {settings.get('SDT', '0947.58.1516')}</div>
             <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
         </div>
     """, unsafe_allow_html=True)
@@ -347,14 +347,14 @@ def main():
             with c1: kh_ten = st.text_input("👤 Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("📞 SĐT khách")
             
-            st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            box_chon_dv = st.selectbox("📌 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
+            st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
+            box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
             box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("🛒 THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
                         st.error("🚫 Vui lòng chọn một dịch vụ cụ thể trước khi thêm!")
                     elif box_sl <= 0: st.error("Vui lòng chọn số lượng lớn hơn 0!")
@@ -433,7 +433,7 @@ def main():
                                 st.rerun()
                             else: st.error("Chưa tích chọn ô xác nhận cam kết!")
                     else:
-                        st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ VÀ GIẢM TẢI QUOTA...", disabled=True, use_container_width=True)
+                        st.button("⏳ ĐANG XỬ LÝ VÀ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -462,7 +462,7 @@ def main():
                                 <div class="hd-header">
                                     <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                                     <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
-                                    <div style="font-size: 11px;">📞 {settings.get('SDT', '0947.58.1516')}</div>
+                                    <div style="font-size: 11px;">☎️ {settings.get('SDT', '0947.58.1516')}</div>
                                     <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
                                     <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                                 </div>
