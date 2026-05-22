@@ -1,3 +1,4 @@
+import streamlit as pd
 import streamlit as st
 import gspread
 from google.oauth2.service_account import Credentials
@@ -65,40 +66,6 @@ st.markdown("""
             font-weight: 700 !important;
             margin-bottom: 5px !important;
             text-transform: uppercase !important;
-        }
-
-        .tong-don-box {
-            background-color: #fef3c7 !important;
-            color: #b45309 !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 24px !important;
-            font-weight: 900 !important;
-            border: 2px dashed #fde68a !important;
-        }
-
-        .cong-tho-box {
-            background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 24px !important;
-            font-weight: 900 !important;
-            border: 2px dashed #e5e7eb !important;
-        }
-
-        .tien-thua-box {
-            background-color: #059669 !important;
-            color: #ffffff !important;
-            padding: 12px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 16px !important;
-            font-weight: 700 !important;
-            margin-top: 15px !important;
-            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
         }
 
         /* -----------------------------------------------------------------
@@ -277,19 +244,18 @@ st.markdown("""
             }
         }
         
-        // HÀM TỰ ĐỘNG BẮN PHÁO HOA GIỮA MÀN HÌNH CHUẨN XÁC
+        // HÀM TỰ ĐỘNG BẮN PHÁO HOA TOÀN MÀN HÌNH CHUẨN XÁC
         window.triggerAutoBoom = function() {
             const centerX = window.innerWidth / 2;
-            const centerY = window.innerHeight / 2;
+            const centerY = window.innerHeight / 3;
             const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff'];
             
-            for (let t = 0; t < 3; t++) {
+            for (let t = 0; t < 4; t++) {
                 setTimeout(() => {
-                    const offsetIdx = t - 1; 
-                    const currentX = centerX + (offsetIdx * 80);
-                    const currentY = centerY - (t * 40);
+                    const currentX = centerX + (Math.random() * 200 - 100);
+                    const currentY = centerY + (Math.random() * 100 - 50);
                     
-                    for (let i = 0; i < 45; i++) {
+                    for (let i = 0; i < 50; i++) {
                         const particle = document.createElement('div');
                         particle.className = 'firework-particle';
                         particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
@@ -298,14 +264,14 @@ st.markdown("""
                         particle.style.animation = 'explode 0.8s ease-out forwards';
                         
                         const angle = Math.random() * Math.PI * 2;
-                        const velocity = Math.random() * 160 + 60; 
+                        const velocity = Math.random() * 180 + 70; 
                         particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
                         particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
                         document.body.appendChild(particle);
                         
                         setTimeout(() => { particle.remove(); }, 800);
                     }
-                }, t * 200);
+                }, t * 250);
             }
         }
     </script>
@@ -412,7 +378,7 @@ def gui_email_backup(noi_dung):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None}
+    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None, "trigger_boom": False}
     for key, val in init_states.items():
         if key not in st.session_state: 
             st.session_state[key] = val
@@ -511,7 +477,7 @@ def main():
                 index=None,
                 placeholder="Gõ chữ để tìm nhanh..."
             )
-            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
+            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
@@ -625,16 +591,9 @@ def main():
                             noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
-                            # 3. ĐẬP THẲNG SCRIPT PHÁO HOA VÀO BÊN TRONG PHÔI HÓA ĐƠN HTML ĐỂ ÉP TRÌNH DUYỆT PHẢI NỔ
+                            # 3. SỬA LỖI: DÙNG ĐÚNG CÚ PHÁP f-string ĐỂ KHÔNG BỊ NUỐT MẤT KHUNG HÓA ĐƠN
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
-                                <script>
-                                    setTimeout(function() {{
-                                        if(typeof window.triggerAutoBoom === 'function') {{
-                                            window.triggerAutoBoom();
-                                        }}
-                                    }}, 300);
-                                </script>
                                 <div class="hd-header">
                                     <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                                     <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
@@ -658,6 +617,9 @@ def main():
                                 </div>
                             </div>"""
 
+                            # Kích hoạt trạng thái nổ pháo hoa độc lập
+                            st.session_state.trigger_boom = True
+
                             # 4. Cập nhật state hệ thống và giải phóng giỏ hàng
                             st.session_state.update({
                                 "gio_hang": [], 
@@ -665,8 +627,7 @@ def main():
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False
                             })
-                            
-                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
+                            st.rerun()
                             
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
@@ -674,6 +635,22 @@ def main():
 
             else:
                 st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
+
+            # HIỂN THỊ THÔNG BÁO THÀNH CÔNG VÀ KÍCH HOẠT PHÁO HOA ĐỘC LẬP CHỐNG NUỐT SCRIPT
+            if st.session_state.trigger_boom:
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
+                st.components.v1.html("""
+                    <script>
+                        setTimeout(function() {
+                            if(window.parent && typeof window.parent.triggerAutoBoom === 'function') {
+                                window.parent.triggerAutoBoom();
+                            } else if (typeof window.triggerAutoBoom === 'function') {
+                                window.triggerAutoBoom();
+                            }
+                        }, 100);
+                    </script>
+                """, height=0)
+                st.session_state.trigger_boom = False
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
