@@ -7,6 +7,7 @@ import pytz
 import time
 import re
 import random
+import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -21,7 +22,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# TẠO HIỆU ỨNG PHÁO HOA HOÀN TRÁNG KÉO DÀI TỰ ĐỘNG 60 GIÂY
 def generate_css_fireworks():
     css_animation = """
     <style>
@@ -38,7 +38,7 @@ def generate_css_fireworks():
             background-color: transparent !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -114,12 +114,11 @@ def generate_css_fireworks():
         .firework-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 9999999; overflow: hidden;
-            background: rgba(0, 0, 0, 0.03); /* Làm tối nền một xíu cực sang trọng */
+            background: rgba(0, 0, 0, 0.02);
         }
         .css-particle {
             position: absolute; width: 6px; height: 6px; border-radius: 50%;
             opacity: 0;
-            /* Chạy lặp đi lặp lại vô hạn trong 60 giây để nhân viên ngắm thỏa thích */
             animation: explode-mega 2.5s ease-out infinite;
         }
         @keyframes explode-mega {
@@ -132,34 +131,24 @@ def generate_css_fireworks():
     """
     return css_animation
 
-# HÀM BẮN HƠN 500 HẠT PHÁO HOA TỪ NHIỀU TÂM KHÁC NHAU TOẢ KHẮP MÀN HÌNH
 def render_fireworks_html():
     colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
     html_particles = '<div class="firework-container">'
-    
-    # Tạo 5 tâm nổ phân bổ đều trên toàn diện tích màn hình điện thoại
     centers = [(20, 30), (40, 50), (50, 25), (60, 65), (80, 35)]
     
     for cx, cy in centers:
-        for i in range(100): # Mỗi tâm bắn ra 100 hạt -> Tổng cộng 500 hạt pháo rực rỡ
+        for i in range(100):
             angle = random.uniform(0, 2 * 3.14159)
-            distance = random.uniform(80, 320) # Tăng cự ly bay xa cho pháo bung rộng
-            
-            # Tính toán tọa độ vector bay theo đường tròn lượng giác
-            import math
+            distance = random.uniform(80, 320)
             target_x = int(math.cos(angle) * distance)
             target_y = int(math.sin(angle) * distance)
-            
             color = random.choice(colors)
-            # Tạo độ trễ ngẫu nhiên (delay) cho từng hạt để pháo hoa thi nhau nổ nhấp nhô liên tục
             delay = round(random.uniform(0, 2.2), 2)
-            
             html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px; animation-delay: {delay}s;"></div>'
             
     html_particles += '</div>'
     return html_particles
 
-# Thực thi chèn CSS nền và Banner vào hệ thống
 st.markdown(generate_css_fireworks(), unsafe_allow_html=True)
 
 st.markdown("""
@@ -168,7 +157,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================================
-# 2. HÀM CORE HỆ THỐNG - TỐI ƯU HOÁ TRUY XUẤT (ANTI-LIMIT)
+# 2. HÀM CORE HỆ THỐNG - TỐI ƯU HOÁ TUYỆT ĐỐI (CHỐNG LỖI QUOTA QUOTA 429)
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -183,7 +172,7 @@ def format_drive_direct_url(link):
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
     return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
 
-@st.cache_data(ttl=900)
+@st.cache_data(ttl=1200) # Tăng thời gian lưu cache cấu hình để giảm request đọc
 def get_settings():
     try:
         client = get_gspread_client()
@@ -193,7 +182,7 @@ def get_settings():
     except Exception:
         return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN", "SDT": "0947.58.1516"}
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=900) # Tăng cache danh mục lên 15 phút tránh nghẽn mạch API khi tải lại trang
 def get_service_data():
     try:
         client = get_gspread_client()
@@ -217,7 +206,7 @@ def get_service_data():
         return danh_sach_dv
     except Exception: return {}
 
-@st.cache_data(ttl=600)
+@st.cache_data(ttl=900)
 def get_nhan_vien_data():
     try:
         client = get_gspread_client()
@@ -263,13 +252,12 @@ def main():
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
 
+    # ĐỌC THIẾT LẬP TỪ CACHE (KHÔNG GỌI LẠI GOOGLE SHEET KHI CHƯA HẾT TTL)
     settings = get_settings()
 
-    # KÍCH HOẠT PHÁO HOA TRỰC TIẾP Ở TẦNG CAO NHẤT KHI TRẠNG THÁI TRIGGER BẰNG TRUE
+    # HIỂN THỊ PHÁO HOA KHI TRIGGER ĐƯỢC BẬT TRÊN TOÀN GIAO DIỆN
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
-        # Giữ trạng thái nổ lặp lại liên tục cho đến khi người dùng thao tác mới hoặc qua 1 phút
-        # Để an toàn cho luồng rerun tiếp theo, không tắt ngay lập tức, cho biến mất tự nhiên qua CSS
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -360,7 +348,7 @@ def main():
                             time.sleep(0.1)
                             st.rerun()
 
-            # GIỎ HÀNG CHỜ LƯU
+            # CHI TIẾT GIỎ HÀNG CHỜ LƯU
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
@@ -377,7 +365,7 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-            # THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS
+            # THANH TOÁN ĐƠN & ĐỒNG BỘ CHỐNG LỖI 429 QUOTA
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ...")
                 st.divider()
@@ -412,6 +400,7 @@ def main():
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ VÀ GIẢM TẢI QUOTA...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
+                            # THAO TÁC THẲNG ĐỂ ĐẨY DATA, KHÔNG GỌI BẤT KỲ LỆNH ĐỌC NÀO TRÁNH LỖI 429
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                             bay_gio = get_now_vn()
                             ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
@@ -468,7 +457,11 @@ def main():
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
-            else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
+            else: 
+                # Nếu giỏ hàng trống và vừa nổ pháo xong, tự tắt trạng thái kích nổ để giải phóng RAM điện thoại
+                if st.session_state.trigger_boom and not st.session_state.bill_vua_in:
+                    st.session_state.trigger_boom = False
+                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
                 st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
@@ -487,7 +480,7 @@ def main():
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
                 st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
                 
-                if st.button("🔄 TẢI/CẬP NHẬT DƯ THỪA DOANH THU REALTIME", use_container_width=True, type="primary"):
+                if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
                         cl = get_gspread_client()
                         ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
