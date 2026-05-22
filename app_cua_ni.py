@@ -103,7 +103,7 @@ def generate_css_fireworks():
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         
-        /* 🔔 NÚT CHỐT ĐƠN CO GIÃN ĐỘNG (NHẮC ĐỒNG BỘ DỮ LIỆU) */
+        /* 🔔 NÚT CHỐT ĐƠN CO GIÃN ĐỘNG */
         div[data-testid="stButton"] button[kind="primary"] {
             animation: pulse-button-new 1.5s infinite ease-in-out !important;
         }
@@ -113,7 +113,7 @@ def generate_css_fireworks():
             100% { transform: scale(1); }
         }
 
-        /* 🔔 HỘP TIỀN THỪA NẢY TƯNG TƯNG (NHẮC THỐI TIỀN) */
+        /* 🔔 HỘP TIỀN THỪA NẢY TƯNG TƯNG */
         .tien-thua-box { 
             background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; 
             font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; 
@@ -124,7 +124,7 @@ def generate_css_fireworks():
             50% { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2); }
         }
 
-        /* 🔔 HỘP CẢNH BÁO RUNG LẮC (HÀNG RÀO THÉP CHỐNG TRÙNG) */
+        /* 🔔 HỘP CẢNH BÁO RUNG LẮC */
         .lsc-shake {
             animation: shake-warn 0.5s infinite linear !important;
         }
@@ -136,13 +136,14 @@ def generate_css_fireworks():
             80% { transform: translate(2px, 1px) rotate(1deg); }
         }
 
-        /* KHUNG HÓA ĐƠN CHUẨN ĐÃ ĐƯỢC TỐI ƯU HIỂN THỊ CHỐNG TRÀN CHỮ */
+        /* KHUNG HÓA ĐƠN CO GIÃN HIỂN THỊ PHẲNG CHỐNG NUỐT CHỮ */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 20px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
         
-        /* ĐÃ SỬA: BỎ NOWRAP ĐỂ DÒNG DỊCH VỤ TỰ ĐỘNG XUỐNG HÀNG THÔNG MINH KHI TÊN QUÁ DÀI */
-        .hd-row { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; gap: 10px !important; margin-bottom: 8px !important; font-size: 13px !important; width: 100% !important; flex-wrap: wrap !important; }
+        .hd-row-item { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 12px !important; font-size: 13px !important; width: 100% !important; line-height: 1.4 !important; }
+        .hd-item-name { flex: 1 !important; padding-right: 15px !important; text-align: left !important; word-break: break-word !important; }
+        .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: bold !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
         /* --- SIÊU PHÁO HOA SIÊU TỐC 0.5S --- */
@@ -262,15 +263,20 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
+# ĐÃ SỬA: ĐỒNG BỘ MÚI GIỜ VIỆT NAM CHO EMAIL BACKUP
 def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
         receiver_email = "huynhcongtuan0978666620@gmail.com"
+        
+        # Lấy giờ Việt Nam chính xác cho tiêu đề Email
+        gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
+        
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {gio_vn_mail}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -289,7 +295,6 @@ def main():
 
     settings = get_settings()
 
-    # HIỂN THỊ PHÁO HOA SIÊU TỐC TRONG ĐÚNG 0.5S RỒI TỰ TẮT NGẦM
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
         st.session_state.trigger_boom = False
@@ -413,7 +418,6 @@ def main():
                 kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
                 t_du = kh_tra - t_bill
                 
-                # HỘP TIỀN THỪA NẢY ĐỘNG KHI CÓ TIỀN THỪA
                 if t_du > 0:
                     st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN MẶT CHO KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
@@ -423,13 +427,11 @@ def main():
                     han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        # HỘP CẢNH BÁO RUNG LẮC CỦA HÀNG RÀO THÉP CHỐNG TRÙNG BẤM
                         st.markdown(f'<div class="lsc-shake" style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 10px; border: 2px solid #ef4444; text-align: center; font-weight: bold; font-size: 14px;">🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để tiếp tục đơn mới.</div>', unsafe_allow_html=True)
 
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                     if not st.session_state.submitting:
-                        # NÚT BẤM CHỐT ĐƠN CO GIÃN ĐỘNG THEO CSS GỐC
                         if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
                                 st.session_state.submitting = True
@@ -453,12 +455,17 @@ def main():
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
-                                # CHỈNH SỬA TẠI ĐÂY: GÀI STYLE LINH HOẠT CHỐNG TRÀN CHỮ CHO TỪNG DÒNG DỊCH VỤ VÀO ĐƠN HÀNG IN RA
-                                html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
+                                html_items += f"""
+                                <div class="hd-row-item">
+                                    <div class="hd-item-name">{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</div>
+                                    <div class="hd-item-price">{item["thanh_tien"]:,.0f} đ</div>
+                                </div>"""
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
-                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
+                            
+                            # Đã sửa: Sử dụng đúng mốc thời gian bay_gio (Asia/Ho_Chi_Minh) trong nội dung mail
+                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nThời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
                             st.session_state.bill_vua_in = f"""
@@ -562,7 +569,7 @@ def main():
                                 st.success(f"Đã tạo tài khoản cho {new_name}!")
                                 st.cache_data.clear()
                                 time.sleep(0.5)
-                                rerun()
+                                st.rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
                     
                     st.write("📋 **Danh sách nhân sự:**")
