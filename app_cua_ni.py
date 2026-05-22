@@ -120,7 +120,7 @@ def generate_css_fireworks():
             position: absolute; width: 6px; height: 6px; border-radius: 50%;
             opacity: 0;
             /* CHỈNH LẠI CHẠY ĐÚNG 0.5S VÀ CHỈ CHẠY 1 LẦN (ONCE) KHÔNG LẶP LẠI */
-            animation: explode-mega 0.5s ease-out 1 forwards;
+            animation: explode-mega 2.0s ease-out 1 forwards;
         }
         @keyframes explode-mega {
             0% { transform: translate(0, 0) scale(1); opacity: 0; }
