@@ -180,7 +180,7 @@ st.markdown("""
             border-radius: 12px !important;
             font-size: 14px !important;
             font-weight: 700 !important;
-            color: #1e293b !important; 
+            color: #334155 !important; 
             margin-top: 10px !important;
             margin-bottom: 15px !important;
             box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
@@ -338,6 +338,39 @@ st.markdown("""
                 setTimeout(() => { particle.remove(); }, 700);
             }
         }
+        
+        // HÀM TỰ ĐỘNG BẮN PHÁO HOA GIỮA MÀN HÌNH KHI CHỐT ĐƠN
+        window.triggerAutoBoom = function() {
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff'];
+            
+            // Tạo 3 cụm pháo nổ liên tiếp
+            for (let t = 0; t < 3; t++) {
+                setTimeout(() => {
+                    const offsetIdx = t - 1; // Tạo độ lệch vị trí trái/phải chút xíu
+                    const currentX = centerX + (offsetIdx * 80);
+                    const currentY = centerY - (t * 40);
+                    
+                    for (let i = 0; i < 40; i++) {
+                        const particle = document.createElement('div');
+                        particle.className = 'firework-particle';
+                        particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                        particle.style.left = currentX + 'px'; 
+                        particle.style.top = currentY + 'px';
+                        particle.style.animation = 'explode 0.8s ease-out forwards';
+                        
+                        const angle = Math.random() * Math.PI * 2;
+                        const velocity = Math.random() * 150 + 50; 
+                        particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
+                        particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
+                        document.body.appendChild(particle);
+                        
+                        setTimeout(() => { particle.remove(); }, 800);
+                    }
+                }, t * 250); // Cách nhau 250ms
+            }
+        }
     </script>
 """, unsafe_allow_html=True)
 
@@ -442,12 +475,17 @@ def gui_email_backup(noi_dung):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None}
+    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None, "just_saved": False}
     for key, val in init_states.items():
         if key not in st.session_state: 
             st.session_state[key] = val
 
     settings = get_settings()
+
+    # KÍCH HOẠT PHÁO HOA ĐỘNG BẰNG JAVASCRIPT KHI TRANH LƯU XONG
+    if st.session_state.just_saved:
+        st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
+        st.session_state.just_saved = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -526,8 +564,8 @@ def main():
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             
-            # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
-            st.markdown('<div class="the-quan-ly-flat" style="font-size: 20px !important;">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
+            # ĐƯỢC TÙY CHỈNH THÊM STYLE CỠ CHỮ TRỰC TIẾP
+            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -575,9 +613,7 @@ def main():
                             time.sleep(0.2)
                             st.rerun()
 
-            # -----------------------------------------------------------------
-            # KHỐI HIỂN THỊ GIỎ HÀNG CHỜ LƯU
-            # -----------------------------------------------------------------
+            # GIỎ HÀNG CHỜ LƯU
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
@@ -597,9 +633,7 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-            # -----------------------------------------------------------------
-            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS + EMAIL BACKUP
-            # -----------------------------------------------------------------
+            # THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
                 st.divider()
@@ -657,7 +691,7 @@ def main():
                             # 1. Ghi vào Google Sheet
                             ws.append_rows(rows_to_append)
 
-                            # 2. Gửi Email Backup (Đã chuyển Tổng hóa đơn xuống cuối phần danh sách món)
+                            # 2. Gửi Email Backup
                             noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
@@ -687,12 +721,13 @@ def main():
                                 </div>
                             </div>"""
 
-                            # 4. Cập nhật Session State & Reset giỏ
+                            # 4. BẬT BIẾN HIỆU ỨNG PHÁO HOA ĐỘNG & Reset giỏ
                             st.session_state.update({
                                 "gio_hang": [], 
                                 "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False
+                                "submitting": False,
+                                "just_saved": True
                             })
                             
                             st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
@@ -720,7 +755,7 @@ def main():
             # TAB 2: DOANH THU REALTIME
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-                st.markdown('<div class="the-quan-ly-flat" style="font-size: 20px !important;">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
 
                 try:
                     cl = get_gspread_client()
@@ -757,7 +792,7 @@ def main():
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
-                st.markdown('<div class="the-quan-ly-flat" style="font-size: 20px !important;">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 
                 try:
                     cl = get_gspread_client()
