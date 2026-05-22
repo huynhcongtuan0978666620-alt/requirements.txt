@@ -339,20 +339,19 @@ st.markdown("""
             }
         }
         
-        // HÀM TỰ ĐỘNG BẮN PHÁO HOA GIỮA MÀN HÌNH KHI CHỐT ĐƠN
+        // HÀM TỰ ĐỘNG BẮN PHÁO HOA GIỮA MÀN HÌNH CHUẨN XÁC
         window.triggerAutoBoom = function() {
             const centerX = window.innerWidth / 2;
             const centerY = window.innerHeight / 2;
             const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff'];
             
-            // Tạo 3 cụm pháo nổ liên tiếp
             for (let t = 0; t < 3; t++) {
                 setTimeout(() => {
-                    const offsetIdx = t - 1; // Tạo độ lệch vị trí trái/phải chút xíu
+                    const offsetIdx = t - 1; 
                     const currentX = centerX + (offsetIdx * 80);
                     const currentY = centerY - (t * 40);
                     
-                    for (let i = 0; i < 40; i++) {
+                    for (let i = 0; i < 45; i++) {
                         const particle = document.createElement('div');
                         particle.className = 'firework-particle';
                         particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
@@ -361,14 +360,14 @@ st.markdown("""
                         particle.style.animation = 'explode 0.8s ease-out forwards';
                         
                         const angle = Math.random() * Math.PI * 2;
-                        const velocity = Math.random() * 150 + 50; 
+                        const velocity = Math.random() * 160 + 60; 
                         particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
                         particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
                         document.body.appendChild(particle);
                         
                         setTimeout(() => { particle.remove(); }, 800);
                     }
-                }, t * 250); // Cách nhau 250ms
+                }, t * 200);
             }
         }
     </script>
@@ -475,17 +474,12 @@ def gui_email_backup(noi_dung):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None, "just_saved": False}
+    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None}
     for key, val in init_states.items():
         if key not in st.session_state: 
             st.session_state[key] = val
 
     settings = get_settings()
-
-    # KÍCH HOẠT PHÁO HOA ĐỘNG BẰNG JAVASCRIPT KHI TRANH LƯU XONG
-    if st.session_state.just_saved:
-        st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
-        st.session_state.just_saved = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -563,9 +557,8 @@ def main():
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
-            
-            # ĐƯỢC TÙY CHỈNH THÊM STYLE CỠ CHỮ TRỰC TIẾP
             st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
+            
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -574,12 +567,11 @@ def main():
             with c2: kh_sdt = st.text_input("📞 SĐT khách")
             
             st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            
             box_chon_dv = st.selectbox(
                 "📌 Dịch vụ", 
                 options=dv_list if dv_list else ["Không có dữ liệu"],
                 index=None,
-                placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
+                placeholder="Gõ chữ để tìm nhanh..."
             )
             box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
             
@@ -588,13 +580,13 @@ def main():
             else:
                 if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
-                        st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
+                        st.error("🚫 Vui lòng chọn một dịch vụ cụ thể trước khi thêm!")
                     elif box_sl <= 0:
-                        st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
+                        st.error("Vui lòng chọn số lượng lớn hơn 0!")
                     else:
                         st.session_state.adding_cart = True
                         if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
-                            st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã tồn tại trong giỏ đơn này rồi nhen!")
+                            st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã tồn tại trong giỏ!")
                             st.session_state.adding_cart = False
                         else:
                             info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
@@ -635,7 +627,7 @@ def main():
 
             # THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS
             if t_bill > 0:
-                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
+                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ...")
                 st.divider()
                 
                 col_bill1, col_bill2 = st.columns(2)
@@ -663,6 +655,8 @@ def main():
                     if not st.session_state.submitting:
                         if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
+                                # TUYỆT CHIÊU: PHUN PHÁO HOA NGAY LÚC BẤM NÚT TRÊN TRÌNH DUYỆT TRƯỚC KHI RERUN KHÓA
+                                st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
                                 st.session_state.submitting = True
                                 st.rerun()
                             else: 
@@ -670,6 +664,9 @@ def main():
                     else:
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                         try:
+                            # TIẾP TỤC DUY TRÌ BẮN THÊM TRẬN NỮA KHI ĐANG LOADING
+                            st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
+                            
                             cl = get_gspread_client()
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                             bay_gio = get_now_vn()
@@ -721,24 +718,25 @@ def main():
                                 </div>
                             </div>"""
 
-                            # 4. BẬT BIẾN HIỆU ỨNG PHÁO HOA ĐỘNG & Reset giỏ
+                            # 4. Lưu trạng thái và reset giỏ hàng (BỎ HẲN LỆNH ST.RERUN ĐỂ GIỮ NGUYÊN PHÁO HOA)
                             st.session_state.update({
                                 "gio_hang": [], 
                                 "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False,
-                                "just_saved": True
+                                "submitting": False
                             })
                             
                             st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
-                            time.sleep(0.5)
-                            st.rerun()
+                            
+                            # TRẬN PHÁO HOA CUỐI ĂN MỪNG KHI TOÀN BỘ TIẾN TRÌNH HOÀN TẤT MƯỢT MÀ
+                            st.markdown("<script>window.triggerAutoBoom();</script>", unsafe_allow_html=True)
+                            
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
 
             else:
-                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
+                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
                 st.markdown("---")
@@ -763,11 +761,9 @@ def main():
                     du_lieu = ws_bc.get_all_records()
                     if du_lieu:
                         df_bc = pd.DataFrame(du_lieu)
-                        
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
                         df_hien_thi.index.name = "Stt"
-                        
                         st.dataframe(df_hien_thi, use_container_width=True)
                         
                         ngay_nay = get_now_vn().strftime("%d/%m/%Y")
@@ -786,14 +782,14 @@ def main():
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
-                
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
+                
                 st.write("")
                 if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.rerun()
+                    
                 st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
-                
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
