@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (ĐẠI TIỆC PHÁO HOA LẤP LÁNH 1 PHÚT)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA ĂN MỪNG SIÊU TỐC 0.5S)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -110,22 +110,23 @@ def generate_css_fireworks():
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* --- SIÊU PHÁO HOA HOẠT HÌNH: TUẦN HOÀN TRONG 60 GIÂY --- */
+        /* --- SIÊU PHÁO HOA SIÊU TỐC: BÙNG NỔ TRONG ĐÚNG 0.5 GIÂY RỒI TẮT --- */
         .firework-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 9999999; overflow: hidden;
-            background: rgba(0, 0, 0, 0.02);
+            background: transparent;
         }
         .css-particle {
             position: absolute; width: 6px; height: 6px; border-radius: 50%;
             opacity: 0;
-            animation: explode-mega 2.5s ease-out infinite;
+            /* CHỈNH LẠI CHẠY ĐÚNG 0.5S VÀ CHỈ CHẠY 1 LẦN (ONCE) KHÔNG LẶP LẠI */
+            animation: explode-mega 0.5s ease-out 1 forwards;
         }
         @keyframes explode-mega {
             0% { transform: translate(0, 0) scale(1); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 0.8; }
-            100% { transform: translate(var(--cx), var(--cy)) scale(0.2); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
     </style>
     """
@@ -134,16 +135,18 @@ def generate_css_fireworks():
 def render_fireworks_html():
     colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
     html_particles = '<div class="firework-container">'
-    centers = [(20, 30), (40, 50), (50, 25), (60, 65), (80, 35)]
+    # Cho pháo nổ tập trung ở nửa trên màn hình để không che mất hóa đơn bên dưới
+    centers = [(25, 20), (50, 15), (75, 20)]
     
     for cx, cy in centers:
-        for i in range(100):
+        for i in range(80): # Giảm bớt số hạt để nổ thanh thoát, tinh tế hơn
             angle = random.uniform(0, 2 * 3.14159)
-            distance = random.uniform(80, 320)
+            distance = random.uniform(50, 200)
             target_x = int(math.cos(angle) * distance)
             target_y = int(math.sin(angle) * distance)
             color = random.choice(colors)
-            delay = round(random.uniform(0, 2.2), 2)
+            # Giảm tối đa delay để pháo đồng loạt bung ra cùng một lúc chớp nhoáng
+            delay = round(random.uniform(0, 0.1), 2)
             html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px; animation-delay: {delay}s;"></div>'
             
     html_particles += '</div>'
@@ -157,7 +160,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================================
-# 2. HÀM CORE HỆ THỐNG - TỐI ƯU HOÁ TUYỆT ĐỐI (CHỐNG LỖI QUOTA QUOTA 429)
+# 2. HÀM CORE HỆ THỐNG - TRUY XUẤT AN TOÀN
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -172,7 +175,7 @@ def format_drive_direct_url(link):
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
     return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
 
-@st.cache_data(ttl=1200) # Tăng thời gian lưu cache cấu hình để giảm request đọc
+@st.cache_data(ttl=1200)
 def get_settings():
     try:
         client = get_gspread_client()
@@ -182,7 +185,7 @@ def get_settings():
     except Exception:
         return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN", "SDT": "0947.58.1516"}
 
-@st.cache_data(ttl=900) # Tăng cache danh mục lên 15 phút tránh nghẽn mạch API khi tải lại trang
+@st.cache_data(ttl=900)
 def get_service_data():
     try:
         client = get_gspread_client()
@@ -252,12 +255,13 @@ def main():
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
 
-    # ĐỌC THIẾT LẬP TỪ CACHE (KHÔNG GỌI LẠI GOOGLE SHEET KHI CHƯA HẾT TTL)
     settings = get_settings()
 
-    # HIỂN THỊ PHÁO HOA KHI TRIGGER ĐƯỢC BẬT TRÊN TOÀN GIAO DIỆN
+    # HIỂN THỊ PHÁO HOA SIÊU TỐC TRONG ĐÚNG 0.5S RỒI TỰ TẮT NGẦM KHÔNG CHO LẶP LẠI
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
+        # Hủy kích hoạt trigger ngay lập tức để luồng tương tác tiếp theo màn hình sạch bóng hoàn toàn
+        st.session_state.trigger_boom = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -365,7 +369,7 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-            # THANH TOÁN ĐƠN & ĐỒNG BỘ CHỐNG LỖI 429 QUOTA
+            # THANH TOÁN ĐƠN
             if t_bill > 0:
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ...")
                 st.divider()
@@ -386,7 +390,7 @@ def main():
                     han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để pháo hoa nổ hết.")
+                        st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để tiếp tục đơn mới.")
 
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
@@ -400,7 +404,6 @@ def main():
                         st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ VÀ GIẢM TẢI QUOTA...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
-                            # THAO TÁC THẲNG ĐỂ ĐẨY DATA, KHÔNG GỌI BẤT KỲ LỆNH ĐỌC NÀO TRÁNH LỖI 429
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
                             bay_gio = get_now_vn()
                             ma_hd = f"HD-{bay_gio.strftime('%Y%m%d-%H%M%S')}"
@@ -457,11 +460,7 @@ def main():
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
-            else: 
-                # Nếu giỏ hàng trống và vừa nổ pháo xong, tự tắt trạng thái kích nổ để giải phóng RAM điện thoại
-                if st.session_state.trigger_boom and not st.session_state.bill_vua_in:
-                    st.session_state.trigger_boom = False
-                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
+            else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
                 st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
@@ -474,7 +473,7 @@ def main():
                 st.session_state.clear()
                 st.rerun()
 
-        # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
+        # PHÂN HỆ ADMIN
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
