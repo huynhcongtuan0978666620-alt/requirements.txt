@@ -151,7 +151,7 @@ def generate_css_fireworks():
         .css-particle {
             position: absolute; width: 6px; height: 6px; border-radius: 50%;
             opacity: 0;
-            animation: explode-mega 0.5s ease-out 1 forwards;
+            animation: explode-mega 4.0s ease-out 3 forwards;
         }
         @keyframes explode-mega {
             0% { transform: translate(0, 0) scale(1); opacity: 0; }
