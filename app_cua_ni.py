@@ -103,28 +103,28 @@ def generate_css_fireworks():
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         
-        /* 🔔 ICON CHUYỂN ĐỘNG 1: NẢY HỘP TIỀN THỪA (NHẮC THỐI TIỀN) */
+        /* 🔔 NÚT CHỐT ĐƠN CO GIÃN ĐỘNG (NHẮC ĐỒNG BỘ DỮ LIỆU) */
+        div[data-testid="stButton"] button[kind="primary"] {
+            animation: pulse-button-new 1.5s infinite ease-in-out !important;
+        }
+        @keyframes pulse-button-new {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important; }
+            100% { transform: scale(1); }
+        }
+
+        /* 🔔 HỘP TIỀN THỪA NẢY TƯNG TƯNG (NHẮC THỐI TIỀN) */
         .tien-thua-box { 
             background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; 
             font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; 
-            animation: bounce-steel 1.2s infinite ease-in-out; 
+            animation: bounce-steel 1.2s infinite ease-in-out !important; 
         }
         @keyframes bounce-steel {
             0%, 100% { transform: translateY(0); }
             50% { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2); }
         }
 
-        /* 🔔 ICON CHUYỂN ĐỘNG 2: THÚC GIỤC NÚT CHỐT ĐƠN HÀNG (NHẮC ĐỒNG BỘ DỮ LIỆU) */
-        div[data-testid="stButton"] button:has(div p:contains("CHỐT ĐƠN HÀNG")) {
-            animation: pulse-button 1.5s infinite ease-in-out !important;
-        }
-        @keyframes pulse-button {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important; }
-            100% { transform: scale(1); }
-        }
-
-        /* 🔔 ICON CHUYỂN ĐỘNG 3: LẮC LƯ CẢNH BÁO TRÙNG ĐƠN (HÀNG RÀO THÉP) */
+        /* 🔔 HỘP CẢNH BÁO RUNG LẮC (HÀNG RÀO THÉP CHỐNG TRÙNG) */
         .lsc-shake {
             animation: shake-warn 0.5s infinite linear !important;
         }
@@ -142,7 +142,7 @@ def generate_css_fireworks():
         .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* --- SIÊU PHÁO HOA SIÊU TỐC: BÙNG NỔ TRONG ĐÚNG 0.5 GIÂY RỒI TẮT --- */
+        /* --- SIÊU PHÁO HOA SIÊU TỐC 0.5S --- */
         .firework-container {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             pointer-events: none; z-index: 9999999; overflow: hidden;
@@ -151,7 +151,6 @@ def generate_css_fireworks():
         .css-particle {
             position: absolute; width: 6px; height: 6px; border-radius: 50%;
             opacity: 0;
-            /* CHẠY ĐÚNG 0.5S CHỚP NHOÁNG ĐỂ NHÂN VIÊN KỊP CHỤP MÀN HÌNH */
             animation: explode-mega 0.5s ease-out 1 forwards;
         }
         @keyframes explode-mega {
@@ -411,7 +410,7 @@ def main():
                 kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
                 t_du = kh_tra - t_bill
                 
-                # 🔔 ÁP DỤNG HIỆU ỨNG ICON ĐỘNG 1: NẢY HỘP THỐI TIỀN ĐỂ NHẮC NHỞ KHÔNG QUÊN
+                # HỘP TIỀN THỪA NẢY ĐỘNG KHI CÓ TIỀN THỪA
                 if t_du > 0:
                     st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN MẶT CHO KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
@@ -421,13 +420,13 @@ def main():
                     han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        # 🔔 ÁP DỤNG HIỆU ỨNG ICON ĐỘNG 3: RUNG LẮC CẢNH BÁO ĐỂ NHÂN VIÊN CHÚ Ý HÀNG RÀO THÉP
+                        # HỘP CẢNH BÁO RUNG LẮC CỦA HÀNG RÀO THÉP CHỐNG TRÙNG BẤM
                         st.markdown(f'<div class="lsc-shake" style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 10px; border: 2px solid #ef4444; text-align: center; font-weight: bold; font-size: 14px;">🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để tiếp tục đơn mới.</div>', unsafe_allow_html=True)
 
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                     if not st.session_state.submitting:
-                        # 🔔 NÚT BẤM NÀY ĐÃ ĐƯỢC CHÈN HIỆU ỨNG PULSE TRONG CSS ĐỂ THÚC GIỤC ĐỒNG BỘ
+                        # NÚT BẤM CHỐT ĐƠN CO GIÃN ĐỘNG THEO CSS GỐC
                         if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
                                 st.session_state.submitting = True
