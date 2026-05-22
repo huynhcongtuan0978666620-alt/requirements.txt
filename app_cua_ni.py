@@ -38,7 +38,7 @@ def generate_css_fireworks():
             background-color: transparent !important;
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC ĐỂ TRÁNH NHÂN VIÊN ẤN NHẦM */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -136,10 +136,13 @@ def generate_css_fireworks():
             80% { transform: translate(2px, 1px) rotate(1deg); }
         }
 
-        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
+        /* KHUNG HÓA ĐƠN CHUẨN ĐÃ ĐƯỢC TỐI ƯU HIỂN THỊ CHỐNG TRÀN CHỮ */
+        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 20px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
-        .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
+        
+        /* ĐÃ SỬA: BỎ NOWRAP ĐỂ DÒNG DỊCH VỤ TỰ ĐỘNG XUỐNG HÀNG THÔNG MINH KHI TÊN QUÁ DÀI */
+        .hd-row { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; gap: 10px !important; margin-bottom: 8px !important; font-size: 13px !important; width: 100% !important; flex-wrap: wrap !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
         /* --- SIÊU PHÁO HOA SIÊU TỐC 0.5S --- */
@@ -450,6 +453,7 @@ def main():
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
+                                # CHỈNH SỬA TẠI ĐÂY: GÀI STYLE LINH HOẠT CHỐNG TRÀN CHỮ CHO TỪNG DÒNG DỊCH VỤ VÀO ĐƠN HÀNG IN RA
                                 html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
@@ -467,15 +471,15 @@ def main():
                                     <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                                 </div>
                                 <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
-                                    <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
-                                    <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
-                                    <div class="hd-row"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
                                 <div style="font-size: 14px; font-weight: bold;">
-                                    <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
-                                    <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
-                                    <div class="hd-row" style="color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
                                 </div>
                                 <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
                                     {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
@@ -558,7 +562,7 @@ def main():
                                 st.success(f"Đã tạo tài khoản cho {new_name}!")
                                 st.cache_data.clear()
                                 time.sleep(0.5)
-                                st.rerun()
+                                rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
                     
                     st.write("📋 **Danh sách nhân sự:**")
