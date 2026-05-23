@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & ICON ĐIỀU HƯỚNG ĐỘNG)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & BÓNG BAY ĐỘNG)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -22,7 +22,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-def generate_css_fireworks():
+def generate_css_animations():
     css_animation = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
@@ -103,17 +103,13 @@ def generate_css_fireworks():
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         
-        /* 🔔 NÚT CHỐT ĐƠN CO GIÃN ĐỘNG */
-        div[data-testid="stButton"] button[kind="primary"] {
-            animation: pulse-button-new 1.5s infinite ease-in-out !important;
-        }
+        div[data-testid="stButton"] button[kind="primary"] { animation: pulse-button-new 1.5s infinite ease-in-out !important; }
         @keyframes pulse-button-new {
             0% { transform: scale(1); }
             50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important; }
             100% { transform: scale(1); }
         }
 
-        /* 🔔 HỘP TIỀN THỪA NẢY TƯNG TƯNG */
         .tien-thua-box { 
             background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; 
             font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; 
@@ -124,10 +120,7 @@ def generate_css_fireworks():
             50% { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2); }
         }
 
-        /* 🔔 HỘP CẢNH BÁO RUNG LẮC */
-        .lsc-shake {
-            animation: shake-warn 0.5s infinite linear !important;
-        }
+        .lsc-shake { animation: shake-warn 0.5s infinite linear !important; }
         @keyframes shake-warn {
             0%, 100% { transform: translate(0, 0) rotate(0deg); }
             20% { transform: translate(-2px, 1px) rotate(-1deg); }
@@ -136,7 +129,6 @@ def generate_css_fireworks():
             80% { transform: translate(2px, 1px) rotate(1deg); }
         }
 
-        /* KHUNG HÓA ĐƠN CO GIÃN HIỂN THỊ PHẲNG CHỐNG NUỐT CHỮ */
         .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 20px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
@@ -146,32 +138,41 @@ def generate_css_fireworks():
         .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: bold !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* --- SIÊU PHÁO HOA SIÊU TỐC 0.5S --- */
-        .firework-container {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            pointer-events: none; z-index: 9999999; overflow: hidden;
-            background: transparent;
-        }
-        .css-particle {
-            position: absolute; width: 6px; height: 6px; border-radius: 50%;
-            opacity: 0;
-            animation: explode-mega 4.0s ease-out 3 forwards;
-        }
+        /* 🎆 1. HIỆU ỨNG PHÁO HOA CHỐT ĐƠN */
+        .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
+        .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
         @keyframes explode-mega {
             0% { transform: translate(0, 0) scale(1); opacity: 0; }
             20% { opacity: 1; }
             80% { opacity: 0.8; }
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
+
+        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP (NEW!) */
+        .balloon-container { position: fixed; bottom: -100px; left: 0; width: 100vw; height: 110vh; pointer-events: none; z-index: 999998; overflow: hidden; background: transparent; }
+        .css-balloon { 
+            position: absolute; width: 50px; height: 62px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
+            opacity: 0.85; animation: fly-up-sky 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; 
+        }
+        /* Đuôi dây bóng */
+        .css-balloon::after { 
+            content: "🎈"; position: absolute; bottom: -12px; left: 14px; font-size: 10px; opacity: 0.5;
+        }
+        @keyframes fly-up-sky {
+            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.9; }
+            90% { opacity: 0.9; }
+            100% { transform: translateY(-120vh) rotate(var(--rot)); opacity: 0; }
+        }
     </style>
     """
     return css_animation
 
+# Hàm kết xuất pháo hoa
 def render_fireworks_html():
     colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
     html_particles = '<div class="firework-container">'
     centers = [(25, 20), (50, 15), (75, 20)]
-    
     for cx, cy in centers:
         for i in range(80): 
             angle = random.uniform(0, 2 * 3.14159)
@@ -181,11 +182,37 @@ def render_fireworks_html():
             color = random.choice(colors)
             delay = round(random.uniform(0, 0.1), 2)
             html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px; animation-delay: {delay}s;"></div>'
-            
     html_particles += '</div>'
     return html_particles
 
-st.markdown(generate_css_fireworks(), unsafe_allow_html=True)
+# Hàm kết xuất bóng bay (MỚI!)
+def render_balloons_html():
+    colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
+    html_balloons = '<div class="balloon-container">'
+    for i in range(45): # Số lượng 45 quả bóng bay đồng loạt
+        left_pos = random.uniform(5, 95) # Rải đều chiều ngang màn hình
+        color = random.choice(colors)
+        delay = round(random.uniform(0.0, 1.2), 2) # Thời gian bay lệch nhau chút cho tự nhiên
+        size_ratio = random.uniform(0.7, 1.4) # Bóng to bóng nhỏ sinh động
+        rotation = random.randint(-25, 25) # Độ nghiêng bóng khi bay lên
+        
+        width = int(50 * size_ratio)
+        height = int(62 * size_ratio)
+        
+        html_balloons += f"""
+        <div class="css-balloon" style="
+            background-color: {color}; 
+            left: {left_pos}vw; 
+            width: {width}px; 
+            height: {height}px; 
+            animation-delay: {delay}s; 
+            --rot: {rotation}deg;
+            box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
+        "></div>"""
+    html_balloons += '</div>'
+    return html_balloons
+
+st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
 <div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
@@ -263,14 +290,11 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
-# ĐÃ SỬA: ĐỒNG BỘ MÚI GIỜ VIỆT NAM CHO EMAIL BACKUP
 def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
         receiver_email = "huynhcongtuan0978666620@gmail.com"
-        
-        # Lấy giờ Việt Nam chính xác cho tiêu đề Email
         gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
         
         msg = MIMEMultipart()
@@ -289,26 +313,41 @@ def gui_email_backup(noi_dung):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None, "trigger_boom": False}
+    # Thêm biến trigger_balloons vào khởi tạo bộ nhớ trạng thái app
+    init_states = {
+        "last_submit": None, "submit_count": 0, "submitting": False, 
+        "adding_cart": False, "logged_in": False, "role": None, 
+        "full_name": None, "gio_hang": [], "bill_vua_in": None, 
+        "trigger_boom": False, "trigger_balloons": False
+    }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
 
     settings = get_settings()
 
+    # Kích hoạt pháo hoa chốt đơn nếu có lệnh hiệu ứng
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
         st.session_state.trigger_boom = False
+
+    # Kích hoạt bóng bay đăng nhập nếu có lệnh hiệu ứng (MỚI!)
+    if st.session_state.trigger_balloons:
+        st.markdown(render_balloons_html(), unsafe_allow_html=True)
+        st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
-                    st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
+                    st.session_state.update({
+                        "logged_in": True, "role": "Admin", 
+                        "full_name": "Chủ Tiệm", "trigger_balloons": True # Bật bóng bay
+                    })
                     st.rerun()
                 else:
                     raw_data = get_nhan_vien_data()
@@ -330,7 +369,10 @@ def main():
                                     
                         if found_row:
                             ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
-                            st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
+                            st.session_state.update({
+                                "logged_in": True, "role": "NhanVien", 
+                                "full_name": ten_that, "trigger_balloons": True # Bật bóng bay
+                            })
                             st.success(f"Chào mừng {ten_that}!")
                             time.sleep(0.5)
                             st.rerun()
@@ -464,7 +506,6 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             
-                            # Đã sửa: Sử dụng đúng mốc thời gian bay_gio (Asia/Ho_Chi_Minh) trong nội dung mail
                             noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nThời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
