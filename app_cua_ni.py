@@ -332,18 +332,24 @@ def gui_email_backup(noi_dung):
     except Exception as e: print(f"Lỗi gửi mail: {e}")
 
 # =====================================================================
-# 新規 THÊM HÀM GỬI THÔNG BÁO QUA TELEGRAM BOT REALTIME
+# THÊM HÀM GỬI THÔNG BÁO QUA TELEGRAM BOT REALTIME
 # =====================================================================
 def gui_telegram_notification(noi_dung):
     try:
-        if "telegram" in st.secrets:
-            bot_token = st.secrets["telegram"]["bot_token"]
-            chat_id = st.secrets["telegram"]["chat_id"]
-            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-            payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
-            requests.post(url, json=payload, timeout=10)
-    except Exception as e:
-        print(f"Lỗi bắn Telegram: {e}")
+        bot_token = st.secrets["telegram"]["bot_token"]
+        chat_id = st.secrets["telegram"]["chat_id"]
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
+        
+        # Thêm biến response để kiểm tra
+        response = requests.post(url, json=payload, timeout=10)
+        
+        # Nếu response trả về lỗi, nó sẽ in ra màn hình app cho ní thấy
+        if response.status_code != 200:
+            st.error(f"Telegram lỗi: {response.text}")
+    except Exception as e: 
+        st.error(f"Lỗi kết nối Telegram: {str(e)}")
+
     
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
