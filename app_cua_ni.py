@@ -11,7 +11,6 @@ import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
-import streamlit.components.v1 as components
 
 # =====================================================================
 # 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & GIAO DIỆN)
@@ -139,7 +138,7 @@ def generate_css_animations():
         .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: bold !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* 🎆 1. HIỆU ỨNG PHÁO HOA CHỐT ĐƠN */
+        /* 🎆 HIỆU ỨNG PHÁO HOA CHỐT ĐƠN */
         .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
         .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
         @keyframes explode-mega {
@@ -169,7 +168,7 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay lững lờ so le (ĐÃ SỬA ĐỔI MỚI NHẤT BẰNG JAVASCRIPT)
+# Hàm kết xuất bóng bay lững lờ so le (ĐÃ FIX KHÔNG BỊ MẤT TIÊU)
 def render_balloons_html():
     js_balloon_script = """
     <div id="js-balloon-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent;"></div>
@@ -203,13 +202,21 @@ def render_balloons_html():
 
     <script>
         (function() {
+            if (window.balloonScriptActive) return;
+            window.balloonScriptActive = true;
+
             const container = document.getElementById('js-balloon-container');
+            if (!container) return;
+
             const colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc'];
             let balloonCount = 0;
             const maxBalloons = 45; 
 
             function createSingleBalloon() {
-                if (balloonCount >= maxBalloons) return;
+                if (balloonCount >= maxBalloons) {
+                    window.balloonScriptActive = false;
+                    return;
+                }
                 
                 const balloon = document.createElement('div');
                 balloon.className = 'js-balloon';
@@ -217,7 +224,7 @@ def render_balloons_html():
                 const leftPos = Math.random() * 90 + 5; 
                 const color = colors[Math.floor(Math.random() * colors.length)];
                 const sizeRatio = Math.random() * 0.6 + 0.7; 
-                const duration = Math.random() * 2.5 + 3.5;  // Thời gian bay so le từ 3.5s đến 6s
+                const duration = Math.random() * 2.5 + 3.5;  
                 const rotation = Math.floor(Math.random() * 40) - 20; 
                 
                 const width = Math.floor(50 * sizeRatio);
@@ -233,8 +240,7 @@ def render_balloons_html():
                 container.appendChild(balloon);
                 balloonCount++;
                 
-                // Thả lệch nhau từ 100ms đến 250ms để tạo dòng bong bóng tự nhiên
-                const nextDelay = Math.random() * 150 + 100;
+                const nextDelay = Math.random() * 170 + 80;
                 setTimeout(createSingleBalloon, nextDelay);
                 
                 setTimeout(() => { balloon.remove(); }, duration * 1000);
@@ -244,7 +250,7 @@ def render_balloons_html():
         })();
     </script>
     """
-    return components.html(js_balloon_script, height=0, width=0)
+    st.markdown(js_balloon_script, unsafe_allow_html=True)
 
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
@@ -363,7 +369,7 @@ def main():
         st.session_state.trigger_boom = False
 
     if st.session_state.trigger_balloons:
-        render_balloons_html()  # Gọi hàm JS trực tiếp kết xuất ra giao diện
+        render_balloons_html()  
         st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
