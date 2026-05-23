@@ -591,7 +591,7 @@ def main():
                                 f"♥️ SALON KIM HIỀN\n"
                                 f"♥️ Zalo: 0947.58.1516\n"
                                 f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
-                                f"♥️ Cảm Ơn Quý Khách\n"
+                                f"♥️ Cảm Ơn Quý Khách.\n"
                             )
                             gui_email_backup(noi_dung_mail)
 
@@ -617,7 +617,7 @@ def main():
                                 f"♥️ SALON KIM HIỀN\n"
                                 f"♥️ Zalo: 0947.58.1516\n"
                                 f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
-                                f"♥️ Cảm Ơn Quý Khách\n"
+                                f"♥️ Cảm Ơn Quý Khách.\n"
                             )
                             gui_telegram_notification(noi_dung_tele)
 
