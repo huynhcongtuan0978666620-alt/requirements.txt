@@ -37,17 +37,25 @@ def generate_css_animations():
 
         .stApp {
             padding-top: 75px !important; 
-            padding-bottom: 60px !important;
+            padding-bottom: 75px !important; /* Tăng khoảng cách đáy để không bị cấn nút */
             background-color: transparent !important;
             overscroll-behavior-y: contain !important; /* Bảo vệ lớp bọc nội bộ Streamlit */
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC ĐỂ TRÁNH NHÂN VIÊN ẤN NHẦM */
+        /* 🚫 DIỆT TẬN GỐC THANH "MANAGE APP" VÀ TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
+        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"] {
             display: none !important; 
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        }
+
+        /* Khóa cứng dòng "Manage app" dưới đáy màn hình điện thoại */
+        div[class^="StyledViewerBottomBar"] {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
         }
 
         .the-quan-ly-flat {
@@ -65,12 +73,16 @@ def generate_css_animations():
             z-index: 999999 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
         }
         
+        /* ĐÃ SỬA LỆCH TRÁI THEO Ý NÍ */
         .banner-bottom { 
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
             background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
-            letter-spacing: 1px !important; display: flex !important; align-items: center !important; z-index: 99999 !important;
+            letter-spacing: 1px !important; z-index: 999999 !important; 
             bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; 
-            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; justify-content: flex-start !important; padding-left: 20px !important; 
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
+            display: flex !important; align-items: center !important; 
+            justify-content: flex-start !important; /* Đẩy chữ lệch sang bên trái */
+            padding-left: 15px !important; /* Tạo khoảng đệm cách mép trái màn hình */
         }
 
         .bang-hieu-lktv {
@@ -105,6 +117,8 @@ def generate_css_animations():
         button[data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border: none !important; outline: none !important; box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; }
 
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+        .chiet-khau-box { background-color: #fee2e2; color: #b91c1c; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #ef4444; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
+        .khach-tra-box { background-color: #d1fae5; color: #065f46; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #059669; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         
         div[data-testid="stButton"] button[kind="primary"] { animation: pulse-button-new 1.5s infinite ease-in-out !important; }
@@ -346,6 +360,7 @@ def main():
             st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
+            
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
                     st.session_state.update({
@@ -382,6 +397,15 @@ def main():
                             st.rerun()
                         else: st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                     else: st.error("Lỗi dữ liệu cổng Nhân Viên!")
+        
+        st.write("") 
+        col_reload1, col_reload2 = st.columns([4, 6])
+        with col_reload1:
+            if st.button("🔄 TẢI LẠI APP", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
+        with col_reload2:
+            st.caption("💡 *Nếu app bị đứng hình hoặc lag mạng, bấm nút kế bên để làm mới nhé ní!*")
 
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
@@ -451,21 +475,33 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-            # THANH TOÁN ĐƠN
+            # THANH TOÁN ĐƠN & KHU VỰC THU NGÂN (CHIẾT KHẤU)
             if t_bill > 0:
-                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ...")
                 st.divider()
+                st.markdown("### 🧮 PHÂN HỆ THU NGÂN (TÍNH TOÁN CHIẾT KHẤU)")
                 
-                col_bill1, col_bill2 = st.columns(2)
-                with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
-                with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
+                tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0, help="Điền chính xác số tiền muốn giảm thẳng cho khách. Ví dụ: 10000, 20000...")
+                t_khach_tra = max(0.0, t_bill - tien_giam)
+                
+                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, giảm giá khai trương...")
+                st.write("")
+                
+                col_bill1, col_bill2, col_bill3 = st.columns(3)
+                with col_bill1: 
+                    st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill2: 
+                    st.markdown(f'<div class="nhan-tieu-de" style="color: #b91c1c;">🎁 Chiết Khấu</div><div class="chiet-khau-box">{tien_giam:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill3: 
+                    st.markdown(f'<div class="nhan-tieu-de" style="color: #065f46;">🔥 Khách Phải Trả</div><div class="khach-tra-box">{t_khach_tra:,.0f} đ</div>', unsafe_allow_html=True)
+                
+                st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563; margin-top:15px;">🛠️ Tiền công thợ tổng: <b>{t_cong_tho:,.0f} đ</b></div>', unsafe_allow_html=True)
                 
                 st.write("")
-                kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
-                t_du = kh_tra - t_bill
+                kh_dua = st.number_input("💵 Tiền khách đưa thực tế", 0.0, value=float(t_khach_tra))
+                t_du = kh_dua - t_khach_tra
                 
                 if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN KHÁCH DƯ: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN THỐI LẠI KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state.last_submit:
@@ -499,7 +535,7 @@ def main():
                                 rows_to_append.append([
                                     bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
-                                    bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
+                                    bay_gio.strftime("%H:%M:%S"), f"[Chiết khấu đơn: {tien_giam:,.0f}đ] " + ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
                                 html_items += f"""
                                 <div class="hd-row-item">
@@ -510,7 +546,21 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             
-                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nThời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
+                            noi_dung_mail = (
+                                f"Mã hóa đơn: {ma_hd}\n"
+                                f"Thời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                                f"Khách hàng: {kh_ten}\n"
+                                f"SĐT: {kh_sdt}\n"
+                                f"Nhân viên thực hiện: {st.session_state.full_name}\n"
+                                f"Ghi chú: {ghi_chu}\n\n"
+                                f"Chi tiết dịch vụ:{chi_tiet_mail}\n\n"
+                                f"========================================\n"
+                                f"💰 TỔNG TIỀN DỊCH VỤ: {t_bill:,.0f}đ\n"
+                                f"🎁 CHIẾT KHẤU KHÁCH HÀNG: -{tien_giam:,.0f}đ\n"
+                                f"🔥 TỔNG THỰC TẾ KHÁCH PHẢI TRẢ: {t_khach_tra:,.0f}đ\n"
+                                f"💵 Khách đưa: {kh_dua:,.0f}đ | Thối lại: {t_du:,.0f}đ\n"
+                                f"🛠️ Tổng tiền công thợ: {t_cong_tho:,.0f}đ"
+                            )
                             gui_email_backup(noi_dung_mail)
 
                             st.session_state.bill_vua_in = f"""
@@ -528,10 +578,14 @@ def main():
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
+                                <div style="font-size: 13px; border-bottom: 1px dashed #111111; padding-bottom: 8px; margin-bottom: 8px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Tổng tiền gốc:</span> <span>{t_bill:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 6px; color: #b91c1c; font-weight: bold;"><span>Chiết khấu khách hàng:</span> <span>-{tien_giam:,.0f} đ</span></div>
+                                </div>
                                 <div style="font-size: 14px; font-weight: bold;">
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #065f46; font-size: 15px;"><span>TỔNG TIỀN PHẢI TRẢ:</span> <span>{t_khach_tra:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_dua:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #4b5563; font-weight: normal; font-size: 13px;"><span>Tiền thối lại:</span> <span>{t_du:,.0f} đ</span></div>
                                 </div>
                                 <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
                                     {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
@@ -551,9 +605,9 @@ def main():
             else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
-                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP THU NGÂN!")
                 st.markdown("---")
-                st.markdown("### 🧾 HOÁ ĐƠN (Chụp màn hình gửi khách)")
+                st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN (Có chiết khấu)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
