@@ -6,12 +6,14 @@ from datetime import datetime
 import pytz
 import time
 import re
+import random
+import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS THỜI TRANG HIGH-END (LUXURY FLAT)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (KHÓA RE-LOAD & BÓNG BAY SO LE)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -20,24 +22,27 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-st.markdown("""
+def generate_css_animations():
+    css_animation = """
     <style>
-        /* -----------------------------------------------------------------
-            1. ĐỒNG BỘ FONT CHỮ & NỀN TẢNG HỆ THỐNG
-        ----------------------------------------------------------------- */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
-        html, body, [class*="css"], .stApp, div, span, p, h1, h2, h3, h4, h5, h6, input, button, select, textarea {
-            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
+        /* 🚫 KHÓA CHẾT TÍNH NĂNG KÉO ĐỂ TẢI LẠI TRANG (PULL-TO-REFRESH) VÀ TRÀN MÀN HÌNH CHROME/SAFARI */
+        html, body {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
+            background-color: #f8f9fa !important;
+            overscroll-behavior-y: contain !important; 
+            overscroll-behavior: contain !important;
         }
 
         .stApp {
             padding-top: 75px !important; 
             padding-bottom: 60px !important;
-            background-color: #f8f9fa !important;
+            background-color: transparent !important;
+            overscroll-behavior-y: contain !important; /* Bảo vệ lớp bọc nội bộ Streamlit */
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG */
+        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC ĐỂ TRÁNH NHÂN VIÊN ẤN NHẦM */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
             display: none !important; 
@@ -45,113 +50,33 @@ st.markdown("""
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
-        /* -----------------------------------------------------------------
-            2. HỆ THỐNG HIỆU ỨNG KHỐI HỘP TÍNH TIỀN & CHỈ DẪN FLAT PREMIUM
-        ----------------------------------------------------------------- */
         .the-quan-ly-flat {
-            background-color: #ffffff !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            border-left: 6px solid #7d8f15 !important;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-            text-align: center !important;
-            font-weight: 700 !important;
-            font-size: 14px !important;
-            margin-bottom: 20px !important;
+            background-color: #ffffff !important; padding: 15px !important; border-radius: 12px !important;
+            border-left: 6px solid #7d8f15 !important; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+            text-align: center !important; font-weight: 700 !important; font-size: 14px !important; margin-bottom: 20px !important;
         }
         
-        .nhan-tieu-de {
-            font-size: 13px !important;
-            font-weight: 700 !important;
-            margin-bottom: 5px !important;
-            text-transform: uppercase !important;
-        }
+        .nhan-tieu-de { font-size: 13px !important; font-weight: 700 !important; margin-bottom: 5px !important; text-transform: uppercase !important; }
 
-        .tong-don-box {
-            background-color: #fef3c7 !important;
-            color: #b45309 !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 24px !important;
-            font-weight: 900 !important;
-            border: 2px dashed #fde68a !important;
-        }
-
-        .cong-tho-box {
-            background-color: #f3f4f6 !important;
-            color: #1f2937 !important;
-            padding: 15px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 24px !important;
-            font-weight: 900 !important;
-            border: 2px dashed #e5e7eb !important;
-        }
-
-        .tien-thua-box {
-            background-color: #059669 !important;
-            color: #ffffff !important;
-            padding: 12px !important;
-            border-radius: 12px !important;
-            text-align: center !important;
-            font-size: 16px !important;
-            font-weight: 700 !important;
-            margin-top: 15px !important;
-            box-shadow: 0 4px 10px rgba(5, 150, 105, 0.3) !important;
-        }
-
-        /* -----------------------------------------------------------------
-           4. KHỐI BANNER CỐ ĐỊNH ĐỈNH & ĐÁY (ĐÃ SỬA VỊ TRÍ MOBILE)
-        ----------------------------------------------------------------- */
         .banner-top {
-            position: fixed !important; 
-            left: 0 !important; 
-            right: 0 !important; 
-            top: 0px !important; 
-            height: 48px !important;
-            background: #111111 !important; 
-            color: #f1c40f !important;
-            font-size: 15px !important; 
-            font-weight: 800 !important; 
-            letter-spacing: 1px !important;
-            display: flex !important; 
-            align-items: center !important; 
-            justify-content: center !important; 
-            cursor: pointer !important; 
-            user-select: none !important; 
-            z-index: 999999 !important; 
-            border-bottom: 3px solid #7d8f15 !important;
-            box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
-            -webkit-tap-highlight-color: transparent;
+            position: fixed !important; left: 0 !important; right: 0 !important; top: 0px !important; height: 48px !important;
+            background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
+            letter-spacing: 1px !important; display: flex !important; align-items: center !important; justify-content: center !important; 
+            z-index: 999999 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
         }
         
         .banner-bottom { 
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
-            background: #111111 !important; color: #f1c40f !important;
-            font-size: 15px !important; font-weight: 800 !important; letter-spacing: 1px !important;
-            display: flex !important; align-items: center !important; 
-            cursor: pointer !important; user-select: none !important; z-index: 99999 !important;
-            bottom: 0 !important; 
-            top: auto !important;
-            border-top: 3px solid #7d8f15 !important; 
-            border-bottom: none !important;
-            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
-            justify-content: flex-start !important; 
-            padding-left: 20px !important; 
-            -webkit-tap-highlight-color: transparent;
+            background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
+            letter-spacing: 1px !important; display: flex !important; align-items: center !important; z-index: 99999 !important;
+            bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; 
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; justify-content: flex-start !important; padding-left: 20px !important; 
         }
 
-        .firework-particle { position: fixed !important; width: 6px; height: 6px; border-radius: 50%; pointer-events: none !important; z-index: 100000 !important; }
-
-        /* -----------------------------------------------------------------
-           5. BẢNG HIỆU ĐIỆN TỬ CỦA TIỆM (LUXURY GLOW)
-        ----------------------------------------------------------------- */
         .bang-hieu-lktv {
             text-align: center; margin-bottom: 25px !important; padding: 25px !important; border-radius: 24px !important;
             background: linear-gradient(135deg, #111827 0%, #1f2937 100%) !important;
-            color: white !important; box-shadow: 0px 15px 35px rgba(0,0,0,0.25) !important; 
-            border: 1px solid rgba(255, 255, 255, 0.08) !important;
+            color: white !important; box-shadow: 0px 15px 35px rgba(0,0,0,0.25) !important; border: 1px solid rgba(255, 255, 255, 0.08) !important;
         }
         .logo-img { 
             width: 110px !important; height: 110px !important; object-fit: cover !important; border-radius: 50% !important; 
@@ -162,187 +87,147 @@ st.markdown("""
         .thong-tin-phu { font-size: 12px !important; color: #9ca3af !important; margin: 5px 0 !important; font-weight: 400; }
         .slogan { font-size: 15px !important; color: #f1c40f !important; font-weight: 600 !important; font-style: italic !important; margin-top: 15px !important; border-top: 1px solid rgba(255,255,255,0.1) !important; padding-top: 12px !important; }
         
-        /* -----------------------------------------------------------------
-           4. ĐIỀU CHỈNH TABS THỜI TRANG CAO CẤP
-        ----------------------------------------------------------------- */
-        .stTabs [data-baseweb="tab-list"] { display: flex; justify-content: center; gap: 12px; width: 100%; border-bottom: 2px solid #e5e7eb; }
-        .stTabs [data-baseweb="tab"] { flex: 1; height: 54px; background-color: #f3f4f6; border-radius: 14px 14px 0 0; border: 1px solid #e5e7eb; transition: all 0.2s ease; }
-        .stTabs [data-baseweb="tab"] p { color: #4b5563 !important; font-weight: 700 !important; font-size: 15px; text-align: center; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] { background-color: #111827 !important; border-color: #111827; }
-        .stTabs [data-baseweb="tab"][aria-selected="true"] p { color: #f1c40f !important; }
+        [data-testid="stTabs"] [role="tablist"] div { height: 0px !important; background-color: transparent !important; border: none !important; }
+        [data-testid="stTabs"] [role="tablist"] { display: flex !important; width: 100% !important; justify-content: center !important; align-items: center !important; gap: 6px !important; padding: 0 !important; margin: 0 auto 15px auto !important; }
 
-        /* KHỐI THÈ HƯỚNG DẪN FLAT PANEL CÓ CHỨA TEXT CHỈ DẪN */
-        .the-quan-ly-flat {
-            background: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            border-left: 6px solid #7d8f15 !important;
-            padding: 14px 16px !important;
-            border-radius: 12px !important;
-            font-size: 14px !important;
-            font-weight: 700 !important;
-            color: #1e293b !important; 
-            margin-top: 10px !important;
-            margin-bottom: 15px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            text-align: center !important; 
-        }
-
-        /* KHỬ TUYỆT ĐỐI ĐƯỜNG VIỀN ĐỎ CAM CHẠY THEO DƯỚI CHÂN CÁC TAB */
-        [data-testid="stTabs"] [role="tablist"] div {
-            height: 0px !important;
-            background-color: transparent !important;
-            border: none !important;
-        }
-
-        /* ÉP THANH CHỨA TAB CHẠY HẾT 100% CHIỀU NGANG, KHÔNG ĐỂ TRỐNG */
-        [data-testid="stTabs"] [role="tablist"] {
-            display: flex !important;
-            width: 100% !important;
-            justify-content: space-between !important;
-            gap: 4px !important; 
-        }
-
-        /* CẤU HÌNH NÚT TAB: CHIA ĐỀU MÀN HÌNH VÀ CĂN CHỮ CHÍNH GIỮA */
         button[data-baseweb="tab"] {
-            flex: 1 1 0% !important; 
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important; 
-            text-align: center !important;
-            background-color: #f1f3f5 !important; 
-            color: #495057 !important; 
-            border-radius: 8px !important; 
-            padding: 10px 4px !important; 
-            font-size: 13px !important; 
-            border: none !important; 
-            outline: none !important;
-            white-space: nowrap !important; 
-            transition: all 0.2s ease-in-out !important;
+            flex: 1 1 100% !important; height: 54px !important; display: flex !important; align-items: center !important;
+            justify-content: center !important; text-align: center !important; background-color: #e2e8f0 !important; 
+            border-radius: 10px !important; padding: 10px 4px !important; border: none !important; outline: none !important;
+            white-space: nowrap !important; transition: all 0.2s ease-in-out !important;
         }
 
-        /* ÉP THANH CHỨA TAB DÀN HÀNG NGANG KHÍT 100% KHUNG HÌNH */
-        [data-testid="stTabs"] [role="tablist"] {
-            display: flex !important;
-            width: 100% !important;
-            justify-content: center !important;
-            align-items: center !important;
-            gap: 6px !important; 
-            padding: 0 !important;
-            margin: 0 auto 15px auto !important;
+        button[data-baseweb="tab"] p, button[data-baseweb="tab"] span, button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
+            color: #334155 !important; font-size: 16px !important; font-weight: 700 !important; text-align: center !important;
+            justify-content: center !important; align-items: center !important; display: flex !important; margin: 0 auto !important; width: 100% !important;
         }
 
-        /* ĐỘ LẠI NÚT TAB: ÉP TOÀN BỘ CÁC LỚP THẺ PHẢI CĂN GIỮA TUYỆT ĐỐI */
-        button[data-baseweb="tab"] {
-            flex: 1 1 100% !important; 
-            height: 54px !important; 
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important; 
-            text-align: center !important;
-            background-color: #e2e8f0 !important; 
-            border-radius: 10px !important; 
-            padding: 10px 4px !important; 
-            border: none !important; 
-            outline: none !important;
-            white-space: nowrap !important; 
-            transition: all 0.2s ease-in-out !important;
-        }
+        button[data-baseweb="tab"][aria-selected="true"] { background-color: #f1c40f !important; border: none !important; outline: none !important; box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; }
 
-        /* THẦN CHÚ DIỆT LỆCH KHUNG: ÉP TẤT CẢ THẺ CHỮ CON PHẢI RA GIỮA */
-        button[data-baseweb="tab"] p, 
-        button[data-baseweb="tab"] span, 
-        button[data-baseweb="tab"] div[data-testid="stMarkdownContainer"] {
-            color: #334155 !important; 
-            font-size: 16px !important; 
-            font-weight: 700 !important; 
-            text-align: center !important;
-            justify-content: center !important;
-            align-items: center !important;
-            display: flex !important;
-            margin: 0 auto !important; 
-            width: 100% !important;
-        }
-
-        /* HIỆU ỨNG KHI ẤN CHỌN TAB: NỀN VÀNG RỰC RỠ - CHỮ ĐEN MUN SÁNG BỪNG */
-        button[data-baseweb="tab"][aria-selected="true"] {
-            background-color: #f1c40f !important; 
-            border: none !important;
-            outline: none !important;
-            box-shadow: 0 4px 12px rgba(241, 196, 15, 0.4) !important; 
-        }
-        
-        button[data-baseweb="tab"][aria-selected="true"] p,
-        button[data-baseweb="tab"][aria-selected="true"] span,
-        button[data-baseweb="tab"][aria-selected="true"] div[data-testid="stMarkdownContainer"] {
-            color: #000000 !important; 
-            font-weight: 900 !important; 
-            font-size: 16px !important;
-        }
-
-        button[data-baseweb="tab"]:focus, button[data-baseweb="tab"]:active, button[data-baseweb="tab"]:hover {
-            border: none !important;
-            outline: none !important;
-        }
-
-        .khung-noi-dung-mo-rong {
-            background-color: #ffffff !important;
-            border: 1px solid #e2e8f0 !important;
-            padding: 20px !important;
-            border-radius: 16px !important;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.03) !important;
-            margin-bottom: 25px !important;
-        }
-        
-        /* -----------------------------------------------------------------
-           8. CÁC KHỐI HIỂN THỊ TIỀN TỆ TRỰC QUAN
-        ----------------------------------------------------------------- */
         .tong-don-box { background-color: #fef3c7; color: #b45309; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #d97706; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
         .cong-tho-box { background-color: #f3f4f6; color: #1f2937; padding: 16px; border-radius: 16px; text-align: center; border: 3px dashed #4b5563; font-size: 24px; font-weight: 900; box-shadow: 0px 4px 10px rgba(0,0,0,0.02); }
-        .tien-thua-box { background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; animation: pulse-steel 2.5s infinite; }
-        @keyframes pulse-steel { 0% {transform: scale(1); box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4);} 70% {transform: scale(1.02); box-shadow: 0 0 0 12px rgba(5, 150, 105, 0);} 100% {transform: scale(1);} }
+        
+        div[data-testid="stButton"] button[kind="primary"] { animation: pulse-button-new 1.5s infinite ease-in-out !important; }
+        @keyframes pulse-button-new {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); box-shadow: 0 0 15px rgba(241, 196, 15, 0.6) !important; }
+            100% { transform: scale(1); }
+        }
 
-        /* -----------------------------------------------------------------
-           9. PHÔI HÓA ĐƠN LKTV CHUẨN IN (VINTAGE WHITE)
-        ----------------------------------------------------------------- */
-        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 25px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; position: relative; }
+        .tien-thua-box { 
+            background-color: #d1fae5; color: #065f46; padding: 22px; border-radius: 16px; text-align: center; 
+            font-size: 26px; font-weight: 900; border: 3px dashed #059669; margin: 20px 0; 
+            animation: bounce-steel 1.2s infinite ease-in-out !important; 
+        }
+        @keyframes bounce-steel {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); box-shadow: 0 10px 20px rgba(5, 150, 105, 0.2); }
+        }
+
+        .lsc-shake { animation: shake-warn 0.5s infinite linear !important; }
+        @keyframes shake-warn {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            20% { transform: translate(-2px, 1px) rotate(-1deg); }
+            40% { transform: translate(1px, -1px) rotate(1deg); }
+            60% { transform: translate(-1px, -2px) rotate(-1deg); }
+            80% { transform: translate(2px, 1px) rotate(1deg); }
+        }
+
+        .hoa-don-khung { background-color: #ffffff !important; color: #111111 !important; padding: 20px !important; border-radius: 16px !important; border: 2px solid #111111 !important; font-family: 'SFMono-Regular', Consolas, monospace !important; box-shadow: 0px 10px 25px rgba(0,0,0,0.08) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; font-weight: bold; border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 15px; }
         .hd-title { font-size: 22px; text-transform: uppercase; margin-top: 6px; letter-spacing: 1px; font-weight: 900; color: #111111; }
-        .hd-row { display: flex !important; justify-content: space-between !important; align-items: center !important; margin-bottom: 8px !important; font-size: 13px !important; white-space: nowrap !important; overflow: hidden !important; width: 100% !important; }
-        .hd-row span:first-child { overflow: hidden !important; text-overflow: ellipsis !important; padding-right: 5px !important; }
+        
+        .hd-row-item { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 12px !important; font-size: 13px !important; width: 100% !important; line-height: 1.4 !important; }
+        .hd-item-name { flex: 1 !important; padding-right: 15px !important; text-align: left !important; word-break: break-word !important; }
+        .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: bold !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
+
+        /* 🎆 HIỆU ỨNG PHÁO HOA */
+        .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
+        .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
+        @keyframes explode-mega {
+            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            20% { opacity: 1; }
+            80% { opacity: 0.8; }
+            100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
+        }
+
+        /* 🎈 HIỆU ỨNG BÓNG BAY KHÔNG CHÙM */
+        .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; background: transparent; }
+        .fixed-balloon { 
+            position: absolute !important; bottom: -120px !important; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.9; 
+            box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
+            animation: fly-up-skywards-pure linear forwards; 
+        }
+        .fixed-balloon::after { 
+            content: ""; position: absolute; bottom: -12px; left: 50%; 
+            transform: translateX(-50%); width: 2px; height: 14px; 
+            background-color: rgba(0, 0, 0, 0.22); 
+        }
+        @keyframes fly-up-skywards-pure {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            8% { opacity: 0.9; }
+            90% { opacity: 0.9; }
+            100% { transform: translateY(-130vh) rotate(var(--rot, 15deg)); opacity: 0; }
+        }
     </style>
+    """
+    return css_animation
 
-    <div class="banner-top" onclick="createFirework(event)">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-    <div class="banner-bottom" onclick="createFirework(event)"> KIM HIỀN 2026 🌹🌹🌹 </div>
+# Hàm kết xuất pháo hoa mừng chốt đơn
+def render_fireworks_html():
+    colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
+    html_particles = '<div class="firework-container">'
+    centers = [(25, 20), (50, 15), (75, 20)]
+    for cx, cy in centers:
+        for i in range(80): 
+            angle = random.uniform(0, 2 * 3.14159)
+            distance = random.uniform(50, 200)
+            target_x = int(math.cos(angle) * distance)
+            target_y = int(math.sin(angle) * distance)
+            color = random.choice(colors)
+            delay = round(random.uniform(0, 0.1), 2)
+            html_particles += f'<div class="css-particle" style="background-color: {color}; left: {cx}vw; top: {cy}vh; --cx: {target_x}px; --cy: {target_y}px; animation-delay: {delay}s;"></div>'
+    html_particles += '</div>'
+    return html_particles
 
-    <script>
-        if (!window.fireworkStylesAdded) {
-            const style = document.createElement('style');
-            style.innerHTML = `@keyframes explode { 0% { transform: translate(0, 0) scale(1); opacity: 1; } 100% { transform: translate(var(--x), var(--y)) scale(0.2); opacity: 0; } }`;
-            document.head.appendChild(style);
-            window.fireworkStylesAdded = true;
-        }
-        function createFirework(e) {
-            const clickX = e.clientX, clickY = e.clientY, particleCount = 40;
-            const colors = ['#f1c40f', '#00ffcc', '#ffcc00', '#ff6600', '#ffffff'];
-            for (let i = 0; i < particleCount; i++) {
-                const particle = document.createElement('div');
-                particle.className = 'firework-particle';
-                particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-                particle.style.left = clickX + 'px'; particle.style.top = clickY + 'px';
-                particle.style.animation = 'explode 0.7s ease-out forwards';
-                const angle = Math.random() * Math.PI * 2, velocity = Math.random() * 120 + 40; 
-                particle.style.setProperty('--x', (Math.cos(angle) * velocity) + 'px');
-                particle.style.setProperty('--y', (Math.sin(angle) * velocity) + 'px');
-                document.body.appendChild(particle);
-                setTimeout(() => { particle.remove(); }, 700);
-            }
-        }
-    </script>
+# Hàm tạo bóng bay lệch pha, dập dìu chống lỗi Re-render của Streamlit
+def render_balloons_html():
+    colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
+    html_balloons = '<div class="balloon-container-css">'
+    for i in range(45):
+        left_pos = random.uniform(4, 92)
+        color = random.choice(colors)
+        size_ratio = random.uniform(0.7, 1.3)
+        width = int(50 * size_ratio)
+        height = int(65 * size_ratio)
+        delay = round(random.uniform(0.0, 4.5), 2)
+        duration = round(random.uniform(3.8, 5.8), 2)
+        rotation = random.randint(-20, 20)
+        
+        html_balloons += f"""
+        <div class="fixed-balloon" style="
+            background-color: {color}; 
+            left: {left_pos}vw; 
+            width: {width}px; 
+            height: {height}px; 
+            animation-delay: {delay}s; 
+            animation-duration: {duration}s; 
+            --rot: {rotation}deg;">
+        </div>"""
+    html_balloons += '</div>'
+    st.markdown(html_balloons, unsafe_allow_html=True)
+
+st.markdown(generate_css_animations(), unsafe_allow_html=True)
+
+st.markdown("""
+<div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+<div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
-# 2. HÀM CORE HỆ THỐNG ĐỒNG BỘ & TRUY XUẤT DATA
+# 2. HÀM CORE HỆ THỐNG - TRUY XUẤT AN TOÀN DỮ LIỆU
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -353,12 +238,11 @@ def get_gspread_client():
     return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
 
 def format_drive_direct_url(link):
-    if not link or not isinstance(link, str): 
-        return ""
+    if not link or not isinstance(link, str): return ""
     match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
     return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
 
-@st.cache_data(ttl=5)
+@st.cache_data(ttl=1200)
 def get_settings():
     try:
         client = get_gspread_client()
@@ -366,44 +250,39 @@ def get_settings():
         rows = client.open_by_url(url).worksheet("ThietLap").get_all_values()
         return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
     except Exception:
-        return {
-            "TenTiem": "SALON KIM HIỀN", 
-            "Diachi": "131, TRẦN BÌNH TRỌNG, MỸ XUYÊN, LONG XUYÊN, AN GIANG (AG CŨ)", 
-            "SDT": "0947.58.1516", "Slogan": "\"Nơi Bạn Đặt Niềm Tin\"", "Logo": ""
-        }
+        return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN", "SDT": "0947.58.1516"}
 
-@st.cache_data(ttl=60)
+@st.cache_data(ttl=900)
 def get_service_data():
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
-        
         danh_sach_dv = {}
         for row in rows[1:]:
             if len(row) >= 2:
                 ten_dv = str(row[0]).strip()
-                if not ten_dv:
-                    continue
-                try: 
-                    gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
-                except: 
-                    gia_goc = 0.0
-                
+                if not ten_dv: continue
+                try: gia_goc = float(str(row[1]).replace('.', '').replace(',', '').strip())
+                except: gia_goc = 0.0
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
                     try:
                         raw_hh = str(row[2]).replace('%', '').replace(',', '.').strip()
                         hoa_hong = float(raw_hh)
-                        if 0 < hoa_hong < 1.0: 
-                            hoa_hong *= 100
-                    except: 
-                        hoa_hong = 0.0
-                
+                        if 0 < hoa_hong < 1.0: hoa_hong *= 100
+                    except: hoa_hong = 0.0
                 danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
         return danh_sach_dv
-    except Exception: 
-        return {}
+    except Exception: return {}
+
+@st.cache_data(ttl=900)
+def get_nhan_vien_data():
+    try:
+        client = get_gspread_client()
+        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+        return sh.worksheet("NhanVien").get_all_values()
+    except Exception: return []
 
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
@@ -413,7 +292,7 @@ def display_header(settings):
             <img src="{direct_logo_url}" class="logo-img" onerror="this.onerror=null;this.src='{fallback_gif}';">
             <div class="ten-tiem">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
             <div class="thong-tin-phu">📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG')}</div>
-            <div class="thong-tin-phu">📞 {settings.get('SDT', '0947.58.1516')}</div>
+            <div class="thong-tin-phu">☎️ {settings.get('SDT', '0947.58.1516')}</div>
             <div class="slogan">{settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')}</div>
         </div>
     """, unsafe_allow_html=True)
@@ -422,32 +301,43 @@ def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
-        receiver_email = "huynhtuankiet199379@gmail.com"
+        receiver_email = "huynhcongtuan0978666620@gmail.com"
+        gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
         
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"ĐH SALON KIM HIỀN - {datetime.now().strftime('%d/%m/%Y %H:%M')}"
+        msg['Subject'] = f"ĐH DỊCH VỤ SALON - {gio_vn_mail}"
         msg.attach(MIMEText(noi_dung, 'plain'))
-        
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
         server.login(sender_email, password)
         server.send_message(msg)
         server.quit()
-    except Exception as e:
-        print(f"Lỗi gửi mail: {e}")
+    except Exception as e: print(f"Lỗi gửi mail: {e}")
     
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    init_states = {"last_submit": None, "submit_count": 0, "submitting": False, "adding_cart": False, "logged_in": False, "role": None, "full_name": None, "gio_hang": [], "bill_vua_in": None}
+    init_states = {
+        "last_submit": None, "submit_count": 0, "submitting": False, 
+        "adding_cart": False, "logged_in": False, "role": None, 
+        "full_name": None, "gio_hang": [], "bill_vua_in": None, 
+        "trigger_boom": False, "trigger_balloons": False
+    }
     for key, val in init_states.items():
-        if key not in st.session_state: 
-            st.session_state[key] = val
+        if key not in st.session_state: st.session_state[key] = val
 
     settings = get_settings()
+
+    if st.session_state.trigger_boom:
+        st.markdown(render_fireworks_html(), unsafe_allow_html=True)
+        st.session_state.trigger_boom = False
+
+    if st.session_state.trigger_balloons:
+        render_balloons_html()  
+        st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -458,63 +348,40 @@ def main():
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
-                    st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Chủ Tiệm"})
+                    st.session_state.update({
+                        "logged_in": True, "role": "Admin", 
+                        "full_name": "Chủ Tiệm", "trigger_balloons": True
+                    })
                     st.rerun()
                 else:
-                    try:
-                        cl = get_gspread_client()
-                        sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-                        user_sheet = sh.worksheet("NhanVien")
+                    raw_data = get_nhan_vien_data()
+                    if len(raw_data) > 0:
+                        headers = [str(h).strip() for h in raw_data[0]]
+                        col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
+                        col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
+                        col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
                         
-                        raw_data = user_sheet.get_all_values()
-                        if len(raw_data) > 0:
-                            headers = [str(h).strip() for h in raw_data[0]]
-                            
-                            col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
-                            col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
-                            col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
-                            
-                            if col_sdt_idx == -1 or col_mk_idx == -1:
-                                user_list = user_sheet.get_all_records()
-                                found_user = None
-                                for row in user_list:
-                                    sdt_sheet = str(row.get('Số Điện Thoại', row.get('SĐT', ''))).strip().lstrip('0')
-                                    sdt_nhap = str(u).strip().lstrip('0')
-                                    if sdt_nhap == sdt_sheet and sdt_nhap != "":
-                                        if p.strip() == str(row.get('Mật Khẩu', row.get('Mật khẩu', ''))).strip():
-                                            found_user = row
-                                            break
-                                if found_user:
-                                    ten_that = found_user.get('Tên Nhân Viên', found_user.get('Tên nhân viên', 'Nhân viên'))
-                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
-                                    st.success(f"Chào mừng {ten_that}!")
-                                    time.sleep(0.5)
-                                    st.rerun()
-                                else:
-                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
-                            else:
-                                found_row = None
-                                sdt_nhap = str(u).strip().lstrip('0')
-                                for r in raw_data[1:]:
-                                    if len(r) > max(col_sdt_idx, col_mk_idx):
-                                        sdt_sheet = str(r[col_sdt_idx]).strip().lstrip('0')
-                                        mk_sheet = str(r[col_mk_idx]).strip()
-                                        if sdt_nhap == sdt_sheet and p.strip() == mk_sheet and sdt_nhap != "":
-                                            found_row = r
-                                            break
-                                            
-                                if found_row:
-                                    ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
-                                    st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that})
-                                    st.success(f"Chào mừng {ten_that}!")
-                                    time.sleep(0.5)
-                                    st.rerun()
-                                else:
-                                    st.error("Tài khoản hoặc Mật khẩu không chính xác!")
-                        else:
-                            st.error("Bảng dữ liệu Nhân Viên trên Google Sheets đang trống!")
-                    except Exception as e:
-                        st.error(f"Lỗi cổng kết nối: {e}")
+                        found_row = None
+                        sdt_nhap = str(u).strip().lstrip('0')
+                        for r in raw_data[1:]:
+                            if len(r) > max(col_sdt_idx, col_mk_idx):
+                                sdt_sheet = str(r[col_sdt_idx]).strip().lstrip('0')
+                                mk_sheet = str(r[col_mk_idx]).strip()
+                                if sdt_nhap == sdt_sheet and p.strip() == mk_sheet and sdt_nhap != "":
+                                    found_row = r
+                                    break
+                                    
+                        if found_row:
+                            ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
+                            st.session_state.update({
+                                "logged_in": True, "role": "NhanVien", 
+                                "full_name": ten_that, "trigger_balloons": True
+                            })
+                            st.success(f"Chào mừng {ten_that}!")
+                            time.sleep(0.5)
+                            st.rerun()
+                        else: st.error("Tài khoản hoặc Mật khẩu không chính xác!")
+                    else: st.error("Lỗi dữ liệu cổng Nhân Viên!")
 
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
@@ -525,9 +392,8 @@ def main():
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
             st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
+            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHẾ!</div>', unsafe_allow_html=True)
             
-            # HIỂN THỊ CHỮ HƯỚNG DẪN TRONG KHUNG TRỐNG TAB 1
-            st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHÉ!</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
@@ -535,28 +401,21 @@ def main():
             with c1: kh_ten = st.text_input("👤 Tên khách hàng", "Khách lẻ")
             with c2: kh_sdt = st.text_input("📞 SĐT khách")
             
-            st.markdown("#### ✂️ CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            
-            box_chon_dv = st.selectbox(
-                "📌 Dịch vụ", 
-                options=dv_list if dv_list else ["Không có dữ liệu"],
-                index=None,
-                placeholder="Gõ chữ để tìm nhanh... (Ví dụ: 'combo 60', 'cắt')"
-            )
-            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=0.5)
+            st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
+            box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
+            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
             else:
-                if st.button("✅ THÊM VÀO GIỎ ĐƠN", use_container_width=True):
+                if st.button("🛒 THÊM VÀO GIỎ ĐƠN", use_container_width=True):
                     if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
-                        st.error("🚫 Vui lòng gõ và chọn một dịch vụ cụ thể trước khi thêm vào giỏ nhen ní!")
-                    elif box_sl <= 0:
-                        st.error("Vui lòng chọn số lượng lớn hơn 0 trước khi thêm vào giỏ!")
+                        st.error("🚫 Vui lòng chọn một dịch vụ cụ thể trước khi thêm!")
+                    elif box_sl <= 0: st.error("Vui lòng chọn số lượng lớn hơn 0!")
                     else:
                         st.session_state.adding_cart = True
                         if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
-                            st.error(f"🚫 CẢNH BÁO: Dịch vụ '{box_chon_dv}' đã tồn tại trong giỏ đơn này rồi nhen!")
+                            st.error(f"🚫 Dịch vụ đã tồn tại trong giỏ!")
                             st.session_state.adding_cart = False
                         else:
                             info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
@@ -569,26 +428,21 @@ def main():
                                 "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh,
                                 "tiem_cong_tho": t_bill_item * (phan_tram_hh / 100.0)
                             })
-                            st.success(f"Đã thêm {box_sl} x {box_chon_dv} thành công!")
+                            st.success(f"Đã thêm thành công!")
                             st.session_state.bill_vua_in = None
                             st.session_state.adding_cart = False
-                            time.sleep(0.2)
+                            time.sleep(0.1)
                             st.rerun()
 
-            # -----------------------------------------------------------------
-            # KHỐI HIỂN THỊ GIỎ HÀNG CHỜ LƯU
-            # -----------------------------------------------------------------
+            # CHI TIẾT GIỎ HÀNG CHỜ LƯU
             t_bill, t_cong_tho = 0.0, 0.0
             if st.session_state.gio_hang:
                 st.markdown("---")
                 st.markdown(f"📦 **CHI TIẾT ĐƠN HÀNG CHỜ LƯU ({len(st.session_state.gio_hang)} món)**")
-                
                 for idx, item in enumerate(st.session_state.gio_hang):
                     col_item1, col_item2, col_item3 = st.columns([5.0, 3.5, 1.5])
-                    with col_item1: 
-                        st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
-                    with col_item2: 
-                        st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
+                    with col_item1: st.markdown(f"**{idx+1}. {item['dich_vu']}** (SL: {item['so_luong']})")
+                    with col_item2: st.markdown(f"{item['thanh_tien']:,.0f}đ (Công: {item['tiem_cong_tho']:,.0f}đ)")
                     with col_item3:
                         if st.button("Xóa", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
@@ -597,44 +451,40 @@ def main():
                     t_bill += item['thanh_tien']
                     t_cong_tho += item['tiem_cong_tho']
 
-            # -----------------------------------------------------------------
-            # KHỐI LOGIC THANH TOÁN & ĐỒNG BỘ GOOGLE SHEETS + EMAIL BACKUP
-            # -----------------------------------------------------------------
+            # THANH TOÁN ĐƠN
             if t_bill > 0:
-                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, xe dơ nhiều...")
+                ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ...")
                 st.divider()
                 
                 col_bill1, col_bill2 = st.columns(2)
-                with col_bill1: 
-                    st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
-                with col_bill2: 
-                    st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill1: st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn Khách</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
+                with col_bill2: st.markdown(f'<div class="nhan-tieu-de" style="color: #4b5563;">🛠️ Tiền công thợ tổng</div><div class="cong-tho-box">{t_cong_tho:,.0f} đ</div>', unsafe_allow_html=True)
                 
                 st.write("")
                 kh_tra = st.number_input("💵 Tiền khách đưa", 0.0, value=float(t_bill))
                 t_du = kh_tra - t_bill
+                
                 if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN KHÁCH DƯ: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state.last_submit:
                     tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
-                    han_muc = 3 if st.session_state.submit_count == 1 else 5 if st.session_state.submit_count >= 2 else 0
+                    han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        st.error(f"🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút.")
+                        st.markdown(f'<div class="lsc-shake" style="background-color: #fee2e2; color: #991b1b; padding: 12px; border-radius: 10px; border: 2px solid #ef4444; text-align: center; font-weight: bold; font-size: 14px;">🚫 HÀNG RÀO THÉP CHỐNG TRÙNG: Vui lòng đợi thêm {round(han_muc - tg_cho, 1)} phút để tiếp tục đơn mới.</div>', unsafe_allow_html=True)
 
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                     if not st.session_state.submitting:
-                        if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
+                        if st.button("🚀 CHỐT ĐƠN & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
                                 st.session_state.submitting = True
                                 st.rerun()
-                            else: 
-                                st.error("Chưa tích chọn ô xác nhận cam kết!")
+                            else: st.error("Chưa tích chọn ô xác nhận cam kết!")
                     else:
-                        st.button("⏳ ĐANG XỬ LÝ ĐỒNG BỘ...", disabled=True, use_container_width=True)
+                        st.button("⏳ ĐANG XỬ LÝ VÀ ĐỒNG BỘ...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -651,63 +501,59 @@ def main():
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
-                                html_items += f'<div class="hd-row"><span>{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</span><span>{item["thanh_tien"]:,.0f} đ</span></div>'
+                                html_items += f"""
+                                <div class="hd-row-item">
+                                    <div class="hd-item-name">{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</div>
+                                    <div class="hd-item-price">{item["thanh_tien"]:,.0f} đ</div>
+                                </div>"""
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                             
-                            # 1. Ghi vào Google Sheet
                             ws.append_rows(rows_to_append)
-
-                            # 2. Gửi Email Backup (Đã chuyển Tổng hóa đơn xuống cuối phần danh sách món)
-                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
+                            
+                            noi_dung_mail = f"Mã hóa đơn: {ma_hd}\nThời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\nKhách hàng: {kh_ten}\nSĐT: {kh_sdt}\nNhân viên thực hiện: {st.session_state.full_name}\nGhi chú: {ghi_chu}\n\nChi tiết dịch vụ:{chi_tiet_mail}\n\n====================\n💰 TỔNG HOÁ ĐƠN: {t_bill:,.0f}đ"
                             gui_email_backup(noi_dung_mail)
 
-                            # 3. Tạo hóa đơn hiển thị HTML
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
                                     <div style="font-size: 16px; font-weight: 900;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                                     <div style="font-size: 11px;">📍 {settings.get('Diachi', 'AN GIANG')}</div>
-                                    <div style="font-size: 11px;">📞 {settings.get('SDT', '0947.58.1516')}</div>
+                                    <div style="font-size: 11px;">☎️ {settings.get('SDT', '0947.58.1516')}</div>
                                     <div class="hd-title">🧾 PHIẾU THANH TOÁN</div>
                                     <div style="font-size: 11px; margin-top:5px;">Mã đơn: {ma_hd}</div>
                                 </div>
                                 <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
-                                    <div class="hd-row"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
-                                    <div class="hd-row"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
-                                    <div class="hd-row"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
                                 <div style="font-size: 14px; font-weight: bold;">
-                                    <div class="hd-row"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
-                                    <div class="hd-row" style="font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
-                                    <div class="hd-row" style="color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>TỔNG CẦN THANH TOÁN:</span> <span>{t_bill:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: normal; font-size: 13px;"><span>Khách đưa:</span> <span>{kh_tra:,.0f} đ</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px; color: #059669;"><span>TIỀN THỐI LẠI:</span> <span>{t_du:,.0f} đ</span></div>
                                 </div>
                                 <div style="text-align: center; margin-top: 20px; font-size: 12px; font-style: italic; border-top: 1px dashed #111111; padding-top: 10px;">
                                     {settings.get('Slogan', '"Nơi Bạn Đặt Niềm Tin"')} <br> ♥️ Cảm ơn quý khách! ♥️
                                 </div>
                             </div>"""
 
-                            # 4. Cập nhật Session State & Reset giỏ
                             st.session_state.update({
-                                "gio_hang": [], 
-                                "last_submit": bay_gio, 
+                                "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False
+                                "submitting": False, "trigger_boom": True 
                             })
-                            
-                            st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
-                            time.sleep(0.5)
                             st.rerun()
+                            
                         except Exception as e:
                             st.error(f"Lỗi lưu dữ liệu: {e}")
                             st.session_state.submitting = False
-
-            else:
-                st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní. Vui lòng chọn dịch vụ phía trên và bấm 'Thêm vào giỏ đơn' để lên đơn tính tiền.")
+            else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
                 st.markdown("---")
-                st.markdown("### 🧾 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown("### 🧾 HOÁ ĐƠN (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
@@ -715,61 +561,53 @@ def main():
                 st.session_state.clear()
                 st.rerun()
 
-        # PHÂN HỆ DÀNH RIÊNG CHO TÀI KHOẢN ADMIN (CHỦ TIỆM)
+        # PHÂN HỆ ADMIN
         if st.session_state["role"] == "Admin":
-            # TAB 2: DOANH THU REALTIME
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-                st.markdown('<div class="the-quan-ly-flat">📊 Vui lòng xem lại “BÁO CÁO“ nhé!</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
+                
+                if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
+                    try:
+                        cl = get_gspread_client()
+                        ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                        du_lieu = ws_bc.get_all_records()
+                        if du_lieu:
+                            df_bc = pd.DataFrame(du_lieu)
+                            df_hien_thi = df_bc.tail(50).copy()
+                            df_hien_thi.index = range(1, len(df_hien_thi) + 1)
+                            df_hien_thi.index.name = "Stt"
+                            st.dataframe(df_hien_thi, use_container_width=True)
+                            
+                            ngay_nay = get_now_vn().strftime("%d/%m/%Y")
+                            df_h = df_bc[df_bc['Ngày'] == ngay_nay]
+                            c1, c2, c3 = st.columns(3)
+                            c1.metric("📊 TỔNG DOANH THU HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
+                            c2.metric("🧾 TỔNG ĐƠN HÀNG", len(df_h))
+                            c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
+                        else: st.info("Chưa có dữ liệu báo cáo.")
+                    except Exception as e: st.error(f"Lỗi giới hạn lệnh đọc: {e}")
 
-                try:
-                    cl = get_gspread_client()
-                    ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
-                    du_lieu = ws_bc.get_all_records()
-                    if du_lieu:
-                        df_bc = pd.DataFrame(du_lieu)
-                        
-                        df_hien_thi = df_bc.tail(50).copy()
-                        df_hien_thi.index = range(1, len(df_hien_thi) + 1)
-                        df_hien_thi.index.name = "Stt"
-                        
-                        st.dataframe(df_hien_thi, use_container_width=True)
-                        
-                        ngay_nay = get_now_vn().strftime("%d/%m/%Y")
-                        df_h = df_bc[df_bc['Ngày'] == ngay_nay]
-                        
-                        c1, c2, c3 = st.columns(3)
-                        c1.metric("📊 TỔNG DOANH THU HÔM NAY", f"{df_h['Thành tiền'].sum():,.0f} đ")
-                        c2.metric("🧾 TỔNG ĐƠN HÀNG", len(df_h))
-                        c3.metric("💎 TRUNG BÌNH", f"{df_h['Thành tiền'].mean() if len(df_h)>0 else 0:,.0f} đ")
-                    else: 
-                        st.info("Chưa có dữ liệu báo cáo đơn hàng.")
-                except Exception as e: 
-                    st.error(f"Lỗi truy xuất báo cáo: {e}")
-
-            # TAB 3: QUẢN TRỊ NHÂN SỰ & THIẾT LẬP
             with tabs[2]:
                 st.markdown("### ⚙️ HỆ THỐNG QUẢN TRỊ CAO CẤP")
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
-                
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
-                st.write("")
-                if st.button("♻️ LÀM SẠCH BỘ NHỚ ĐỆM (CLEAR CACHE)"):
-                    st.cache_data.clear()
-                    st.rerun()
-                st.markdown('<div class="the-quan-ly-flat">✍️ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 
+                if st.button("♻️ BẤM LÀM MỚI DANH MỤC & CÀI ĐẶT (CLEAR CACHE)"):
+                    st.cache_data.clear()
+                    st.success("Đã làm sạch bộ nhớ đệm! Danh mục và nhân viên đã được đồng bộ mới.")
+                    time.sleep(0.5)
+                    st.rerun()
+                    
+                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
                     ws_user = sh.worksheet("NhanVien")
-                    
                     with st.form("add_user_form", clear_on_submit=True):
-                        st.markdown("**➕ Thêm tài khoản nhân viên mới:**")
                         new_sdt = st.text_input("📱 Số điện thoại nhân viên (Tài khoản)")
                         new_code = st.text_input("🔑 Mã đăng nhập (Mật khẩu)")
                         new_name = st.text_input("🏷️ Tên nhân viên hiển thị")
-                        
                         if st.form_submit_button("👌 CẤP MÃ MỚI"):
                             if new_sdt and new_code and new_name:
                                 ws_user.append_row([new_sdt.strip(), new_code.strip(), new_name.strip()])
@@ -779,13 +617,10 @@ def main():
                                 st.rerun()
                             else: st.error("Vui lòng không để trống thông tin!")
                     
-                    st.write("---")
-                    st.write("📋 **Danh sách nhân sự hiện tại:**")
-                    user_data = ws_user.get_all_records()
-                    if user_data: 
-                        st.table(pd.DataFrame(user_data))
-                except Exception as e:
-                    st.error(f"Lỗi hệ thống nhân sự: {e}")
+                    st.write("📋 **Danh sách nhân sự:**")
+                    raw_nv = get_nhan_vien_data()
+                    if len(raw_nv) > 1: st.table(pd.DataFrame(raw_nv[1:], columns=raw_nv[0]))
+                except Exception as e: st.error(f"Lỗi hệ thống nhân sự: {e}")
                 
                 st.divider()
                 if st.button("🚪 THOÁT KHỎI HỆ THỐNG QUẢN TRỊ", use_container_width=True):
