@@ -366,30 +366,6 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT (ĐÃ FIX THEO CÁCH 2 AN TOÀN) ---
-def xu_ly_tra_cuu_khach_hang():
-    sdt_nhap = st.session_state.widget_kh_sdt.strip()
-    ds_kh = get_khach_hang_data()
-    
-    if sdt_nhap:
-        sdt_khong_0 = sdt_nhap[1:] if sdt_nhap.startswith('0') else sdt_nhap
-        sdt_co_0 = '0' + sdt_nhap if not sdt_nhap.startswith('0') else sdt_nhap
-        
-        if sdt_nhap in ds_kh:
-            ten_tim_duoc = ds_kh[sdt_nhap]
-        elif sdt_khong_0 in ds_kh:
-            ten_tim_duoc = ds_kh[sdt_khong_0]
-        elif sdt_co_0 in ds_kh:
-            ten_tim_duoc = ds_kh[sdt_co_0]
-        else:
-            # SĐT Mới hoàn toàn -> Đặt trống để nhân viên tự nhập tên mới
-            ten_tim_duoc = ""
-    else:
-        ten_tim_duoc = "Khách lẻ"
-        
-    st.session_state.state_kh_sdt = sdt_nhap
-    st.session_state.state_kh_ten = ten_tim_duoc
-
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
@@ -398,8 +374,7 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
-        "trigger_boom": False, "trigger_balloons": False,
-        "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" 
+        "trigger_boom": False, "trigger_balloons": False
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -435,10 +410,7 @@ def main():
                         headers = [str(h).strip() for h in raw_data[0]]
                         col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
                         col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
-                        
-                        # --- ĐÃ SỬA LỖI CÚ PHÁP TẠI ĐÂY ---
                         col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
-                        # ----------------------------------
                         
                         found_row = None
                         sdt_nhap = str(u).strip().lstrip('0')
@@ -487,21 +459,27 @@ def main():
             
             c1, c2 = st.columns(2)
             with c1: 
-                kh_sdt = st.text_input(
-                    "📞 SĐT khách", 
-                    value=st.session_state.state_kh_sdt, 
-                    key="widget_kh_sdt", 
-                    on_change=xu_ly_tra_cuu_khach_hang
-                )
+                kh_sdt = st.text_input("📞 SĐT khách", value="", key="widget_kh_sdt")
                     
             with c2: 
-                # --- SỬA THÀNH CÁCH 2: DÙNG BIẾN TRUNG GIAN STATE_KH_TEN ĐỂ QUẢN LÝ VALUE AN TOÀN ---
-                kh_ten = st.text_input(
-                    "👤 Tên khách hàng", 
-                    value=st.session_state.state_kh_ten,
-                    key="widget_kh_ten_direct_input" # Đổi tên key để cắt triệt để lỗi cache cũ
-                )
-                st.session_state.state_kh_ten = kh_ten
+                # --- 🛠️ XỬ LÝ BIẾN TRUNG GIAN TRA CỨU TRƯỚC KHI KHỞI TẠO WIDGET TÊN KHÁCH ---
+                ten_mac_dinh = "Khách lẻ"
+                sdt_nhap_so = kh_sdt.strip()
+                if sdt_nhap_so:
+                    ds_kh = get_khach_hang_data()
+                    sdt_khong_0 = sdt_nhap_so[1:] if sdt_nhap_so.startswith('0') else sdt_nhap_so
+                    sdt_co_0 = '0' + sdt_nhap_so if not sdt_nhap_so.startswith('0') else sdt_nhap_so
+                    
+                    if sdt_nhap_so in ds_kh:
+                        ten_mac_dinh = ds_kh[sdt_nhap_so]
+                    elif sdt_khong_0 in ds_kh:
+                        ten_mac_dinh = ds_kh[sdt_khong_0]
+                    elif sdt_co_0 in ds_kh:
+                        ten_mac_dinh = ds_kh[sdt_co_0]
+                    else:
+                        ten_mac_dinh = "" # SĐT mới tinh -> để trống bắt tự nhập
+                
+                kh_ten = st.text_input("👤 Tên khách hàng", value=ten_mac_dinh, key="widget_kh_ten_lktv")
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
@@ -609,9 +587,13 @@ def main():
                             html_items = ""
                             chi_tiet_tele = "" 
                             
+                            # Tên và SĐT chốt cuối cùng
+                            chot_ten = kh_ten.strip() if kh_ten.strip() else "Khách lẻ"
+                            chot_sdt = kh_sdt.strip()
+                            
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
-                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
+                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, chot_ten, chot_sdt,
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), f"[Chiết khấu đơn: {tien_giam:,.0f}đ] " + ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
@@ -625,19 +607,16 @@ def main():
                             ws.append_rows(rows_to_append)
                             
                             # --- 🚀 CHỐT TỰ ĐỘNG CẬP NHẬT DATA KHÁCH HÀNG MỚI LÊN GOOGLE SHEET KHÔNG LỖI TRÙNG ---
-                            sdt_luu = str(kh_sdt).strip()
-                            ten_luu = str(kh_ten).strip()
-                            if sdt_luu and sdt_luu != "":
+                            if chot_sdt and chot_sdt != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
-                                # So khớp linh hoạt định dạng để chống trùng lặp
-                                sdt_khong_0 = sdt_luu[1:] if sdt_luu.startswith('0') else sdt_luu
-                                sdt_co_0 = '0' + sdt_luu if not sdt_luu.startswith('0') else sdt_luu
+                                sdt_khong_0 = chot_sdt[1:] if chot_sdt.startswith('0') else chot_sdt
+                                sdt_co_0 = '0' + chot_sdt if not chot_sdt.startswith('0') else chot_sdt
                                 
-                                is_sdt_cu = (sdt_luu in ds_kh_hien_tai) or (sdt_khong_0 in ds_kh_hien_tai) or (sdt_co_0 in ds_kh_hien_tai)
+                                is_sdt_cu = (chot_sdt in ds_kh_hien_tai) or (sdt_khong_0 in ds_kh_hien_tai) or (sdt_co_0 in ds_kh_hien_tai)
                                 
-                                if not is_sdt_cu and ten_luu != "Khách lẻ" and ten_luu != "":
+                                if not is_sdt_cu and chot_ten != "Khách lẻ" and chot_ten != "":
                                     ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
-                                    ws_kh.append_row([sdt_luu, ten_luu])
+                                    ws_kh.append_row([chot_sdt, chot_ten])
                                     st.cache_data.clear() 
                             
                             # Nội dung email/telegram hệ thống
@@ -647,7 +626,7 @@ def main():
                                 f"----------------------------------------\n"
                                 f"🆔 Mã đơn: {ma_hd}\n"
                                 f"⏰ Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"👤 Khách hàng: {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
+                                f"👤 Khách hàng: {chot_ten} ({chot_sdt if chot_sdt else 'Không có SĐT'})\n"
                                 f"👨‍🔧 Nhân viên lập: {st.session_state.full_name}\n"
                                 f"💬 Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
                                 f"----------------------------------------\n"
@@ -678,7 +657,7 @@ def main():
                                 </div>
                                 <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{chot_ten}</span></div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
@@ -696,12 +675,13 @@ def main():
                                 </div>
                             </div>"""
 
-                            # --- SỬA TẠI ĐÂY: CHỈ RESET CÁC BIẾN TRẠNG THÁI TRUNG GIAN, TUYỆT ĐỐI KHÔNG ÉP SỬA KEY CỦA WIDGET ---
+                            # --- 🚀 CHỈ RESET GIỎ VÀ TRẠNG THÁI SUBMIT, GIỮ LUỒNG KHÔNG BỊ KHÓA CACHE WIDGET ---
                             st.session_state.update({
-                                "gio_hang": [], "last_submit": bay_gio, 
+                                "gio_hang": [], 
+                                "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True,
-                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": ""
+                                "submitting": False, 
+                                "trigger_boom": True
                             })
                             st.rerun()
                             
