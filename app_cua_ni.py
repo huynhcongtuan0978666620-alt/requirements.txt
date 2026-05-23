@@ -465,17 +465,17 @@ def main():
             
             c1, c2 = st.columns(2)
             with c1: 
+                # 🔥 ĐÃ SỬA 1: Liên kết value trực tiếp với State để khi reset hoặc tự điền không bị lỗi lệch giá trị
                 kh_sdt = st.text_input(
                     "📞 SĐT khách", 
                     value=st.session_state.state_kh_sdt, 
                     key="widget_kh_sdt", 
                     on_change=xu_ly_tra_cuu_khach_hang
                 )
-                st.session_state.state_kh_sdt = kh_sdt.strip()
                     
             with c2: 
-                # 🔥 ĐÃ SỬA MẤU CHỐT: Truyền trực tiếp trạng thái tìm kiếm vào tham số value.
-                # Cách này giúp app nhận giá trị tìm kiếm tự động từ file Excel nhưng nhân viên vẫn thoải mái chỉnh sửa nếu cần.
+                # 🔥 ĐÃ SỬA MẤU CHỐT 2: Đồng bộ trực tiếp `value` từ `st.session_state.state_kh_ten` 
+                # để ăn tính năng điền tự động ngay khi chạy hàm callback SĐT!
                 kh_ten = st.text_input(
                     "👤 Tên khách hàng", 
                     value=st.session_state.state_kh_ten, 
