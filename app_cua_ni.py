@@ -448,7 +448,7 @@ def main():
             
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
-            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
+            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=2.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
@@ -589,7 +589,8 @@ def main():
                                 f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
                                 f"♥️ SALON KIM HIỀN ♥️\n"
-                                f"♥️♥️ Cảm Ơn Quý Khách ♥️♥️ l\n"
+                                f"♥️♥️ Zalo: 0947.58.1516 ♥️♥️\n"
+                                f"♥️♥️♥️ Cảm Ơn Quý Khách ♥️♥️♥️\n"
                             )
                             gui_email_backup(noi_dung_mail)
 
@@ -613,7 +614,8 @@ def main():
                                 f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
                                 f"♥️ SALON KIM HIỀN ♥️\n"
-                                f"♥️♥️ Cảm Ơn Quý Khách ♥️♥️ l\n"
+                                f"♥️♥️ Zalo: 0947.58.1516 ♥️♥️\n"
+                                f"♥️♥️♥️ Cảm Ơn Quý Khách ♥️♥️♥️\n"
                             )
                             gui_telegram_notification(noi_dung_tele)
 
