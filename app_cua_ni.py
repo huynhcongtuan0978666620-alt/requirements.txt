@@ -366,7 +366,7 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT (ĐÃ FIX ĐỒNG BỘ STATE CHUẨN) ---
+# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT (ĐÃ FIX THEO CÁCH 2 AN TOÀN) ---
 def xu_ly_tra_cuu_khach_hang():
     sdt_nhap = st.session_state.widget_kh_sdt.strip()
     ds_kh = get_khach_hang_data()
@@ -389,8 +389,6 @@ def xu_ly_tra_cuu_khach_hang():
         
     st.session_state.state_kh_sdt = sdt_nhap
     st.session_state.state_kh_ten = ten_tim_duoc
-    # Đồng bộ ép buộc trực tiếp vào widget_kh_ten_input của Streamlit
-    st.session_state.widget_kh_ten_input = ten_tim_duoc
 
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
@@ -497,13 +495,11 @@ def main():
                 )
                     
             with c2: 
-                # Khởi tạo giá trị widget_kh_ten_input nếu chưa có trong session state
-                if "widget_kh_ten_input" not in st.session_state:
-                    st.session_state.widget_kh_ten_input = st.session_state.state_kh_ten
-                    
+                # --- SỬA THÀNH CÁCH 2: DÙNG BIẾN TRUNG GIAN STATE_KH_TEN ĐỂ QUẢN LÝ VALUE AN TOÀN ---
                 kh_ten = st.text_input(
                     "👤 Tên khách hàng", 
-                    key="widget_kh_ten_input"
+                    value=st.session_state.state_kh_ten,
+                    key="widget_kh_ten_direct_input" # Đổi tên key để cắt triệt để lỗi cache cũ
                 )
                 st.session_state.state_kh_ten = kh_ten
 
@@ -700,13 +696,12 @@ def main():
                                 </div>
                             </div>"""
 
-                            # Reset thông tin để chuẩn bị cho đơn sau và dọn sạch widget_kh_ten_input
+                            # --- SỬA TẠI ĐÂY: CHỈ RESET CÁC BIẾN TRẠNG THÁI TRUNG GIAN, TUYỆT ĐỐI KHÔNG ÉP SỬA KEY CỦA WIDGET ---
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True,
-                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "",
-                                "widget_kh_ten_input": "Khách lẻ"
+                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": ""
                             })
                             st.rerun()
                             
