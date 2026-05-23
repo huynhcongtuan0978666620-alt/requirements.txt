@@ -248,7 +248,7 @@ def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
 def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]
+    creds_info = st.secrets["connections"]["gsheets"]["spreadsheet_credentials"] if "spreadsheet_credentials" in st.secrets["connections"]["gsheets"] else st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
 
@@ -363,10 +363,15 @@ def gui_telegram_notification(noi_dung):
 def xu_ly_tra_cuu_khach_hang():
     sdt_nhap = st.session_state.widget_kh_sdt.strip()
     ds_kh = get_khach_hang_data()
+    
     if sdt_nhap in ds_kh:
         st.session_state.state_kh_ten = ds_kh[sdt_nhap]
+        # 🔥 ĐÃ SỬA MẤU CHỐT: Ép widget tên nhận luôn giá trị từ sheet realtime không giật lag
+        st.session_state.widget_kh_ten_input = ds_kh[sdt_nhap]
     else:
         st.session_state.state_kh_ten = "Khách lẻ"
+        st.session_state.widget_kh_ten_input = "Khách lẻ"
+        
     st.session_state.state_kh_sdt = sdt_nhap
 
 # =====================================================================
@@ -463,19 +468,20 @@ def main():
             
             c1, c2 = st.columns(2)
             with c1: 
-                # ĐÃ SỬA: Sử dụng on_change callback để kích hoạt xử lý tra cứu mượt mà, không giật lag
                 kh_sdt = st.text_input(
                     "📞 SĐT khách", 
                     value=st.session_state.state_kh_sdt, 
                     key="widget_kh_sdt", 
                     on_change=xu_ly_tra_cuu_khach_hang
                 )
-                # Đảm bảo đồng bộ ngược lại state chính
                 st.session_state.state_kh_sdt = kh_sdt.strip()
                     
             with c2: 
-                # ĐÃ SỬA: Đổi tên key widget sang cấu trúc động tránh lỗi xung đột Instantiation của Streamlit
-                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten_input")
+                # 🔥 ĐÃ SỬA: Khởi tạo giá trị ban đầu tránh lỗi cache và cho phép chỉnh sửa linh hoạt
+                if "widget_kh_ten_input" not in st.session_state:
+                    st.session_state.widget_kh_ten_input = st.session_state.state_kh_ten
+                
+                kh_ten = st.text_input("👤 Tên khách hàng", key="widget_kh_ten_input")
                 st.session_state.state_kh_ten = kh_ten
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
@@ -692,11 +698,13 @@ def main():
                                 </div>
                             </div>"""
 
+                            # Reset thông tin để chuẩn bị cho đơn sau
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True,
-                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" 
+                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "",
+                                "widget_kh_ten_input": "Khách lẻ" # Ép reset widget tên
                             })
                             st.rerun()
                             
