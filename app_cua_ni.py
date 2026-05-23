@@ -73,12 +73,16 @@ def generate_css_animations():
             z-index: 999999 !important; border-bottom: 3px solid #7d8f15 !important; box-shadow: 0px 4px 15px rgba(0,0,0,0.3) !important;
         }
         
+        /* ĐÃ SỬA LỆCH TRÁI THEO Ý NÍ */
         .banner-bottom { 
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
             background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
-            letter-spacing: 1px !important; z-index: 999999 !important; /* Tăng z-index để đè tuyệt đối */
+            letter-spacing: 1px !important; z-index: 999999 !important; 
             bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; 
-            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; display: flex !important; align-items: center !important; justify-content: center !important; padding-left: 0px !important; 
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; 
+            display: flex !important; align-items: center !important; 
+            justify-content: flex-start !important; /* Đẩy chữ lệch sang bên trái */
+            padding-left: 15px !important; /* Tạo khoảng đệm cách mép trái màn hình */
         }
 
         .bang-hieu-lktv {
@@ -233,7 +237,7 @@ st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
 <div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-<div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
+<div class="banner-bottom">SALON KIM HIỀN.... 🌹🌹🌹</div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
@@ -357,7 +361,6 @@ def main():
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             
-            # Nút bấm đăng nhập chính
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
                     st.session_state.update({
@@ -395,7 +398,6 @@ def main():
                         else: st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                     else: st.error("Lỗi dữ liệu cổng Nhân Viên!")
         
-        # NÚT TẢI LẠI TRANG KHẨN CẤP KHI CỬA SỔ ĐĂNG NHẬP BỊ ĐƠ/LỖI MẠNG
         st.write("") 
         col_reload1, col_reload2 = st.columns([4, 6])
         with col_reload1:
@@ -478,16 +480,12 @@ def main():
                 st.divider()
                 st.markdown("### 🧮 PHÂN HỆ THU NGÂN (TÍNH TOÁN CHIẾT KHẤU)")
                 
-                # Nơi nhập số tiền chiết khấu khách hàng chính xác như ví dụ của ní
                 tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0, help="Điền chính xác số tiền muốn giảm thẳng cho khách. Ví dụ: 10000, 20000...")
-                
-                # Tính toán tổng tiền thực tế khách phải trả theo công thức chuẩn
                 t_khach_tra = max(0.0, t_bill - tien_giam)
                 
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, giảm giá khai trương...")
                 st.write("")
                 
-                # Hiển thị 3 cột thông tin trực quan, tường minh
                 col_bill1, col_bill2, col_bill3 = st.columns(3)
                 with col_bill1: 
                     st.markdown(f'<div class="nhan-tieu-de" style="color: #b45309;">💰 Tổng Đơn</div><div class="tong-don-box">{t_bill:,.0f} đ</div>', unsafe_allow_html=True)
@@ -533,8 +531,6 @@ def main():
                             html_items = ""
                             chi_tiet_mail = ""
                             
-                            # Tính chiết khấu phân bổ đều cho từng dòng để đẩy lên sheet (nếu cần tracking theo dịch vụ)
-                            # Hoặc ní lưu trực tiếp ghi chú. Ở đây ta đẩy nguyên giá trị chiết khấu vào cột Ghi Chú và Hóa đơn để đồng bộ.
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
                                     bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
@@ -550,7 +546,6 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             
-                            # NỘI DUNG THÔNG BÁO TRÊN GMAIL - BÁO RÕ RÀNG CHIẾT KHẤU TRÁNH NHẦM LẪN
                             noi_dung_mail = (
                                 f"Mã hóa đơn: {ma_hd}\n"
                                 f"Thời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
@@ -568,7 +563,6 @@ def main():
                             )
                             gui_email_backup(noi_dung_mail)
 
-                            # NỘI DUNG HIỂN THỊ TRÊN HÓA ĐƠN ĐIỆN TỬ 
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
