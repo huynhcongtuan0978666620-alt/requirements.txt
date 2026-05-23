@@ -237,7 +237,7 @@ st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
 <div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
-<div class="banner-bottom">SALON KIM HIỀN.... 🌹🌹🌹</div>
+<div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
