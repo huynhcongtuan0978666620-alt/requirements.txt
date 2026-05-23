@@ -37,17 +37,25 @@ def generate_css_animations():
 
         .stApp {
             padding-top: 75px !important; 
-            padding-bottom: 60px !important;
+            padding-bottom: 75px !important; /* Tăng khoảng cách đáy để không bị cấn nút */
             background-color: transparent !important;
             overscroll-behavior-y: contain !important; /* Bảo vệ lớp bọc nội bộ Streamlit */
         }
 
-        /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC ĐỂ TRÁNH NHÂN VIÊN ẤN NHẦM */
+        /* 🚫 DIỆT TẬN GỐC THANH "MANAGE APP" VÀ TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
         header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div {
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
+        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"] {
             display: none !important; 
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
+        }
+
+        /* Khóa cứng dòng "Manage app" dưới đáy màn hình điện thoại */
+        div[class^="StyledViewerBottomBar"] {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
         }
 
         .the-quan-ly-flat {
@@ -68,9 +76,9 @@ def generate_css_animations():
         .banner-bottom { 
             position: fixed !important; left: 0 !important; right: 0 !important; height: 48px !important;
             background: #111111 !important; color: #f1c40f !important; font-size: 15px !important; font-weight: 800 !important; 
-            letter-spacing: 1px !important; display: flex !important; align-items: center !important; z-index: 99999 !important;
+            letter-spacing: 1px !important; z-index: 999999 !important; /* Tăng z-index để đè tuyệt đối */
             bottom: 0 !important; top: auto !important; border-top: 3px solid #7d8f15 !important; 
-            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; justify-content: flex-start !important; padding-left: 20px !important; 
+            box-shadow: 0px -4px 15px rgba(0,0,0,0.2) !important; display: flex !important; align-items: center !important; justify-content: center !important; padding-left: 0px !important; 
         }
 
         .bang-hieu-lktv {
@@ -346,6 +354,8 @@ def main():
             st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
+            
+            # Nút bấm đăng nhập chính
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
                 if u == "admin" and p == "2026":
                     st.session_state.update({
@@ -382,6 +392,16 @@ def main():
                             st.rerun()
                         else: st.error("Tài khoản hoặc Mật khẩu không chính xác!")
                     else: st.error("Lỗi dữ liệu cổng Nhân Viên!")
+        
+        # NÚT TẢI LẠI TRANG KHẨN CẤP KHI CỬA SỔ ĐĂNG NHẬP BỊ ĐƠ/LỖI MẠNG
+        st.write("") 
+        col_reload1, col_reload2 = st.columns([4, 6])
+        with col_reload1:
+            if st.button("🔄 TẢI LẠI APP", use_container_width=True):
+                st.session_state.clear()
+                st.rerun()
+        with col_reload2:
+            st.caption("💡 *Nếu app bị đứng hình hoặc lag mạng, bấm nút kế bên để làm mới nhé ní!*")
 
     # --- PHÂN HỆ HOẠT ĐỘNG CHÍNH ---
     else:
