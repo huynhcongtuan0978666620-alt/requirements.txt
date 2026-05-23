@@ -307,7 +307,7 @@ def gui_email_backup(noi_dung):
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"BACKUP ĐƠN HÀNG SALON - {gio_vn_mail}"
+        msg['Subject'] = f"ĐH DỊCH VỤ SALON - {gio_vn_mail}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -343,7 +343,7 @@ def main():
     if not st.session_state["logged_in"]:
         display_header(settings)
         with st.form("login_section"):
-            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP HỆ THỐNG</h3>", unsafe_allow_html=True)
+            st.markdown("<h3 style='text-align: center;'>🔐 ĐĂNG NHẬP</h3>", unsafe_allow_html=True)
             u = st.text_input("Tài khoản (SĐT)")
             p = st.text_input("Mật khẩu", type="password")
             if st.form_submit_button("XÁC NHẬN ĐĂNG NHẬP", use_container_width=True):
@@ -465,7 +465,7 @@ def main():
                 t_du = kh_tra - t_bill
                 
                 if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI TIỀN MẶT CHO KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN KHÁCH DƯ: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state.last_submit:
@@ -478,7 +478,7 @@ def main():
                 if can_go:
                     cam_ket = st.checkbox("✅ XÁC NHẬN ĐƠN KHÔNG TRÙNG LẶP")
                     if not st.session_state.submitting:
-                        if st.button("🚀 CHỐT ĐƠN HÀNG & ĐỒNG BỘ", use_container_width=True, type="primary"):
+                        if st.button("🚀 CHỐT ĐƠN & ĐỒNG BỘ", use_container_width=True, type="primary"):
                             if cam_ket:
                                 st.session_state.submitting = True
                                 st.rerun()
@@ -553,7 +553,7 @@ def main():
             if st.session_state.bill_vua_in:
                 st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP!")
                 st.markdown("---")
-                st.markdown("### 🧾 HOÁ ĐƠN VỪA LẬP (Chụp màn hình gửi khách)")
+                st.markdown("### 🧾 HOÁ ĐƠN (Chụp màn hình gửi khách)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
