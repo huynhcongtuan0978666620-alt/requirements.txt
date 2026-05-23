@@ -148,7 +148,7 @@ def generate_css_animations():
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
 
-        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP CHUẨN THỰC TẾ (ĐÃ ĐƯỢC CHỈNH SỬA) */
+        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP CHUẨN THỰC TẾ */
         .balloon-container { 
             position: fixed !important; 
             top: 0 !important; 
@@ -162,7 +162,7 @@ def generate_css_animations():
         }
         .css-balloon { 
             position: absolute !important; 
-            bottom: -150px !important; /* Xuất phát hoàn toàn từ ngoài rìa dưới đáy màn hình */
+            bottom: -150px !important; /* Xuất phát hẳn dưới cạnh đáy màn hình */
             width: 50px; 
             height: 65px; 
             border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
@@ -182,7 +182,7 @@ def generate_css_animations():
         }
         @keyframes fly-up-to-sky {
             0% { 
-                transform: translateY(110vh) rotate(0deg); /* Đi từ dưới lòng đất */
+                transform: translateY(110vh) rotate(0deg); /* Xuất phát ẩn dưới đất */
                 opacity: 0; 
             }
             15% { 
@@ -192,7 +192,7 @@ def generate_css_animations():
                 opacity: 0.9; 
             }
             100% { 
-                transform: translateY(-135vh) rotate(var(--rot)); /* Bay xuyên lên bầu trời rồi biến mất hoàn toàn */
+                transform: translateY(-135vh) rotate(var(--rot)); /* Bay mất hút lên trời xanh */
                 opacity: 0; 
             }
         }
@@ -217,20 +217,20 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay lững lờ so le (SIÊU THẬT!)
+# Hàm kết xuất bóng bay lững lờ so le (ĐÃ ĐƯỢC CẢI TIẾN)
 def render_balloons_html():
     colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
     html_balloons = '<div class="balloon-container">'
     for i in range(45): 
-        left_pos = random.uniform(5, 95) # Rải đều chiều ngang
+        left_pos = random.uniform(5, 95) 
         color = random.choice(colors)
         
-        # --- ĐÂY LÀ ĐIỂM ĐẮT GIÁ ---
-        delay = round(random.uniform(0.0, 2.5), 2)       # Quả thì lên ngay, quả thì đợi tới 2.5 giây mới chịu lên
-        duration = round(random.uniform(3.5, 6.0), 2)    # Quả căng gió bay nhanh (3.5s), quả nặng mông bay lững lờ (6s)
+        # Tạo nhịp điệu so le đan xen
+        delay = round(random.uniform(0.0, 2.5), 2)       # Quả vọt lên trước, quả hoãn lại tới 2.5 giây mới bay
+        duration = round(random.uniform(3.5, 6.0), 2)    # Tốc độ quả nhanh (3.5s) quả chậm lững lờ (6s)
         
-        size_ratio = random.uniform(0.7, 1.3) # To nhỏ ngẫu nhiên
-        rotation = random.randint(-20, 20)    # Độ nghiêng lắc lư khi bay
+        size_ratio = random.uniform(0.7, 1.3) 
+        rotation = random.randint(-20, 20) 
         
         width = int(50 * size_ratio)
         height = int(65 * size_ratio)
@@ -242,13 +242,12 @@ def render_balloons_html():
             width: {width}px; 
             height: {height}px; 
             animation-delay: {delay}s; 
-            animation-duration: {duration}s; /* Ép thời gian bay của mỗi quả phải khác nhau */
+            animation-duration: {duration}s;
             --rot: {rotation}deg;
             box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
         "></div>"""
     html_balloons += '</div>'
     return html_balloons
-
 
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
