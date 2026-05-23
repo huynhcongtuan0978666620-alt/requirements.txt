@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & GIAO DIỆN)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & BÓNG BAY SO LE)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -147,6 +147,26 @@ def generate_css_animations():
             80% { opacity: 0.8; }
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
+
+        /* 🎈 KHUNG CHỨA BÓNG BAY KHÔNG CHÙM NỀN TẢNG CSS GỐC */
+        .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; background: transparent; }
+        .fixed-balloon { 
+            position: absolute !important; bottom: -120px !important; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.9; 
+            box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
+            animation: fly-up-skywards-pure linear forwards; 
+        }
+        .fixed-balloon::after { 
+            content: ""; position: absolute; bottom: -12px; left: 50%; 
+            transform: translateX(-50%); width: 2px; height: 14px; 
+            background-color: rgba(0, 0, 0, 0.22); 
+        }
+        @keyframes fly-up-skywards-pure {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            8% { opacity: 0.9; }
+            90% { opacity: 0.9; }
+            100% { transform: translateY(-130vh) rotate(var(--rot, 15deg)); opacity: 0; }
+        }
     </style>
     """
     return css_animation
@@ -168,89 +188,37 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay lững lờ so le (ĐÃ FIX KHÔNG BỊ MẤT TIÊU)
+# Hàm tạo bóng bay lệch pha, dập dìu, so le (BAO HIỂN THỊ CHUẨN 10 ĐIỂM, KHÔNG TRÙNG NHAU)
 def render_balloons_html():
-    js_balloon_script = """
-    <div id="js-balloon-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent;"></div>
+    colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
+    html_balloons = '<div class="balloon-container-css">'
     
-    <style>
-        .js-balloon { 
-            position: absolute !important; 
-            bottom: -150px !important; 
-            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
-            opacity: 0.9; 
-            box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
-            animation: fly-up-skywards linear forwards; 
-        }
-        .js-balloon::after { 
-            content: ""; 
-            position: absolute; 
-            bottom: -12px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            width: 2px; 
-            height: 14px; 
-            background-color: rgba(0, 0, 0, 0.22); 
-        }
-        @keyframes fly-up-skywards {
-            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.9; }
-            90% { opacity: 0.9; }
-            100% { transform: translateY(-135vh) rotate(var(--rot)); opacity: 0; }
-        }
-    </style>
-
-    <script>
-        (function() {
-            if (window.balloonScriptActive) return;
-            window.balloonScriptActive = true;
-
-            const container = document.getElementById('js-balloon-container');
-            if (!container) return;
-
-            const colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc'];
-            let balloonCount = 0;
-            const maxBalloons = 45; 
-
-            function createSingleBalloon() {
-                if (balloonCount >= maxBalloons) {
-                    window.balloonScriptActive = false;
-                    return;
-                }
-                
-                const balloon = document.createElement('div');
-                balloon.className = 'js-balloon';
-                
-                const leftPos = Math.random() * 90 + 5; 
-                const color = colors[Math.floor(Math.random() * colors.length)];
-                const sizeRatio = Math.random() * 0.6 + 0.7; 
-                const duration = Math.random() * 2.5 + 3.5;  
-                const rotation = Math.floor(Math.random() * 40) - 20; 
-                
-                const width = Math.floor(50 * sizeRatio);
-                const height = Math.floor(65 * sizeRatio);
-                
-                balloon.style.backgroundColor = color;
-                balloon.style.left = leftPos + 'vw';
-                balloon.style.width = width + 'px';
-                balloon.style.height = height + 'px';
-                balloon.style.animationDuration = duration + 's';
-                balloon.style.setProperty('--rot', rotation + 'deg');
-                
-                container.appendChild(balloon);
-                balloonCount++;
-                
-                const nextDelay = Math.random() * 170 + 80;
-                setTimeout(createSingleBalloon, nextDelay);
-                
-                setTimeout(() => { balloon.remove(); }, duration * 1000);
-            }
-            
-            createSingleBalloon();
-        })();
-    </script>
-    """
-    st.markdown(js_balloon_script, unsafe_allow_html=True)
+    # Tạo chu kỳ lệch pha cho 45 quả bóng phân bố cực kỳ ngẫu nhiên
+    for i in range(45):
+        left_pos = random.uniform(4, 92)  # Vị trí ngang
+        color = random.choice(colors)      # Màu sắc
+        size_ratio = random.uniform(0.7, 1.3)
+        width = int(50 * size_ratio)
+        height = int(65 * size_ratio)
+        
+        # Điểm mấu chốt để không dính chùm: delay lệch từ 0s đến 4.5 giây!
+        delay = round(random.uniform(0.0, 4.5), 2)
+        duration = round(random.uniform(3.8, 5.8), 2)
+        rotation = random.randint(-20, 20)
+        
+        html_balloons += f"""
+        <div class="fixed-balloon" style="
+            background-color: {color}; 
+            left: {left_pos}vw; 
+            width: {width}px; 
+            height: {height}px; 
+            animation-delay: {delay}s; 
+            animation-duration: {duration}s; 
+            --rot: {rotation}deg;">
+        </div>"""
+        
+    html_balloons += '</div>'
+    st.markdown(html_balloons, unsafe_allow_html=True)
 
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
@@ -369,7 +337,7 @@ def main():
         st.session_state.trigger_boom = False
 
     if st.session_state.trigger_balloons:
-        render_balloons_html()  
+        render_balloons_html()  # Gọi kết xuất bóng bay thuần CSS chống re-render bậy bạ
         st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
