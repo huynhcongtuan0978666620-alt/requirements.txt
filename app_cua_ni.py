@@ -374,7 +374,8 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
-        "trigger_boom": False, "trigger_balloons": False
+        "trigger_boom": False, "trigger_balloons": False,
+        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"  # THÊM BIẾN TRẠNG THÁI TRUNG GIAN TRÁNH XUNG ĐỘT WIDGET
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -459,27 +460,39 @@ def main():
             
             c1, c2 = st.columns(2)
             with c1: 
-                kh_sdt = st.text_input("📞 SĐT khách", value="", key="widget_kh_sdt")
+                # Ô nhập Số điện thoại, liên kết trực tiếp với State trung gian
+                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.kh_sdt_val, placeholder="Nhập SĐT...")
+                
+                # NẾU PHÁT HIỆN SỰ THAY ĐỔI TRÊN Ô NHẬP SĐT:
+                if kh_sdt != st.session_state.kh_sdt_val:
+                    st.session_state.kh_sdt_val = kh_sdt
+                    sdt_nhap_so = kh_sdt.strip()
+                    
+                    if sdt_nhap_so:
+                        ds_kh = get_khach_hang_data()
+                        sdt_khong_0 = sdt_nhap_so[1:] if sdt_nhap_so.startswith('0') else sdt_nhap_so
+                        sdt_co_0 = '0' + sdt_nhap_so if not sdt_nhap_so.startswith('0') else sdt_nhap_so
+                        
+                        if sdt_nhap_so in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_nhap_so]
+                        elif sdt_khong_0 in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_khong_0]
+                        elif sdt_co_0 in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_co_0]
+                        else:
+                            st.session_state.kh_ten_val = "" # SĐT mới -> để trống tự gõ tên mới
+                    else:
+                        st.session_state.kh_ten_val = "Khách lẻ" # Không gõ SĐT mặc định khách lẻ
+                    
+                    st.rerun() # Buộc app vẽ lại cấu trúc để fill tên tự động vào ô bên phải
                     
             with c2: 
-                # --- 🛠️ XỬ LÝ BIẾN TRUNG GIAN TRA CỨU TRƯỚC KHI KHỞI TẠO WIDGET TÊN KHÁCH ---
-                ten_mac_dinh = "Khách lẻ"
-                sdt_nhap_so = kh_sdt.strip()
-                if sdt_nhap_so:
-                    ds_kh = get_khach_hang_data()
-                    sdt_khong_0 = sdt_nhap_so[1:] if sdt_nhap_so.startswith('0') else sdt_nhap_so
-                    sdt_co_0 = '0' + sdt_nhap_so if not sdt_nhap_so.startswith('0') else sdt_nhap_so
-                    
-                    if sdt_nhap_so in ds_kh:
-                        ten_mac_dinh = ds_kh[sdt_nhap_so]
-                    elif sdt_khong_0 in ds_kh:
-                        ten_mac_dinh = ds_kh[sdt_khong_0]
-                    elif sdt_co_0 in ds_kh:
-                        ten_mac_dinh = ds_kh[sdt_co_0]
-                    else:
-                        ten_mac_dinh = "" # SĐT mới tinh -> để trống bắt tự nhập
+                # Ô nhập Tên khách hàng, không dùng tham số key để tránh lỗi cứng widget
+                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.kh_ten_val, placeholder="Tự động điền hoặc sửa tay...")
                 
-                kh_ten = st.text_input("👤 Tên khách hàng", value=ten_mac_dinh, key="widget_kh_ten_lktv")
+                # Đồng bộ nếu thu ngân đổi tên thủ công trên giao diện
+                if kh_ten != st.session_state.kh_ten_val:
+                    st.session_state.kh_ten_val = kh_ten
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
@@ -587,9 +600,9 @@ def main():
                             html_items = ""
                             chi_tiet_tele = "" 
                             
-                            # Tên và SĐT chốt cuối cùng
-                            chot_ten = kh_ten.strip() if kh_ten.strip() else "Khách lẻ"
-                            chot_sdt = kh_sdt.strip()
+                            # Tên và SĐT chốt cuối cùng lấy từ state trung gian an toàn
+                            chot_ten = st.session_state.kh_ten_val.strip() if st.session_state.kh_ten_val.strip() else "Khách lẻ"
+                            chot_sdt = st.session_state.kh_sdt_val.strip()
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
@@ -675,13 +688,15 @@ def main():
                                 </div>
                             </div>"""
 
-                            # --- 🚀 CHỈ RESET GIỎ VÀ TRẠNG THÁI SUBMIT, GIỮ LUỒNG KHÔNG BỊ KHÓA CACHE WIDGET ---
+                            # --- 🚀 SAU KHI LƯU ĐƠN THÀNH CÔNG: RESET LUÔN CẢ FORM NHẬP KHÁCH HÀNG ---
                             st.session_state.update({
                                 "gio_hang": [], 
                                 "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, 
-                                "trigger_boom": True
+                                "trigger_boom": True,
+                                "kh_sdt_val": "",       # Trả form về rỗng sạch sẽ
+                                "kh_ten_val": "Khách lẻ" # Set lại mặc định cho hóa đơn mới
                             })
                             st.rerun()
                             
