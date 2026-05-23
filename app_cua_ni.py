@@ -161,7 +161,7 @@ def generate_css_animations():
         .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
         .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
         @keyframes explode-mega {
-            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            0% { transform: translate(0, 0); opacity: 0; }
             20% { opacity: 1; }
             80% { opacity: 0.8; }
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
@@ -237,7 +237,7 @@ def render_balloons_html():
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
-<div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
+<div class="banner-top">⭐⭐BAO NGON LUÔN NÍ ƠI⭐⭐</div>
 <div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
 
@@ -369,7 +369,7 @@ def main():
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
         "trigger_boom": False, "trigger_balloons": False,
-        "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" # 💡 Đổi tên biến tránh trùng với widget key
+        "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" 
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -386,7 +386,6 @@ def main():
 
     # --- HÀM XỬ LÝ TRA CỨU SĐT KHÁCH HÀNG TỰ ĐỘNG KHÔNG RESET ---
     def update_khach_info():
-        # Lấy SĐT từ Widget thông qua Session State tạm thời được Streamlit gán tự động khi tương tác
         sdt_nhap = str(st.session_state.widget_kh_sdt).strip()
         st.session_state.state_kh_sdt = sdt_nhap
         
@@ -394,8 +393,7 @@ def main():
         if sdt_nhap in ds_kh:
             st.session_state.state_kh_ten = ds_kh[sdt_nhap]
         else:
-            st.session_name = "Khách lẻ"
-            st.session_state.state_kh_ten = "Khách lẻ"
+            st.session_state.state_kh_ten = "Khách lẻ" # 💡 ĐÃ SỬA: Lỗi chính tả từ st.session_name thành st.session_state
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -465,14 +463,14 @@ def main():
             services = get_service_data()
             dv_list = list(services.keys())
             
-            # 💡 KHẮC PHỤC LỖI TẠI ĐÂY: Dùng value động để không bị crash khi gán State mới để xóa Form
+            # 💡 ĐÃ SỬA: Đổi thứ tự ô nhập SĐT lên trước và gán value động chuẩn xác từ session_state
             c1, c2 = st.columns(2)
             with c1: 
-                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten")
-                st.session_state.state_kh_ten = kh_ten
-            with c2: 
                 kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.state_kh_sdt, key="widget_kh_sdt", on_change=update_khach_info)
                 st.session_state.state_kh_sdt = kh_sdt
+            with c2: 
+                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten")
+                st.session_state.state_kh_ten = kh_ten
             
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
@@ -688,7 +686,6 @@ def main():
                                 </div>
                             </div>"""
 
-                            # 💡 SỬA TẠI ĐÂY: Thay đổi State trung gian an toàn tuyệt đối không bao giờ lỗi!
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
@@ -717,7 +714,7 @@ def main():
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-                st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NLẤT</div>', unsafe_allow_html=True)
                 
                 if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
