@@ -11,9 +11,10 @@ import math
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import streamlit.components.v1 as components
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & BÓNG BAY ĐỘNG)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & GIAO DIỆN)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -147,55 +148,6 @@ def generate_css_animations():
             80% { opacity: 0.8; }
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
-
-        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP CHUẨN THỰC TẾ */
-        .balloon-container { 
-            position: fixed !important; 
-            top: 0 !important; 
-            left: 0 !important; 
-            width: 100vw !important; 
-            height: 100vh !important; 
-            pointer-events: none !important; 
-            z-index: 9999999 !important; 
-            overflow: hidden !important; 
-            background: transparent !important;
-        }
-        .css-balloon { 
-            position: absolute !important; 
-            bottom: -150px !important; /* Xuất phát hẳn dưới cạnh đáy màn hình */
-            width: 50px; 
-            height: 65px; 
-            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
-            opacity: 0.9; 
-            animation: fly-up-to-sky 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; 
-        }
-        /* Sợi dây buộc thắt nút dưới bong bóng */
-        .css-balloon::after { 
-            content: ""; 
-            position: absolute; 
-            bottom: -12px; 
-            left: 50%; 
-            transform: translateX(-50%);
-            width: 2px; 
-            height: 14px; 
-            background-color: rgba(0, 0, 0, 0.22); 
-        }
-        @keyframes fly-up-to-sky {
-            0% { 
-                transform: translateY(110vh) rotate(0deg); /* Xuất phát ẩn dưới đất */
-                opacity: 0; 
-            }
-            15% { 
-                opacity: 0.9; 
-            }
-            90% { 
-                opacity: 0.9; 
-            }
-            100% { 
-                transform: translateY(-135vh) rotate(var(--rot)); /* Bay mất hút lên trời xanh */
-                opacity: 0; 
-            }
-        }
     </style>
     """
     return css_animation
@@ -217,37 +169,82 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay lững lờ so le (ĐÃ ĐƯỢC CẢI TIẾN)
+# Hàm kết xuất bóng bay lững lờ so le (ĐÃ SỬA ĐỔI MỚI NHẤT BẰNG JAVASCRIPT)
 def render_balloons_html():
-    colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
-    html_balloons = '<div class="balloon-container">'
-    for i in range(45): 
-        left_pos = random.uniform(5, 95) 
-        color = random.choice(colors)
-        
-        # Tạo nhịp điệu so le đan xen
-        delay = round(random.uniform(0.0, 2.5), 2)       # Quả vọt lên trước, quả hoãn lại tới 2.5 giây mới bay
-        duration = round(random.uniform(3.5, 6.0), 2)    # Tốc độ quả nhanh (3.5s) quả chậm lững lờ (6s)
-        
-        size_ratio = random.uniform(0.7, 1.3) 
-        rotation = random.randint(-20, 20) 
-        
-        width = int(50 * size_ratio)
-        height = int(65 * size_ratio)
-        
-        html_balloons += f"""
-        <div class="css-balloon" style="
-            background-color: {color}; 
-            left: {left_pos}vw; 
-            width: {width}px; 
-            height: {height}px; 
-            animation-delay: {delay}s; 
-            animation-duration: {duration}s;
-            --rot: {rotation}deg;
+    js_balloon_script = """
+    <div id="js-balloon-container" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent;"></div>
+    
+    <style>
+        .js-balloon { 
+            position: absolute !important; 
+            bottom: -150px !important; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
+            opacity: 0.9; 
             box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
-        "></div>"""
-    html_balloons += '</div>'
-    return html_balloons
+            animation: fly-up-skywards linear forwards; 
+        }
+        .js-balloon::after { 
+            content: ""; 
+            position: absolute; 
+            bottom: -12px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 2px; 
+            height: 14px; 
+            background-color: rgba(0, 0, 0, 0.22); 
+        }
+        @keyframes fly-up-skywards {
+            0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+            10% { opacity: 0.9; }
+            90% { opacity: 0.9; }
+            100% { transform: translateY(-135vh) rotate(var(--rot)); opacity: 0; }
+        }
+    </style>
+
+    <script>
+        (function() {
+            const container = document.getElementById('js-balloon-container');
+            const colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc'];
+            let balloonCount = 0;
+            const maxBalloons = 45; 
+
+            function createSingleBalloon() {
+                if (balloonCount >= maxBalloons) return;
+                
+                const balloon = document.createElement('div');
+                balloon.className = 'js-balloon';
+                
+                const leftPos = Math.random() * 90 + 5; 
+                const color = colors[Math.floor(Math.random() * colors.length)];
+                const sizeRatio = Math.random() * 0.6 + 0.7; 
+                const duration = Math.random() * 2.5 + 3.5;  // Thời gian bay so le từ 3.5s đến 6s
+                const rotation = Math.floor(Math.random() * 40) - 20; 
+                
+                const width = Math.floor(50 * sizeRatio);
+                const height = Math.floor(65 * sizeRatio);
+                
+                balloon.style.backgroundColor = color;
+                balloon.style.left = leftPos + 'vw';
+                balloon.style.width = width + 'px';
+                balloon.style.height = height + 'px';
+                balloon.style.animationDuration = duration + 's';
+                balloon.style.setProperty('--rot', rotation + 'deg');
+                
+                container.appendChild(balloon);
+                balloonCount++;
+                
+                // Thả lệch nhau từ 100ms đến 250ms để tạo dòng bong bóng tự nhiên
+                const nextDelay = Math.random() * 150 + 100;
+                setTimeout(createSingleBalloon, nextDelay);
+                
+                setTimeout(() => { balloon.remove(); }, duration * 1000);
+            }
+            
+            createSingleBalloon();
+        })();
+    </script>
+    """
+    return components.html(js_balloon_script, height=0, width=0)
 
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
@@ -366,7 +363,7 @@ def main():
         st.session_state.trigger_boom = False
 
     if st.session_state.trigger_balloons:
-        st.markdown(render_balloons_html(), unsafe_allow_html=True)
+        render_balloons_html()  # Gọi hàm JS trực tiếp kết xuất ra giao diện
         st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
