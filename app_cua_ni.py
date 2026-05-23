@@ -148,21 +148,53 @@ def generate_css_animations():
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
 
-        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP (NEW!) */
-        .balloon-container { position: fixed; bottom: -100px; left: 0; width: 100vw; height: 110vh; pointer-events: none; z-index: 999998; overflow: hidden; background: transparent; }
+        /* 🎈 2. HIỆU ỨNG BÓNG BAY ĐĂNG NHẬP CHUẨN THỰC TẾ (ĐÃ ĐƯỢC CHỈNH SỬA) */
+        .balloon-container { 
+            position: fixed !important; 
+            top: 0 !important; 
+            left: 0 !important; 
+            width: 100vw !important; 
+            height: 100vh !important; 
+            pointer-events: none !important; 
+            z-index: 9999999 !important; 
+            overflow: hidden !important; 
+            background: transparent !important;
+        }
         .css-balloon { 
-            position: absolute; width: 50px; height: 62px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
-            opacity: 0.85; animation: fly-up-sky 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; 
+            position: absolute !important; 
+            bottom: -150px !important; /* Xuất phát hoàn toàn từ ngoài rìa dưới đáy màn hình */
+            width: 50px; 
+            height: 65px; 
+            border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; 
+            opacity: 0.9; 
+            animation: fly-up-to-sky 4.5s cubic-bezier(0.25, 1, 0.5, 1) forwards !important; 
         }
-        /* Đuôi dây bóng */
+        /* Sợi dây buộc thắt nút dưới bong bóng */
         .css-balloon::after { 
-            content: "🎈"; position: absolute; bottom: -12px; left: 14px; font-size: 10px; opacity: 0.5;
+            content: ""; 
+            position: absolute; 
+            bottom: -12px; 
+            left: 50%; 
+            transform: translateX(-50%);
+            width: 2px; 
+            height: 14px; 
+            background-color: rgba(0, 0, 0, 0.22); 
         }
-        @keyframes fly-up-sky {
-            0% { transform: translateY(0) rotate(0deg); opacity: 0; }
-            10% { opacity: 0.9; }
-            90% { opacity: 0.9; }
-            100% { transform: translateY(-120vh) rotate(var(--rot)); opacity: 0; }
+        @keyframes fly-up-to-sky {
+            0% { 
+                transform: translateY(110vh) rotate(0deg); /* Đi từ dưới lòng đất */
+                opacity: 0; 
+            }
+            15% { 
+                opacity: 0.9; 
+            }
+            90% { 
+                opacity: 0.9; 
+            }
+            100% { 
+                transform: translateY(-135vh) rotate(var(--rot)); /* Bay xuyên lên bầu trời rồi biến mất hoàn toàn */
+                opacity: 0; 
+            }
         }
     </style>
     """
@@ -185,19 +217,19 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay (MỚI!)
+# Hàm kết xuất bóng bay từ dưới đất lên trời
 def render_balloons_html():
     colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
     html_balloons = '<div class="balloon-container">'
-    for i in range(45): # Số lượng 45 quả bóng bay đồng loạt
-        left_pos = random.uniform(5, 95) # Rải đều chiều ngang màn hình
+    for i in range(45): 
+        left_pos = random.uniform(5, 95) 
         color = random.choice(colors)
-        delay = round(random.uniform(0.0, 1.2), 2) # Thời gian bay lệch nhau chút cho tự nhiên
-        size_ratio = random.uniform(0.7, 1.4) # Bóng to bóng nhỏ sinh động
-        rotation = random.randint(-25, 25) # Độ nghiêng bóng khi bay lên
+        delay = round(random.uniform(0.0, 1.2), 2) 
+        size_ratio = random.uniform(0.7, 1.4) 
+        rotation = random.randint(-25, 25) 
         
         width = int(50 * size_ratio)
-        height = int(62 * size_ratio)
+        height = int(65 * size_ratio)
         
         html_balloons += f"""
         <div class="css-balloon" style="
@@ -313,7 +345,6 @@ def gui_email_backup(noi_dung):
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
-    # Thêm biến trigger_balloons vào khởi tạo bộ nhớ trạng thái app
     init_states = {
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "adding_cart": False, "logged_in": False, "role": None, 
@@ -325,12 +356,10 @@ def main():
 
     settings = get_settings()
 
-    # Kích hoạt pháo hoa chốt đơn nếu có lệnh hiệu ứng
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
         st.session_state.trigger_boom = False
 
-    # Kích hoạt bóng bay đăng nhập nếu có lệnh hiệu ứng (MỚI!)
     if st.session_state.trigger_balloons:
         st.markdown(render_balloons_html(), unsafe_allow_html=True)
         st.session_state.trigger_balloons = False
@@ -346,7 +375,7 @@ def main():
                 if u == "admin" and p == "2026":
                     st.session_state.update({
                         "logged_in": True, "role": "Admin", 
-                        "full_name": "Chủ Tiệm", "trigger_balloons": True # Bật bóng bay
+                        "full_name": "Chủ Tiệm", "trigger_balloons": True
                     })
                     st.rerun()
                 else:
@@ -371,7 +400,7 @@ def main():
                             ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
                             st.session_state.update({
                                 "logged_in": True, "role": "NhanVien", 
-                                "full_name": ten_that, "trigger_balloons": True # Bật bóng bay
+                                "full_name": ten_that, "trigger_balloons": True
                             })
                             st.success(f"Chào mừng {ten_that}!")
                             time.sleep(0.5)
