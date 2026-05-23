@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (PHÁO HOA & BÓNG BAY SO LE)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (KHÓA RE-LOAD & BÓNG BAY SO LE)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - PREMIUM", 
@@ -27,15 +27,19 @@ def generate_css_animations():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700;800;900&display=swap');
 
+        /* 🚫 KHÓA CHẾT TÍNH NĂNG KÉO ĐỂ TẢI LẠI TRANG (PULL-TO-REFRESH) VÀ TRÀN MÀN HÌNH CHROME/SAFARI */
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #f8f9fa !important;
+            overscroll-behavior-y: contain !important; 
+            overscroll-behavior: contain !important;
         }
 
         .stApp {
             padding-top: 75px !important; 
             padding-bottom: 60px !important;
             background-color: transparent !important;
+            overscroll-behavior-y: contain !important; /* Bảo vệ lớp bọc nội bộ Streamlit */
         }
 
         /* ẨN TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC ĐỂ TRÁNH NHÂN VIÊN ẤN NHẦM */
@@ -138,7 +142,7 @@ def generate_css_animations():
         .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: bold !important; }
         .hd-items { border-bottom: 2px dashed #111111; padding-bottom: 12px; margin-bottom: 12px; }
 
-        /* 🎆 HIỆU ỨNG PHÁO HOA CHỐT ĐƠN */
+        /* 🎆 HIỆU ỨNG PHÁO HOA */
         .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
         .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
         @keyframes explode-mega {
@@ -148,7 +152,7 @@ def generate_css_animations():
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
         }
 
-        /* 🎈 KHUNG CHỨA BÓNG BAY KHÔNG CHÙM NỀN TẢNG CSS GỐC */
+        /* 🎈 HIỆU ỨNG BÓNG BAY KHÔNG CHÙM */
         .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; background: transparent; }
         .fixed-balloon { 
             position: absolute !important; bottom: -120px !important; 
@@ -171,7 +175,7 @@ def generate_css_animations():
     """
     return css_animation
 
-# Hàm kết xuất pháo hoa
+# Hàm kết xuất pháo hoa mừng chốt đơn
 def render_fireworks_html():
     colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff6600', '#00ff00', '#ff00ff', '#ffffff', '#e74c3c', '#3498db']
     html_particles = '<div class="firework-container">'
@@ -188,20 +192,16 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm tạo bóng bay lệch pha, dập dìu, so le (BAO HIỂN THỊ CHUẨN 10 ĐIỂM, KHÔNG TRÙNG NHAU)
+# Hàm tạo bóng bay lệch pha, dập dìu chống lỗi Re-render của Streamlit
 def render_balloons_html():
     colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
     html_balloons = '<div class="balloon-container-css">'
-    
-    # Tạo chu kỳ lệch pha cho 45 quả bóng phân bố cực kỳ ngẫu nhiên
     for i in range(45):
-        left_pos = random.uniform(4, 92)  # Vị trí ngang
-        color = random.choice(colors)      # Màu sắc
+        left_pos = random.uniform(4, 92)
+        color = random.choice(colors)
         size_ratio = random.uniform(0.7, 1.3)
         width = int(50 * size_ratio)
         height = int(65 * size_ratio)
-        
-        # Điểm mấu chốt để không dính chùm: delay lệch từ 0s đến 4.5 giây!
         delay = round(random.uniform(0.0, 4.5), 2)
         duration = round(random.uniform(3.8, 5.8), 2)
         rotation = random.randint(-20, 20)
@@ -216,7 +216,6 @@ def render_balloons_html():
             animation-duration: {duration}s; 
             --rot: {rotation}deg;">
         </div>"""
-        
     html_balloons += '</div>'
     st.markdown(html_balloons, unsafe_allow_html=True)
 
@@ -228,7 +227,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =====================================================================
-# 2. HÀM CORE HỆ THỐNG - TRUY XUẤT AN TOÀN
+# 2. HÀM CORE HỆ THỐNG - TRUY XUẤT AN TOÀN DỮ LIỆU
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -337,7 +336,7 @@ def main():
         st.session_state.trigger_boom = False
 
     if st.session_state.trigger_balloons:
-        render_balloons_html()  # Gọi kết xuất bóng bay thuần CSS chống re-render bậy bạ
+        render_balloons_html()  
         st.session_state.trigger_balloons = False
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
