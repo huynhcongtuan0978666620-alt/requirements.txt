@@ -384,17 +384,6 @@ def main():
         render_balloons_html()  
         st.session_state.trigger_balloons = False
 
-    # --- HÀM XỬ LÝ TRA CỨU SĐT KHÁCH HÀNG TỰ ĐỘNG KHÔNG RESET ---
-    def update_khach_info():
-        sdt_nhap = str(st.session_state.widget_kh_sdt).strip()
-        st.session_state.state_kh_sdt = sdt_nhap
-        
-        ds_kh = get_khach_hang_data()
-        if sdt_nhap in ds_kh:
-            st.session_state.state_kh_ten = ds_kh[sdt_nhap]
-        else:
-            st.session_state.state_kh_ten = "Khách lẻ" # 💡 ĐÃ SỬA: Lỗi chính tả từ st.session_name thành st.session_state
-
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
         display_header(settings)
@@ -463,15 +452,28 @@ def main():
             services = get_service_data()
             dv_list = list(services.keys())
             
-            # 💡 ĐÃ SỬA: Đổi thứ tự ô nhập SĐT lên trước và gán value động chuẩn xác từ session_state
+            # 💡 ĐÃ TỐI ƯU TOÀN DIỆN: Đọc trước data Khách hàng từ Google Sheet để so sánh trực tiếp
+            ds_kh = get_khach_hang_data()
+            
             c1, c2 = st.columns(2)
             with c1: 
-                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.state_kh_sdt, key="widget_kh_sdt", on_change=update_khach_info)
-                st.session_state.state_kh_sdt = kh_sdt
+                # Ô nhập SĐT dùng value lưu trực tiếp từ session_state
+                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.state_kh_sdt, key="widget_kh_sdt")
+                
+                # Logic kiểm tra ngay lập tức khi giá trị thay đổi trên giao diện mà không cần callback
+                if kh_sdt != st.session_state.state_kh_sdt:
+                    st.session_state.state_kh_sdt = kh_sdt.strip()
+                    if st.session_state.state_kh_sdt in ds_kh:
+                        st.session_state.state_kh_ten = ds_kh[st.session_state.state_kh_sdt]
+                    else:
+                        st.session_state.state_kh_ten = "Khách lẻ"
+                    st.rerun() # Re-run nhẹ để cập nhật ngay tên khách sang ô bên cạnh
+                    
             with c2: 
+                # Ô nhập Tên nhận giá trị từ state_kh_ten mà không sợ bị xung đột instantiation
                 kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten")
                 st.session_state.state_kh_ten = kh_ten
-            
+
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
             box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=2.0, value=0.0, step=0.5)
