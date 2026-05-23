@@ -366,7 +366,7 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT ---
+# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT (ĐÃ FIX ĐỒNG BỘ STATE CHUẨN) ---
 def xu_ly_tra_cuu_khach_hang():
     sdt_nhap = st.session_state.widget_kh_sdt.strip()
     ds_kh = get_khach_hang_data()
@@ -376,18 +376,21 @@ def xu_ly_tra_cuu_khach_hang():
         sdt_co_0 = '0' + sdt_nhap if not sdt_nhap.startswith('0') else sdt_nhap
         
         if sdt_nhap in ds_kh:
-            st.session_state.state_kh_ten = ds_kh[sdt_nhap]
+            ten_tim_duoc = ds_kh[sdt_nhap]
         elif sdt_khong_0 in ds_kh:
-            st.session_state.state_kh_ten = ds_kh[sdt_khong_0]
+            ten_tim_duoc = ds_kh[sdt_khong_0]
         elif sdt_co_0 in ds_kh:
-            st.session_state.state_kh_ten = ds_kh[sdt_co_0]
+            ten_tim_duoc = ds_kh[sdt_co_0]
         else:
             # SĐT Mới hoàn toàn -> Đặt trống để nhân viên tự nhập tên mới
-            st.session_state.state_kh_ten = ""
+            ten_tim_duoc = ""
     else:
-        st.session_state.state_kh_ten = "Khách lẻ"
+        ten_tim_duoc = "Khách lẻ"
         
     st.session_state.state_kh_sdt = sdt_nhap
+    st.session_state.state_kh_ten = ten_tim_duoc
+    # Đồng bộ ép buộc trực tiếp vào widget_kh_ten_input của Streamlit
+    st.session_state.widget_kh_ten_input = ten_tim_duoc
 
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
@@ -494,9 +497,12 @@ def main():
                 )
                     
             with c2: 
+                # Khởi tạo giá trị widget_kh_ten_input nếu chưa có trong session state
+                if "widget_kh_ten_input" not in st.session_state:
+                    st.session_state.widget_kh_ten_input = st.session_state.state_kh_ten
+                    
                 kh_ten = st.text_input(
                     "👤 Tên khách hàng", 
-                    value=st.session_state.state_kh_ten, 
                     key="widget_kh_ten_input"
                 )
                 st.session_state.state_kh_ten = kh_ten
@@ -694,12 +700,13 @@ def main():
                                 </div>
                             </div>"""
 
-                            # Reset thông tin để chuẩn bị cho đơn sau
+                            # Reset thông tin để chuẩn bị cho đơn sau và dọn sạch widget_kh_ten_input
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True,
-                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": ""
+                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "",
+                                "widget_kh_ten_input": "Khách lẻ"
                             })
                             st.rerun()
                             
