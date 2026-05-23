@@ -434,7 +434,10 @@ def main():
                         headers = [str(h).strip() for h in raw_data[0]]
                         col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
                         col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
-                        col_ten_idx = next((i < for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
+                        
+                        # --- ĐÃ SỬA LỖI CÚ PHÁP TẠI ĐÂY ---
+                        col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
+                        # ----------------------------------
                         
                         found_row = None
                         sdt_nhap = str(u).strip().lstrip('0')
