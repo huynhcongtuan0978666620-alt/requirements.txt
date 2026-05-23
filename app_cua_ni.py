@@ -585,7 +585,7 @@ def main():
                             gui_email_backup(noi_dung_mail)
 
                             # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
-                            noi_dung_telegram = (
+                            noi_dung_tele = (
                                 f"🧾 *ĐƠN HÀNG MỚI - SALON KIM HIỀN*\n"
                                 f"----------------------------------------\n"
                                 f"🆔 *Mã đơn:* `{ma_hd}`\n"
