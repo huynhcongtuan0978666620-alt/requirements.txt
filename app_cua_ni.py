@@ -366,11 +366,8 @@ def xu_ly_tra_cuu_khach_hang():
     
     if sdt_nhap in ds_kh:
         st.session_state.state_kh_ten = ds_kh[sdt_nhap]
-        # 🔥 ĐÃ SỬA MẤU CHỐT: Ép widget tên nhận luôn giá trị từ sheet realtime không giật lag
-        st.session_state.widget_kh_ten_input = ds_kh[sdt_nhap]
     else:
         st.session_state.state_kh_ten = "Khách lẻ"
-        st.session_state.widget_kh_ten_input = "Khách lẻ"
         
     st.session_state.state_kh_sdt = sdt_nhap
 
@@ -477,11 +474,13 @@ def main():
                 st.session_state.state_kh_sdt = kh_sdt.strip()
                     
             with c2: 
-                # 🔥 ĐÃ SỬA: Khởi tạo giá trị ban đầu tránh lỗi cache và cho phép chỉnh sửa linh hoạt
-                if "widget_kh_ten_input" not in st.session_state:
-                    st.session_state.widget_kh_ten_input = st.session_state.state_kh_ten
-                
-                kh_ten = st.text_input("👤 Tên khách hàng", key="widget_kh_ten_input")
+                # 🔥 ĐÃ SỬA MẤU CHỐT: Truyền trực tiếp trạng thái tìm kiếm vào tham số value.
+                # Cách này giúp app nhận giá trị tìm kiếm tự động từ file Excel nhưng nhân viên vẫn thoải mái chỉnh sửa nếu cần.
+                kh_ten = st.text_input(
+                    "👤 Tên khách hàng", 
+                    value=st.session_state.state_kh_ten, 
+                    key="widget_kh_ten_input"
+                )
                 st.session_state.state_kh_ten = kh_ten
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
@@ -703,8 +702,7 @@ def main():
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True,
-                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "",
-                                "widget_kh_ten_input": "Khách lẻ" # Ép reset widget tên
+                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": ""
                             })
                             st.rerun()
                             
