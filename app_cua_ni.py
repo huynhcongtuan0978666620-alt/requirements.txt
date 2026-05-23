@@ -571,28 +571,7 @@ def main():
                             
                             # Nội dung email hệ thống
                             noi_dung_mail = (
-                                f"🧾 *ĐƠN HÀNG MỚI - SALON KIM HIỀN*\n"
-                                f"----------------------------------------\n"
-                                f"🆔 *Mã đơn:* `{ma_hd}`\n"
-                                f"⏰ *Thời gian:* {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"👤 *Khách hàng:* {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
-                                f"👨‍🔧 *Nhân viên lập:* {st.session_state.full_name}\n"
-                                f"💬 *Ghi chú:* {ghi_chu if ghi_chu else 'Không có'}\n"
-                                f"----------------------------------------\n"
-                                f"📦 *Chi tiết dịch vụ:* {chi_tiet_tele}\n"
-                                f"----------------------------------------\n"
-                                f"💰 *Tổng tiền gốc:* {t_bill:,.0f} đ\n"
-                                f"🎁 *Chiết khấu:* -{tien_giam:,.0f} đ\n"
-                                f"🔥 *THỰC THU KHÁCH TRẢ:* `{t_khach_tra:,.0f} đ`\n"
-                                f"💵 *Khách đưa:* {kh_dua:,.0f} đ | *Thối lại:* {t_du:,.0f} đ\n"
-                                f"🛠️ *Tiền công thợ:* {t_cong_tho:,.0f} đ\n"
-                                f"----------------------------------------"
-                            )
-                            gui_email_backup(noi_dung_mail)
-
-                            # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
-                            noi_dung_tele = (
-                                f"✌️ XIN CHÀO\n"
+                                f"✌️ XIN CHÀO.\n"
                                 f"🧾 ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
                                 f"----------------------------------------\n"
                                 f"🆔 Mã đơn: {ma_hd}\n"
@@ -610,7 +589,31 @@ def main():
                                 f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
                                 f"♥️ SALON KIM HIỀN ♥️\n"
-                                f"Cảm Ơn Quý Khách\n"
+                                f"♥️♥️ Cảm Ơn Quý Khách ♥️♥️ l\n"
+                            )
+                            gui_email_backup(noi_dung_mail)
+
+                            # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
+                            noi_dung_tele = (
+                                f"✌️ XIN CHÀO.\n"
+                                f"🧾 ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
+                                f"----------------------------------------\n"
+                                f"🆔 Mã đơn: {ma_hd}\n"
+                                f"⏰ Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                                f"👤 Khách hàng: {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
+                                f"👨‍🔧 Nhân viên lập: {st.session_state.full_name}\n"
+                                f"💬 Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
+                                f"----------------------------------------\n"
+                                f"📦 Chi tiết dịch vụ: {chi_tiet_tele}\n"
+                                f"----------------------------------------\n"
+                                f"💰 Tổng tiền gốc: {t_bill:,.0f} đ\n"
+                                f"🎁 Chiết khấu: -{tien_giam:,.0f} đ\n"
+                                f"🔥 THỰC THU KHÁCH TRẢ: {t_khach_tra:,.0f} đ\n"
+                                f"💵 Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
+                                f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
+                                f"----------------------------------------\n"
+                                f"♥️ SALON KIM HIỀN ♥️\n"
+                                f"♥️♥️ Cảm Ơn Quý Khách ♥️♥️ l\n"
                             )
                             gui_telegram_notification(noi_dung_tele)
 
