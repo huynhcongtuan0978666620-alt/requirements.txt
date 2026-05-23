@@ -353,10 +353,7 @@ def gui_telegram_notification(noi_dung):
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
         
-        # Thêm biến response để kiểm tra
         response = requests.post(url, json=payload, timeout=10)
-        
-        # Nếu response trả về lỗi, nó sẽ in ra màn hình app cho ní thấy
         if response.status_code != 200:
             st.error(f"Telegram lỗi: {response.text}")
     except Exception as e: 
@@ -372,7 +369,7 @@ def main():
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
         "trigger_boom": False, "trigger_balloons": False,
-        "kh_ten": "Khách lẻ", "kh_sdt": ""
+        "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" # 💡 Đổi tên biến tránh trùng với widget key
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -389,12 +386,16 @@ def main():
 
     # --- HÀM XỬ LÝ TRA CỨU SĐT KHÁCH HÀNG TỰ ĐỘNG KHÔNG RESET ---
     def update_khach_info():
-        sdt_nhap = str(st.session_state.kh_sdt).strip()
+        # Lấy SĐT từ Widget thông qua Session State tạm thời được Streamlit gán tự động khi tương tác
+        sdt_nhap = str(st.session_state.widget_kh_sdt).strip()
+        st.session_state.state_kh_sdt = sdt_nhap
+        
         ds_kh = get_khach_hang_data()
         if sdt_nhap in ds_kh:
-            st.session_state.kh_ten = ds_kh[sdt_nhap]
+            st.session_state.state_kh_ten = ds_kh[sdt_nhap]
         else:
-            st.session_state.kh_ten = "Khách lẻ"
+            st.session_name = "Khách lẻ"
+            st.session_state.state_kh_ten = "Khách lẻ"
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -464,10 +465,14 @@ def main():
             services = get_service_data()
             dv_list = list(services.keys())
             
-            # GIAO DIỆN CHÈN ĐỒNG BỘ AUTO-FILL KHÁCH HÀNG THÂN THIẾT
+            # 💡 KHẮC PHỤC LỖI TẠI ĐÂY: Dùng value động để không bị crash khi gán State mới để xóa Form
             c1, c2 = st.columns(2)
-            with c1: kh_ten = st.text_input("👤 Tên khách hàng", key="kh_ten")
-            with c2: kh_sdt = st.text_input("📞 SĐT khách", key="kh_sdt", on_change=update_khach_info)
+            with c1: 
+                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten")
+                st.session_state.state_kh_ten = kh_ten
+            with c2: 
+                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.state_kh_sdt, key="widget_kh_sdt", on_change=update_khach_info)
+                st.session_state.state_kh_sdt = kh_sdt
             
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
@@ -574,7 +579,7 @@ def main():
                             rows_to_append = []
                             html_items = ""
                             chi_tiet_mail = ""
-                            chi_tiet_tele = "" # Dữ liệu text cho Telegram
+                            chi_tiet_tele = "" 
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
@@ -600,7 +605,7 @@ def main():
                                 if sdt_luu not in ds_kh_hien_tai:
                                     ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
                                     ws_kh.append_row([sdt_luu, ten_luu])
-                                    st.cache_data.clear() # Xóa cache danh sách khách hàng để cập nhật realtime cho đơn sau
+                                    st.cache_data.clear() 
                             
                             # Nội dung email hệ thống
                             noi_dung_mail = (
@@ -683,11 +688,12 @@ def main():
                                 </div>
                             </div>"""
 
+                            # 💡 SỬA TẠI ĐÂY: Thay đổi State trung gian an toàn tuyệt đối không bao giờ lỗi!
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True,
-                                "kh_ten": "Khách lẻ", "kh_sdt": "" # Trả giao diện về trạng thái trống cho đơn hàng tiếp theo
+                                "state_kh_ten": "Khách lẻ", "state_kh_sdt": "" 
                             })
                             st.rerun()
                             
