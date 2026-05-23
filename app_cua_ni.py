@@ -299,8 +299,8 @@ def get_nhan_vien_data():
         return sh.worksheet("NhanVien").get_all_values()
     except Exception: return []
 
-# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" (ĐÃ SỬA CHUẨN HÓA SĐT) ---
-@st.cache_data(ttl=600)
+# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" (ĐỒNG BỘ REALTIME 100%) ---
+@st.cache_data(ttl=5)
 def get_khach_hang_data():
     try:
         client = get_gspread_client()
@@ -309,8 +309,7 @@ def get_khach_hang_data():
         
         ds_kh = {}
         for row in rows[1:]:
-            if len(row) > 1:
-                # Chuẩn hóa SĐT từ Google Sheet về dạng chuỗi sạch không khoảng trắng
+            if len(row) >= 2:
                 sdt_raw = str(row[0]).strip().replace(".0", "")
                 ten_kh = str(row[1]).strip()
                 if sdt_raw:
@@ -367,13 +366,12 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-# --- HÀM CALLBACK VÁ LỖI: TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI SĐT THAY ĐỔI ---
+# --- HÀM CALLBACK TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI NHẬP SĐT ---
 def xu_ly_tra_cuu_khach_hang():
     sdt_nhap = st.session_state.widget_kh_sdt.strip()
     ds_kh = get_khach_hang_data()
     
     if sdt_nhap:
-        # Chuẩn hóa để so khớp cả trường hợp Google Sheets mất số 0 hoặc dư số 0
         sdt_khong_0 = sdt_nhap[1:] if sdt_nhap.startswith('0') else sdt_nhap
         sdt_co_0 = '0' + sdt_nhap if not sdt_nhap.startswith('0') else sdt_nhap
         
@@ -384,7 +382,8 @@ def xu_ly_tra_cuu_khach_hang():
         elif sdt_co_0 in ds_kh:
             st.session_state.state_kh_ten = ds_kh[sdt_co_0]
         else:
-            st.session_state.state_kh_ten = "Khách lẻ"
+            # SĐT Mới hoàn toàn -> Đặt trống để nhân viên tự nhập tên mới
+            st.session_state.state_kh_ten = ""
     else:
         st.session_state.state_kh_ten = "Khách lẻ"
         
@@ -435,7 +434,7 @@ def main():
                         headers = [str(h).strip() for h in raw_data[0]]
                         col_sdt_idx = next((i for i, h in enumerate(headers) if 'số điện thoại' in h.lower() or 'sđt' in h.lower() or 'tai khoan' in h.lower()), -1)
                         col_mk_idx = next((i for i, h in enumerate(headers) if 'mật khẩu' in h.lower() or 'mat khau' in h.lower() or 'code' in h.lower()), -1)
-                        col_ten_idx = next((i for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
+                        col_ten_idx = next((i < for i, h in enumerate(headers) if 'tên' in h.lower() or 'nhân viên' in h.lower()), -1)
                         
                         found_row = None
                         sdt_nhap = str(u).strip().lstrip('0')
@@ -492,7 +491,6 @@ def main():
                 )
                     
             with c2: 
-                # 🔥 ĐÃ SỬA GÁN TRỰC TIẾP GIÁ TRỊ VÀO VALUE: Đồng bộ mượt mà không bao giờ báo lỗi đỏ st.session_state
                 kh_ten = st.text_input(
                     "👤 Tên khách hàng", 
                     value=st.session_state.state_kh_ten, 
@@ -555,7 +553,7 @@ def main():
                 st.divider()
                 st.markdown("### 🧮 PHÂN HỆ THU NGÂN (TÍNH TOÁN CHIẾT KHẤU)")
                 
-                tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0, help="Điền chính xác số tiền muốn giảm thẳng cho khách. Ví dụ: 10000, 20000...")
+                tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
                 t_khach_tra = max(0.0, t_bill - tien_giam)
                 
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, giảm giá khai trương...")
@@ -604,7 +602,6 @@ def main():
                             
                             rows_to_append = []
                             html_items = ""
-                            chi_tiet_mail = ""
                             chi_tiet_tele = "" 
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
@@ -618,22 +615,27 @@ def main():
                                     <div class="hd-item-name">{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</div>
                                     <div class="hd-item-price">{item["thanh_tien"]:,.0f} đ</div>
                                 </div>"""
-                                chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                                 chi_tiet_tele += f"\n🔹 {item['dich_vu']} (SL: {int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
                             
-                            # --- TỰ ĐỘNG LƯU THÔNG TIN KHÁCH HÀNG MỚI VÀO SHEET KHÁCH HÀNG ---
+                            # --- 🚀 CHỐT TỰ ĐỘNG CẬP NHẬT DATA KHÁCH HÀNG MỚI LÊN GOOGLE SHEET KHÔNG LỖI TRÙNG ---
                             sdt_luu = str(kh_sdt).strip()
                             ten_luu = str(kh_ten).strip()
-                            if sdt_luu and sdt_luu != "" and ten_luu != "Khách lẻ" and ten_luu != "":
+                            if sdt_luu and sdt_luu != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
-                                if sdt_luu not in ds_kh_hien_tai:
+                                # So khớp linh hoạt định dạng để chống trùng lặp
+                                sdt_khong_0 = sdt_luu[1:] if sdt_luu.startswith('0') else sdt_luu
+                                sdt_co_0 = '0' + sdt_luu if not sdt_luu.startswith('0') else sdt_luu
+                                
+                                is_sdt_cu = (sdt_luu in ds_kh_hien_tai) or (sdt_khong_0 in ds_kh_hien_tai) or (sdt_co_0 in ds_kh_hien_tai)
+                                
+                                if not is_sdt_cu and ten_luu != "Khách lẻ" and ten_luu != "":
                                     ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
                                     ws_kh.append_row([sdt_luu, ten_luu])
                                     st.cache_data.clear() 
                             
-                            # Nội dung email hệ thống
+                            # Nội dung email/telegram hệ thống
                             noi_dung_mail = (
                                 f"✌️ XIN CHÀO.\n"
                                 f"🧾 ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
@@ -658,32 +660,7 @@ def main():
                                 f"♥️ Cảm Ơn Quý Khách.\n"
                             )
                             gui_email_backup(noi_dung_mail)
-
-                            # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
-                            noi_dung_tele = (
-                                f"✌️ XIN CHÀO.\n"
-                                f"🧾 ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
-                                f"----------------------------------------\n"
-                                f"🆔 Mã đơn: {ma_hd}\n"
-                                f"⏰ Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"👤 Khách hàng: {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
-                                f"👨‍🔧 Nhân viên lập: {st.session_state.full_name}\n"
-                                f"💬 Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
-                                f"----------------------------------------\n"
-                                f"📦 Chi tiết dịch vụ: {chi_tiet_tele}\n"
-                                f"----------------------------------------\n"
-                                f"💰 Tổng tiền gốc: {t_bill:,.0f} đ\n"
-                                f"🎁 Chiết khấu: -{tien_giam:,.0f} đ\n"
-                                f"🔥 THỰC THU KHÁCH TRẢ: {t_khach_tra:,.0f} đ\n"
-                                f"💵 Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
-                                f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
-                                f"----------------------------------------\n"
-                                f"♥️ SALON KIM HIỀN\n"
-                                f"♥️ Zalo: 0947.58.1516\n"
-                                f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
-                                f"♥️ Cảm Ơn Quý Khách.\n"
-                            )
-                            gui_telegram_notification(noi_dung_tele)
+                            gui_telegram_notification(noi_dung_mail)
 
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
@@ -743,7 +720,7 @@ def main():
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
-                st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NLẤT</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
                 
                 if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
