@@ -299,15 +299,23 @@ def get_nhan_vien_data():
         return sh.worksheet("NhanVien").get_all_values()
     except Exception: return []
 
-# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" ---
+# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" (ĐÃ SỬA CHUẨN HÓA SĐT) ---
 @st.cache_data(ttl=600)
 def get_khach_hang_data():
     try:
         client = get_gspread_client()
         url = st.secrets["connections"]["gsheets"]["spreadsheet"]
         rows = client.open_by_url(url).worksheet("KhachHang").get_all_values()
-        # Tạo dictionary {SĐT: Tên Khách} loại bỏ khoảng trắng dư thừa
-        return {str(row[0]).strip(): str(row[1]).strip() for row in rows[1:] if len(row) > 1}
+        
+        ds_kh = {}
+        for row in rows[1:]:
+            if len(row) > 1:
+                # Chuẩn hóa SĐT từ Google Sheet về dạng chuỗi sạch không khoảng trắng
+                sdt_raw = str(row[0]).strip().replace(".0", "")
+                ten_kh = str(row[1]).strip()
+                if sdt_raw:
+                    ds_kh[sdt_raw] = ten_kh
+        return ds_kh
     except Exception: 
         return {}
 
@@ -359,13 +367,24 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-# --- HÀM CALLBACK: TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI SĐT THAY ĐỔI ---
+# --- HÀM CALLBACK VÁ LỖI: TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI SĐT THAY ĐỔI ---
 def xu_ly_tra_cuu_khach_hang():
     sdt_nhap = st.session_state.widget_kh_sdt.strip()
     ds_kh = get_khach_hang_data()
     
-    if sdt_nhap in ds_kh:
-        st.session_state.state_kh_ten = ds_kh[sdt_nhap]
+    if sdt_nhap:
+        # Chuẩn hóa để so khớp cả trường hợp Google Sheets mất số 0 hoặc dư số 0
+        sdt_khong_0 = sdt_nhap[1:] if sdt_nhap.startswith('0') else sdt_nhap
+        sdt_co_0 = '0' + sdt_nhap if not sdt_nhap.startswith('0') else sdt_nhap
+        
+        if sdt_nhap in ds_kh:
+            st.session_state.state_kh_ten = ds_kh[sdt_nhap]
+        elif sdt_khong_0 in ds_kh:
+            st.session_state.state_kh_ten = ds_kh[sdt_khong_0]
+        elif sdt_co_0 in ds_kh:
+            st.session_state.state_kh_ten = ds_kh[sdt_co_0]
+        else:
+            st.session_state.state_kh_ten = "Khách lẻ"
     else:
         st.session_state.state_kh_ten = "Khách lẻ"
         
@@ -465,7 +484,6 @@ def main():
             
             c1, c2 = st.columns(2)
             with c1: 
-                # 🔥 ĐÃ SỬA 1: Liên kết value trực tiếp với State để khi reset hoặc tự điền không bị lỗi lệch giá trị
                 kh_sdt = st.text_input(
                     "📞 SĐT khách", 
                     value=st.session_state.state_kh_sdt, 
@@ -474,8 +492,7 @@ def main():
                 )
                     
             with c2: 
-                # 🔥 ĐÃ SỬA MẤU CHỐT 2: Đồng bộ trực tiếp `value` từ `st.session_state.state_kh_ten` 
-                # để ăn tính năng điền tự động ngay khi chạy hàm callback SĐT!
+                # 🔥 ĐÃ SỬA GÁN TRỰC TIẾP GIÁ TRỊ VÀO VALUE: Đồng bộ mượt mà không bao giờ báo lỗi đỏ st.session_state
                 kh_ten = st.text_input(
                     "👤 Tên khách hàng", 
                     value=st.session_state.state_kh_ten, 
