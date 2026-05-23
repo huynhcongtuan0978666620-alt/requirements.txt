@@ -359,7 +359,16 @@ def gui_telegram_notification(noi_dung):
     except Exception as e: 
         st.error(f"Lỗi kết nối Telegram: {str(e)}")
 
-    
+# --- HÀM CALLBACK: TỰ ĐỘNG TRA CỨU TÊN KHÁCH KHI SĐT THAY ĐỔI ---
+def xu_ly_tra_cuu_khach_hang():
+    sdt_nhap = st.session_state.widget_kh_sdt.strip()
+    ds_kh = get_khach_hang_data()
+    if sdt_nhap in ds_kh:
+        st.session_state.state_kh_ten = ds_kh[sdt_nhap]
+    else:
+        st.session_state.state_kh_ten = "Khách lẻ"
+    st.session_state.state_kh_sdt = sdt_nhap
+
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
@@ -452,26 +461,21 @@ def main():
             services = get_service_data()
             dv_list = list(services.keys())
             
-            # 💡 ĐÃ TỐI ƯU TOÀN DIỆN: Đọc trước data Khách hàng từ Google Sheet để so sánh trực tiếp
-            ds_kh = get_khach_hang_data()
-            
             c1, c2 = st.columns(2)
             with c1: 
-                # Ô nhập SĐT dùng value lưu trực tiếp từ session_state
-                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.state_kh_sdt, key="widget_kh_sdt")
-                
-                # Logic kiểm tra ngay lập tức khi giá trị thay đổi trên giao diện mà không cần callback
-                if kh_sdt != st.session_state.state_kh_sdt:
-                    st.session_state.state_kh_sdt = kh_sdt.strip()
-                    if st.session_state.state_kh_sdt in ds_kh:
-                        st.session_state.state_kh_ten = ds_kh[st.session_state.state_kh_sdt]
-                    else:
-                        st.session_state.state_kh_ten = "Khách lẻ"
-                    st.rerun() # Re-run nhẹ để cập nhật ngay tên khách sang ô bên cạnh
+                # ĐÃ SỬA: Sử dụng on_change callback để kích hoạt xử lý tra cứu mượt mà, không giật lag
+                kh_sdt = st.text_input(
+                    "📞 SĐT khách", 
+                    value=st.session_state.state_kh_sdt, 
+                    key="widget_kh_sdt", 
+                    on_change=xu_ly_tra_cuu_khach_hang
+                )
+                # Đảm bảo đồng bộ ngược lại state chính
+                st.session_state.state_kh_sdt = kh_sdt.strip()
                     
             with c2: 
-                # Ô nhập Tên nhận giá trị từ state_kh_ten mà không sợ bị xung đột instantiation
-                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten")
+                # ĐÃ SỬA: Đổi tên key widget sang cấu trúc động tránh lỗi xung đột Instantiation của Streamlit
+                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.state_kh_ten, key="widget_kh_ten_input")
                 st.session_state.state_kh_ten = kh_ten
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
