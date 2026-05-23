@@ -9,6 +9,7 @@ import re
 import random
 import math
 import smtplib
+import requests  # Thêm thư viện gọi API Telegram
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
@@ -329,6 +330,20 @@ def gui_email_backup(noi_dung):
         server.send_message(msg)
         server.quit()
     except Exception as e: print(f"Lỗi gửi mail: {e}")
+
+# =====================================================================
+# 新規 THÊM HÀM GỬI THÔNG BÁO QUA TELEGRAM BOT REALTIME
+# =====================================================================
+def gui_telegram_notification(noi_dung):
+    try:
+        if "telegram" in st.secrets:
+            bot_token = st.secrets["telegram"]["bot_token"]
+            chat_id = st.secrets["telegram"]["chat_id"]
+            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+            payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
+            requests.post(url, json=payload, timeout=10)
+    except Exception as e:
+        print(f"Lỗi bắn Telegram: {e}")
     
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
@@ -530,6 +545,7 @@ def main():
                             rows_to_append = []
                             html_items = ""
                             chi_tiet_mail = ""
+                            chi_tiet_tele = "" # Dữ liệu text cho Telegram
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
@@ -543,9 +559,11 @@ def main():
                                     <div class="hd-item-price">{item["thanh_tien"]:,.0f} đ</div>
                                 </div>"""
                                 chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
+                                chi_tiet_tele += f"\n🔹 {item['dich_vu']} (SL: {int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
                             
+                            # Nội dung email hệ thống
                             noi_dung_mail = (
                                 f"Mã hóa đơn: {ma_hd}\n"
                                 f"Thời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
@@ -562,6 +580,27 @@ def main():
                                 f"🛠️ Tổng tiền công thợ: {t_cong_tho:,.0f}đ"
                             )
                             gui_email_backup(noi_dung_mail)
+
+                            # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
+                            noi_dung_tele = (
+                                f"🧾 *ĐƠN HÀNG MỚI - SALON KIM HIỀN*\n"
+                                f"----------------------------------------\n"
+                                f"🆔 *Mã đơn:* `{ma_hd}`\n"
+                                f"⏰ *Thời gian:* {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                                f"👤 *Khách hàng:* {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
+                                f"👨‍🔧 *Nhân viên lập:* {st.session_state.full_name}\n"
+                                f"💬 *Ghi chú:* {ghi_chu if ghi_chu else 'Không có'}\n"
+                                f"----------------------------------------\n"
+                                f"📦 *Chi tiết dịch vụ:* {chi_tiet_tele}\n"
+                                f"----------------------------------------\n"
+                                f"💰 *Tổng tiền gốc:* {t_bill:,.0f} đ\n"
+                                f"🎁 *Chiết khấu:* -{tien_giam:,.0f} đ\n"
+                                f"🔥 *THỰC THU KHÁCH TRẢ:* `{t_khach_tra:,.0f} đ`\n"
+                                f"💵 *Khách đưa:* {kh_dua:,.0f} đ | *Thối lại:* {t_du:,.0f} đ\n"
+                                f"🛠️ *Tiền công thợ:* {t_cong_tho:,.0f} đ\n"
+                                f"----------------------------------------"
+                            )
+                            gui_telegram_notification(noi_dung_tele)
 
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
@@ -605,7 +644,7 @@ def main():
             else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
-                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL BACKUP THU NGÂN!")
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL + TELEGRAM REALTIME BACKUP!")
                 st.markdown("---")
                 st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN (Có chiết khấu)")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
