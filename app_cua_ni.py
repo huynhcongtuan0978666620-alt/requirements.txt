@@ -588,9 +588,10 @@ def main():
                                 f"💵 Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
                                 f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
-                                f"♥️ SALON KIM HIỀN ♥️\n"
-                                f"♥️♥️ Zalo: 0947.58.1516 ♥️♥️\n"
-                                f"♥️♥️♥️ Cảm Ơn Quý Khách ♥️♥️♥️\n"
+                                f"♥️ SALON KIM HIỀN\n"
+                                f"♥️ Zalo: 0947.58.1516\n"
+                                f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
+                                f"♥️ Cảm Ơn Quý Khách\n"
                             )
                             gui_email_backup(noi_dung_mail)
 
@@ -613,9 +614,10 @@ def main():
                                 f"💵 Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
                                 f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
-                                f"♥️ SALON KIM HIỀN ♥️\n"
-                                f"♥️♥️ Zalo: 0947.58.1516 ♥️♥️\n"
-                                f"♥️♥️♥️ Cảm Ơn Quý Khách ♥️♥️♥️\n"
+                                f"♥️ SALON KIM HIỀN\n"
+                                f"♥️ Zalo: 0947.58.1516\n"
+                                f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
+                                f"♥️ Cảm Ơn Quý Khách\n"
                             )
                             gui_telegram_notification(noi_dung_tele)
 
