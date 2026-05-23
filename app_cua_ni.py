@@ -299,6 +299,18 @@ def get_nhan_vien_data():
         return sh.worksheet("NhanVien").get_all_values()
     except Exception: return []
 
+# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" ---
+@st.cache_data(ttl=600)
+def get_khach_hang_data():
+    try:
+        client = get_gspread_client()
+        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        rows = client.open_by_url(url).worksheet("KhachHang").get_all_values()
+        # Tạo dictionary {SĐT: Tên Khách} loại bỏ khoảng trắng dư thừa
+        return {str(row[0]).strip(): str(row[1]).strip() for row in rows[1:] if len(row) > 1}
+    except Exception: 
+        return {}
+
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
     fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -359,7 +371,8 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
-        "trigger_boom": False, "trigger_balloons": False
+        "trigger_boom": False, "trigger_balloons": False,
+        "kh_ten": "Khách lẻ", "kh_sdt": ""
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -373,6 +386,15 @@ def main():
     if st.session_state.trigger_balloons:
         render_balloons_html()  
         st.session_state.trigger_balloons = False
+
+    # --- HÀM XỬ LÝ TRA CỨU SĐT KHÁCH HÀNG TỰ ĐỘNG KHÔNG RESET ---
+    def update_khach_info():
+        sdt_nhap = str(st.session_state.kh_sdt).strip()
+        ds_kh = get_khach_hang_data()
+        if sdt_nhap in ds_kh:
+            st.session_state.kh_ten = ds_kh[sdt_nhap]
+        else:
+            st.session_state.kh_ten = "Khách lẻ"
 
     # --- PHÂN HỆ ĐĂNG NHẬP ---
     if not st.session_state["logged_in"]:
@@ -442,9 +464,10 @@ def main():
             services = get_service_data()
             dv_list = list(services.keys())
             
+            # GIAO DIỆN CHÈN ĐỒNG BỘ AUTO-FILL KHÁCH HÀNG THÂN THIẾT
             c1, c2 = st.columns(2)
-            with c1: kh_ten = st.text_input("👤 Tên khách hàng", "Khách lẻ")
-            with c2: kh_sdt = st.text_input("📞 SĐT khách")
+            with c1: kh_ten = st.text_input("👤 Tên khách hàng", key="kh_ten")
+            with c2: kh_sdt = st.text_input("📞 SĐT khách", key="kh_sdt", on_change=update_khach_info)
             
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
             box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
@@ -569,6 +592,16 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             
+                            # --- TỰ ĐỘNG LƯU THÔNG TIN KHÁCH HÀNG MỚI VÀO SHEET KHÁCH HÀNG ---
+                            sdt_luu = str(kh_sdt).strip()
+                            ten_luu = str(kh_ten).strip()
+                            if sdt_luu and sdt_luu != "" and ten_luu != "Khách lẻ" and ten_luu != "":
+                                ds_kh_hien_tai = get_khach_hang_data()
+                                if sdt_luu not in ds_kh_hien_tai:
+                                    ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
+                                    ws_kh.append_row([sdt_luu, ten_luu])
+                                    st.cache_data.clear() # Xóa cache danh sách khách hàng để cập nhật realtime cho đơn sau
+                            
                             # Nội dung email hệ thống
                             noi_dung_mail = (
                                 f"✌️ XIN CHÀO.\n"
@@ -653,7 +686,8 @@ def main():
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True 
+                                "submitting": False, "trigger_boom": True,
+                                "kh_ten": "Khách lẻ", "kh_sdt": "" # Trả giao diện về trạng thái trống cho đơn hàng tiếp theo
                             })
                             st.rerun()
                             
