@@ -217,16 +217,20 @@ def render_fireworks_html():
     html_particles += '</div>'
     return html_particles
 
-# Hàm kết xuất bóng bay từ dưới đất lên trời
+# Hàm kết xuất bóng bay lững lờ so le (SIÊU THẬT!)
 def render_balloons_html():
     colors = ['#ff4d4d', '#ff944d', '#ffff4d', '#4dff4d', '#4dffff', '#4d4dff', '#ff4dff', '#ff3385', '#00ffcc']
     html_balloons = '<div class="balloon-container">'
     for i in range(45): 
-        left_pos = random.uniform(5, 95) 
+        left_pos = random.uniform(5, 95) # Rải đều chiều ngang
         color = random.choice(colors)
-        delay = round(random.uniform(0.0, 1.2), 2) 
-        size_ratio = random.uniform(0.7, 1.4) 
-        rotation = random.randint(-25, 25) 
+        
+        # --- ĐÂY LÀ ĐIỂM ĐẮT GIÁ ---
+        delay = round(random.uniform(0.0, 2.5), 2)       # Quả thì lên ngay, quả thì đợi tới 2.5 giây mới chịu lên
+        duration = round(random.uniform(3.5, 6.0), 2)    # Quả căng gió bay nhanh (3.5s), quả nặng mông bay lững lờ (6s)
+        
+        size_ratio = random.uniform(0.7, 1.3) # To nhỏ ngẫu nhiên
+        rotation = random.randint(-20, 20)    # Độ nghiêng lắc lư khi bay
         
         width = int(50 * size_ratio)
         height = int(65 * size_ratio)
@@ -238,11 +242,13 @@ def render_balloons_html():
             width: {width}px; 
             height: {height}px; 
             animation-delay: {delay}s; 
+            animation-duration: {duration}s; /* Ép thời gian bay của mỗi quả phải khác nhau */
             --rot: {rotation}deg;
             box-shadow: inset -6px -6px rgba(0,0,0,0.15), 2px 2px 8px rgba(0,0,0,0.1);
         "></div>"""
     html_balloons += '</div>'
     return html_balloons
+
 
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
