@@ -693,7 +693,7 @@ def main():
                                             st.session_state.bill_vua_in = None
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
-                                                st.toast("⚡ Đã nạp đơn sang mục "TẠO ĐƠN HÀNG"")
+                                                st.toast("⚡ Đã nạp đơn sang mục 👉 TẠO ĐƠN HÀNG")
                                                 time.sleep(0.5)
                                                 st.rerun()
                     else:
