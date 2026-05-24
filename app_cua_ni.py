@@ -282,7 +282,7 @@ def gui_email_backup(noi_dung):
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"ĐH DỊCH VỤ SALON - {gio_vn_mail}"
+        msg['Subject'] = f"ĐH DỊCH VỤ - {gio_vn_mail}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -552,15 +552,21 @@ def main():
                                     st.cache_data.clear() 
                             
                             noi_dung_mail = (
-                                f"THÔNG BÁO ĐƠN HÀNG MỚI\n"
+                                f"THÔNG BÁO\n"
+                                f"BẠN CÓ ĐƠN HÀNG MỚI\n"
+                                f"=====================\n"
                                 f"Mã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\n"
                                 f"Khách hàng: {chot_ten} - {chot_sdt}\n"
                                 f"Nhân viên: {st.session_state.full_name}\n"
+                                f"=====================\n"
                                 f"Dịch vụ:{chi_tiet_tele}\n"
+                                f"=====================\n"
                                 f"Tổng bill: {t_bill:,.0f} đ\n"
                                 f"Chiết khấu: -{tien_giam:,.0f} đ\n"
                                 f"Khuyến mãi: -{khuyen_mai:,.0f} đ\n"
+                                f"=====================\n"
                                 f"THỰC THU: {t_khach_tra:,.0f} đ\n"
+                                f"Cảm ơn quý khách!\n"
                             )
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
@@ -616,7 +622,7 @@ def main():
         # =================================================================
         if st.session_state["role"] == "Admin":
             with tabs[1]:
-                st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ THÔNG MINH (V2)</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
                 if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
                     st.rerun()
                     
@@ -687,7 +693,7 @@ def main():
                                             st.session_state.bill_vua_in = None
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
-                                                st.toast("⚡ Đã nạp đơn sang Tab 1!")
+                                                st.toast("⚡ Đã nạp đơn sang mục "TẠO ĐƠN HÀNG"")
                                                 time.sleep(0.5)
                                                 st.rerun()
                     else:
