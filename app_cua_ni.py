@@ -237,7 +237,7 @@ def render_balloons_html():
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
-<div class="banner-top">⭐⭐BAO NGON LUÔN NÍ ƠI⭐⭐</div>
+<div class="banner-top">⭐⭐⭐ SALON KIM HIỀN ⭐⭐⭐</div>
 <div class="banner-bottom"> KIM HIỀN 2026 🌹🌹🌹 </div>
 """, unsafe_allow_html=True)
 
@@ -452,7 +452,7 @@ def main():
 
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
-            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
+            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name}          🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHẾ!</div>', unsafe_allow_html=True)
             
             services = get_service_data()
@@ -495,7 +495,7 @@ def main():
                     st.session_state.kh_ten_val = kh_ten
 
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
+            box_chon_dv = st.selectbox("🛍️ Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
             box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=2.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
@@ -570,7 +570,7 @@ def main():
                 t_du = kh_dua - t_khach_tra
                 
                 if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN THỐI LẠI KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state.last_submit:
@@ -634,27 +634,28 @@ def main():
                             
                             # Nội dung email/telegram hệ thống
                             noi_dung_mail = (
-                                f"✌️ XIN CHÀO.\n"
-                                f"🧾 ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
+                                f" XIN CHÀO ✌️\n"
+                                f"   ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
                                 f"----------------------------------------\n"
-                                f"🆔 Mã đơn: {ma_hd}\n"
-                                f"⏰ Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"👤 Khách hàng: {chot_ten} ({chot_sdt if chot_sdt else 'Không có SĐT'})\n"
-                                f"👨‍🔧 Nhân viên lập: {st.session_state.full_name}\n"
-                                f"💬 Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
+                                f"   Mã đơn: {ma_hd}\n"
+                                f"   Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                                f"   Khách hàng: {chot_ten} ({chot_sdt if chot_sdt else 'Không có SĐT'})\n"
+                                f"   Nhân viên lập: {st.session_state.full_name}\n"
+                                f"   Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
                                 f"----------------------------------------\n"
-                                f"📦 Chi tiết dịch vụ: {chi_tiet_tele}\n"
+                                f"   Chi tiết dịch vụ: {chi_tiet_tele}\n"
                                 f"----------------------------------------\n"
-                                f"💰 Tổng tiền gốc: {t_bill:,.0f} đ\n"
-                                f"🎁 Chiết khấu: -{tien_giam:,.0f} đ\n"
-                                f"🔥 THỰC THU KHÁCH TRẢ: {t_khach_tra:,.0f} đ\n"
-                                f"💵 Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
-                                f"🛠️ Tiền công thợ: {t_cong_tho:,.0f} đ\n"
+                                f"   Tổng tiền gốc: {t_bill:,.0f} đ\n"
+                                f"   Chiết khấu: -{tien_giam:,.0f} đ\n"
+                                f"   THỰC THU KHÁCH TRẢ: {t_khach_tra:,.0f} đ\n"
+                                f"   Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
+                                f"   Tiền công thợ: {t_cong_tho:,.0f} đ\n"
                                 f"----------------------------------------\n"
-                                f"♥️ SALON KIM HIỀN\n"
-                                f"♥️ Zalo: 0947.58.1516\n"
-                                f"♥️ 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)\n"
-                                f"♥️ Cảm Ơn Quý Khách.\n"
+                                f" SALON KIM HIỀN\n"
+                                f" Zalo: 0947.58.1516\n"
+                                f" 131 Trần Bình Trọng, Mỹ Xuyên\n"
+                                f" Long Xuyên, AG (Cũ)\n"
+                                f"♥️ Cảm Ơn Quý Khách ❤️\n"
                             )
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
@@ -706,9 +707,9 @@ def main():
             else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
-                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL + TELEGRAM REALTIME BACKUP!")
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG!")
                 st.markdown("---")
-                st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN (Có chiết khấu)")
+                st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
@@ -722,7 +723,7 @@ def main():
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
                 st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
                 
-                if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
+                if st.button("📥 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
                         cl = get_gspread_client()
                         ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -748,13 +749,13 @@ def main():
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
-                if st.button("♻️ BẤM LÀM MỚI DANH MỤC & CÀI ĐẶT (CLEAR CACHE)"):
+                if st.button("♻️ DANH MỤC & CÀI ĐẶT (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.success("Đã làm sạch bộ nhớ đệm! Danh mục và nhân viên đã được đồng bộ mới.")
                     time.sleep(0.5)
                     st.rerun()
                     
-                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “THÀNH VIÊN MỚI“</div>', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
