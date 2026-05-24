@@ -781,9 +781,27 @@ def main():
                         today = get_now_vn().strftime("%d/%m/%Y")
                         df_today = df_bc[df_bc['Ngày'] == today] if 'Ngày' in df_bc.columns else pd.DataFrame()
                         
-                        tong_doanh_thu = df_today['Thành tiền'].sum() if not df_today.empty and 'Thành tiền' in df_today.columns else 0
-                        tong_don = len(df_today['Mã HĐ'].unique()) if not df_today.empty and 'Mã HĐ' in df_today.columns else 0
+                        # TÌM TÊN CỘT TỰ ĐỘNG (Bao sai chính tả, thiếu dấu)
+                        col_tien = next((c for c in df_today.columns if 'tiền' in c.lower() or 'tien' in c.lower()), 'Thành tiền')
+                        col_ma_hd = next((c for c in df_today.columns if 'mã' in c.lower() or 'hd' in c.lower() or 'hđ' in c.lower()), None)
+                        col_khach = next((c for c in df_today.columns if 'khách' in c.lower() or 'khach' in c.lower()), None)
+
+                        tong_doanh_thu = df_today[col_tien].sum() if not df_today.empty and col_tien in df_today.columns else 0
+                        
+                        # Đếm số đơn (Loại bỏ các dòng trống)
+                        if col_ma_hd and not df_today.empty:
+                            tong_don = len([x for x in df_today[col_ma_hd].unique() if str(x).strip() != ''])
+                        else: 
+                            tong_don = 0
+                            
                         trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
+                        
+                        # Đếm số khách (Loại bỏ các dòng trống)
+                        if col_khach and not df_today.empty:
+                            so_khach = len([x for x in df_today[col_khach].unique() if str(x).strip() != ''])
+                        else: 
+                            so_khach = 0
+
                         
                         col_ten_khach = 'Tên khách' if 'Tên khách' in df_today.columns else 'Khách hàng' if 'Khách hàng' in df_today.columns else None
                         so_khach = len(df_today[col_ten_khach].unique()) if col_ten_khach and not df_today.empty else 0
