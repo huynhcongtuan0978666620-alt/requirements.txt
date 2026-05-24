@@ -94,7 +94,7 @@ def generate_css_animations():
             word-wrap: break-word;
         }
         .tong-don-box { color: #111111; }
-        .chiet-khau-box { color: #d93025; } /* Đỏ tinh tế cho cả CK và KM */
+        .chiet-khau-box { color: #d93025; } 
         .khach-tra-box { background-color: #111111; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .tien-thua-box { background-color: #f8f9fa; color: #111; padding: 18px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; border: 1px solid #eaeaea; margin: 20px 0; }
 
@@ -239,16 +239,36 @@ def get_khach_hang_data():
         return ds_kh
     except Exception: return {}
 
-def luu_bill_tam(gio_hang, nhan_vien):
+def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
         chi_tiet = " | ".join([f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang])
-        ws.append_row([get_now_vn().strftime("%Y-%m-%d %H:%M:%S"), chi_tiet, tong_tien, nhan_vien, "CHỜ XỬ LÝ"])
+        # Format lưu dữ liệu có cấu trúc: Thời gian, Chi tiết, Tổng tiền, Thợ, SĐT Khách, Tên Khách, Trạng thái
+        ws.append_row([
+            get_now_vn().strftime("%Y-%m-%d %H:%M:%S"), 
+            chi_tiet, 
+            tong_tien, 
+            nhan_vien, 
+            str(kh_sdt).strip(), 
+            str(kh_ten).strip(), 
+            "CHỜ XỬ LÝ"
+        ])
         return True
     except Exception as e:
         st.error(f"Lỗi lưu nháp: {e}")
+        return False
+
+def xoa_bill_tam_dong_gốc(index_sheet_row):
+    """Xóa một dòng trong Sheet BillTam dựa theo số hàng gốc trên Google Sheets"""
+    try:
+        client = get_gspread_client()
+        ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
+        ws.delete_rows(index_sheet_row)
+        return True
+    except Exception as e:
+        st.error(f"Lỗi xóa bill tạm trên Sheets: {e}")
         return False
 
 def display_header(settings):
@@ -359,6 +379,9 @@ def main():
         t_list = ["TẠO ĐƠN HÀNG", "BILL CHỜ", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["TẠO ĐƠN HÀNG"]
         tabs = st.tabs(t_list)
 
+        services = get_service_data()
+        dv_list = list(services.keys())
+
         # =================================================================
         # TAB 1: TẠO ĐƠN HÀNG
         # =================================================================
@@ -391,14 +414,8 @@ def main():
 
             st.write("")
             
-            # =================================================================
-            # VÁ LỖI & TỐI ƯU: GỘP "CHỌN NHANH" VÀ "THỦ CÔNG" LÀM MỘT (PHƯƠNG ÁN 1)
-            # =================================================================
+            # LÊN ĐƠN DỊCH VỤ / SẢN PHẨM
             st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
-            services = get_service_data()
-            dv_list = list(services.keys())
-            
-            # Giao diện thông minh tích hợp Chọn nhanh & Gõ tìm kiếm Autocomplete
             col_dv, col_sl = st.columns([7, 3])
             with col_dv:
                 box_chon_dv = st.selectbox(
@@ -447,10 +464,10 @@ def main():
                             st.rerun()
                     t_bill += item['thanh_tien']
 
-                # NÚT LƯU NHÁP
+                # NÚT LƯU NHÁP (Đã cải tiến truyền kèm SĐT & Tên khách hàng lên bảng BillTam)
                 st.write("")
                 if st.button("💾 LƯU NHÁP VÀO BILL CHỜ (CHO THỢ)", use_container_width=True):
-                    if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name):
+                    if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                         st.session_state.gio_hang = []
                         st.session_state.kh_sdt_val = ""
                         st.session_state.kh_ten_val = "Khách lẻ"
@@ -618,33 +635,96 @@ def main():
         # =================================================================
         if st.session_state["role"] == "Admin":
             
-            # --- TAB BILL CHỜ ---
+            # --- VÁ LỖI NÂNG CẤP V2: TAB BILL CHỜ 1-CHẠM ---
             with tabs[1]:
-                st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ (LƯU NHÁP)</div>', unsafe_allow_html=True)
-                if st.button("🔄 Làm mới danh sách", use_container_width=True):
+                st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ THÔNG MINH (V2)</div>', unsafe_allow_html=True)
+                if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
                     st.rerun()
                     
                 try:
                     ws_tam = get_gspread_client().open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
-                    data_tam = ws_tam.get_all_records()
-                    if data_tam:
-                        df_tam = pd.DataFrame(data_tam)
+                    data_tam = ws_tam.get_all_values()
+                    
+                    if len(data_tam) > 1:
+                        headers_tam = [str(h).strip() for h in data_tam[0]]
+                        rows_tam = data_tam[1:]
                         
-                        def check_time(row):
+                        st.write(f"Đang có **{len(rows_tam)}** đơn hàng chờ xử lý:")
+                        
+                        # Duyệt qua từng đơn hàng chờ để hiển thị chi tiết kèm nút Nạp đơn
+                        for i, row in enumerate(rows_tam):
+                            # Số hàng thực tế trên Google Sheets để xóa chính xác (bỏ qua header index=1)
+                            sheet_row_idx = i + 2 
+                            
+                            # Trích xuất dữ liệu có kiểm tra tránh lỗi lệch cột
+                            t_tao_str = row[0] if len(row) > 0 else ""
+                            chi_tiet_dv = row[1] if len(row) > 1 else ""
+                            t_tien_str = row[2] if len(row) > 2 else "0"
+                            tho_lam = row[3] if len(row) > 3 else "Chưa rõ"
+                            sdt_kh = row[4] if len(row) > 4 else ""
+                            ten_kh = row[5] if len(row) > 5 else "Khách lẻ"
+                            
+                            # Tính thời gian chờ để cảnh báo
+                            t_status = "✅ Mới tạo"
                             try:
-                                t_bill = datetime.strptime(str(row.iloc[0]), "%Y-%m-%d %H:%M:%S")
+                                t_bill = datetime.strptime(t_tao_str, "%Y-%m-%d %H:%M:%S")
                                 if (datetime.now() - t_bill).total_seconds() > 1800:
-                                    return "❌ Quá hạn 30p"
-                                return "✅ Mới tạo"
-                            except: return "➖"
+                                    t_status = "❌ Quá hạn 30p"
+                            except: pass
+                            
+                            # Layout hiển thị thẻ Đơn hàng Chờ đẹp mắt sang trọng
+                            with st.container(border=True):
+                                col_info, col_act = st.columns([7, 3])
+                                with col_info:
+                                    st.markdown(f"👤 **Khách hàng:** {ten_kh} ({sdt_kh if sdt_kh else 'Không có SĐT'})")
+                                    st.markdown(f"🛠 **Dịch vụ:** `{chi_tiet_dv}`")
+                                    st.markdown(f"💰 **Tạm tính:** `{float(t_tien_str.replace(',','')):,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
+                                    st.markdown(f"🕒 *Tạo lúc:* {t_tao_str} | Trạng thái: **{t_status}**")
+                                
+                                with col_act:
+                                    st.write("")
+                                    # NÚT BẤM THẦN THÁNH: NẠP ĐƠN 1-CHẠM
+                                    if st.button("🛒 Nạp & Tính tiền", key=f"load_bill_{sheet_row_idx}", use_container_width=True, type="primary"):
+                                        with st.spinner("Đang chuyển dữ liệu..."):
+                                            # 1. Phân rã chuỗi dịch vụ để nạp lại vào giỏ hàng
+                                            # Định dạng chuỗi: "Dịch vụ A (x1.0) | Dịch vụ B (x2.0)"
+                                            new_gio_hang = []
+                                            items = chi_tiet_dv.split(" | ")
+                                            for item in items:
+                                                if item.strip():
+                                                    # Dùng Regex bóc tách tên dịch vụ và số lượng
+                                                    match_dv = re.match(r"(.+)\s*\(x([\d\.]+)\)", item.strip())
+                                                    if match_dv:
+                                                        t_dv = match_dv.group(1).strip()
+                                                        s_luong = float(match_dv.group(2))
+                                                        
+                                                        # Lấy đơn giá chuẩn từ danh mục gốc
+                                                        info_goc = services.get(t_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                                                        g_goc = info_goc.get("gia", 0.0)
+                                                        p_hh = info_goc.get("hoa_hong", 0.0)
+                                                        
+                                                        new_gio_hang.append({
+                                                            "dich_vu": t_dv, "so_luong": s_luong, "don_gia": g_goc,
+                                                            "thanh_tien": g_goc * s_luong, "phan_tram_hh": p_hh
+                                                        })
+                                            
+                                            # 2. Đẩy ngược dữ liệu vào Session State hệ thống để hiển thị ở Tab 1
+                                            st.session_state.gio_hang = new_gio_hang
+                                            st.session_state.kh_sdt_val = sdt_kh
+                                            st.session_state.kh_ten_val = ten_kh
+                                            st.session_state.bill_vua_in = None
+                                            
+                                            # 3. Tự động xóa dòng này trên Google Sheets để làm sạch dữ liệu
+                                            if xoa_bill_tam_dong_gốc(sheet_row_idx):
+                                                st.toast("⚡ Đã nạp đơn sang Tab 1 và dọn dẹp hàng chờ!")
+                                                time.sleep(0.5)
+                                                st.rerun()
                         
-                        df_tam['Trạng thái'] = df_tam.apply(check_time, axis=1)
-                        st.dataframe(df_tam, use_container_width=True)
-                        st.info("💡 Hướng dẫn: Admin dựa vào danh sách này để gọi khách thanh toán, sau đó tạo đơn ở Tab 1 như bình thường. Chức năng xóa/sửa Bill Chờ có thể được thao tác trực tiếp trên Google Sheets.")
+                        st.info("💡 Hướng dẫn: Khi khách thanh toán, ní chỉ cần bấm nút [Nạp & Tính tiền]. Đơn sẽ chuyển sang Giỏ Hàng ở Tab 1, đồng thời tự xóa khỏi danh sách chờ này.")
                     else:
-                        st.info("Hiện không có bill chờ nào trong hệ thống.")
+                        st.info("Hiện không có đơn hàng chờ nào trong hệ thống.")
                 except Exception as e:
-                    st.error("⚠️ Hệ thống chưa tìm thấy trang tính 'BillTam'. Vui lòng tạo thêm 1 sheet tên 'BillTam' trên Google Sheets của ní.")
+                    st.error(f"⚠️ Hệ thống lỗi đọc trang tính 'BillTam': {e}")
 
             # --- TAB BÁO CÁO ---
             with tabs[2]:
