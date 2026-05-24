@@ -161,7 +161,7 @@ def generate_css_animations():
         .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
         .css-particle { position: absolute; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: explode-mega 4.0s ease-out 3 forwards; }
         @keyframes explode-mega {
-            0% { transform: translate(0, 0) scale(1); opacity: 0; }
+            0% { transform: translate(0, 0); opacity: 0; }
             20% { opacity: 1; }
             80% { opacity: 0.8; }
             100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }
@@ -248,7 +248,7 @@ def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
 
 def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]
+    creds_info = st.secrets["connections"]["gsheets"]["spreadsheet_credentials"] if "spreadsheet_credentials" in st.secrets["connections"]["gsheets"] else st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
 
@@ -299,6 +299,25 @@ def get_nhan_vien_data():
         return sh.worksheet("NhanVien").get_all_values()
     except Exception: return []
 
+# --- HÀM ĐỌC DANH SÁCH KHÁCH HÀNG TỪ SHEET "KhachHang" (ĐỒNG BỘ REALTIME 100%) ---
+@st.cache_data(ttl=5)
+def get_khach_hang_data():
+    try:
+        client = get_gspread_client()
+        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        rows = client.open_by_url(url).worksheet("KhachHang").get_all_values()
+        
+        ds_kh = {}
+        for row in rows[1:]:
+            if len(row) >= 2:
+                sdt_raw = str(row[0]).strip().replace(".0", "")
+                ten_kh = str(row[1]).strip()
+                if sdt_raw:
+                    ds_kh[sdt_raw] = ten_kh
+        return ds_kh
+    except Exception: 
+        return {}
+
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
     fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -332,19 +351,21 @@ def gui_email_backup(noi_dung):
     except Exception as e: print(f"Lỗi gửi mail: {e}")
 
 # =====================================================================
-# 新規 THÊM HÀM GỬI THÔNG BÁO QUA TELEGRAM BOT REALTIME
+# THÊM HÀM GỬI THÔNG BÁO QUA TELEGRAM BOT REALTIME
 # =====================================================================
 def gui_telegram_notification(noi_dung):
     try:
-        if "telegram" in st.secrets:
-            bot_token = st.secrets["telegram"]["bot_token"]
-            chat_id = st.secrets["telegram"]["chat_id"]
-            url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-            payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
-            requests.post(url, json=payload, timeout=10)
-    except Exception as e:
-        print(f"Lỗi bắn Telegram: {e}")
-    
+        bot_token = st.secrets["telegram"]["bot_token"]
+        chat_id = st.secrets["telegram"]["chat_id"]
+        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+        payload = {"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}
+        
+        response = requests.post(url, json=payload, timeout=10)
+        if response.status_code != 200:
+            st.error(f"Telegram lỗi: {response.text}")
+    except Exception as e: 
+        st.error(f"Lỗi kết nối Telegram: {str(e)}")
+
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
@@ -353,7 +374,8 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "adding_cart": False, "logged_in": False, "role": None, 
         "full_name": None, "gio_hang": [], "bill_vua_in": None, 
-        "trigger_boom": False, "trigger_balloons": False
+        "trigger_boom": False, "trigger_balloons": False,
+        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"  # THÊM BIẾN TRẠNG THÁI TRUNG GIAN TRÁNH XUNG ĐỘT WIDGET
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -430,19 +452,51 @@ def main():
 
         # TAB 1: NHẬP LIỆU & LÊN ĐƠN HÀNG
         with tabs[0]:
-            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name} | 🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
+            st.info(f"👨‍🔧 **Nhân viên:** {st.session_state.full_name}          🕒 **Giờ hiện tại:** {get_now_vn().strftime('%H:%M')}")
             st.markdown('<div class="the-quan-ly-flat">📝 NHẬP "ĐƠN HÀNG" BÊN DƯỚI NHẾ!</div>', unsafe_allow_html=True)
             
             services = get_service_data()
             dv_list = list(services.keys())
             
             c1, c2 = st.columns(2)
-            with c1: kh_ten = st.text_input("👤 Tên khách hàng", "Khách lẻ")
-            with c2: kh_sdt = st.text_input("📞 SĐT khách")
-            
+            with c1: 
+                # Ô nhập Số điện thoại, liên kết trực tiếp với State trung gian
+                kh_sdt = st.text_input("📞 SĐT khách", value=st.session_state.kh_sdt_val, placeholder="Nhập SĐT...")
+                
+                # NẾU PHÁT HIỆN SỰ THAY ĐỔI TRÊN Ô NHẬP SĐT:
+                if kh_sdt != st.session_state.kh_sdt_val:
+                    st.session_state.kh_sdt_val = kh_sdt
+                    sdt_nhap_so = kh_sdt.strip()
+                    
+                    if sdt_nhap_so:
+                        ds_kh = get_khach_hang_data()
+                        sdt_khong_0 = sdt_nhap_so[1:] if sdt_nhap_so.startswith('0') else sdt_nhap_so
+                        sdt_co_0 = '0' + sdt_nhap_so if not sdt_nhap_so.startswith('0') else sdt_nhap_so
+                        
+                        if sdt_nhap_so in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_nhap_so]
+                        elif sdt_khong_0 in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_khong_0]
+                        elif sdt_co_0 in ds_kh:
+                            st.session_state.kh_ten_val = ds_kh[sdt_co_0]
+                        else:
+                            st.session_state.kh_ten_val = "" # SĐT mới -> để trống tự gõ tên mới
+                    else:
+                        st.session_state.kh_ten_val = "Khách lẻ" # Không gõ SĐT mặc định khách lẻ
+                    
+                    st.rerun() # Buộc app vẽ lại cấu trúc để fill tên tự động vào ô bên phải
+                    
+            with c2: 
+                # Ô nhập Tên khách hàng, không dùng tham số key để tránh lỗi cứng widget
+                kh_ten = st.text_input("👤 Tên khách hàng", value=st.session_state.kh_ten_val, placeholder="Tự động điền hoặc sửa tay...")
+                
+                # Đồng bộ nếu thu ngân đổi tên thủ công trên giao diện
+                if kh_ten != st.session_state.kh_ten_val:
+                    st.session_state.kh_ten_val = kh_ten
+
             st.markdown("#### 👉 CHỌN DỊCH VỤ THÊM VÀO ĐƠN")
-            box_chon_dv = st.selectbox("📥 Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
-            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=100.0, value=0.0, step=1.0)
+            box_chon_dv = st.selectbox("🛍️ Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None, placeholder="Gõ chữ để tìm nhanh...")
+            box_sl = st.number_input("🔢 Số lượng", min_value=0.0, max_value=2.0, value=0.0, step=0.5)
             
             if st.session_state.adding_cart:
                 st.button("⏳ ĐANG THÊM VÀO GIỎ...", disabled=True, use_container_width=True)
@@ -495,7 +549,7 @@ def main():
                 st.divider()
                 st.markdown("### 🧮 PHÂN HỆ THU NGÂN (TÍNH TOÁN CHIẾT KHẤU)")
                 
-                tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0, help="Điền chính xác số tiền muốn giảm thẳng cho khách. Ví dụ: 10000, 20000...")
+                tien_giam = st.number_input("🎁 Số tiền CHIẾT KHẤU KHÁCH HÀNG (đ)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
                 t_khach_tra = max(0.0, t_bill - tien_giam)
                 
                 ghi_chu = st.text_input("📝 Ghi chú tổng đơn (nếu có)", placeholder="Ví dụ: Khách làm kỹ, giảm giá khai trương...")
@@ -516,7 +570,7 @@ def main():
                 t_du = kh_dua - t_khach_tra
                 
                 if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">💵 TIỀN THỐI LẠI KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
+                    st.markdown(f'<div class="tien-thua-box">💵 THỐI LẠI KHÁCH: {t_du:,.0f} đ</div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state.last_submit:
@@ -544,12 +598,15 @@ def main():
                             
                             rows_to_append = []
                             html_items = ""
-                            chi_tiet_mail = ""
-                            chi_tiet_tele = "" # Dữ liệu text cho Telegram
+                            chi_tiet_tele = "" 
+                            
+                            # Tên và SĐT chốt cuối cùng lấy từ state trung gian an toàn
+                            chot_ten = st.session_state.kh_ten_val.strip() if st.session_state.kh_ten_val.strip() else "Khách lẻ"
+                            chot_sdt = st.session_state.kh_sdt_val.strip()
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 rows_to_append.append([
-                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, kh_ten, kh_sdt,
+                                    bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, chot_ten, chot_sdt,
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
                                     bay_gio.strftime("%H:%M:%S"), f"[Chiết khấu đơn: {tien_giam:,.0f}đ] " + ghi_chu, item['tiem_cong_tho'], ma_hd
                                 ])
@@ -558,49 +615,50 @@ def main():
                                     <div class="hd-item-name">{idx+1}. {item["dich_vu"]} (x{item["so_luong"]})</div>
                                     <div class="hd-item-price">{item["thanh_tien"]:,.0f} đ</div>
                                 </div>"""
-                                chi_tiet_mail += f"\n- {item['dich_vu']} (SL: {item['so_luong']}): {item['thanh_tien']:,.0f}đ"
                                 chi_tiet_tele += f"\n🔹 {item['dich_vu']} (SL: {int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
                             
-                            # Nội dung email hệ thống
+                            # --- 🚀 CHỐT TỰ ĐỘNG CẬP NHẬT DATA KHÁCH HÀNG MỚI LÊN GOOGLE SHEET KHÔNG LỖI TRÙNG ---
+                            if chot_sdt and chot_sdt != "":
+                                ds_kh_hien_tai = get_khach_hang_data()
+                                sdt_khong_0 = chot_sdt[1:] if chot_sdt.startswith('0') else chot_sdt
+                                sdt_co_0 = '0' + chot_sdt if not chot_sdt.startswith('0') else chot_sdt
+                                
+                                is_sdt_cu = (chot_sdt in ds_kh_hien_tai) or (sdt_khong_0 in ds_kh_hien_tai) or (sdt_co_0 in ds_kh_hien_tai)
+                                
+                                if not is_sdt_cu and chot_ten != "Khách lẻ" and chot_ten != "":
+                                    ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
+                                    ws_kh.append_row([chot_sdt, chot_ten])
+                                    st.cache_data.clear() 
+                            
+                            # Nội dung email/telegram hệ thống
                             noi_dung_mail = (
-                                f"Mã hóa đơn: {ma_hd}\n"
-                                f"Thời gian lập: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"Khách hàng: {kh_ten}\n"
-                                f"SĐT: {kh_sdt}\n"
-                                f"Nhân viên thực hiện: {st.session_state.full_name}\n"
-                                f"Ghi chú: {ghi_chu}\n\n"
-                                f"Chi tiết dịch vụ:{chi_tiet_mail}\n\n"
-                                f"========================================\n"
-                                f"💰 TỔNG TIỀN DỊCH VỤ: {t_bill:,.0f}đ\n"
-                                f"🎁 CHIẾT KHẤU KHÁCH HÀNG: -{tien_giam:,.0f}đ\n"
-                                f"🔥 TỔNG THỰC TẾ KHÁCH PHẢI TRẢ: {t_khach_tra:,.0f}đ\n"
-                                f"💵 Khách đưa: {kh_dua:,.0f}đ | Thối lại: {t_du:,.0f}đ\n"
-                                f"🛠️ Tổng tiền công thợ: {t_cong_tho:,.0f}đ"
+                                f" XIN CHÀO ✌️\n"
+                                f"   ĐƠN HÀNG MỚI - SALON KIM HIỀN\n"
+                                f"----------------------------------------\n"
+                                f"   Mã đơn: {ma_hd}\n"
+                                f"   Thời gian: {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
+                                f"   Khách hàng: {chot_ten} ({chot_sdt if chot_sdt else 'Không có SĐT'})\n"
+                                f"   Nhân viên lập: {st.session_state.full_name}\n"
+                                f"   Ghi chú: {ghi_chu if ghi_chu else 'Không có'}\n"
+                                f"----------------------------------------\n"
+                                f"   Chi tiết dịch vụ: {chi_tiet_tele}\n"
+                                f"----------------------------------------\n"
+                                f"   Tổng tiền gốc: {t_bill:,.0f} đ\n"
+                                f"   Chiết khấu: -{tien_giam:,.0f} đ\n"
+                                f"   THỰC THU KHÁCH TRẢ: {t_khach_tra:,.0f} đ\n"
+                                f"   Khách đưa: {kh_dua:,.0f} đ | Thối lại: {t_du:,.0f} đ\n"
+                                f"   Tiền công thợ: {t_cong_tho:,.0f} đ\n"
+                                f"----------------------------------------\n"
+                                f" SALON KIM HIỀN\n"
+                                f" Zalo: 0947.58.1516\n"
+                                f" 131 Trần Bình Trọng, Mỹ Xuyên\n"
+                                f" Long Xuyên, AG (Cũ)\n"
+                                f"♥️ Cảm Ơn Quý Khách ❤️\n"
                             )
                             gui_email_backup(noi_dung_mail)
-
-                            # Định dạng hóa đơn gửi Telegram cực đẹp bằng Markdown
-                            noi_dung_tele = (
-                                f"🧾 *ĐƠN HÀNG MỚI - SALON KIM HIỀN*\n"
-                                f"----------------------------------------\n"
-                                f"🆔 *Mã đơn:* `{ma_hd}`\n"
-                                f"⏰ *Thời gian:* {bay_gio.strftime('%d/%m/%Y %H:%M:%S')}\n"
-                                f"👤 *Khách hàng:* {kh_ten} ({kh_sdt if kh_sdt else 'Không có SĐT'})\n"
-                                f"👨‍🔧 *Nhân viên lập:* {st.session_state.full_name}\n"
-                                f"💬 *Ghi chú:* {ghi_chu if ghi_chu else 'Không có'}\n"
-                                f"----------------------------------------\n"
-                                f"📦 *Chi tiết dịch vụ:* {chi_tiet_tele}\n"
-                                f"----------------------------------------\n"
-                                f"💰 *Tổng tiền gốc:* {t_bill:,.0f} đ\n"
-                                f"🎁 *Chiết khấu:* -{tien_giam:,.0f} đ\n"
-                                f"🔥 *THỰC THU KHÁCH TRẢ:* `{t_khach_tra:,.0f} đ`\n"
-                                f"💵 *Khách đưa:* {kh_dua:,.0f} đ | *Thối lại:* {t_du:,.0f} đ\n"
-                                f"🛠️ *Tiền công thợ:* {t_cong_tho:,.0f} đ\n"
-                                f"----------------------------------------"
-                            )
-                            gui_telegram_notification(noi_dung_tele)
+                            gui_telegram_notification(noi_dung_mail)
 
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
@@ -613,7 +671,7 @@ def main():
                                 </div>
                                 <div style="border-bottom: 1px dashed #111111; padding-bottom: 5px; margin-bottom: 10px; font-size: 13px;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Ngày lập:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
-                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{kh_ten}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách hàng:</span> <span>{chot_ten}</span></div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Nhân viên:</span> <span>{st.session_state.full_name}</span></div>
                                 </div>
                                 <div class="hd-items">{html_items}</div>
@@ -631,10 +689,15 @@ def main():
                                 </div>
                             </div>"""
 
+                            # --- 🚀 SAU KHI LƯU ĐƠN THÀNH CÔNG: RESET LUÔN CẢ FORM NHẬP KHÁCH HÀNG ---
                             st.session_state.update({
-                                "gio_hang": [], "last_submit": bay_gio, 
+                                "gio_hang": [], 
+                                "last_submit": bay_gio, 
                                 "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True 
+                                "submitting": False, 
+                                "trigger_boom": True,
+                                "kh_sdt_val": "",       # Trả form về rỗng sạch sẽ
+                                "kh_ten_val": "Khách lẻ" # Set lại mặc định cho hóa đơn mới
                             })
                             st.rerun()
                             
@@ -644,9 +707,9 @@ def main():
             else: st.warning("⚠️ Giỏ hàng hiện đang trống nhen ní.")
 
             if st.session_state.bill_vua_in:
-                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG! ĐÃ XUẤT HOÁ ĐƠN ĐIỆN TỬ & EMAIL + TELEGRAM REALTIME BACKUP!")
+                st.success("🎉 ĐỒNG BỘ THÀNH CÔNG!")
                 st.markdown("---")
-                st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN (Có chiết khấu)")
+                st.markdown("### 🧾 HOÁ ĐƠN THANH TOÁN")
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
 
             st.divider()
@@ -660,7 +723,7 @@ def main():
                 st.markdown("### 📊 DOANH THU THỰC TẾ REALTIME")
                 st.markdown('<div class="the-quan-ly-flat">📊 BẤM NÚT TẢI DƯỚI ĐÂY ĐỂ ĐỌC BÁO CÁO MỚI NHẤT</div>', unsafe_allow_html=True)
                 
-                if st.button("🔄 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
+                if st.button("📥 TẢI/CẬP NHẬT DOANH THU REALTIME", use_container_width=True, type="primary"):
                     try:
                         cl = get_gspread_client()
                         ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -686,13 +749,13 @@ def main():
                 st.markdown('<div class="the-quan-ly-flat">🔗 LIÊN KẾT GOOGLE SHEET GỐC</div>', unsafe_allow_html=True)
                 st.markdown(f"👉 **Đường dẫn quản lý:** [Bấm để mở file dữ liệu trên Google Sheets]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
-                if st.button("♻️ BẤM LÀM MỚI DANH MỤC & CÀI ĐẶT (CLEAR CACHE)"):
+                if st.button("♻️ DANH MỤC & CÀI ĐẶT (CLEAR CACHE)"):
                     st.cache_data.clear()
                     st.success("Đã làm sạch bộ nhớ đệm! Danh mục và nhân viên đã được đồng bộ mới.")
                     time.sleep(0.5)
                     st.rerun()
                     
-                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “NHÂN VIÊN“</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">✍️ ĐĂNG KÝ TK “THÀNH VIÊN MỚI“</div>', unsafe_allow_html=True)
                 try:
                     cl = get_gspread_client()
                     sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
