@@ -162,7 +162,6 @@ def get_now_vn():
 
 @st.cache_resource
 def get_gspread_client():
-    """Tạo kết nối duy nhất, tránh khởi tạo lại nhiều lần gây nghẽn băng thông"""
     creds_info = st.secrets["connections"]["gsheets"]["spreadsheet_credentials"] if "spreadsheet_credentials" in st.secrets["connections"]["gsheets"] else st.secrets["connections"]["gsheets"]
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
@@ -229,6 +228,18 @@ def get_khach_hang_data():
         return ds_kh
     except Exception: return {}
 
+# HÀM MỚI: Tối ưu lấy dữ liệu báo cáo bằng Cache
+@st.cache_data(ttl=300) # Cập nhật 5 phút 1 lần hoặc khi bấm nút
+def get_bao_cao_va_bill_tam():
+    try:
+        client = get_gspread_client()
+        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+        bc_records = sh.worksheet("BaoCao").get_all_records()
+        tam_records = sh.worksheet("BillTam").get_all_values()
+        return bc_records, tam_records
+    except Exception:
+        return [], []
+
 def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
         client = get_gspread_client()
@@ -245,6 +256,7 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
             str(kh_ten).strip(), 
             "CHỜ XỬ LÝ"
         ])
+        get_bao_cao_va_bill_tam.clear() # Xóa cache để cập nhật số Đơn Chờ
         return True
     except Exception as e:
         st.error(f"Lỗi lưu nháp: {e}")
@@ -255,6 +267,7 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
         ws.delete_rows(index_sheet_row)
+        get_bao_cao_va_bill_tam.clear() # Xóa cache để cập nhật số Đơn Chờ
         return True
     except Exception as e:
         st.error(f"Lỗi xóa bill tạm trên Sheets: {e}")
@@ -539,6 +552,7 @@ def main():
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
+                            get_bao_cao_va_bill_tam.clear() # Xóa cache báo cáo sau khi lưu thành công
                             
                             if chot_sdt and chot_sdt != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
@@ -635,11 +649,11 @@ def main():
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
                 if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
+                    get_bao_cao_va_bill_tam.clear() # Clear cache để cập nhật dữ liệu mới nhất
                     st.rerun()
                     
                 try:
-                    ws_tam = get_gspread_client().open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
-                    data_tam = ws_tam.get_all_values()
+                    _, data_tam = get_bao_cao_va_bill_tam()
                     
                     if len(data_tam) > 1:
                         rows_tam = data_tam[1:]
@@ -713,45 +727,59 @@ def main():
                     st.error(f"Google đang bận, ní chờ vài giây rồi bấm [Làm mới] lại nha: {e}")
 
             with tabs[2]:
-                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO NHANH HÔM NAY</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP & DASHBOARD</div>', unsafe_allow_html=True)
+                
+                # Nút làm mới báo cáo sử dụng Cache Clear để tránh gửi request dư thừa
+                if st.button("🔄 Cập nhật dữ liệu báo cáo", use_container_width=True):
+                    get_bao_cao_va_bill_tam.clear()
+                    st.rerun()
                 
                 try:
-                    cl = get_gspread_client()
-                    sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    # Lấy dữ liệu qua hàm Cache, chống lỗi 429
+                    bc_records, tam_records = get_bao_cao_va_bill_tam()
                     
-                    # Lấy dữ liệu báo cáo và bill chờ
-                    df_bc = pd.DataFrame(sh.worksheet("BaoCao").get_all_records())
-                    df_tam = pd.DataFrame(sh.worksheet("BillTam").get_all_records())
-                    
-                    today = get_now_vn().strftime("%d/%m/%Y")
-                    df_today = df_bc[df_bc['Ngày'] == today] if not df_bc.empty else pd.DataFrame()
-                    
-                    tong_doanh_thu = df_today['Thành tiền'].sum() if not df_today.empty else 0
-                    tong_don = len(df_today['Mã HĐ'].unique()) if not df_today.empty else 0
-                    trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
-                    so_khach = len(df_today['Tên khách'].unique()) if not df_today.empty else 0
-                    don_cho = len(df_tam) if not df_tam.empty else 0
-                    
-                    # Hiển thị Dashboard
-                    c1, c2 = st.columns(2)
-                    c1.metric("Tổng doanh thu", f"{tong_doanh_thu:,.0f}đ")
-                    c2.metric("Trung bình/đơn", f"{trung_binh:,.0f}đ")
-                    
-                    c3, c4, c5 = st.columns(3)
-                    c3.metric("Đơn trong ngày", tong_don)
-                    c4.metric("Khách phục vụ", so_khach)
-                    c5.metric("Đơn chờ", don_cho)
-                    
-                    st.write("")
-                    st.markdown('<div class="the-quan-ly-flat">CHI TIẾT GIAO DỊCH</div>', unsafe_allow_html=True)
-                    if not df_today.empty:
-                        st.dataframe(df_today.tail(20), use_container_width=True)
-                    else:
-                        st.info("Chưa có đơn hàng nào trong ngày hôm nay.")
+                    if bc_records:
+                        df_bc = pd.DataFrame(bc_records)
                         
-                except Exception as e:
-                    st.error("Tạm thời chưa lấy được dữ liệu báo cáo. Ní kiểm tra kết nối mạng nhé!")
-
+                        # Bộ lọc "chống sốc": Xử lý lỗi khoảng trắng hoặc chữ trong cột Thành tiền
+                        if 'Thành tiền' in df_bc.columns:
+                            df_bc['Thành tiền'] = pd.to_numeric(df_bc['Thành tiền'].astype(str).str.replace(',', '').str.replace('.', ''), errors='coerce').fillna(0)
+                        
+                        today = get_now_vn().strftime("%d/%m/%Y")
+                        df_today = df_bc[df_bc['Ngày'] == today] if 'Ngày' in df_bc.columns else pd.DataFrame()
+                        
+                        tong_doanh_thu = df_today['Thành tiền'].sum() if not df_today.empty and 'Thành tiền' in df_today.columns else 0
+                        tong_don = len(df_today['Mã HĐ'].unique()) if not df_today.empty and 'Mã HĐ' in df_today.columns else 0
+                        trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
+                        
+                        # Xử lý linh hoạt tên cột Tên khách hoặc Khách hàng
+                        col_ten_khach = 'Tên khách' if 'Tên khách' in df_today.columns else 'Khách hàng' if 'Khách hàng' in df_today.columns else None
+                        so_khach = len(df_today[col_ten_khach].unique()) if col_ten_khach and not df_today.empty else 0
+                        
+                        # Bill tạm trừ đi dòng tiêu đề
+                        don_cho = max(0, len(tam_records) - 1) if tam_records else 0
+                        
+                        # Hiển thị Dashboard
+                        c1, c2 = st.columns(2)
+                        c1.metric("💰 Tổng doanh thu hôm nay", f"{tong_doanh_thu:,.0f}đ")
+                        c2.metric("💳 Trung bình/đơn", f"{trung_binh:,.0f}đ")
+                        
+                        c3, c4, c5 = st.columns(3)
+                        c3.metric("📦 Đơn trong ngày", tong_don)
+                        c4.metric("👥 Khách phục vụ", so_khach)
+                        c5.metric("⏳ Đơn chờ", don_cho)
+                        
+                        st.write("")
+                        st.markdown('<div class="the-quan-ly-flat">CHI TIẾT 50 GIAO DỊCH GẦN NHẤT</div>', unsafe_allow_html=True)
+                        
+                        df_hien_thi = df_bc.tail(50).copy()
+                        df_hien_thi.index = range(1, len(df_hien_thi) + 1)
+                        st.dataframe(df_hien_thi, use_container_width=True)
+                    else: 
+                        st.info("Dữ liệu báo cáo trống hoặc đang tải từ Google Sheets...")
+                        
+                except Exception as e: 
+                    st.error(f"Tạm thời không thể kết nối Google Sheets để lấy báo cáo. Lỗi: {e}")
 
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
