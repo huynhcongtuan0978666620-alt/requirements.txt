@@ -239,6 +239,19 @@ def get_khach_hang_data():
         return ds_kh
     except Exception: return {}
 
+def luu_bill_tam(gio_hang, nhan_vien):
+    """Hàm mới phục vụ tính năng ECO TIME - Lưu nháp"""
+    try:
+        client = get_gspread_client()
+        ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
+        chi_tiet = " | ".join([f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang])
+        tong_tien = sum([item['thanh_tien'] for item in gio_hang])
+        ws.append_row([get_now_vn().strftime("%Y-%m-%d %H:%M:%S"), chi_tiet, tong_tien, nhan_vien, "CHỜ XỬ LÝ"])
+        return True
+    except Exception as e:
+        st.error(f"Lỗi lưu nháp: {e}")
+        return False
+
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
     fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -374,17 +387,39 @@ def main():
     # --- TRANG CHỦ ---
     else:
         display_header(settings)
-        t_list = ["TẠO ĐƠN HÀNG", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["TẠO ĐƠN HÀNG"]
+        # Bổ sung Tab "BILL CHỜ" cho Admin
+        t_list = ["TẠO ĐƠN HÀNG", "BILL CHỜ", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["TẠO ĐƠN HÀNG"]
         tabs = st.tabs(t_list)
 
-        # TAB 1: TẠO ĐƠN
+        # =================================================================
+        # TAB 1: TẠO ĐƠN HÀNG
+        # =================================================================
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
-            st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             
+            # --- TÍNH NĂNG MỚI: CHỌN NHANH DỊCH VỤ (ECO TIME 1 CHẠM) ---
+            st.markdown('<div class="the-quan-ly-flat">CHỌN NHANH DỊCH VỤ (ECO TIME)</div>', unsafe_allow_html=True)
             services = get_service_data()
             dv_list = list(services.keys())
             
+            if dv_list:
+                cols = st.columns(3)
+                for i, ten_dv in enumerate(dv_list):
+                    if cols[i % 3].button(ten_dv, key=f"eco_btn_{i}", use_container_width=True):
+                        if not any(item["dich_vu"] == ten_dv for item in st.session_state.gio_hang):
+                            info_dv = services.get(ten_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                            st.session_state.gio_hang.append({
+                                "dich_vu": ten_dv, "so_luong": 1.0, "don_gia": info_dv["gia"],
+                                "thanh_tien": info_dv["gia"], "phan_tram_hh": info_dv["hoa_hong"]
+                            })
+                            st.session_state.bill_vua_in = None
+                            st.rerun()
+                        else:
+                            st.toast("⚠️ Dịch vụ đã có trong giỏ hàng!")
+            st.write("")
+            
+            # --- FORM KHÁCH HÀNG CŨ ---
+            st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             c1, c2 = st.columns(2)
             with c1: 
                 kh_sdt = st.text_input("Số điện thoại", value=st.session_state.kh_sdt_val)
@@ -408,8 +443,8 @@ def main():
                 if kh_ten != st.session_state.kh_ten_val: st.session_state.kh_ten_val = kh_ten
 
             st.write("")
-            st.markdown('<div class="the-quan-ly-flat">CHỌN DỊCH VỤ</div>', unsafe_allow_html=True)
-            if st.button("➕ Bấm vào đây để chọn dịch vụ", use_container_width=True):
+            st.markdown('<div class="the-quan-ly-flat">CHỌN DỊCH VỤ THỦ CÔNG</div>', unsafe_allow_html=True)
+            if st.button("➕ Bấm vào đây để chọn dịch vụ (Tìm kiếm)", use_container_width=True):
                 popup_chon_dich_vu(dv_list, services)
 
             # CHI TIẾT GIỎ HÀNG
@@ -428,12 +463,22 @@ def main():
                             st.rerun()
                     t_bill += item['thanh_tien']
 
+                # --- TÍNH NĂNG MỚI: NÚT LƯU NHÁP ---
+                st.write("")
+                if st.button("💾 LƯU NHÁP VÀO BILL CHỜ (CHO THỢ)", use_container_width=True):
+                    if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name):
+                        st.session_state.gio_hang = []
+                        st.session_state.kh_sdt_val = ""
+                        st.session_state.kh_ten_val = "Khách lẻ"
+                        st.toast("✅ Đã lưu nháp thành công! Ní có thể tiếp tục phục vụ.")
+                        time.sleep(1)
+                        st.rerun()
+
             # THANH TOÁN & HOA HỒNG
             if t_bill > 0:
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
-                # NÂNG CẤP: Bổ sung form nhập Khuyến Mãi
                 col_nhap1, col_nhap2 = st.columns(2)
                 with col_nhap1:
                     tien_giam = st.number_input("Chiết khấu (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
@@ -442,7 +487,6 @@ def main():
                 
                 ghi_chu = st.text_input("Ghi chú hóa đơn")
                 
-                # TÍNH TOÁN THEO CÔNG THỨC MỚI GỘP CẢ CHIẾT KHẤU & KHUYẾN MÃI
                 tong_tru_gia = tien_giam + khuyen_mai
                 t_khach_tra = max(0.0, t_bill - tong_tru_gia)
                 he_so_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
@@ -494,8 +538,6 @@ def main():
                             
                             chot_ten = st.session_state.kh_ten_val.strip() if st.session_state.kh_ten_val.strip() else "Khách lẻ"
                             chot_sdt = st.session_state.kh_sdt_val.strip()
-                            
-                            # CẬP NHẬT GHI CHÚ ĐỂ LOG LẠI RÕ CHIẾT KHẤU & KHUYẾN MÃI VÀO GOOGLE SHEET (Không làm hỏng cột hiện tại)
                             chuoi_ghi_chu = f"[CK: {tien_giam:,.0f} | KM: {khuyen_mai:,.0f}] " + ghi_chu
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
@@ -587,9 +629,42 @@ def main():
                 st.session_state.clear()
                 st.rerun()
 
-        # TAB 2: ADMIN BÁO CÁO
+        # =================================================================
+        # TAB 2 & 3 & 4 DÀNH CHO ADMIN
+        # =================================================================
         if st.session_state["role"] == "Admin":
+            
+            # --- TÍNH NĂNG MỚI: TAB BILL CHỜ ---
             with tabs[1]:
+                st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ (LƯU NHÁP)</div>', unsafe_allow_html=True)
+                if st.button("🔄 Làm mới danh sách", use_container_width=True):
+                    st.rerun()
+                    
+                try:
+                    ws_tam = get_gspread_client().open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
+                    data_tam = ws_tam.get_all_records()
+                    if data_tam:
+                        df_tam = pd.DataFrame(data_tam)
+                        
+                        # Logic cảnh báo quá hạn 30 phút
+                        def check_time(row):
+                            try:
+                                t_bill = datetime.strptime(str(row.iloc[0]), "%Y-%m-%d %H:%M:%S")
+                                if (datetime.now() - t_bill).total_seconds() > 1800:
+                                    return "❌ Quá hạn 30p"
+                                return "✅ Mới tạo"
+                            except: return "➖"
+                        
+                        df_tam['Trạng thái'] = df_tam.apply(check_time, axis=1)
+                        st.dataframe(df_tam, use_container_width=True)
+                        st.info("💡 Hướng dẫn: Admin dựa vào danh sách này để gọi khách thanh toán, sau đó tạo đơn ở Tab 1 như bình thường. Chức năng xóa/sửa Bill Chờ có thể được thao tác trực tiếp trên Google Sheets.")
+                    else:
+                        st.info("Hiện không có bill chờ nào trong hệ thống.")
+                except Exception as e:
+                    st.error("⚠️ Hệ thống chưa tìm thấy trang tính 'BillTam'. Vui lòng tạo thêm 1 sheet tên 'BillTam' trên Google Sheets của ní.")
+
+            # --- TAB BÁO CÁO CŨ ---
+            with tabs[2]:
                 st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP</div>', unsafe_allow_html=True)
                 if st.button("Cập nhật dữ liệu", use_container_width=True):
                     try:
@@ -611,7 +686,8 @@ def main():
                         else: st.info("Dữ liệu trống.")
                     except Exception: st.error("Lỗi truy xuất.")
 
-            with tabs[2]:
+            # --- TAB CÀI ĐẶT CŨ ---
+            with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
                 st.markdown(f"[Mở file dữ liệu gốc (Google Sheets)]({st.secrets['connections']['gsheets']['spreadsheet']})")
                 
