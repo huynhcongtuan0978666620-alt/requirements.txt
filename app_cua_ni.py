@@ -733,8 +733,15 @@ def main():
                                             st.session_state.kh_sdt_val = sdt_kh
                                             st.session_state.kh_ten_val = ten_kh
                                             st.session_state.bill_vua_in = None
-                                            # CẬP NHẬT LẠI THỜI GIAN BẮT ĐẦU KHI NẠP ĐƠN
-                                            st.session_state.start_time = get_now_vn() 
+                                            
+                                            # LẤY LẠI GIỜ TẠO BILL GỐC TỪ SHEET BILL TẠM
+                                            try:
+                                                tz_vn = pytz.timezone('Asia/Ho_Chi_Minh')
+                                                thoi_gian_goc = datetime.strptime(t_tao_str, "%Y-%m-%d %H:%M:%S")
+                                                st.session_state.start_time = tz_vn.localize(thoi_gian_goc)
+                                            except Exception:
+                                                # Đề phòng lỗi dữ liệu, nếu không đọc được thì mới lấy giờ hiện tại
+                                                st.session_state.start_time = get_now_vn() 
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
                                                 st.toast("⚡ Đã nạp đơn sang mục 👉 TẠO ĐƠN HÀNG")
