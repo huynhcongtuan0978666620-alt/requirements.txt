@@ -278,6 +278,37 @@ def gui_telegram_notification(noi_dung):
     except Exception: pass
 
 # =====================================================================
+# HÀM POPUP CHỌN DỊCH VỤ (MỚI THÊM)
+# =====================================================================
+@st.dialog("📌 CHỌN SẢN PHẨM / DỊCH VỤ")
+def popup_chon_dich_vu(dv_list, services):
+    box_chon_dv = st.selectbox("Tìm & chọn dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None)
+    box_sl = st.number_input("Số lượng", min_value=0.0, max_value=5.0, value=1.0, step=0.5)
+    
+    st.write("")
+    if st.button("Xác nhận & Thêm", type="primary", use_container_width=True):
+        if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
+            st.warning("⚠️ Vui lòng chọn dịch vụ.")
+        elif box_sl <= 0: 
+            st.warning("⚠️ Số lượng phải lớn hơn 0.")
+        else:
+            if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
+                st.warning("⚠️ Dịch vụ này đã có trong danh sách.")
+            else:
+                info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                gia_goc = info_dv.get("gia", 0.0)
+                phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                t_bill_item = gia_goc * box_sl
+                
+                st.session_state.gio_hang.append({
+                    "dich_vu": box_chon_dv, "so_luong": box_sl, "don_gia": gia_goc,
+                    "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh,
+                    "tiem_cong_tho": t_bill_item * (phan_tram_hh / 100.0)
+                })
+                st.session_state.bill_vua_in = None
+                st.rerun()
+
+# =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH (MAIN APPLICATION LOGIC)
 # =====================================================================
 def main():
@@ -376,38 +407,11 @@ def main():
                 kh_ten = st.text_input("Tên khách hàng", value=st.session_state.kh_ten_val)
                 if kh_ten != st.session_state.kh_ten_val: st.session_state.kh_ten_val = kh_ten
 
+            # ĐOẠN ĐƯỢC CHỈNH SỬA (GỌI POPUP)
             st.write("")
             st.markdown('<div class="the-quan-ly-flat">CHỌN DỊCH VỤ</div>', unsafe_allow_html=True)
-            box_chon_dv = st.selectbox("Dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None)
-            box_sl = st.number_input("Số lượng", min_value=0.0, max_value=5.0, value=1.0, step=0.5)
-            
-            if st.session_state.adding_cart:
-                st.button("Đang xử lý...", disabled=True, use_container_width=True)
-            else:
-                if st.button("Thêm vào danh sách", use_container_width=True):
-                    if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
-                        st.warning("Vui lòng chọn dịch vụ.")
-                    elif box_sl <= 0: st.warning("Số lượng phải lớn hơn 0.")
-                    else:
-                        st.session_state.adding_cart = True
-                        if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
-                            st.warning("Dịch vụ đã có trong danh sách.")
-                            st.session_state.adding_cart = False
-                        else:
-                            info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                            gia_goc = info_dv.get("gia", 0.0)
-                            phan_tram_hh = info_dv.get("hoa_hong", 0.0)
-                            t_bill_item = gia_goc * box_sl
-                            
-                            st.session_state.gio_hang.append({
-                                "dich_vu": box_chon_dv, "so_luong": box_sl, "don_gia": gia_goc,
-                                "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh,
-                                "tiem_cong_tho": t_bill_item * (phan_tram_hh / 100.0)
-                            })
-                            st.session_state.bill_vua_in = None
-                            st.session_state.adding_cart = False
-                            time.sleep(0.1)
-                            st.rerun()
+            if st.button("➕ Bấm vào đây để chọn dịch vụ", use_container_width=True):
+                popup_chon_dich_vu(dv_list, services)
 
             # CHI TIẾT GIỎ HÀNG
             t_bill, t_cong_tho = 0.0, 0.0
