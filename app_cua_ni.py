@@ -713,19 +713,45 @@ def main():
                     st.error(f"Google đang bận, ní chờ vài giây rồi bấm [Làm mới] lại nha: {e}")
 
             with tabs[2]:
-                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP</div>', unsafe_allow_html=True)
-                if st.button("Cập nhật dữ liệu báo cáo", use_container_width=True):
-                    try:
-                        cl = get_gspread_client()
-                        ws_bc = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
-                        du_lieu = ws_bc.get_all_records()
-                        if du_lieu:
-                            df_bc = pd.DataFrame(du_lieu)
-                            df_hien_thi = df_bc.tail(50).copy()
-                            df_hien_thi.index = range(1, len(df_hien_thi) + 1)
-                            st.dataframe(df_hien_thi, use_container_width=True)
-                        else: st.info("Dữ liệu trống.")
-                    except Exception: st.error("Tạm thời không thể kết nối Google Sheets để lấy báo cáo. Thử lại sau ít phút.")
+                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO NHANH HÔM NAY</div>', unsafe_allow_html=True)
+                
+                try:
+                    cl = get_gspread_client()
+                    sh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
+                    
+                    # Lấy dữ liệu báo cáo và bill chờ
+                    df_bc = pd.DataFrame(sh.worksheet("BaoCao").get_all_records())
+                    df_tam = pd.DataFrame(sh.worksheet("BillTam").get_all_records())
+                    
+                    today = get_now_vn().strftime("%d/%m/%Y")
+                    df_today = df_bc[df_bc['Ngày'] == today] if not df_bc.empty else pd.DataFrame()
+                    
+                    tong_doanh_thu = df_today['Thành tiền'].sum() if not df_today.empty else 0
+                    tong_don = len(df_today['Mã HĐ'].unique()) if not df_today.empty else 0
+                    trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
+                    so_khach = len(df_today['Tên khách'].unique()) if not df_today.empty else 0
+                    don_cho = len(df_tam) if not df_tam.empty else 0
+                    
+                    # Hiển thị Dashboard
+                    c1, c2 = st.columns(2)
+                    c1.metric("Tổng doanh thu", f"{tong_doanh_thu:,.0f}đ")
+                    c2.metric("Trung bình/đơn", f"{trung_binh:,.0f}đ")
+                    
+                    c3, c4, c5 = st.columns(3)
+                    c3.metric("Đơn trong ngày", tong_don)
+                    c4.metric("Khách phục vụ", so_khach)
+                    c5.metric("Đơn chờ", don_cho)
+                    
+                    st.write("")
+                    st.markdown('<div class="the-quan-ly-flat">CHI TIẾT GIAO DỊCH</div>', unsafe_allow_html=True)
+                    if not df_today.empty:
+                        st.dataframe(df_today.tail(20), use_container_width=True)
+                    else:
+                        st.info("Chưa có đơn hàng nào trong ngày hôm nay.")
+                        
+                except Exception as e:
+                    st.error("Tạm thời chưa lấy được dữ liệu báo cáo. Ní kiểm tra kết nối mạng nhé!")
+
 
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
