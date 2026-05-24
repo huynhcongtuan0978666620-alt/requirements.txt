@@ -162,7 +162,7 @@ def render_balloons_html():
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
-<div class="banner-top">HỆ THỐNG QUẢN LÝ DỊCH VỤ</div>
+<div class="banner-top">HỆ THỐNG QUẢ lÝ DỊCH VỤ</div>
 <div class="banner-bottom">SALON KIM HIỀN © 2026</div>
 """, unsafe_allow_html=True)
 
@@ -245,6 +245,9 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
         chi_tiet = " | ".join([f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang])
+        
+        # --- FIX LỖI TỰ ĐỘNG ĐIỀN VÀO CỘT CHUẨN ---
+        # Luôn đảm bảo ghi đúng cấu trúc từ cột A đến G của trang tính
         ws.append_row([
             get_now_vn().strftime("%Y-%m-%d %H:%M:%S"), 
             chi_tiet, 
@@ -507,7 +510,7 @@ def main():
                 if t_du > 0:
                     st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
 
-                # --- SỬA ĐỔI LOGIC CHỐNG TRÙNG ĐƠN: CHỈ ÁP DỤNG CHO NHÂN VIÊN, ADMIN MIỄN TRỪ ---
+                # --- CHỐNG TRÙNG ĐƠN ---
                 can_go = True
                 if st.session_state["role"] == "NhanVien" and st.session_state.last_submit:
                     tg_cho = (get_now_vn() - st.session_state.last_submit).total_seconds() / 60
@@ -634,7 +637,7 @@ def main():
         # =================================================================
         if st.session_state["role"] == "Admin":
             
-            # --- TAB BILL CHỜ 1-CHẠM (ADMIN BẤM THOẢI MÁI KHÔNG CHỜ) ---
+            # --- TAB BILL CHỜ THÔNG MINH TRÁNH LỖI LỆCH CỘT ---
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ THÔNG MINH (V2)</div>', unsafe_allow_html=True)
                 if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
@@ -645,20 +648,37 @@ def main():
                     data_tam = ws_tam.get_all_values()
                     
                     if len(data_tam) > 1:
-                        headers_tam = [str(h).strip() for h in data_tam[0]]
                         rows_tam = data_tam[1:]
-                        
                         st.write(f"Đang có **{len(rows_tam)}** đơn hàng chờ xử lý:")
                         
                         for i, row in enumerate(rows_tam):
                             sheet_row_idx = i + 2 
                             
-                            t_tao_str = row[0] if len(row) > 0 else ""
-                            chi_tiet_dv = row[1] if len(row) > 1 else ""
-                            t_tien_str = row[2] if len(row) > 2 else "0"
-                            tho_lam = row[3] if len(row) > 3 else "Chưa rõ"
-                            sdt_kh = row[4] if len(row) > 4 else ""
-                            ten_kh = row[5] if len(row) > 5 else "Khách lẻ"
+                            # --- ĐOẠN ĐẶC TRỊ SỬA LỖI: QUÉT TÌM DỮ LIỆU THỰC TẾ TRÊN DÒNG ---
+                            # Lọc bỏ tất cả các khoảng trắng thừa ở hai đầu từng ô dữ liệu
+                            cleaned_row = [str(cell).strip() for cell in row]
+                            
+                            # Tìm xem ô đầu tiên có chứa dữ liệu (thường là thời gian dạng YYYY-MM-DD hoặc ký tự) nằm ở vị trí nào
+                            valid_indices = [idx for idx, cell in enumerate(cleaned_row) if cell != ""]
+                            
+                            if not valid_indices:
+                                continue # Dòng này rỗng tuếch thì bỏ qua
+                                
+                            start_idx = valid_indices[0] # Vị trí cột thực tế bắt đầu có dữ liệu
+                            
+                            # Cắt mảng lấy đúng cụm dữ liệu thật, không quan tâm nó bị lệch sang cột nào trên Sheets
+                            real_data = cleaned_row[start_idx:]
+                            
+                            # Định nghĩa lại các biến dựa trên mảng dữ liệu thật đã bóc tách
+                            t_tao_str = real_data[0] if len(real_data) > 0 else ""
+                            chi_tiet_dv = real_data[1] if len(real_data) > 1 else ""
+                            t_tien_str = real_data[2] if len(real_data) > 2 else "0"
+                            tho_lam = real_data[3] if len(real_data) > 3 else "Chưa rõ"
+                            sdt_kh = real_data[4] if len(real_data) > 4 else ""
+                            ten_kh = real_data[5] if len(real_data) > 5 else "Khách lẻ"
+                            
+                            # Kiểm tra an toàn giá trị tiền, nếu rỗng thì ép về 0 để tránh lỗi vặt
+                            if not t_tien_str: t_tien_str = "0"
                             
                             t_status = "✅ Mới tạo"
                             try:
@@ -672,7 +692,11 @@ def main():
                                 with col_info:
                                     st.markdown(f"👤 **Khách hàng:** {ten_kh} ({sdt_kh if sdt_kh else 'Không có SĐT'})")
                                     st.markdown(f"🛠 **Dịch vụ:** `{chi_tiet_dv}`")
-                                    st.markdown(f"💰 **Tạm tính:** `{float(t_tien_str.replace(',','')):,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
+                                    try:
+                                        tien_float = float(t_tien_str.replace(',','').replace('.',''))
+                                        st.markdown(f"💰 **Tạm tính:** `{tien_float:,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
+                                    except:
+                                        st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}")
                                     st.markdown(f"🕒 *Tạo lúc:* {t_tao_str} | Trạng thái: **{t_status}**")
                                 
                                 with col_act:
