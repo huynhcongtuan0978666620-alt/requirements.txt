@@ -240,7 +240,6 @@ def get_khach_hang_data():
     except Exception: return {}
 
 def luu_bill_tam(gio_hang, nhan_vien):
-    """Hàm mới phục vụ tính năng ECO TIME - Lưu nháp"""
     try:
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
@@ -290,36 +289,6 @@ def gui_telegram_notification(noi_dung):
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
         requests.post(url, json={"chat_id": chat_id, "text": noi_dung, "parse_mode": "Markdown"}, timeout=10)
     except Exception: pass
-
-# =====================================================================
-# HÀM POPUP CHỌN DỊCH VỤ
-# =====================================================================
-@st.dialog("📌 CHỌN SẢN PHẨM / DỊCH VỤ")
-def popup_chon_dich_vu(dv_list, services):
-    box_chon_dv = st.selectbox("Tìm & chọn dịch vụ", options=dv_list if dv_list else ["Không có dữ liệu"], index=None)
-    box_sl = st.number_input("Số lượng", min_value=0.0, max_value=5.0, value=1.0, step=0.5)
-    
-    st.write("")
-    if st.button("Xác nhận & Thêm", type="primary", use_container_width=True):
-        if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
-            st.warning("⚠️ Vui lòng chọn dịch vụ.")
-        elif box_sl <= 0: 
-            st.warning("⚠️ Số lượng phải lớn hơn 0.")
-        else:
-            if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
-                st.warning("⚠️ Dịch vụ này đã có trong danh sách.")
-            else:
-                info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                gia_goc = info_dv.get("gia", 0.0)
-                phan_tram_hh = info_dv.get("hoa_hong", 0.0)
-                t_bill_item = gia_goc * box_sl
-                
-                st.session_state.gio_hang.append({
-                    "dich_vu": box_chon_dv, "so_luong": box_sl, "don_gia": gia_goc,
-                    "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh
-                })
-                st.session_state.bill_vua_in = None
-                st.rerun()
 
 # =====================================================================
 # 3. LUỒNG ĐIỀU HƯỚNG CHÍNH
@@ -387,7 +356,6 @@ def main():
     # --- TRANG CHỦ ---
     else:
         display_header(settings)
-        # Bổ sung Tab "BILL CHỜ" cho Admin
         t_list = ["TẠO ĐƠN HÀNG", "BILL CHỜ", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["TẠO ĐƠN HÀNG"]
         tabs = st.tabs(t_list)
 
@@ -397,28 +365,7 @@ def main():
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
             
-            # --- TÍNH NĂNG MỚI: CHỌN NHANH DỊCH VỤ (ECO TIME 1 CHẠM) ---
-            st.markdown('<div class="the-quan-ly-flat">CHỌN NHANH DỊCH VỤ (ECO TIME)</div>', unsafe_allow_html=True)
-            services = get_service_data()
-            dv_list = list(services.keys())
-            
-            if dv_list:
-                cols = st.columns(3)
-                for i, ten_dv in enumerate(dv_list):
-                    if cols[i % 3].button(ten_dv, key=f"eco_btn_{i}", use_container_width=True):
-                        if not any(item["dich_vu"] == ten_dv for item in st.session_state.gio_hang):
-                            info_dv = services.get(ten_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                            st.session_state.gio_hang.append({
-                                "dich_vu": ten_dv, "so_luong": 1.0, "don_gia": info_dv["gia"],
-                                "thanh_tien": info_dv["gia"], "phan_tram_hh": info_dv["hoa_hong"]
-                            })
-                            st.session_state.bill_vua_in = None
-                            st.rerun()
-                        else:
-                            st.toast("⚠️ Dịch vụ đã có trong giỏ hàng!")
-            st.write("")
-            
-            # --- FORM KHÁCH HÀNG CŨ ---
+            # --- FORM KHÁCH HÀNG ---
             st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             c1, c2 = st.columns(2)
             with c1: 
@@ -443,9 +390,46 @@ def main():
                 if kh_ten != st.session_state.kh_ten_val: st.session_state.kh_ten_val = kh_ten
 
             st.write("")
-            st.markdown('<div class="the-quan-ly-flat">CHỌN DỊCH VỤ THỦ CÔNG</div>', unsafe_allow_html=True)
-            if st.button("➕ Bấm vào đây để chọn dịch vụ (Tìm kiếm)", use_container_width=True):
-                popup_chon_dich_vu(dv_list, services)
+            
+            # =================================================================
+            # VÁ LỖI & TỐI ƯU: GỘP "CHỌN NHANH" VÀ "THỦ CÔNG" LÀM MỘT (PHƯƠNG ÁN 1)
+            # =================================================================
+            st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
+            services = get_service_data()
+            dv_list = list(services.keys())
+            
+            # Giao diện thông minh tích hợp Chọn nhanh & Gõ tìm kiếm Autocomplete
+            col_dv, col_sl = st.columns([7, 3])
+            with col_dv:
+                box_chon_dv = st.selectbox(
+                    "Gõ từ khóa tìm kiếm hoặc chọn dịch vụ tại đây...", 
+                    options=dv_list if dv_list else ["Không có dữ liệu"], 
+                    index=None,
+                    placeholder="Ví dụ: Gội đầu, Cắt tóc..."
+                )
+            with col_sl:
+                box_sl = st.number_input("Số lượng", min_value=0.5, max_value=5.0, value=1.0, step=0.5, key="main_sl_input")
+            
+            if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
+                if not box_chon_dv or box_chon_dv == "Không có dữ liệu":
+                    st.warning("⚠️ Vui lòng chọn dịch vụ trước khi thêm.")
+                else:
+                    if any(item["dich_vu"] == box_chon_dv for item in st.session_state.gio_hang):
+                        st.toast("⚠️ Dịch vụ này đã có trong giỏ hàng rồi ní!")
+                    else:
+                        info_dv = services.get(box_chon_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                        gia_goc = info_dv.get("gia", 0.0)
+                        phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                        t_bill_item = gia_goc * box_sl
+                        
+                        st.session_state.gio_hang.append({
+                            "dich_vu": box_chon_dv, "so_luong": box_sl, "don_gia": gia_goc,
+                            "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh
+                        })
+                        st.session_state.bill_vua_in = None
+                        st.toast(f"✅ Đã thêm: {box_chon_dv}")
+                        time.sleep(0.3)
+                        st.rerun()
 
             # CHI TIẾT GIỎ HÀNG
             t_bill = 0.0
@@ -463,7 +447,7 @@ def main():
                             st.rerun()
                     t_bill += item['thanh_tien']
 
-                # --- TÍNH NĂNG MỚI: NÚT LƯU NHÁP ---
+                # NÚT LƯU NHÁP
                 st.write("")
                 if st.button("💾 LƯU NHÁP VÀO BILL CHỜ (CHO THỢ)", use_container_width=True):
                     if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name):
@@ -634,7 +618,7 @@ def main():
         # =================================================================
         if st.session_state["role"] == "Admin":
             
-            # --- TÍNH NĂNG MỚI: TAB BILL CHỜ ---
+            # --- TAB BILL CHỜ ---
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ (LƯU NHÁP)</div>', unsafe_allow_html=True)
                 if st.button("🔄 Làm mới danh sách", use_container_width=True):
@@ -646,7 +630,6 @@ def main():
                     if data_tam:
                         df_tam = pd.DataFrame(data_tam)
                         
-                        # Logic cảnh báo quá hạn 30 phút
                         def check_time(row):
                             try:
                                 t_bill = datetime.strptime(str(row.iloc[0]), "%Y-%m-%d %H:%M:%S")
@@ -663,7 +646,7 @@ def main():
                 except Exception as e:
                     st.error("⚠️ Hệ thống chưa tìm thấy trang tính 'BillTam'. Vui lòng tạo thêm 1 sheet tên 'BillTam' trên Google Sheets của ní.")
 
-            # --- TAB BÁO CÁO CŨ ---
+            # --- TAB BÁO CÁO ---
             with tabs[2]:
                 st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP</div>', unsafe_allow_html=True)
                 if st.button("Cập nhật dữ liệu", use_container_width=True):
@@ -686,7 +669,7 @@ def main():
                         else: st.info("Dữ liệu trống.")
                     except Exception: st.error("Lỗi truy xuất.")
 
-            # --- TAB CÀI ĐẶT CŨ ---
+            # --- TAB CÀI ĐẶT ---
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
                 st.markdown(f"[Mở file dữ liệu gốc (Google Sheets)]({st.secrets['connections']['gsheets']['spreadsheet']})")
