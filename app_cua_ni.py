@@ -553,20 +553,31 @@ def main():
                             
                             noi_dung_mail = (
                                 f"THÔNG BÁO\n"
-                                f"BẠN CÓ ĐƠN HÀNG MỚI\n"
+                                f"Đã thanh toán ĐƠN HÀNG\n"
+                                
                                 f"=====================\n"
+                                
                                 f"Mã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\n"
                                 f"Khách hàng: {chot_ten} - {chot_sdt}\n"
                                 f"Nhân viên: {st.session_state.full_name}\n"
+                                
                                 f"=====================\n"
+                                
                                 f"Dịch vụ:{chi_tiet_tele}\n"
+                                
                                 f"=====================\n"
+                                
                                 f"Tổng bill: {t_bill:,.0f} đ\n"
                                 f"Chiết khấu: -{tien_giam:,.0f} đ\n"
                                 f"Khuyến mãi: -{khuyen_mai:,.0f} đ\n"
+                                
                                 f"=====================\n"
+                                
                                 f"THỰC THU: {t_khach_tra:,.0f} đ\n"
-                                f"Cảm ơn quý khách!\n"
+                                
+                                f"=====================\n"
+                                
+                                f"Cảm ơn quý khách đã sử dụng dịch vụ!\n"
                             )
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
