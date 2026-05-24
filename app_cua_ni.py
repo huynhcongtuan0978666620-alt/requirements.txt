@@ -26,7 +26,7 @@ st.set_page_config(
 def generate_css_animations():
     return """
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght=300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
@@ -228,13 +228,11 @@ def get_khach_hang_data():
         return ds_kh
     except Exception: return {}
 
-# HÀM MỚI: Tối ưu lấy dữ liệu báo cáo bằng Cache (Chống lỗi tiêu đề)
-@st.cache_data(ttl=300) # Cập nhật 5 phút 1 lần hoặc khi bấm nút
+@st.cache_data(ttl=300)
 def get_bao_cao_va_bill_tam():
     try:
         client = get_gspread_client()
         sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-        # Đổi get_all_records() thành get_all_values() để không bị lỗi khoảng trắng tiêu đề
         bc_values = sh.worksheet("BaoCao").get_all_values()
         tam_records = sh.worksheet("BillTam").get_all_values()
         return bc_values, tam_records
@@ -257,7 +255,7 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
             str(kh_ten).strip(), 
             "CHỜ XỬ LÝ"
         ])
-        get_bao_cao_va_bill_tam.clear() # Xóa cache để cập nhật số Đơn Chờ
+        get_bao_cao_va_bill_tam.clear()
         return True
     except Exception as e:
         st.error(f"Lỗi lưu nháp: {e}")
@@ -268,7 +266,7 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
         ws.delete_rows(index_sheet_row)
-        get_bao_cao_va_bill_tam.clear() # Xóa cache để cập nhật số Đơn Chờ
+        get_bao_cao_va_bill_tam.clear()
         return True
     except Exception as e:
         st.error(f"Lỗi xóa bill tạm trên Sheets: {e}")
@@ -321,7 +319,7 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "logged_in": False, "role": None, "full_name": None, "gio_hang": [], 
         "bill_vua_in": None, "trigger_boom": False, "trigger_balloons": False,
-        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"
+        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn()
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -368,7 +366,7 @@ def main():
                             st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that, "trigger_balloons": True})
                             time.sleep(0.3)
                             st.rerun()
-                        else: st.error("Thông tin đăng nhập không chính xác.")
+                        else: st.error("Thông nhập không chính xác.")
                     else: st.error("Lỗi dữ liệu nhân viên hoặc đang bị nghẽn mạng Google.")
         
         if st.button("Làm mới ứng dụng", use_container_width=True):
@@ -443,6 +441,8 @@ def main():
                             "dich_vu": box_chon_dv, "so_luong": box_sl, "don_gia": gia_goc,
                             "thanh_tien": t_bill_item, "phan_tram_hh": phan_tram_hh
                         })
+                        if len(st.session_state.gio_hang) == 1:
+                            st.session_state.start_time = get_now_vn()
                         st.session_state.bill_vua_in = None
                         st.toast(f"✅ Đã thêm: {box_chon_dv}")
                         time.sleep(0.3)
@@ -530,6 +530,11 @@ def main():
                             bay_gio = get_now_vn()
                             ma_hd = f"HD{bay_gio.strftime('%y%m%d%H%M')}"
                             
+                            # TÍNH TOÁN THỜI GIAN PHỤC VỤ & TIỀN THỐI
+                            start_time = st.session_state.get("start_time", bay_gio)
+                            thoi_gian_phuc_vu = max(0, int((bay_gio - start_time).total_seconds() / 60))
+                            tien_thoi = kh_dua - t_khach_tra
+                            
                             rows_to_append = []
                             html_items = ""
                             chi_tiet_tele = "" 
@@ -540,10 +545,12 @@ def main():
                             
                             for idx, item in enumerate(st.session_state.gio_hang):
                                 hoa_hong_tung_dong = item['thanh_tien'] * he_so_giam * (item['phan_tram_hh'] / 100.0)
+                                # ĐẨY 15 CỘT VÀO SHEET BAOCAO
                                 rows_to_append.append([
                                     bay_gio.strftime("%d/%m/%Y"), st.session_state.full_name, chot_ten, chot_sdt,
                                     item['dich_vu'], item['so_luong'], item['don_gia'], item['thanh_tien'],
-                                    bay_gio.strftime("%H:%M:%S"), chuoi_ghi_chu, hoa_hong_tung_dong, ma_hd
+                                    bay_gio.strftime("%H:%M:%S"), chuoi_ghi_chu, hoa_hong_tung_dong, ma_hd,
+                                    kh_dua, tien_thoi, f"{thoi_gian_phuc_vu} phút"
                                 ])
                                 html_items += f"""
                                 <div class="hd-row-item">
@@ -553,7 +560,7 @@ def main():
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
-                            get_bao_cao_va_bill_tam.clear() # Xóa cache báo cáo sau khi lưu thành công
+                            get_bao_cao_va_bill_tam.clear() 
                             
                             if chot_sdt and chot_sdt != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
@@ -566,6 +573,7 @@ def main():
                                     ws_kh.append_row([chot_sdt, chot_ten])
                                     st.cache_data.clear() 
                             
+                            # CẬP NHẬT EMAIL / TELEGRAM
                             noi_dung_mail = (
                                 f"THÔNG BÁO\n"
                                 f"Đã thanh toán ĐƠN HÀNG\n"
@@ -585,6 +593,9 @@ def main():
                                 f"Tổng bill: {t_bill:,.0f} đ\n"
                                 f"Chiết khấu: -{tien_giam:,.0f} đ\n"
                                 f"Khuyến mãi: -{khuyen_mai:,.0f} đ\n"
+                                f"Khách đưa: {kh_dua:,.0f} đ\n"
+                                f"Tiền thối: {tien_thoi:,.0f} đ\n"
+                                f"Phục vụ: {thoi_gian_phuc_vu} phút\n"
                                 f" \n"
                                 f"=====================\n"
                                 f" \n"
@@ -597,6 +608,7 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
 
+                            # CẬP NHẬT BILL IN RA
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
@@ -615,7 +627,10 @@ def main():
                                 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span>{t_bill:,.0f}</span></div>
                                     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Chiết khấu:</span> <span>-{tien_giam:,.0f}</span></div>
-                                    <div style="display: flex; justify-content: space-between; color: #d93025;"><span>Khuyến mãi:</span> <span>-{khuyen_mai:,.0f}</span></div>
+                                    <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span>-{khuyen_mai:,.0f}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách đưa:</span> <span>{kh_dua:,.0f}</span></div>
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span>{tien_thoi:,.0f}</span></div>
+                                    <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span>{thoi_gian_phuc_vu} phút</span></div>
                                 </div>
                                 <div style="font-size: 15px; font-weight: 700;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG:</span> <span>{t_khach_tra:,.0f}</span></div>
@@ -627,7 +642,8 @@ def main():
 
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
-                                "submitting": False, "trigger_boom": True, "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"
+                                "submitting": False, "trigger_boom": True, "kh_sdt_val": "", "kh_ten_val": "Khách lẻ",
+                                "start_time": get_now_vn()
                             })
                             st.rerun()
                             
@@ -650,7 +666,7 @@ def main():
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
                 if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
-                    get_bao_cao_va_bill_tam.clear() # Clear cache để cập nhật dữ liệu mới nhất
+                    get_bao_cao_va_bill_tam.clear() 
                     st.rerun()
                     
                 try:
@@ -717,6 +733,8 @@ def main():
                                             st.session_state.kh_sdt_val = sdt_kh
                                             st.session_state.kh_ten_val = ten_kh
                                             st.session_state.bill_vua_in = None
+                                            # CẬP NHẬT LẠI THỜI GIAN BẮT ĐẦU KHI NẠP ĐƠN
+                                            st.session_state.start_time = get_now_vn() 
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
                                                 st.toast("⚡ Đã nạp đơn sang mục 👉 TẠO ĐƠN HÀNG")
@@ -730,7 +748,6 @@ def main():
             with tabs[2]:
                 st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP & DASHBOARD</div>', unsafe_allow_html=True)
                 
-                # Nút làm mới báo cáo sử dụng Cache Clear
                 if st.button("🔄 Cập nhật dữ liệu báo cáo", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear()
                     st.rerun()
@@ -738,23 +755,19 @@ def main():
                 try:
                     bc_values, tam_records = get_bao_cao_va_bill_tam()
                     
-                    # Tính số đơn chờ (trừ dòng tiêu đề)
                     don_cho = max(0, len(tam_records) - 1) if tam_records else 0
                     
-                    # Khởi tạo giá trị mặc định cho Dashboard
                     tong_doanh_thu = 0
                     trung_binh = 0
                     tong_don = 0
                     so_khach = 0
                     df_hien_thi = pd.DataFrame()
                     
-                    # Nếu sheet Báo Cáo có dữ liệu (lớn hơn 1 dòng tiêu đề)
                     if len(bc_values) > 1:
                         headers = bc_values[0]
                         data = bc_values[1:]
                         df_bc = pd.DataFrame(data, columns=headers)
                         
-                        # Bộ lọc "chống sốc": Xử lý lỗi khoảng trắng/chữ trong cột Thành tiền
                         if 'Thành tiền' in df_bc.columns:
                             df_bc['Thành tiền'] = pd.to_numeric(df_bc['Thành tiền'].astype(str).str.replace(',', '').str.replace('.', ''), errors='coerce').fillna(0)
                         
@@ -765,14 +778,12 @@ def main():
                         tong_don = len(df_today['Mã HĐ'].unique()) if not df_today.empty and 'Mã HĐ' in df_today.columns else 0
                         trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
                         
-                        # Xử lý linh hoạt tên cột Tên khách hoặc Khách hàng
                         col_ten_khach = 'Tên khách' if 'Tên khách' in df_today.columns else 'Khách hàng' if 'Khách hàng' in df_today.columns else None
                         so_khach = len(df_today[col_ten_khach].unique()) if col_ten_khach and not df_today.empty else 0
                         
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
                     
-                    # Luôn luôn hiển thị Dashboard dù chưa có doanh thu
                     c1, c2 = st.columns(2)
                     c1.metric("💰 Tổng doanh thu hôm nay", f"{tong_doanh_thu:,.0f}đ")
                     c2.metric("💳 Trung bình/đơn", f"{trung_binh:,.0f}đ")
