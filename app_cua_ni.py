@@ -421,7 +421,7 @@ def main():
             col_tieude, col_nut = st.columns([6, 4])
             with col_nut:
                 # Nút tải lại nằm bên phải, có khoảng cách với mép phải màn hình
-                if st.button("🔄 TẢI LẠI APP", use_container_width=True, key="f5_refresh_button"):
+                if st.button("♻️ TẢI LẠI APP", use_container_width=True, key="f5_refresh_button"):
                     st.cache_data.clear()
                     st.toast("⚡ Đã đồng bộ!")
                     time.sleep(0.3)
