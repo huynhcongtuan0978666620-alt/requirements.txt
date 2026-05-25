@@ -26,6 +26,22 @@ st.set_page_config(
 def generate_css_animations():
     return """
     <style>
+    /* Tùy chỉnh nút F5 cho chuyên nghiệp */
+    div[data-testid="stButton"] button[key="f5_refresh_button"] {
+        background-color: #ffffff !important;
+        color: #333 !important;
+        border: 1px solid #e0e0e0 !important;
+        padding: 5px 15px !important; /* Tạo khoảng cách bên trong nút */
+        font-size: 11px !important;
+        font-weight: 600 !important;
+        height: 32px !important;
+        margin-top: -2px !important;
+        margin-right: 5px !important; /* Tạo khoảng cách với mép phải màn hình */
+        border-radius: 20px !important; /* Bo tròn nhìn cho "mềm" hơn */
+      }
+    div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
+        background-color: #f8f8f8 !important;
+        border-color: #111111 !important;
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         html, body {
@@ -117,22 +133,6 @@ def generate_css_animations():
         .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }
         .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
-            /* Tùy chỉnh nút F5 cho chuyên nghiệp */
-    div[data-testid="stButton"] button[key="f5_refresh_button"] {
-        background-color: #ffffff !important;
-        color: #333 !important;
-        border: 1px solid #e0e0e0 !important;
-        padding: 5px 15px !important; /* Tạo khoảng cách bên trong nút */
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        height: 32px !important;
-        margin-top: -2px !important;
-        margin-right: 5px !important; /* Tạo khoảng cách với mép phải màn hình */
-        border-radius: 20px !important; /* Bo tròn nhìn cho "mềm" hơn */
-    }
-    div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
-        background-color: #f8f8f8 !important;
-        border-color: #111111 !important;
     }
     
     </style>
