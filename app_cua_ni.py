@@ -341,8 +341,7 @@ def main():
         "logged_in": False, "role": None, "full_name": None, "gio_hang": [], 
         "bill_vua_in": None, "trigger_boom": False, "trigger_balloons": False,
         "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn(),
-        "reset_counter": 0, "tho_chot_val": "",
-        "hang_hien_tai": "", "tong_chi_tieu_val": 0.0 # --- Đã chèn biến lưu Hạng KH ---
+        "reset_counter": 0, "tho_chot_val": ""
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -419,25 +418,27 @@ def main():
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
             
-            st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
+            # --- KHU VỰC THÊM NÚT F5 LÀM MỚI ---
+            col_title, col_f5 = st.columns([7, 3])
+            with col_title:
+                st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:0; padding-bottom:0;">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
+            with col_f5:
+                if st.button("🔄 F5 LÀM MỚI", use_container_width=True, key="f5_refresh_button"):
+                    st.cache_data.clear()
+                    st.toast("⚡ Đã đồng bộ dữ liệu & làm mới giao diện!")
+                    time.sleep(0.3)
+                    st.rerun()
+            st.markdown('<div style="margin-top: 5px; margin-bottom: 15px; border-bottom: 1px solid #eaeaea;"></div>', unsafe_allow_html=True)
             
             so_lan_den = 0
             
             c1, c2 = st.columns(2)
             with c1: 
-                # --- [VỊ TRÍ ĐÃ CHỈNH SỬA] TRUY VẤN REAL-TIME HẠNG KHÁCH HÀNG ---
                 kh_sdt = st.text_input("Số điện thoại", value=st.session_state.kh_sdt_val)
                 if kh_sdt != st.session_state.kh_sdt_val:
                     st.session_state.kh_sdt_val = kh_sdt
                     sdt_nhap_so = kh_sdt.strip()
-                    
-                    # Đặt lại trạng thái mặc định
-                    st.session_state.kh_ten_val = "Khách lẻ"
-                    st.session_state.hang_hien_tai = ""
-                    st.session_state.tong_chi_tieu_val = 0.0
-                    
                     if sdt_nhap_so:
-                        # 1. Truy vấn tên
                         ds_kh = get_khach_hang_data()
                         sdt_khong_0 = sdt_nhap_so[1:] if sdt_nhap_so.startswith('0') else sdt_nhap_so
                         sdt_co_0 = '0' + sdt_nhap_so if not sdt_nhap_so.startswith('0') else sdt_nhap_so
@@ -445,21 +446,8 @@ def main():
                         if sdt_nhap_so in ds_kh: st.session_state.kh_ten_val = ds_kh[sdt_nhap_so]
                         elif sdt_khong_0 in ds_kh: st.session_state.kh_ten_val = ds_kh[sdt_khong_0]
                         elif sdt_co_0 in ds_kh: st.session_state.kh_ten_val = ds_kh[sdt_co_0]
-                        
-                        # 2. Truy vấn hạng NGAY LẬP TỨC
-                        try:
-                            plkh_rows = get_plkh_data()
-                            for row in plkh_rows[1:]:
-                                if len(row) >= 2 and (str(row[0]).strip() in [sdt_nhap_so, sdt_khong_0, sdt_co_0]):
-                                    val_raw = str(row[1]).replace(',', '').replace('.', '').replace('đ', '').strip()
-                                    tong_chi = float(val_raw or 0)
-                                    st.session_state.tong_chi_tieu_val = tong_chi
-                                    st.session_state.hang_hien_tai = get_huy_hieu(tong_chi)
-                                    break
-                            else:
-                                st.session_state.hang_hien_tai = "🌱 TIỀM NĂNG"
-                        except:
-                            st.session_state.hang_hien_tai = "🌱 TIỀM NĂNG"
+                        else: st.session_state.kh_ten_val = "" 
+                    else: st.session_state.kh_ten_val = "Khách lẻ"
                     st.rerun() 
                     
             with c2: 
@@ -483,15 +471,37 @@ def main():
             if so_lan_den > 0:
                 st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
             
-            # --- [V11] HIỂN THỊ HUY HIỆU KHÁCH HÀNG (ĐÃ TỐI ƯU REAL-TIME) ---
-            if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.hang_hien_tai:
-                st.markdown(f"""
-                    <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
-                        <span style="background-color: #fffbfa; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffe1df; font-size: 11px; font-weight: 700; color: #d4380d; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-transform: uppercase;">
-                            {st.session_state.hang_hien_tai} | Tích lũy: {st.session_state.tong_chi_tieu_val:,.0f} đ
-                        </span>
-                    </div>
-                """, unsafe_allow_html=True)
+            # --- [V11] HIỂN THỊ HUY HIỆU KHÁCH HÀNG (CHỈ ADMIN THẤY & THU NHỎ LẠI) ---
+            if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.kh_ten_val != "Khách lẻ":
+                try:
+                    plkh_rows = get_plkh_data()
+                    if len(plkh_rows) > 1:
+                        df_plkh = pd.DataFrame(plkh_rows[1:])
+                        if len(df_plkh.columns) >= 2:
+                            df_plkh = df_plkh.iloc[:, :2]
+                            df_plkh.columns = ["SĐT", "TongTien"]
+                            df_plkh["SĐT"] = df_plkh["SĐT"].astype(str).str.strip()
+                            
+                            sdt_check = st.session_state.kh_sdt_val.strip()
+                            s_k_0 = sdt_check[1:] if sdt_check.startswith('0') else sdt_check
+                            s_c_0 = '0' + sdt_check if not sdt_check.startswith('0') else sdt_check
+                            
+                            match = df_plkh[(df_plkh["SĐT"] == sdt_check) | (df_plkh["SĐT"] == s_k_0) | (df_plkh["SĐT"] == s_c_0)]
+                            
+                            if not match.empty:
+                                raw_tien = str(match["TongTien"].values[0]).replace(',', '').replace('.', '').strip()
+                                tong_chi = float(raw_tien) if raw_tien else 0.0
+                                if tong_chi > 0: 
+                                    huy_hieu = get_huy_hieu(tong_chi)
+                                    st.markdown(f"""
+                                        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+                                            <span style="background-color: #fffbfa; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffe1df; font-size: 11px; font-weight: 700; color: #d4380d; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-transform: uppercase;">
+                                                {huy_hieu}
+                                            </span>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+                except Exception as e:
+                    pass
             # ------------------------------------------
 
             st.write("")
@@ -572,11 +582,10 @@ def main():
                 st.write("")
                 if st.button("💾 LƯU VÀO BILL CHỜ", use_container_width=True):
                     if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
-                        st.session_state.update({
-                            "gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", 
-                            "hang_hien_tai": "", "tong_chi_tieu_val": 0.0,
-                            "tho_chot_val": st.session_state.full_name
-                        })
+                        st.session_state.gio_hang = []
+                        st.session_state.kh_sdt_val = ""
+                        st.session_state.kh_ten_val = "Khách lẻ"
+                        st.session_state.tho_chot_val = st.session_state.full_name
                         st.toast("✅ Đã lưu nháp thành công!")
                         time.sleep(1)
                         st.rerun()
@@ -683,7 +692,7 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
-                            get_plkh_data.clear() # Làm mới hạng khách hàng ngay sau khi có bill mới
+                            get_plkh_data.clear() # V11: Làm mới hạng khách hàng ngay sau khi có bill mới
                             
                             if chot_sdt and chot_sdt != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
@@ -696,11 +705,28 @@ def main():
                                     ws_kh.append_row([chot_sdt, chot_ten])
                                     st.cache_data.clear() 
                             
-                            # --- [V11] LẤY HUY HIỆU TỪ SESSION TRUY VẤN SẴN ĐỂ CHÈN VÀO BILL (Tối ưu cực nhanh) ---
+                            # --- [V11] LẤY HUY HIỆU ĐỂ CHÈN VÀO BILL / THÔNG BÁO (CHỈ DÀNH CHO ADMIN) ---
                             huy_hieu_bill = ""
                             if st.session_state["role"] == "Admin" and chot_sdt and chot_ten != "Khách lẻ":
-                                if st.session_state.hang_hien_tai and st.session_state.hang_hien_tai != "🌱 TIỀM NĂNG":
-                                    huy_hieu_bill = st.session_state.hang_hien_tai
+                                try:
+                                    plkh_rows = get_plkh_data()
+                                    if len(plkh_rows) > 1:
+                                        df_plkh = pd.DataFrame(plkh_rows[1:])
+                                        if len(df_plkh.columns) >= 2:
+                                            df_plkh = df_plkh.iloc[:, :2]
+                                            df_plkh.columns = ["SĐT", "TongTien"]
+                                            df_plkh["SĐT"] = df_plkh["SĐT"].astype(str).str.strip()
+                                            
+                                            s_k_0 = chot_sdt[1:] if chot_sdt.startswith('0') else chot_sdt
+                                            s_c_0 = '0' + chot_sdt if not chot_sdt.startswith('0') else chot_sdt
+                                            match = df_plkh[(df_plkh["SĐT"] == chot_sdt) | (df_plkh["SĐT"] == s_k_0) | (df_plkh["SĐT"] == s_c_0)]
+                                            
+                                            if not match.empty:
+                                                raw_tien = str(match["TongTien"].values[0]).replace(',', '').replace('.', '').strip()
+                                                tong_chi = float(raw_tien) if raw_tien else 0.0
+                                                if tong_chi > 0:
+                                                    huy_hieu_bill = get_huy_hieu(tong_chi)
+                                except Exception: pass
                             # --------------------------------------------------------------------------
 
                             # Thêm đoạn text Hạng khách hàng cho Telegram/Email (nếu có)
@@ -763,7 +789,6 @@ def main():
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True, "kh_sdt_val": "", "kh_ten_val": "Khách lẻ",
-                                "hang_hien_tai": "", "tong_chi_tieu_val": 0.0,
                                 "start_time": get_now_vn(), "tho_chot_val": st.session_state.full_name
                             })
                             st.rerun()
@@ -852,25 +877,8 @@ def main():
                                             st.session_state.gio_hang = new_gio_hang
                                             st.session_state.kh_sdt_val = sdt_kh
                                             st.session_state.kh_ten_val = ten_kh
-                                            st.session_state.tho_chot_val = tho_lam 
+                                            st.session_state.tho_chot_val = tho_lam  # <-- GHI NHỚ NGƯỜI THỰC LÀM 
                                             st.session_state.bill_vua_in = None
-                                            
-                                            # Tranh thủ tính luôn Hạng khi vừa nạp Bill tạm sang Form
-                                            try:
-                                                plkh_rows = get_plkh_data()
-                                                s_k_0 = sdt_kh[1:] if sdt_kh.startswith('0') else sdt_kh
-                                                s_c_0 = '0' + sdt_kh if not sdt_kh.startswith('0') else sdt_kh
-                                                for row in plkh_rows[1:]:
-                                                    if len(row) >= 2 and (str(row[0]).strip() in [sdt_kh, s_k_0, s_c_0]):
-                                                        val_raw = str(row[1]).replace(',', '').replace('.', '').replace('đ', '').strip()
-                                                        tong_chi = float(val_raw or 0)
-                                                        st.session_state.tong_chi_tieu_val = tong_chi
-                                                        st.session_state.hang_hien_tai = get_huy_hieu(tong_chi)
-                                                        break
-                                                else:
-                                                    st.session_state.hang_hien_tai = "🌱 TIỀM NĂNG"
-                                                    st.session_state.tong_chi_tieu_val = 0.0
-                                            except: pass
                                             
                                             try:
                                                 tz_vn = pytz.timezone('Asia/Ho_Chi_Minh')
