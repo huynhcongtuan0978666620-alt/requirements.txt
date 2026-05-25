@@ -40,10 +40,10 @@ def generate_css_animations():
             background-color: transparent !important;
         }
 
-        header, footer, .stAppDeployButton, [data-testid=\"stStatusWidget\"], [data-testid=\"stToolbar\"],
-        div[class*=\"stAppViewerToolbar\"], div[data-testid=\"stAppViewerToolbar\"], footer + div,
-        div[data-testid=\"stViewerToolbar\"], .stViewerToolbar, [data-testid=\"stManageAppTR\"],
-        div[class^=\"StyledViewerBottomBar\"] {
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
+        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"],
+        div[class^="StyledViewerBottomBar"] {
             display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
@@ -69,14 +69,14 @@ def generate_css_animations():
         .thong-tin-phu { font-size: 13px !important; color: #666666 !important; margin: 4px 0 !important; font-weight: 400; }
         .slogan { font-size: 13px !important; color: #888888 !important; font-style: italic !important; margin-top: 15px !important; }
         
-        [data-testid=\"stTabs\"] [role=\"tablist\"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
-        button[data-baseweb=\"tab\"] {
+        [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
+        button[data-baseweb="tab"] {
             background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; 
             border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important;
         }
-        button[data-baseweb=\"tab\"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
-        button[data-baseweb=\"tab\"][aria-selected=\"true\"] { border-bottom: 2px solid #111111 !important; }
-        button[data-baseweb=\"tab\"][aria-selected=\"true\"] p { color: #111111 !important; }
+        button[data-baseweb="tab"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
+        button[data-baseweb="tab"][aria-selected="true"] { border-bottom: 2px solid #111111 !important; }
+        button[data-baseweb="tab"][aria-selected="true"] p { color: #111111 !important; }
 
         .the-quan-ly-flat { color: #111; font-weight: 600; font-size: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eaeaea; padding-bottom: 8px;}
         .nhan-tieu-de { font-size: 11px !important; font-weight: 600 !important; margin-bottom: 8px !important; text-transform: uppercase !important; color: #666 !important; letter-spacing: 0.5px; text-align: center;}
@@ -91,9 +91,9 @@ def generate_css_animations():
         .khach-tra-box { background-color: #111111; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .tien-thua-box { background-color: #f8f9fa; color: #111; padding: 18px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; border: 1px solid #eaeaea; margin: 20px 0; }
 
-        div[data-testid=\"stButton\"] button { border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }
-        div[data-testid=\"stButton\"] button[kind=\"primary\"] { background-color: #111111 !important; color: #ffffff !important; border: none !important; }
-        div[data-testid=\"stButton\"] button[kind=\"primary\"]:hover { background-color: #333333 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+        div[data-testid="stButton"] button { border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }
+        div[data-testid="stButton"] button[kind="primary"] { background-color: #111111 !important; color: #ffffff !important; border: none !important; }
+        div[data-testid="stButton"] button[kind="primary"]:hover { background-color: #333333 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
         
         .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
         .btn-zalo:hover { background-color: #0055d4; }
@@ -231,6 +231,23 @@ def get_khach_hang_data():
                 if sdt_raw: ds_kh[sdt_raw] = ten_kh
         return ds_kh
     except Exception: return {}
+
+# --- [V11] HÀM LẤY DỮ LIỆU PHÂN LOẠI KHÁCH HÀNG ---
+@st.cache_data(ttl=15)
+def get_plkh_data():
+    try:
+        client = get_gspread_client()
+        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
+        return client.open_by_url(url).worksheet("PLKH").get_all_values()
+    except Exception: return []
+
+def get_huy_hieu(tong_chi):
+    if tong_chi >= 10000000: return "💎 DIAMOND"
+    elif tong_chi >= 5000000: return "🥇 GOLD"
+    elif tong_chi >= 3000000: return "🥈 SILVER"
+    elif tong_chi >= 1000000: return "🥉 THÂN THIẾT"
+    return "🌱 TIỀM NĂNG"
+# --------------------------------------------------
 
 @st.cache_data(ttl=300)
 def get_bao_cao_va_bill_tam():
@@ -443,6 +460,39 @@ def main():
 
             if so_lan_den > 0:
                 st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
+            
+            # --- [V11] HIỂN THỊ HUY HIỆU KHÁCH HÀNG ---
+            if st.session_state.kh_sdt_val.strip() and st.session_state.kh_ten_val != "Khách lẻ":
+                try:
+                    plkh_rows = get_plkh_data()
+                    if len(plkh_rows) > 1:
+                        df_plkh = pd.DataFrame(plkh_rows[1:])
+                        if len(df_plkh.columns) >= 2:
+                            df_plkh = df_plkh.iloc[:, :2]
+                            df_plkh.columns = ["SĐT", "TongTien"]
+                            df_plkh["SĐT"] = df_plkh["SĐT"].astype(str).str.strip()
+                            
+                            sdt_check = st.session_state.kh_sdt_val.strip()
+                            s_k_0 = sdt_check[1:] if sdt_check.startswith('0') else sdt_check
+                            s_c_0 = '0' + sdt_check if not sdt_check.startswith('0') else sdt_check
+                            
+                            match = df_plkh[(df_plkh["SĐT"] == sdt_check) | (df_plkh["SĐT"] == s_k_0) | (df_plkh["SĐT"] == s_c_0)]
+                            
+                            if not match.empty:
+                                raw_tien = str(match["TongTien"].values[0]).replace(',', '').replace('.', '').strip()
+                                tong_chi = float(raw_tien) if raw_tien else 0.0
+                                if tong_chi > 0: 
+                                    huy_hieu = get_huy_hieu(tong_chi)
+                                    st.markdown(f"""
+                                        <div style="background-color: #fffbfa; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #ffe1df; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+                                            <div style="font-size: 11px; color: #ff7a45; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Hạng Khách Hàng</div>
+                                            <div style="font-size: 20px; font-weight: 800; color: #d4380d;">{huy_hieu}</div>
+                                        </div>
+                                    """, unsafe_allow_html=True)
+                except Exception as e:
+                    pass
+            # ------------------------------------------
+
             st.write("")
             
             # --- Ô TÌM KIẾM ĐA NĂNG MẶC ĐỊNH BẢN V10 ---
@@ -631,6 +681,7 @@ def main():
                             
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
+                            get_plkh_data.clear() # V11: Làm mới hạng khách hàng ngay sau khi có bill mới
                             
                             if chot_sdt and chot_sdt != "":
                                 ds_kh_hien_tai = get_khach_hang_data()
