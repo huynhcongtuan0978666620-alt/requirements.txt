@@ -849,17 +849,16 @@ def main():
                         with col_kpi:
                             st.markdown('<div class="nhan-tieu-de">🏆 KPI THỢ HÔM NAY</div>', unsafe_allow_html=True)
                             if not df_today.empty:
-                                # TỰ ĐỘNG TÌM CỘT CÓ TÊN "THỢ" HOẶC "PHỤ TRÁCH"
-                                col_tho_kpi = next((c for c in df_today.columns if 'thợ' in c.lower() or 'phụ trách' in c.lower()), None)
-                                
-                                if col_tho_kpi:
-                                    kpi_df = df_today.groupby(col_tho_kpi)[col_tien].sum().reset_index()
+                                # Ép lấy cột thứ 16 (Index 15 vì trong Python đếm từ 0)
+                                if len(df_today.columns) >= 16:
+                                    col_tho_name = df_today.columns[15] # Cột thứ 16
+                                    kpi_df = df_today.groupby(col_tho_name)[col_tien].sum().reset_index()
                                     kpi_df.columns = ["Tên thợ", "Doanh thu"]
                                     kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
                                     kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
                                     st.dataframe(kpi_df, use_container_width=True, hide_index=True)
                                 else:
-                                    st.warning("Không tìm thấy cột 'Thợ phụ trách' trong Sheet BaoCao. Ní kiểm tra lại tiêu đề cột nhé!")
+                                    st.warning(f"Hiện tại chỉ có {len(df_today.columns)} cột. Ní kiểm tra xem đã thêm cột Thợ chưa?")
                             else:
                                 st.info("Hôm nay chưa có dữ liệu KPI.")
 
