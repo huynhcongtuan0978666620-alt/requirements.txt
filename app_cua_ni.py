@@ -417,7 +417,7 @@ def main():
         # TAB 1: TẠO ĐƠN HÀNG (TỐI ƯU HOÀN HẢO CHO DI ĐỘNG)
         # =================================================================
         with tabs[0]:
-            st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: light; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
             
             # --- KHU VỰC THÊM NÚT F5 LÀM MỚI (ĐÃ CÓ DẤU CÁCH & CĂN LỀ) ---
             col_tieude, col_nut = st.columns([6, 4])
