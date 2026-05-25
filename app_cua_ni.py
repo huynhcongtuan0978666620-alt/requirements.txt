@@ -422,9 +422,9 @@ def main():
             # --- KHU VỰC THÊM NÚT F5 LÀM MỚI ---
             col_title, col_f5 = st.columns([7, 3])
             with col_title:
-                st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:0; padding-bottom:0;">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:0; padding-bottom:0;">TẢI LẠI ỨNG DỤNG</div>', unsafe_allow_html=True)
             with col_f5:
-                if st.button("🔄 F5 LÀM MỚI", use_container_width=True, key="f5_refresh_button"):
+                if st.button("🔄 ẤN VÀO ĐÂY", use_container_width=True, key="f5_refresh_button"):
                     st.cache_data.clear()
                     st.toast("⚡ Đã đồng bộ dữ liệu & làm mới giao diện!")
                     time.sleep(0.3)
