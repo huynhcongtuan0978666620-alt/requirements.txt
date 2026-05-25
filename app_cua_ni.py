@@ -417,17 +417,8 @@ def main():
         # TAB 1: TẠO ĐƠN HÀNG (TỐI ƯU HOÀN HẢO CHO DI ĐỘNG)
         # =================================================================
         with tabs[0]:
-            # --- KHU VỰC THÊM NÚT F5 LÀM MỚI (ĐÃ CÓ DẤU CÁCH & CĂN LỀ) ---
-            col_tieude, col_nut = st.columns([6, 4])
-            with col_nut:
-                # Nút tải lại nằm bên phải, có khoảng cách với mép phải màn hình
-                if st.button("♻️ TẢI LẠI APP", use_container_width=True, key="f5_refresh_button"):
-                    st.cache_data.clear()
-                    st.toast("⚡ Đã đồng bộ!")
-                    time.sleep(0.3)
-                    st.rerun()
-
             st.markdown(f"<div style='text-align: light; font-size: 15px; color: #666; margin-bottom: 15px;'>Thành viên đăng nhập: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
+            
             st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             
             so_lan_den = 0
