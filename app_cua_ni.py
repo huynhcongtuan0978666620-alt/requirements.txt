@@ -427,7 +427,7 @@ def main():
                     time.sleep(0.3)
                     st.rerun()
 
-            st.markdown(f"<div style='text-align: light; font-size: 18px; color: #666; margin-bottom: 18px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: light; font-size: 15px; color: #666; margin-bottom: 15px;'>Thành viên đăng nhập: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
             st.markdown('<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             
             so_lan_den = 0
