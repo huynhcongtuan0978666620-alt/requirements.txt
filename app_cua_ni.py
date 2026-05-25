@@ -421,11 +421,7 @@ def main():
             
             # --- KHU VỰC THÊM NÚT F5 LÀM MỚI (ĐÃ CÓ DẤU CÁCH & CĂN LỀ) ---
             col_tieude, col_nut = st.columns([6, 4])
-            
-            with col_tieude:
-                # Thêm khoảng cách nhẹ vào đầu dòng bằng &nbsp;
-                st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:0; padding-bottom:5px;">&nbsp; THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
-            
+
             with col_nut:
                 # Nút tải lại nằm bên phải, có khoảng cách với mép phải màn hình
                 if st.button("🔄 TẢI LẠI APP", use_container_width=True, key="f5_refresh_button"):
