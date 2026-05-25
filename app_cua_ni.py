@@ -316,7 +316,7 @@ def gui_telegram_notification(noi_dung):
     except Exception: pass
 
 # =====================================================================
-# 3. LUỒNG ĐIỀU HƯỚNG CHÍNH V9 COMPLETE
+# 3. LUỒNG ĐIỀU HƯỚNG CHÍNH V10 COMPLETE
 # =====================================================================
 def main():
     init_states = {
@@ -324,7 +324,7 @@ def main():
         "logged_in": False, "role": None, "full_name": None, "gio_hang": [], 
         "bill_vua_in": None, "trigger_boom": False, "trigger_balloons": False,
         "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn(),
-        "reset_counter": 0
+        "reset_counter": 0, "tho_chot_val": ""
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -348,7 +348,7 @@ def main():
             
             if st.form_submit_button("Xác nhận", use_container_width=True, type="primary"):
                 if u == "admin" and p == "2026":
-                    st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Quản lý", "trigger_balloons": True})
+                    st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Quản lý", "trigger_balloons": True, "tho_chot_val": "Quản lý"})
                     st.rerun()
                 else:
                     raw_data = get_nhan_vien_data()
@@ -368,7 +368,7 @@ def main():
                                     
                         if found_row:
                             ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
-                            st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that, "trigger_balloons": True})
+                            st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that, "trigger_balloons": True, "tho_chot_val": ten_that})
                             time.sleep(0.3)
                             st.rerun()
                         else: st.error("Thông tin đăng nhập không chính xác.")
@@ -445,7 +445,7 @@ def main():
                 st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
             st.write("")
             
-            # --- Ô TÌM KIẾM ĐA NĂNG MẶC ĐỊNH BẢN V9 ---
+            # --- Ô TÌM KIẾM ĐA NĂNG MẶC ĐỊNH BẢN V10 ---
             st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
             
             dich_vu_chon_multi = st.multiselect(
@@ -483,17 +483,15 @@ def main():
                     time.sleep(0.3)
                     st.rerun()
 
-            # --- KHU VỰC GIỎ HÀNG ĐÃ ĐƯỢC FIX LỖI ẨN SỐ LƯỢNG TRÊN ĐIỆN THOẠI ---
+            # --- KHU VỰC GIỎ HÀNG ---
             t_bill = 0.0
             if st.session_state.gio_hang:
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">🛒 GIỎ HÀNG HIỆN TẠI</div>', unsafe_allow_html=True)
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
-                    # 1. Hàng trên: Hiện tên dịch vụ trọn vẹn đầy đủ, không lo thiếu chỗ
                     st.markdown(f"<div style='font-size:14px; font-weight:600; color:#111111; margin-bottom:6px;'>📍 {item['dich_vu']}</div>", unsafe_allow_html=True)
                     
-                    # 2. Hàng dưới: Chia làm 3 cột cực rộng rãi, ô số lượng chiếm tới 50% nên không bao giờ bị mất
                     c_sl, c_tt, c_del = st.columns([5, 3, 2])
                     with c_sl:
                         new_sl = st.number_input(
@@ -523,6 +521,7 @@ def main():
                         st.session_state.gio_hang = []
                         st.session_state.kh_sdt_val = ""
                         st.session_state.kh_ten_val = "Khách lẻ"
+                        st.session_state.tho_chot_val = st.session_state.full_name
                         st.toast("✅ Đã lưu nháp thành công!")
                         time.sleep(1)
                         st.rerun()
@@ -531,8 +530,21 @@ def main():
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
-                tho_phu_trach = st.selectbox("Thợ thực hiện (Tính KPI cho thợ):", options=["(Mặc định là người đăng nhập)"] + ds_tho)
-                chot_tho = tho_phu_trach if tho_phu_trach != "(Mặc định là người đăng nhập)" else st.session_state.full_name
+                # --- XỬ LÝ LIÊN THÔNG KPI THỢ THỰC LÀM KHI ADMIN CHỐT ĐƠN ---
+                options_tho = [t for t in ds_tho if t.strip()]
+                if st.session_state.full_name not in options_tho:
+                    options_tho.append(st.session_state.full_name)
+                
+                if "tho_chot_val" not in st.session_state or not st.session_state.tho_chot_val:
+                    st.session_state.tho_chot_val = st.session_state.full_name
+                
+                if st.session_state.tho_chot_val not in options_tho:
+                    options_tho.append(st.session_state.tho_chot_val)
+                
+                try: idx_default = options_tho.index(st.session_state.tho_chot_val)
+                except ValueError: idx_default = 0
+                
+                chot_tho = st.selectbox("Thợ thực hiện (Tính KPI cho thợ):", options=options_tho, index=idx_default)
 
                 col_nhap1, col_nhap2 = st.columns(2)
                 with col_nhap1:
@@ -681,7 +693,7 @@ def main():
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
                                 "submitting": False, "trigger_boom": True, "kh_sdt_val": "", "kh_ten_val": "Khách lẻ",
-                                "start_time": get_now_vn()
+                                "start_time": get_now_vn(), "tho_chot_val": st.session_state.full_name
                             })
                             st.rerun()
                             
@@ -740,9 +752,9 @@ def main():
                                     st.markdown(f"🛠 **Dịch vụ:** `{chi_tiet_dv}`")
                                     try:
                                         tien_float = float(t_tien_str.replace(',','').replace('.',''))
-                                        st.markdown(f"💰 **Tạm tính:** `{tien_float:,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
+                                        st.markdown(f"💰 **Tạm tính:** `{tien_float:,.0f}đ` | 🤝 **Thợ tạo:** {tho_lam}")
                                     except:
-                                        st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}")
+                                        st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ tạo:** {tho_lam}")
                                 
                                 with col_act:
                                     st.write("")
@@ -769,6 +781,7 @@ def main():
                                             st.session_state.gio_hang = new_gio_hang
                                             st.session_state.kh_sdt_val = sdt_kh
                                             st.session_state.kh_ten_val = ten_kh
+                                            st.session_state.tho_chot_val = tho_lam  # <-- GHI NHỚ NGƯỜI THỰC LÀM 
                                             st.session_state.bill_vua_in = None
                                             
                                             try:
