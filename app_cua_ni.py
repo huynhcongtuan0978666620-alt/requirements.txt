@@ -487,7 +487,10 @@ def main():
             t_bill = 0.0
             if st.session_state.gio_hang:
                 st.write("")
-                st.markdown('<div class="the-quan-ly-flat">🛒 GIỎ HÀNG HIỆN TẠI</div>', unsafe_allow_html=True)
+                
+                # --- ĐÃ CHÈM HÀM ĐẾM SỐ LƯỢNG MÓN ---
+                so_luong_mon = len(st.session_state.gio_hang)
+                st.markdown(f'<div class="the-quan-ly-flat">🛒 GIỎ HÀNG HIỆN TẠI ({so_luong_mon} món)</div>', unsafe_allow_html=True)
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
                     st.markdown(f"<div style='font-size:14px; font-weight:600; color:#111111; margin-bottom:6px;'>📍 {item['dich_vu']}</div>", unsafe_allow_html=True)
