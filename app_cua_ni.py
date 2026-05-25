@@ -24,19 +24,6 @@ st.set_page_config(
 )
 
 def generate_css_animations():
-        /* Tùy chỉnh nút F5 cho chuyên nghiệp */
-    div[data-testid="stButton"] button[key="f5_refresh_button"] {
-        background-color: #ffffff !important;
-        color: #333 !important;
-        border: 1px solid #e0e0e0 !important;
-        padding: 5px 15px !important; /* Tạo khoảng cách bên trong nút */
-        font-size: 11px !important;
-        font-weight: 600 !important;
-        height: 32px !important;
-        margin-top: -2px !important;
-        margin-right: 5px !important; /* Tạo khoảng cách với mép phải màn hình */
-        border-radius: 20px !important; /* Bo tròn nhìn cho "mềm" hơn */
-}
     return """
     <style>
     div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
@@ -134,10 +121,22 @@ def generate_css_animations():
         .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
     }
-    
+        /* Tùy chỉnh nút F5 cho gọn và nổi bật */
+    div[data-testid="stButton"] button[key="f5_refresh_button"] {
+        background-color: #f0f0f0 !important;
+        color: #333 !important;
+        border: none !important;
+        padding: 5px 10px !important;
+        font-size: 12px !important;
+        height: 35px !important;
+        margin-top: -5px !important; /* Đẩy nút lên cho ngang hàng với tiêu đề */
+    }
+    div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
+        background-color: #e0e0e0 !important;
+    }
     </style>
     """
-
+  
 def render_fireworks_html():
     colors = ['#d4af37', '#111111', '#cccccc']
     html_particles = '<div class="firework-container">'
