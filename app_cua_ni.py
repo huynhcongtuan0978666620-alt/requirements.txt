@@ -154,7 +154,7 @@ def render_balloons_html():
 st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
-<div class="banner-top">HỆ THỐNG QUẢN LÝ DỊCH VỤ</div>
+<div class="banner-top">QUẢN LÝ DỊCH VỤ</div>
 <div class="banner-bottom">SALON KIM HIỀN © 2026</div>
 """, unsafe_allow_html=True)
 
@@ -298,7 +298,7 @@ def gui_email_backup(noi_dung):
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = receiver_email
-        msg['Subject'] = f"ĐH DỊCH VỤ - {gio_vn_mail}"
+        msg['Subject'] = f"HOÁ ĐƠN DỊCH VỤ - {gio_vn_mail}"
         msg.attach(MIMEText(noi_dung, 'plain'))
         server = smtplib.SMTP('smtp.gmail.com', 587)
         server.starttls()
@@ -455,9 +455,9 @@ def main():
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
-            if st.button("➕ THÊM TẤT CẢ VÀO GIỎ HÀNG", type="primary", use_container_width=True):
+            if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
-                    st.warning("⚠️ Ní chưa chọn dịch vụ nào cả!")
+                    st.warning("⚠️ Chưa chọn dịch vụ!")
                 else:
                     for dv in dich_vu_chon_multi:
                         info_dv = services.get(dv, {"gia": 0.0, "hoa_hong": 0.0})
@@ -510,7 +510,7 @@ def main():
                         st.markdown(f"<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; color:#111111; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
                     with c_del:
                         st.markdown("<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
-                        if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
+                        if st.button("🗑️🗑️🗑️", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.session_state.bill_vua_in = None
                             st.rerun()
@@ -519,7 +519,7 @@ def main():
                     t_bill += item['thanh_tien']
 
                 st.write("")
-                if st.button("💾 LƯU NHÁP VÀO BILL CHỜ (CHO THỢ)", use_container_width=True):
+                if st.button("💾 LƯU VÀO BILL CHỜ", use_container_width=True):
                     if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                         st.session_state.gio_hang = []
                         st.session_state.kh_sdt_val = ""
@@ -795,7 +795,7 @@ def main():
                                                 st.session_state.start_time = get_now_vn() 
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
-                                                st.toast("⚡ Đã nạp đơn sang mục 👉 TẠO ĐƠN HÀNG")
+                                                st.toast("⚡ Đã nạp sang mục 👉 TẠO ĐƠN HÀNG")
                                                 time.sleep(0.5)
                                                 st.rerun()
                     else:
@@ -807,7 +807,7 @@ def main():
             with tabs[2]:
                 st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP & DASHBOARD</div>', unsafe_allow_html=True)
                 
-                if st.button("🔄 Cập nhật dữ liệu báo cáo", use_container_width=True):
+                if st.button("⏰ Cập nhật dữ liệu báo cáo", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear()
                     st.rerun()
                 
@@ -851,9 +851,9 @@ def main():
                     c2.metric("💳 Trung bình/đơn", f"{trung_binh:,.0f}đ")
                     
                     c3, c4, c5 = st.columns(3)
-                    c3.metric("📦 Đơn trong ngày", tong_don)
-                    c4.metric("👥 Khách phục vụ", so_khach)
-                    c5.metric("⏳ Đơn chờ", don_cho)
+                    c3.metric("📦 Tổng đơn trong ngày", tong_don)
+                    c4.metric("👥 Tổng khách phục vụ", so_khach)
+                    c5.metric("⏳ Tổng đơn chờ", don_cho)
                     
                     st.write("")
                     if not df_bc.empty:
@@ -889,7 +889,7 @@ def main():
 
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
-                if st.button("Khôi phục ứng dụng (Clear Cache & Đồng bộ lại)"):
+                if st.button("♻️ Clear Cache & Đồng bộ lại"):
                     st.cache_data.clear()
                     st.success("Đã xóa bộ nhớ đệm thành công!")
                     time.sleep(0.5)
