@@ -802,10 +802,12 @@ def main():
                         else: 
                             so_khach = 0
 
-                        
-                        col_ten_khach = 'Tên khách' if 'Tên khách' in df_today.columns else 'Khách hàng' if 'Khách hàng' in df_today.columns else None
-                        so_khach = len(df_today[col_ten_khach].unique()) if col_ten_khach and not df_today.empty else 0
-                        
+                        # Đã dùng col_khach tìm được ở trên, nên ta dùng trực tiếp:
+                        if col_khach and not df_today.empty:
+                            so_khach = len(df_today[col_khach].unique())
+                        else:
+                            so_khach = 0                        
+
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
                     
