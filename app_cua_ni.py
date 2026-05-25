@@ -461,8 +461,8 @@ def main():
             if so_lan_den > 0:
                 st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
             
-            # --- [V11] HIỂN THỊ HUY HIỆU KHÁCH HÀNG ---
-            if st.session_state.kh_sdt_val.strip() and st.session_state.kh_ten_val != "Khách lẻ":
+            # --- [V11] HIỂN THỊ HUY HIỆU KHÁCH HÀNG (CHỈ ADMIN THẤY & THU NHỎ LẠI) ---
+            if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.kh_ten_val != "Khách lẻ":
                 try:
                     plkh_rows = get_plkh_data()
                     if len(plkh_rows) > 1:
@@ -484,9 +484,10 @@ def main():
                                 if tong_chi > 0: 
                                     huy_hieu = get_huy_hieu(tong_chi)
                                     st.markdown(f"""
-                                        <div style="background-color: #fffbfa; padding: 12px; border-radius: 8px; text-align: center; border: 1px solid #ffe1df; margin-bottom: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                                            <div style="font-size: 11px; color: #ff7a45; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">Hạng Khách Hàng</div>
-                                            <div style="font-size: 20px; font-weight: 800; color: #d4380d;">{huy_hieu}</div>
+                                        <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
+                                            <span style="background-color: #fffbfa; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffe1df; font-size: 11px; font-weight: 700; color: #d4380d; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-transform: uppercase;">
+                                                {huy_hieu}
+                                            </span>
                                         </div>
                                     """, unsafe_allow_html=True)
                 except Exception as e:
@@ -694,9 +695,36 @@ def main():
                                     ws_kh.append_row([chot_sdt, chot_ten])
                                     st.cache_data.clear() 
                             
+                            # --- [V11] LẤY HUY HIỆU ĐỂ CHÈN VÀO BILL / THÔNG BÁO (CHỈ DÀNH CHO ADMIN) ---
+                            huy_hieu_bill = ""
+                            if st.session_state["role"] == "Admin" and chot_sdt and chot_ten != "Khách lẻ":
+                                try:
+                                    plkh_rows = get_plkh_data()
+                                    if len(plkh_rows) > 1:
+                                        df_plkh = pd.DataFrame(plkh_rows[1:])
+                                        if len(df_plkh.columns) >= 2:
+                                            df_plkh = df_plkh.iloc[:, :2]
+                                            df_plkh.columns = ["SĐT", "TongTien"]
+                                            df_plkh["SĐT"] = df_plkh["SĐT"].astype(str).str.strip()
+                                            
+                                            s_k_0 = chot_sdt[1:] if chot_sdt.startswith('0') else chot_sdt
+                                            s_c_0 = '0' + chot_sdt if not chot_sdt.startswith('0') else chot_sdt
+                                            match = df_plkh[(df_plkh["SĐT"] == chot_sdt) | (df_plkh["SĐT"] == s_k_0) | (df_plkh["SĐT"] == s_c_0)]
+                                            
+                                            if not match.empty:
+                                                raw_tien = str(match["TongTien"].values[0]).replace(',', '').replace('.', '').strip()
+                                                tong_chi = float(raw_tien) if raw_tien else 0.0
+                                                if tong_chi > 0:
+                                                    huy_hieu_bill = get_huy_hieu(tong_chi)
+                                except Exception: pass
+                            # --------------------------------------------------------------------------
+
+                            # Thêm đoạn text Hạng khách hàng cho Telegram/Email (nếu có)
+                            huy_hieu_text_tele = f" | Hạng: {huy_hieu_bill}" if huy_hieu_bill else ""
+
                             noi_dung_mail = (
                                 f"THÔNG BÁO - Đã thanh toán\n \n=====================\n \n"
-                                f"Mã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách hàng: {chot_ten} - {chot_sdt}\n"
+                                f"Mã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách hàng: {chot_ten} - {chot_sdt}{huy_hieu_text_tele}\n"
                                 f"Thu ngân: {st.session_state.full_name}\nThợ thực hiện: {chot_tho}\n \n=====================\n \n"
                                 f"Dịch vụ:{chi_tiet_tele}\n \n=====================\n \n"
                                 f"Tổng bill: {t_bill:,.0f} đ\nChiết khấu/KM: -{tong_tru_gia:,.0f} đ\nKhách đưa: {kh_dua:,.0f} đ\n"
@@ -710,6 +738,9 @@ def main():
                             if chot_sdt and chot_sdt != "":
                                 sdt_zalo = chot_sdt if chot_sdt.startswith('0') else '0' + chot_sdt
                                 btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 Nhắn tin CSKH qua Zalo</a>'
+                            
+                            # Đoạn HTML Huy hiệu nhỏ gọn để nhét vào góc hóa đơn
+                            html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
 
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
@@ -720,6 +751,7 @@ def main():
                                     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
                                     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
                                 </div>
+                                {html_huy_hieu_bill_goc}
                                 <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Khách hàng:</span> <span style="font-weight:600;">{chot_ten}</span></div>
