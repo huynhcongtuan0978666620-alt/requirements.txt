@@ -40,10 +40,10 @@ def generate_css_animations():
             background-color: transparent !important;
         }
 
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
-        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"],
-        div[class^="StyledViewerBottomBar"] {
+        header, footer, .stAppDeployButton, [data-testid=\"stStatusWidget\"], [data-testid=\"stToolbar\"],
+        div[class*=\"stAppViewerToolbar\"], div[data-testid=\"stAppViewerToolbar\"], footer + div,
+        div[data-testid=\"stViewerToolbar\"], .stViewerToolbar, [data-testid=\"stManageAppTR\"],
+        div[class^=\"StyledViewerBottomBar\"] {
             display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
 
@@ -69,14 +69,14 @@ def generate_css_animations():
         .thong-tin-phu { font-size: 13px !important; color: #666666 !important; margin: 4px 0 !important; font-weight: 400; }
         .slogan { font-size: 13px !important; color: #888888 !important; font-style: italic !important; margin-top: 15px !important; }
         
-        [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
-        button[data-baseweb="tab"] {
+        [data-testid=\"stTabs\"] [role=\"tablist\"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
+        button[data-baseweb=\"tab\"] {
             background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; 
             border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important;
         }
-        button[data-baseweb="tab"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
-        button[data-baseweb="tab"][aria-selected="true"] { border-bottom: 2px solid #111111 !important; }
-        button[data-baseweb="tab"][aria-selected="true"] p { color: #111111 !important; }
+        button[data-baseweb=\"tab\"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
+        button[data-baseweb=\"tab\"][aria-selected=\"true\"] { border-bottom: 2px solid #111111 !important; }
+        button[data-baseweb=\"tab\"][aria-selected=\"true\"] p { color: #111111 !important; }
 
         .the-quan-ly-flat { color: #111; font-weight: 600; font-size: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eaeaea; padding-bottom: 8px;}
         .nhan-tieu-de { font-size: 11px !important; font-weight: 600 !important; margin-bottom: 8px !important; text-transform: uppercase !important; color: #666 !important; letter-spacing: 0.5px; text-align: center;}
@@ -91,9 +91,9 @@ def generate_css_animations():
         .khach-tra-box { background-color: #111111; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .tien-thua-box { background-color: #f8f9fa; color: #111; padding: 18px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; border: 1px solid #eaeaea; margin: 20px 0; }
 
-        div[data-testid="stButton"] button { border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }
-        div[data-testid="stButton"] button[kind="primary"] { background-color: #111111 !important; color: #ffffff !important; border: none !important; }
-        div[data-testid="stButton"] button[kind="primary"]:hover { background-color: #333333 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+        div[data-testid=\"stButton\"] button { border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }
+        div[data-testid=\"stButton\"] button[kind=\"primary\"] { background-color: #111111 !important; color: #ffffff !important; border: none !important; }
+        div[data-testid=\"stButton\"] button[kind=\"primary\"]:hover { background-color: #333333 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
         
         .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
         .btn-zalo:hover { background-color: #0055d4; }
@@ -323,7 +323,8 @@ def main():
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "logged_in": False, "role": None, "full_name": None, "gio_hang": [], 
         "bill_vua_in": None, "trigger_boom": False, "trigger_balloons": False,
-        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn()
+        "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn(),
+        "reset_counter": 0
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -395,7 +396,7 @@ def main():
                 ds_tho = [str(r[c_ten]).strip() for r in raw_nv[1:] if len(r) > c_ten and str(r[c_ten]).strip()]
 
         # =================================================================
-        # TAB 1: TẠO ĐƠN HÀNG (MẶC ĐỊNH CHUẨN V9 - Ô TÌM KIẾM ĐA NĂNG KHÔNG ĐỔI)
+        # TAB 1: TẠO ĐƠN HÀNG (TỐI ƯU HOÀN HẢO CHO DI ĐỘNG)
         # =================================================================
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Nhân viên: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m')}</div>", unsafe_allow_html=True)
@@ -444,17 +445,15 @@ def main():
                 st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
             st.write("")
             
-            # --- Ô TÌM KIẾM ĐA NĂNG MẶC ĐỊNH BẢN V9 GỐC (GIỮ NGUYÊN 100%) ---
+            # --- Ô TÌM KIẾM ĐA NĂNG MẶC ĐỊNH BẢN V9 ---
             st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
             
             dich_vu_chon_multi = st.multiselect(
                 "Chạm để chọn một hoặc nhiều dịch vụ cùng lúc...", 
                 options=dv_list if dv_list else ["Đang tải dữ liệu..."], 
                 placeholder="Ní cứ chọn thoải mái nhiều dịch vụ ở đây...",
-                key="dv_multi_key"
+                key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
-            
-            # Bỏ hoàn toàn các dòng inputs sinh ra dưới ô chọn để giữ ô tìm kiếm hoạt động mượt mà
             
             if st.button("➕ THÊM TẤT CẢ VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
@@ -479,38 +478,43 @@ def main():
                     if 'start_time' not in st.session_state or len(st.session_state.gio_hang) == len(dich_vu_chon_multi):
                         st.session_state.start_time = get_now_vn()
                     st.session_state.bill_vua_in = None
-                    st.session_state.dv_multi_key = []  
-                    st.toast(f"✅ Đã thêm {len(dich_vu_chon_multi)} dịch vụ vào giỏ hàng!")
+                    st.session_state.reset_counter += 1  
+                    st.toast(f"✅ Đã thêm {len(dich_vu_chon_multi)} dịch vụ với SL=1!")
                     time.sleep(0.3)
                     st.rerun()
 
+            # --- KHU VỰC GIỎ HÀNG ĐÃ ĐƯỢC FIX LỖI ẨN SỐ LƯỢNG TRÊN ĐIỆN THOẠI ---
             t_bill = 0.0
             if st.session_state.gio_hang:
                 st.write("")
-                st.markdown(f"**Danh sách giỏ hàng ({len(st.session_state.gio_hang)})**")
+                st.markdown('<div class="the-quan-ly-flat">🛒 GIỎ HÀNG HIỆN TẠI</div>', unsafe_allow_html=True)
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
-                    col_item1, col_item2, col_item3, col_item4 = st.columns([4.0, 2.2, 2.3, 1.5])
-                    with col_item1: 
-                        st.markdown(f"<span style='font-size:14px; font-weight:500;'>{item['dich_vu']}</span>", unsafe_allow_html=True)
-                    with col_item2:
+                    # 1. Hàng trên: Hiện tên dịch vụ trọn vẹn đầy đủ, không lo thiếu chỗ
+                    st.markdown(f"<div style='font-size:14px; font-weight:600; color:#111111; margin-bottom:6px;'>📍 {item['dich_vu']}</div>", unsafe_allow_html=True)
+                    
+                    # 2. Hàng dưới: Chia làm 3 cột cực rộng rãi, ô số lượng chiếm tới 50% nên không bao giờ bị mất
+                    c_sl, c_tt, c_del = st.columns([5, 3, 2])
+                    with c_sl:
                         new_sl = st.number_input(
-                            "SL", min_value=0.5, max_value=20.0, 
+                            "Số lượng:", min_value=0.5, max_value=50.0, 
                             value=float(item['so_luong']), step=0.5, 
-                            key=f"cart_sl_{item['dich_vu']}_{idx}", 
-                            label_visibility="collapsed"
+                            key=f"cart_sl_{item['dich_vu']}_{idx}"
                         )
                         if new_sl != item['so_luong']:
                             item['so_luong'] = new_sl
                             item['thanh_tien'] = new_sl * item['don_gia']
                             st.rerun()
-                    with col_item3: 
-                        st.markdown(f"<span style='font-size:14px; font-weight:600;'>{item['thanh_tien']:,.0f}đ</span>", unsafe_allow_html=True)
-                    with col_item4:
-                        if st.button("Xóa", key=f"del_{idx}"):
+                    with c_tt:
+                        st.markdown(f"<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; color:#111111; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
+                    with c_del:
+                        st.markdown("<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
+                        if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.session_state.bill_vua_in = None
                             st.rerun()
+                            
+                    st.markdown("<div style='margin: 12px 0; border-bottom: 1px dashed #eaeaea;'></div>", unsafe_allow_html=True)
                     t_bill += item['thanh_tien']
 
                 st.write("")
