@@ -26,9 +26,6 @@ st.set_page_config(
 def generate_css_animations():
     return """
     <style>
-    div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
-        background-color: #f8f8f8 !important;
-        border-color: #111111 !important;
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         html, body {
@@ -120,20 +117,6 @@ def generate_css_animations():
         .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }
         .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
-    }
-        /* Tùy chỉnh nút F5 cho gọn và nổi bật */
-    div[data-testid="stButton"] button[key="f5_refresh_button"] {
-        background-color: #f0f0f0 !important;
-        color: #333 !important;
-        border: none !important;
-        padding: 5px 10px !important;
-        font-size: 12px !important;
-        height: 35px !important;
-        margin-top: -5px !important; /* Đẩy nút lên cho ngang hàng với tiêu đề */
-    }
-    div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
-        background-color: #e0e0e0 !important;
-    }
     </style>
     """
   
