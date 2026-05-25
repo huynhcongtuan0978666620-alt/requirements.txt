@@ -730,7 +730,7 @@ def main():
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
                                 sdt_zalo = chot_sdt if chot_sdt.startswith('0') else '0' + chot_sdt
-                                btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="" class="btn-zalo">💬 CSKH qua Zalo</a>'
+                                btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 CSKH qua Zalo</a>'
                             
                             # Đoạn HTML Huy hiệu nhỏ gọn để nhét vào góc hóa đơn
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
