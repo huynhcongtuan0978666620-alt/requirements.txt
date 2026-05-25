@@ -24,9 +24,7 @@ st.set_page_config(
 )
 
 def generate_css_animations():
-    return """
-    <style>
-    /* Tùy chỉnh nút F5 cho chuyên nghiệp */
+        /* Tùy chỉnh nút F5 cho chuyên nghiệp */
     div[data-testid="stButton"] button[key="f5_refresh_button"] {
         background-color: #ffffff !important;
         color: #333 !important;
@@ -38,7 +36,9 @@ def generate_css_animations():
         margin-top: -2px !important;
         margin-right: 5px !important; /* Tạo khoảng cách với mép phải màn hình */
         border-radius: 20px !important; /* Bo tròn nhìn cho "mềm" hơn */
-      }
+}
+    return """
+    <style>
     div[data-testid="stButton"] button[key="f5_refresh_button"]:hover {
         background-color: #f8f8f8 !important;
         border-color: #111111 !important;
