@@ -667,11 +667,18 @@ def main():
                                 
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                     # --- ĐOẠN 1: ÉP XOÁ VIỀN TỪNG Ô DỊCH VỤ ---
-                                html_items += f"""<tr><td style="text-align: left; border: none !important; background: transparent !important; padding: 6px 0px !important;"><div class="hd-item-name">{item["dich_vu"]}</div><div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div></td><td class="hd-item-price" style="text-align: right; border: none !important; background: transparent !important; padding: 6px 0px !important; vertical-align: middle;">{item["thanh_tien"]:,.0f}đ</td></tr>"""
+                                # --- ĐOẠN 1: ÉP XOÁ VIỀN VÀ NỀN TRỰC TIẾP TRÊN TỪNG Ô ---
+                                html_items += f"""<tr>
+<td style="text-align: left; border: none !important; background: transparent !important; padding: 6px 0px !important;">
+<div class="hd-item-name">{item["dich_vu"]}</div>
+<div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
+</td>
+<td style="text-align: right; border: none !important; background: transparent !important; padding: 6px 0px !important; vertical-align: middle;">
+<div class="hd-item-price">{item["thanh_tien"]:,.0f}đ</div>
+</td>
+</tr>"""
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
                                 
-
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
                             get_plkh_data.clear()
@@ -712,9 +719,15 @@ def main():
                                 btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 CSKH qua Zalo</a>'
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
-
-                            # Toàn bộ lõi bảng hóa đơn đã được chuyển về table chuẩn POS
-                            st.session_state.bill_vua_in = f"""<div class="hoa-don-khung">
+                            # Toàn bộ lõi bảng hóa đơn đã được chuyển về table chuẩn POS và xoá viền triệt để bằng CSS nội bộ
+                            st.session_state.bill_vua_in = f"""<style>
+.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
+    border: none !important;
+    background: transparent !important;
+    background-color: transparent !important;
+}}
+</style>
+<div class="hoa-don-khung">
 <div class="hd-header">
     <div style="font-size: 18px; font-weight: 800;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
     <div style="font-size: 13px; color: #666; margin-top:4px;">{settings.get('Diachi', '')}</div>
@@ -730,7 +743,7 @@ def main():
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
 </div>
 <div class="hd-items">
-    <table class="hd-table-sanpham">
+    <table style="width: 100%; border-collapse: collapse; border: none !important;">
         {html_items}
     </table>
 </div>
