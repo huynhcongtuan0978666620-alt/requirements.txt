@@ -35,8 +35,8 @@ def generate_css_animations():
         }
 
         .stApp {
-            padding-top: 5px !important; /* Giảm từ 50px xuống 20px cho thoáng */
-            padding-bottom: 5px !important; 
+            padding-top: 50px !important; 
+            padding-bottom: 75px !important; 
             background-color: transparent !important;
         }
 
@@ -87,13 +87,7 @@ def generate_css_animations():
         
         .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
         .btn-zalo:hover { background-color: #0055d4; }
-        
-        /* Ép các khối tiêu đề sát vào nội dung bên dưới */
-        .the-quan-ly-flat {
-            margin-bottom: 5px !important; /* Giảm khoảng cách dưới tiêu đề */
-            margin-top: 10px !important;  /* Giảm khoảng cách trên tiêu đề */
-        }
-        
+
         /* --- STYLE KHUNG HÓA ĐƠN Độc Lập Chống TRẮNG CHỮ --- */
         .hoa-don-khung { background-color: #ffffff !important; color: #333333 !important; padding: 30px 25px !important; border-radius: 8px !important; border: 1px solid #e0e0e0 !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.05) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
