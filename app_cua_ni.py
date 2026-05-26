@@ -824,10 +824,12 @@ def main():
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                             
+                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Dịch vụ có trong bill:" và giữ nguyên cấu trúc xóa viền
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
     background: transparent !important;
+    background-color: transparent !important;
 }}
 </style>
 <div class="hoa-don-khung">
@@ -838,36 +840,32 @@ def main():
     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
 </div>
-
-<div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px;">
-    {html_huy_hieu_bill_goc}
+{html_huy_hieu_bill_goc}
+<div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Khách hàng:</span> <span style="font-weight:600;">{chot_ten}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span>{st.session_state.full_name}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
 </div>
-
 <div class="hd-items" style="margin-bottom: 15px;">
-    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ sử dụng:</div>
-    <table style="width: 100%; border-collapse: collapse;">
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
+    <table style="width: 100%; border-collapse: collapse; border: none !important;">
         {html_items}
     </table>
 </div>
-
 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span>{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Chiết khấu:</span> <span>-{tien_giam:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span>-{khuyen_mai:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách đưa:</span> <span>{kh_dua:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span>{tien_thoi:,.0f}</span></div>
-    <div style="display: flex; justify-content: space-between;"><span>Thời gian làm:</span> <span>{thoi_gian_phuc_vu} phút</span></div>
+    <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span>{thoi_gian_phuc_vu} phút</span></div>
 </div>
-
 <div style="font-size: 15px; font-weight: 700;">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG THU:</span> <span>{t_khach_tra:,.0f}đ</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG:</span> <span>{t_khach_tra:,.0f}</span></div>
 </div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888;">
-    Cảm ơn quý khách đã tin tưởng lựa chọn!
+    Cảm ơn quý khách đã sử dụng dịch vụ!
 </div>
 {btn_zalo_html}
 </div>"""
