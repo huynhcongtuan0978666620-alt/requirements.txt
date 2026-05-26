@@ -581,7 +581,7 @@ def main():
                         st.rerun()
 
             if t_bill > 0:
-                st.write("")
+                st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
                 options_tho = [t for t in ds_tho if t.strip()]
