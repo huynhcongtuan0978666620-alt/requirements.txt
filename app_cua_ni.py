@@ -112,10 +112,8 @@ def generate_css_animations():
         .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }
         .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
-    </style>
-    """
 
-st.markdown(CSS_TRÊN, unsafe_allow_html=True)
+        st.markdown(CSS_TRÊN, unsafe_allow_html=True)
 <style>
     /* 1. Ẩn menu ba gạch của Streamlit ở góc trên bên phải */
     #MainMenu {visibility: hidden;}
@@ -133,6 +131,9 @@ st.markdown(CSS_TRÊN, unsafe_allow_html=True)
     div.stDeployButton {display:none;}
 </style>
 
+    </style>
+    """
+    
 def render_fireworks_html():
     colors = ['#d4af37', '#111111', '#cccccc']
     html_particles = '<div class="firework-container">'
