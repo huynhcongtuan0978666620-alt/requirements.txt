@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (MINIMALIST & PREMIUM V11)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (MINIMALIST & PREMIUM V11 PRO)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - VISION V11", 
@@ -31,7 +31,11 @@ def generate_css_animations():
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
-            overscroll-behavior-y: contain !important; 
+            overscroll-behavior-y: none !important; /* ĐÃ KHÓA: Ngăn chặn kéo xuống để reload trang trên Android */
+        }
+        
+        html {
+            overscroll-behavior: none !important; /* ĐÃ KHÓA TRIỆT ĐỂ cấp độ trình duyệt WebView */
         }
 
         .stApp {
@@ -40,7 +44,8 @@ def generate_css_animations():
             background-color: transparent !important;
         }
 
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        /* ĐÃ NÂNG CẤP: Quét sạch bóng menu ba gạch, thanh công cụ và các tàn dư giao diện web */
+        header, footer, #MainMenu, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
         div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"],
         div[class^="StyledViewerBottomBar"] {
@@ -581,7 +586,6 @@ def main():
                         st.rerun()
 
             if t_bill > 0:
-                # --- VÁ LỖI CHÍ MẠNG Ở ĐÂY: Xóa hoàn toàn dòng st.markdown(st.session_state.bill_vua_in) vô lý gây hiện thẻ div và sập session ---
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
                 options_tho = [t for t in ds_tho if t.strip()]
@@ -667,7 +671,6 @@ def main():
                                 
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                # --- ĐOẠN 1: ÉP XOÁ VIỀN VÀ NỀN TRỰC TIẾP TRÊN TỪNG Ô ---
                                 html_items += f"""<tr>
 <td style="text-align: left; border: none !important; background: transparent !important; padding: 6px 0px !important;">
 <div class="hd-item-name">{item["dich_vu"]}</div>
@@ -713,14 +716,17 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
                             
+                            # ĐĂ VÁ LỖI & NÂNG CẤP: Thay thế link web thành cấu trúc Deep Link gọi thẳng App Zalo trên Android WebView
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
-                                sdt_zalo = chot_sdt if chot_sdt.startswith('0') else '0' + chot_sdt
-                                btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 CSKH qua Zalo</a>'
+                                sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
+                                if not sdt_zalo_clean.startswith('0') and sdt_zalo_clean != "":
+                                    sdt_zalo_clean = '0' + sdt_zalo_clean
+                                # Chuyển đổi sang giao thức gọi Native App Zalo
+                                btn_zalo_html = f'<a href="zalo://conversation?phone={sdt_zalo_clean}" target="_blank" class="btn-zalo">💬 Tìm khách trên ứng dụng Zalo</a>'
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                             
-                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Chi tiết dịch vụ:" và giữ nguyên cấu trúc xóa viền
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
