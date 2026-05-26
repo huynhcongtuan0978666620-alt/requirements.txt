@@ -581,7 +581,7 @@ def main():
                         st.rerun()
 
             if t_bill > 0:
-                st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+                # --- VÁ LỖI CHÍ MẠNG Ở ĐÂY: Xóa hoàn toàn dòng st.markdown(st.session_state.bill_vua_in) vô lý gây hiện thẻ div và sập session ---
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
                 options_tho = [t for t in ds_tho if t.strip()]
@@ -665,10 +665,8 @@ def main():
                                     kh_dua, tien_thoi, f"{thoi_gian_phuc_vu} phút", chot_tho
                                 ])
                                 
-                                # Định dạng lại số lượng sạch không bị dính chấm không thô thiển (.0)
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                # --- VÁ LỖI CỐT LÕI: Đổi cấu trúc HTML flex sang cấu trúc tr/td Table độc lập bất bại chống sập dòng ---
                                 html_items += f"""
                                 <tr>
                                     <td style="text-align: left;">
@@ -722,7 +720,6 @@ def main():
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
 
-                            # Toàn bộ lõi bảng hóa đơn đã được chuyển về table chuẩn POS
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
