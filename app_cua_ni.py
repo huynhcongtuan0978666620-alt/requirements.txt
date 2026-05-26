@@ -35,7 +35,7 @@ def generate_css_animations():
 
         .stApp {
             padding-top: 50px !important; 
-            padding-bottom: 175px !important; 
+            padding-bottom: 75px !important; 
             background-color: transparent !important;
         }
 
