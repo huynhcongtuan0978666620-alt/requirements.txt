@@ -36,6 +36,13 @@ def generate_css_animations():
             visibility: hidden !important;
             height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
+
+        /* Khóa cứng dòng "Manage app" dưới đáy màn hình điện thoại */
+        div[class^="StyledViewerBottomBar"] {
+            display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+        }
         
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
