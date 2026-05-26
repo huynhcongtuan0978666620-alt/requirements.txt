@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP CHUYỂN ĐỔI CHỦ ĐỀ (VISION V12)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP CHUYỂN ĐỔI CHỦ ĐỀ (VISION V12.1)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - VISION V12", 
@@ -122,11 +122,24 @@ def generate_css_animations(theme="light"):
 
         .firework-container {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }}
         .css-particle {{ position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; animation: explode-mega 3.0s ease-out 2 forwards; }}
-        @keyframes explode-mega {{ 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; } }}
+        
+        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn để tránh lỗi f-string */
+        @keyframes explode-mega {{ 
+            0% {{ transform: translate(0, 0); opacity: 0; }} 
+            20% {{ opacity: 0.8; }} 
+            100% {{ transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }} 
+        }}
         
         .balloon-container-css {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }}
         .fixed-balloon {{ position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }}
-        @keyframes fly-up-skywards-pure {{ 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }}
+        
+        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn */
+        @keyframes fly-up-skywards-pure {{ 
+            0% {{ transform: translateY(110vh); opacity: 0; }} 
+            10% {{ opacity: 0.6; }} 
+            90% {{ opacity: 0.6; }} 
+            100% {{ transform: translateY(-120vh); opacity: 0; }} 
+        }}
     </style>
     """
     
@@ -801,9 +814,7 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
                             
-                            # =========================================================
-                            # CẬP NHẬT 1: NÚT KÍCH HOẠT MỞ ZALO VÀ CHỦ ĐỘNG TÌM KIẾM THEO SĐT
-                            # =========================================================
+                            # NÚT KÍCH HOẠT MỞ ZALO VÀ CHỦ ĐỘNG TÌM KIẾM THEO SĐT
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
                                 sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
