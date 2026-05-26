@@ -746,7 +746,7 @@ def main():
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                             
-                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Dịch vụ có trong bill:" và giữ nguyên cấu trúc xóa viền
+                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Chi tiết dịch vụ:" và giữ nguyên cấu trúc xóa viền
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
