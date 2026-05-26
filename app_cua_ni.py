@@ -114,24 +114,6 @@ def generate_css_animations():
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
     </style>
     """
-    <style>
-    /* 1. Ẩn menu ba gạch của Streamlit ở góc trên bên phải */
-    #MainMenu {visibility: hidden;}
-
-    /* 2. Ẩn dòng chữ "Made with Streamlit" ở chân trang */
-    footer {visibility: hidden;}
-
-    /* 3. Ẩn nút "Deploy" hoặc các header mặc định */
-    header {visibility: hidden;}
-
-    /* 4. Ẩn các icon hỗ trợ mặc định của Streamlit (nếu có) */
-    .stApp > header {display: none !important;}
-    
-    /* 5. Tùy chọn: Ẩn luôn thanh trạng thái của Streamlit (nếu cần) */
-    div.stDeployButton {display:none;}
-</style>
-    
-  
 def render_fireworks_html():
     colors = ['#d4af37', '#111111', '#cccccc']
     html_particles = '<div class="firework-container">'
