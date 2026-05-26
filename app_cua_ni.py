@@ -24,26 +24,10 @@ st.set_page_config(
 )
 
 def generate_css_animations():
-    css_animation = """
+    return """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        /* 🚫 DIỆT TẬN GỐC THANH "MANAGE APP" VÀ TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
-        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
-        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"] {
-            display: none !important; 
-            visibility: hidden !important;
-            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
-        }
-
-        /* Khóa cứng dòng "Manage app" dưới đáy màn hình điện thoại */
-        div[class^="StyledViewerBottomBar"] {
-            display: none !important;
-            visibility: hidden !important;
-            height: 0 !important;
-        }
-        
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
@@ -128,27 +112,8 @@ def generate_css_animations():
         .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }
         .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
         @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
-
-    
-    /* 1. Ẩn menu ba gạch của Streamlit ở góc trên bên phải */
-        #MainMenu {visibility: hidden;}
-
-    /* 2. Ẩn dòng chữ "Made with Streamlit" ở chân trang */
-        footer {visibility: hidden;}
-
-    /* 3. Ẩn nút "Deploy" hoặc các header mặc định */
-        header {visibility: hidden;}
-
-    /* 4. Ẩn các icon hỗ trợ mặc định của Streamlit (nếu có) */
-        .stApp > header {display: none !important;}
-    
-    /* 5. Tùy chọn: Ẩn luôn thanh trạng thái của Streamlit (nếu cần) */
-        div.stDeployButton {display:none;}
-
-     
     </style>
     """
-    return css_animation
     
 def render_fireworks_html():
     colors = ['#d4af37', '#111111', '#cccccc']
