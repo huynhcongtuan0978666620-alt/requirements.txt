@@ -56,7 +56,7 @@ def generate_css_animations():
         .banner-top { top: 0px !important; }
         .banner-bottom { bottom: 0 !important; top: auto !important; border-top: 1px solid #eaeaea !important; border-bottom: none !important; justify-content: flex-start !important; padding-left: 20px !important; }
 
-        /* --- BẢNG HIỆU PHONG CÁCH COMPACT NGANG SIÊU GỌN TIẾT KIỆM DIỆN TÍCH (Mục 3) --- */
+        /* --- BẢNG HIỆU PHONG CÁCH COMPACT NGANG SIÊU GỌN TIẾT KIỆM DIỆN TÍCH --- */
         .bang-hieu-lktv {
             display: flex !important;
             align-items: center !important;
@@ -130,9 +130,7 @@ def generate_css_animations():
         .hd-header { text-align: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
         .hd-title { font-size: 18px; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; font-weight: 700; color: #111111; }
         
-        .hd-row-item { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 12px !important; font-size: 14px !important; width: 100% !important; }
-        .hd-item-name { flex: 1 !important; padding-right: 15px !important; text-align: left !important; color: #444; }
-        .hd-item-price { text-align: right !important; white-space: nowrap !important; font-weight: 600 !important; color: #111; }
+        .hd-row-item { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 14px !important; font-size: 14px !important; width: 100% !important; }
         .hd-items { border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 15px; }
 
         .lsc-shake { background-color: #fff1f0; color: #cf1322; padding: 12px; border-radius: 6px; border: 1px solid #ffa39e; text-align: center; font-size: 13px; margin-bottom: 15px; }
@@ -290,7 +288,8 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
-        chi_tiet = " | ".join([f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang])
+        # Đã tối ưu định dạng chuỗi số lượng để ghi vào Sheet không bị dính đuôi .0
+        chi_tiet = " | ".join([f"{item['dich_vu']} (x{int(item['so_luong']) if item['so_luong'].is_integer() else item['so_luong']})" for item in gio_hang])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang])
         
         ws.append_row([
@@ -319,7 +318,6 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
         st.error(f"Lỗi xóa bill tạm trên Sheets: {e}")
         return False
 
-# --- CẬP NHẬT GIAO DIỆN BẢNG HIỆU NGANG COMPACT (Mục 3) ---
 def display_header(settings):
     direct_logo_url = format_drive_direct_url(settings.get('Logo', ''))
     fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -334,16 +332,12 @@ def display_header(settings):
         </div>
     """, unsafe_allow_html=True)
 
-# --- CẬP NHẬT CHÈN NHIỀU GMAIL (Mục 5) ---
 def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
-        
-        # Ní muốn thêm bao nhiêu nhận tin cứ phẩy thêm chuỗi địa chỉ email vào đây nhé ní:
         receiver_emails = [
             "huynhcongtuan0978666620@gmail.com",
-            # "vi_du_gmail_thu_hai@gmail.com",
         ]
         
         gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
@@ -360,13 +354,11 @@ def gui_email_backup(noi_dung):
         server.quit()
     except Exception: pass
 
-# --- CẬP NHẬT VÁ LỖI NGHẼN TELEGRAM (Mục 4) ---
 def gui_telegram_notification(noi_dung):
     try:
         bot_token = st.secrets["telegram"]["bot_token"]
         chat_id = st.secrets["telegram"]["chat_id"]
         url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        # Xóa bỏ hoàn toàn "parse_mode": "Markdown" để tránh bị chặn gửi khi có các ký tự đặc biệt vô ý
         requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
     except Exception: pass
 
@@ -457,7 +449,7 @@ def main():
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Thành viên đăng nhập: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
             
-            # --- VÙNG VÁ LỖI HIỂN THỊ HOÁ ĐƠN DỊCH VỤ CỐ ĐỊNH (Mục 1) ---
+            # --- HIỂN THỊ HOÁ ĐƠN VỪA KHỞI TẠO CỐ ĐỊNH ---
             if st.session_state.get("bill_vua_in"):
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
@@ -468,7 +460,6 @@ def main():
                     st.rerun()
                 st.markdown("<br><hr>", unsafe_allow_html=True)
             
-            # --- TIÊU ĐỀ THÔNG TIN KHÁCH HÀNG (ĐÃ XOÁ BỎ HOÀN TOÀN CÁC NÚT F5 RƯỜM RÀ - Mục 2) ---
             st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:5px; padding-bottom:5px;">  THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             st.markdown('<div style="margin-top: 5px; margin-bottom: 15px; border-bottom: 1px solid #eaeaea;"></div>', unsafe_allow_html=True)
             
@@ -542,7 +533,7 @@ def main():
             st.write("")
             st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
             
-            # --- CẤU HÌNH PHÂN QUYỀN GIỚI HẠN TỐI ĐA 3 DỊCH VỤ CHO NHÂN VIÊN (Mục 6) ---
+            # --- PHÂN QUYỀN GIỚI HẠN TỐI ĐA DỊCH VỤ CHO NHÂN VIÊN ---
             max_dv_cho_phep = 3 if st.session_state.get("role") == "NhanVien" else None
             
             dich_vu_chon_multi = st.multiselect(
@@ -553,7 +544,8 @@ def main():
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
-            if st.form_submit_button or st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
+            # --- VÁ LỖI PHƯƠNG THỨC TRIGGER TỰ ĐỘNG THÊM GIỎ HÀNG SAI LUỒNG ---
+            if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
                     st.warning("⚠️ Chưa chọn dịch vụ!")
                 else:
@@ -605,7 +597,7 @@ def main():
                         st.markdown(f"<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; color:#111111; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
                     with c_del:
                         st.markdown("<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
-                        if st.button("🗑️🗑️🗑️", key=f"del_{idx}", use_container_width=True):
+                        if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.rerun()
                             
@@ -685,6 +677,7 @@ def main():
                     if not st.session_state.submitting:
                         if st.button("Xác nhận & Lưu hóa đơn", use_container_width=True, type="primary"):
                             if cam_ket:
+                                p_gio_hang = st.session_state.gio_hang
                                 st.session_state.submitting = True
                                 st.rerun()
                             else: st.warning("Vui lòng tích chọn xác nhận.")
@@ -716,12 +709,21 @@ def main():
                                     bay_gio.strftime("%H:%M:%S"), chuoi_ghi_chu, hoa_hong_tung_dong, ma_hd,
                                     kh_dua, tien_thoi, f"{thoi_gian_phuc_vu} phút", chot_tho
                                 ])
+                                
+                                # --- ĐÃ VÁ LỖI HIỂN THỊ CHI TIẾT SẢN PHẨM/DỊCH VỤ TRÊN HOÁ ĐƠN ---
+                                # Loại bỏ phần đuôi .0 thô kệch và thêm dòng mô tả đơn giá x số lượng cực kỳ rõ ràng
+                                sl_sạch = int(item['so_luong']) if item['so_luong'].is_integer() else item['so_luong']
                                 html_items += f"""
-                                <div class="hd-row-item">
-                                    <div class="hd-item-name">{item["dich_vu"]} (x{item["so_luong"]})</div>
-                                    <div class="hd-item-price">{item["thanh_tien"]:,.0f}</div>
+                                <div class="hd-row-item" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; width: 100%;">
+                                    <div style="flex: 1; text-align: left; padding-right: 10px;">
+                                        <div style="font-weight: 600; color: #222; font-size: 14px;">{item["dich_vu"]}</div>
+                                        <div style="font-size: 12px; color: #666; margin-top: 2px;">{sl_sạch} x {item['don_gia']:,.0f}đ</div>
+                                    </div>
+                                    <div style="text-align: right; font-weight: 700; color: #111; font-size: 14px; white-space: nowrap; padding-top: 2px;">
+                                        {item["thanh_tien"]:,.0f}đ
+                                    </div>
                                 </div>"""
-                                chi_tiet_tele += f"\n- {item['dich_vu']} (x{int(item['so_luong'])}): {item['thanh_tien']:,.0f}đ"
+                                chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sạch}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
@@ -893,7 +895,8 @@ def main():
                                                     if len(row) >= 2 and (str(row[0]).strip() in [sdt_kh, s_k_0, s_c_0]):
                                                         val_raw = str(row[1]).replace(',', '').replace('.', '').replace('đ', '').strip()
                                                         tong_chi = float(val_raw or 0)
-                                                        st.session_state.tong_chi_tieu_val = tongue_chi
+                                                        # --- ĐÃ VÁ LỖI SAI TÊN BIẾN TONGUE_CHI GÂY CRASH APP TẠI ĐÂY ---
+                                                        st.session_state.tong_chi_tieu_val = tong_chi
                                                         st.session_state.hang_hien_tai = get_huy_hieu(tong_chi)
                                                         break
                                                 else:
