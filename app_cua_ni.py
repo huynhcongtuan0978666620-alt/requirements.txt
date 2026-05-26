@@ -60,10 +60,10 @@ def generate_css_animations():
             margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 80px !important; background: #ffffff !important; 
             box-shadow: 1px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
         }
-        .logo-img { width: 55px !important; height: 55px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
+        .logo-img { width: 80px !important; height: 80px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
         .thong-tin-cum { text-align: left !important; }
-        .ten-tiem { font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
-        .thong-tin-phu { font-size: 11px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
+        .ten-tiem { font-size: 20px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
+        .thong-tin-phu { font-size: 15px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
         
         [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
         button[data-baseweb="tab"] { background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important; }
