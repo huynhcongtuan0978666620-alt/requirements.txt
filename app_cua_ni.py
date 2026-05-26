@@ -129,9 +129,7 @@ def generate_css_animations():
     
         /* 5. Tùy chọn: Ẩn luôn thanh trạng thái của Streamlit (nếu cần) */
         div.stDeployButton {display:none;}
-        </style>
-
-    </style> 123
+    </style>
     """
     
 def render_fireworks_html():
