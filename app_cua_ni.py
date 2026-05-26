@@ -56,7 +56,7 @@ def generate_css_animations():
         .banner-bottom { bottom: 0 !important; top: auto !important; border-top: 1px solid #eaeaea !important; border-bottom: none !important; justify-content: flex-start !important; padding-left: 20px !important; }
 
         .bang-hieu-lktv {
-            display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important;
+            display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 30px !important;
             margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: #ffffff !important; 
             box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
         }
