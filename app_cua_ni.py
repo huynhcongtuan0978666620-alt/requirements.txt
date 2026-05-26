@@ -57,7 +57,7 @@ def generate_css_animations():
 
         .bang-hieu-lktv {
             display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important;
-            margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 80px !important; background: #ffffff !important; 
+            margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: #ffffff !important; 
             box-shadow: 1px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
         }
         .logo-img { width: 80px !important; height: 80px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
