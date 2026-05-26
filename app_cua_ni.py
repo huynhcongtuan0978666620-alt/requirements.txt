@@ -719,17 +719,13 @@ def main():
                             
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
-                                # Làm sạch số điện thoại để mở Zalo chuẩn nhất
                                 sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
                                 if not sdt_zalo_clean.startswith('0') and sdt_zalo_clean != "":
                                     sdt_zalo_clean = '0' + sdt_zalo_clean
-                                # Nút Zalo thần thánh trở lại
-                                btn_zalo_html = f'<a href="zalo://conversation?phone={sdt_zalo_clean}" target="_blank" class="btn-zalo">💬 Nhắn tin cho khách qua Zalo</a>'
-                                
+                                btn_zalo_html = f'<a href="zalo://conversation?phone={sdt_zalo_clean}" target="_blank" class="btn-zalo">💬 Tìm khách trên ứng dụng Zalo</a>'
+                            
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
-</div>
-{btn_zalo_html}
-</div>"""
+                            
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
@@ -783,6 +779,9 @@ def main():
 </div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888;">
     Cảm ơn quý khách đã sử dụng dịch vụ!
+</div>
+{btn_zalo_html}
+</div>"""
 
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
