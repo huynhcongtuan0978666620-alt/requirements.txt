@@ -56,52 +56,18 @@ def generate_css_animations():
         .banner-top { top: 0px !important; }
         .banner-bottom { bottom: 0 !important; top: auto !important; border-top: 1px solid #eaeaea !important; border-bottom: none !important; justify-content: flex-start !important; padding-left: 20px !important; }
 
-        /* --- BẢNG HIỆU PHONG CÁCH COMPACT NGANG SIÊU GỌN TIẾT KIỆM DIỆN TÍCH --- */
         .bang-hieu-lktv {
-            display: flex !important;
-            align-items: center !important;
-            justify-content: flex-start !important;
-            gap: 15px !important;
-            margin-bottom: 20px !important; 
-            padding: 12px 15px !important; 
-            border-radius: 8px !important;
-            background: #ffffff !important; 
-            box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; 
-            border: 1px solid #f0f0f0 !important;
+            display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important;
+            margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: #ffffff !important; 
+            box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
         }
-        .logo-img { 
-            width: 55px !important; 
-            height: 55px !important; 
-            object-fit: cover !important; 
-            border-radius: 50% !important; 
-            border: 1px solid #eaeaea !important; 
-            margin: 0 !important; 
-            display: block !important;
-        }
-        .thong-tin-cum {
-            text-align: left !important;
-        }
-        .ten-tiem { 
-            font-size: 16px !important; 
-            font-weight: 700 !important; 
-            color: #111111 !important; 
-            text-transform: uppercase !important; 
-            margin-bottom: 2px !important; 
-            letter-spacing: 1px !important; 
-        }
-        .thong-tin-phu { 
-            font-size: 11px !important; 
-            color: #666666 !important; 
-            margin: 1px 0 !important; 
-            font-weight: 400;
-            line-height: 1.3;
-        }
+        .logo-img { width: 55px !important; height: 55px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
+        .thong-tin-cum { text-align: left !important; }
+        .ten-tiem { font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
+        .thong-tin-phu { font-size: 11px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
         
         [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
-        button[data-baseweb="tab"] {
-            background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; 
-            border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important;
-        }
+        button[data-baseweb="tab"] { background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important; }
         button[data-baseweb="tab"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
         button[data-baseweb="tab"][aria-selected="true"] { border-bottom: 2px solid #111111 !important; }
         button[data-baseweb="tab"][aria-selected="true"] p { color: #111111 !important; }
@@ -109,11 +75,7 @@ def generate_css_animations():
         .the-quan-ly-flat { color: #111; font-weight: 600; font-size: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eaeaea; padding-bottom: 8px;}
         .nhan-tieu-de { font-size: 11px !important; font-weight: 600 !important; margin-bottom: 8px !important; text-transform: uppercase !important; color: #666 !important; letter-spacing: 0.5px; text-align: center;}
         
-        .box-chung {
-            background-color: #ffffff; padding: 15px 10px; border-radius: 8px; text-align: center; 
-            border: 1px solid #eaeaea; font-size: 18px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            word-wrap: break-word;
-        }
+        .box-chung { background-color: #ffffff; padding: 15px 10px; border-radius: 8px; text-align: center; border: 1px solid #eaeaea; font-size: 18px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.02); word-wrap: break-word; }
         .tong-don-box { color: #111111; }
         .chiet-khau-box { color: #d93025; } 
         .khach-tra-box { background-color: #111111; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
@@ -126,13 +88,20 @@ def generate_css_animations():
         .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
         .btn-zalo:hover { background-color: #0055d4; }
 
+        /* --- STYLE KHUNG HÓA ĐƠN Độc Lập Chống TRẮNG CHỮ --- */
         .hoa-don-khung { background-color: #ffffff !important; color: #333333 !important; padding: 30px 25px !important; border-radius: 8px !important; border: 1px solid #e0e0e0 !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.05) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
         .hd-title { font-size: 18px; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; font-weight: 700; color: #111111; }
         
-        .hd-row-item { display: flex !important; justify-content: space-between !important; align-items: flex-start !important; margin-bottom: 14px !important; font-size: 14px !important; width: 100% !important; }
-        .hd-items { border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 15px; }
+        /* Cấu trúc bảng hóa đơn chống sập dòng */
+        .hd-table-sanpham { width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; }
+        .hd-table-sanpham tr { border-bottom: 1px dashed #eaeaea !important; }
+        .hd-table-sanpham td { padding: 10px 0 !important; vertical-align: top !important; }
+        .hd-item-name { font-weight: 600 !important; color: #111111 !important; font-size: 14px !important; text-align: left !important; }
+        .hd-item-sub { font-size: 12px !important; color: #666666 !important; margin-top: 3px !important; text-align: left !important; }
+        .hd-item-price { text-align: right !important; font-weight: 700 !important; color: #111111 !important; font-size: 14px !important; white-space: nowrap !important; }
 
+        .hd-items { border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; }
         .lsc-shake { background-color: #fff1f0; color: #cf1322; padding: 12px; border-radius: 6px; border: 1px solid #ffa39e; text-align: center; font-size: 13px; margin-bottom: 15px; }
         .lsc-vip { background-color: #f6ffed; color: #389e0d; padding: 10px; border-radius: 6px; border: 1px solid #b7eb8f; text-align: center; font-size: 13px; margin-bottom: 10px; font-weight: 600; }
 
@@ -288,8 +257,7 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
         client = get_gspread_client()
         ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
-        # Đã tối ưu định dạng chuỗi số lượng để ghi vào Sheet không bị dính đuôi .0
-        chi_tiet = " | ".join([f"{item['dich_vu']} (x{int(item['so_luong']) if item['so_luong'].is_integer() else item['so_luong']})" for item in gio_hang])
+        chi_tiet = " | ".join([f"{item['dich_vu']} (x{int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']})" for item in gio_hang])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang])
         
         ws.append_row([
@@ -336,9 +304,7 @@ def gui_email_backup(noi_dung):
     try:
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
-        receiver_emails = [
-            "huynhcongtuan0978666620@gmail.com",
-        ]
+        receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
         
         gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
         msg = MIMEMultipart()
@@ -533,7 +499,6 @@ def main():
             st.write("")
             st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
             
-            # --- PHÂN QUYỀN GIỚI HẠN TỐI ĐA DỊCH VỤ CHO NHÂN VIÊN ---
             max_dv_cho_phep = 3 if st.session_state.get("role") == "NhanVien" else None
             
             dich_vu_chon_multi = st.multiselect(
@@ -544,7 +509,6 @@ def main():
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
-            # --- VÁ LỖI PHƯƠNG THỨC TRIGGER TỰ ĐỘNG THÊM GIỎ HÀNG SAI LUỒNG ---
             if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
                     st.warning("⚠️ Chưa chọn dịch vụ!")
@@ -621,14 +585,9 @@ def main():
                 st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
                 
                 options_tho = [t for t in ds_tho if t.strip()]
-                if st.session_state.full_name not in options_tho:
-                    options_tho.append(st.session_state.full_name)
-                
-                if "tho_chot_val" not in st.session_state or not st.session_state.tho_chot_val:
-                    st.session_state.tho_chot_val = st.session_state.full_name
-                
-                if st.session_state.tho_chot_val not in options_tho:
-                    options_tho.append(st.session_state.tho_chot_val)
+                if st.session_state.full_name not in options_tho: options_tho.append(st.session_state.full_name)
+                if "tho_chot_val" not in st.session_state or not st.session_state.tho_chot_val: st.session_state.tho_chot_val = st.session_state.full_name
+                if st.session_state.tho_chot_val not in options_tho: options_tho.append(st.session_state.tho_chot_val)
                 
                 try: idx_default = options_tho.index(st.session_state.tho_chot_val)
                 except ValueError: idx_default = 0
@@ -636,10 +595,8 @@ def main():
                 chot_tho = st.selectbox("Thợ thực hiện (Tính KPI cho thợ):", options=options_tho, index=idx_default)
 
                 col_nhap1, col_nhap2 = st.columns(2)
-                with col_nhap1:
-                    tien_giam = st.number_input("Chiết khấu (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
-                with col_nhap2:
-                    khuyen_mai = st.number_input("Khuyến mãi (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
+                with col_nhap1: tien_giam = st.number_input("Chiết khấu (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
+                with col_nhap2: khuyen_mai = st.number_input("Khuyến mãi (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
                 
                 ghi_chu = st.text_input("Ghi chú hóa đơn")
                 
@@ -661,8 +618,7 @@ def main():
                 kh_dua = st.number_input("Tiền khách đưa", 0.0, value=float(t_khach_tra))
                 t_du = kh_dua - t_khach_tra
                 
-                if t_du > 0:
-                    st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
+                if t_du > 0: st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state["role"] == "NhanVien" and st.session_state.last_submit:
@@ -677,7 +633,6 @@ def main():
                     if not st.session_state.submitting:
                         if st.button("Xác nhận & Lưu hóa đơn", use_container_width=True, type="primary"):
                             if cam_ket:
-                                p_gio_hang = st.session_state.gio_hang
                                 st.session_state.submitting = True
                                 st.rerun()
                             else: st.warning("Vui lòng tích chọn xác nhận.")
@@ -710,20 +665,21 @@ def main():
                                     kh_dua, tien_thoi, f"{thoi_gian_phuc_vu} phút", chot_tho
                                 ])
                                 
-                                # --- ĐÃ VÁ LỖI HIỂN THỊ CHI TIẾT SẢN PHẨM/DỊCH VỤ TRÊN HOÁ ĐƠN ---
-                                # Loại bỏ phần đuôi .0 thô kệch và thêm dòng mô tả đơn giá x số lượng cực kỳ rõ ràng
-                                sl_sạch = int(item['so_luong']) if item['so_luong'].is_integer() else item['so_luong']
+                                # Định dạng lại số lượng sạch không bị dính chấm không thô thiển (.0)
+                                sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
+                                
+                                # --- VÁ LỖI CỐT LÕI: Đổi cấu trúc HTML flex sang cấu trúc tr/td Table độc lập bất bại chống sập dòng ---
                                 html_items += f"""
-                                <div class="hd-row-item" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; width: 100%;">
-                                    <div style="flex: 1; text-align: left; padding-right: 10px;">
-                                        <div style="font-weight: 600; color: #222; font-size: 14px;">{item["dich_vu"]}</div>
-                                        <div style="font-size: 12px; color: #666; margin-top: 2px;">{sl_sạch} x {item['don_gia']:,.0f}đ</div>
-                                    </div>
-                                    <div style="text-align: right; font-weight: 700; color: #111; font-size: 14px; white-space: nowrap; padding-top: 2px;">
+                                <tr>
+                                    <td style="text-align: left;">
+                                        <div class="hd-item-name">{item["dich_vu"]}</div>
+                                        <div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
+                                    </td>
+                                    <td class="hd-item-price">
                                         {item["thanh_tien"]:,.0f}đ
-                                    </div>
-                                </div>"""
-                                chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sạch}): {item['thanh_tien']:,.0f}đ"
+                                    </td>
+                                </tr>"""
+                                chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
                             
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
@@ -766,6 +722,7 @@ def main():
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
 
+                            # Toàn bộ lõi bảng hóa đơn đã được chuyển về table chuẩn POS
                             st.session_state.bill_vua_in = f"""
                             <div class="hoa-don-khung">
                                 <div class="hd-header">
@@ -782,7 +739,11 @@ def main():
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span>{st.session_state.full_name}</span></div>
                                     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
                                 </div>
-                                <div class="hd-items">{html_items}</div>
+                                <div class="hd-items">
+                                    <table class="hd-table-sanpham">
+                                        {html_items}
+                                    </table>
+                                </div>
                                 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px;">
                                     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span>{t_bill:,.0f}</span></div>
                                     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Chiết khấu:</span> <span>-{tien_giam:,.0f}</span></div>
@@ -824,7 +785,6 @@ def main():
                     
                 try:
                     _, data_tam = get_bao_cao_va_bill_tam()
-                    
                     if len(data_tam) > 1:
                         rows_tam = data_tam[1:]
                         st.write(f"Đang có **{len(rows_tam)}** đơn hàng chờ xử lý:")
@@ -833,7 +793,6 @@ def main():
                             sheet_row_idx = i + 2 
                             cleaned_row = [str(cell).strip() for cell in row]
                             valid_indices = [idx for idx, cell in enumerate(cleaned_row) if cell != ""]
-                            
                             if not valid_indices: continue
                                 
                             start_idx = valid_indices[0] 
@@ -895,7 +854,6 @@ def main():
                                                     if len(row) >= 2 and (str(row[0]).strip() in [sdt_kh, s_k_0, s_c_0]):
                                                         val_raw = str(row[1]).replace(',', '').replace('.', '').replace('đ', '').strip()
                                                         tong_chi = float(val_raw or 0)
-                                                        # --- ĐÃ VÁ LỖI SAI TÊN BIẾN TONGUE_CHI GÂY CRASH APP TẠI ĐÂY ---
                                                         st.session_state.tong_chi_tieu_val = tong_chi
                                                         st.session_state.hang_hien_tai = get_huy_hieu(tong_chi)
                                                         break
@@ -915,14 +873,11 @@ def main():
                                                 st.toast("⚡ Đã nạp sang mục 👉 TẠO ĐƠN HÀNG")
                                                 time.sleep(0.5)
                                                 st.rerun()
-                    else:
-                        st.info("Hiện không có đơn hàng chờ nào.")
-                except Exception as e:
-                    st.error(f"Google đang bận, ní chờ vài giây rồi bấm [Làm mới] lại nha: {e}")
+                    else: st.info("Hiện không có đơn hàng chờ nào.")
+                except Exception as e: st.error(f"Google đang bận, ní chờ vài giây rồi bấm [Làm mới] lại nha: {e}")
 
             with tabs[2]:
                 st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP & DASHBOARD</div>', unsafe_allow_html=True)
-                
                 if st.button("⏰ Cập nhật dữ liệu báo cáo", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear()
                     st.rerun()
@@ -956,8 +911,7 @@ def main():
                             tong_don = len([x for x in df_today[col_ma_hd].unique() if str(x).strip() != ''])
                         trung_binh = tong_doanh_thu / tong_don if tong_don > 0 else 0
                         
-                        if col_khach and not df_today.empty:
-                            so_khach = len(df_today[col_khach].unique())
+                        if col_khach and not df_today.empty: so_khach = len(df_today[col_khach].unique())
 
                         df_hien_thi = df_bc.tail(50).copy()
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
@@ -990,18 +944,15 @@ def main():
                                     kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
                                     kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
                                     st.dataframe(kpi_df, use_container_width=True, hide_index=True)
-                                else:
-                                    st.warning(f"Hiện tại chỉ có {len(df_today.columns)} cột. Ní kiểm tra xem đã thêm cột Thợ chưa?")
-                            else:
-                                st.info("Hôm nay chưa có dữ liệu KPI.")
+                                else: st.warning("Hiện tại chưa cấu hình đủ số cột để tính KPI thợ.")
+                            else: st.info("Hôm nay chưa có dữ liệu KPI.")
 
                     st.write("")
                     st.markdown('<div class="the-quan-ly-flat">CHI TIẾT 50 GIAO DỊCH GẦN NHẤT</div>', unsafe_allow_html=True)
                     if not df_hien_thi.empty: st.dataframe(df_hien_thi, use_container_width=True)
                     else: st.info("Chưa có giao dịch hoàn thành nào để hiển thị.")
                         
-                except Exception as e: 
-                    st.error(f"Tạm thời không thể kết nối Google Sheets để lấy báo cáo. Lỗi: {e}")
+                except Exception as e: st.error(f"Tạm thời không thể kết nối Google Sheets để lấy báo cáo. Lỗi: {e}")
 
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
