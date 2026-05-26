@@ -861,6 +861,7 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span>{tien_thoi:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span>{thoi_gian_phuc_vu} phút</span></div>
 </div>
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
 <div style="font-size: 15px; font-weight: 700;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG:</span> <span>{t_khach_tra:,.0f}</span></div>
 </div>
