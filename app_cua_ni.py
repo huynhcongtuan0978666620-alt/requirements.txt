@@ -24,7 +24,7 @@ st.set_page_config(
 )
 
 def generate_css_animations():
-    return """
+    css_animation = """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -148,6 +148,7 @@ def generate_css_animations():
      
     </style>
     """
+    return css_animation
     
 def render_fireworks_html():
     colors = ['#d4af37', '#111111', '#cccccc']
