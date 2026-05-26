@@ -27,7 +27,6 @@ def generate_css_animations():
     return """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
@@ -36,7 +35,7 @@ def generate_css_animations():
 
         .stApp {
             padding-top: 50px !important; 
-            padding-bottom: 75px !important; 
+            padding-bottom: 175px !important; 
             background-color: transparent !important;
         }
 
@@ -150,7 +149,7 @@ st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
 <div class="banner-top">QUẢN LÝ DỊCH VỤ</div>
-<div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V11</div>
+<div class="banner-bottom">SALON KIM HIỀN © 2026 - V11</div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
