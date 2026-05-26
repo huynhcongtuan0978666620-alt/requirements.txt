@@ -735,13 +735,6 @@ def main():
     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
 </div>
-# Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Dịch vụ có trong bill:" và giữ nguyên cấu trúc xóa viền
-                            st.session_state.bill_vua_in = f"""<style>
-.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
-    border: none !important;
-    background: transparent !important;
-    background-color: transparent !important;
-}}
 {html_huy_hieu_bill_goc}
 <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
