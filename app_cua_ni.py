@@ -667,18 +667,19 @@ def main():
                                 
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                html_items += f"""
-                                <tr>
-                                    <td style="text-align: left;">
-                                        <div class="hd-item-name">{item["dich_vu"]}</div>
-                                        <div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
-                                    </td>
-                                    <td class="hd-item-price">
-                                        {item["thanh_tien"]:,.0f}đ
-                                    </td>
-                                </tr>"""
+                                                                # --- ĐOẠN CODE MỚI THAY THẾ (KÉO SÁT LỀ TRÁI CÁC THẺ HTML) ---
+                                # --- VÁ LỖI CỐT LÕI: Đổi cấu trúc HTML flex sang cấu trúc tr/td Table độc lập bất bại chống sập dòng ---
+                                html_items += f"""<tr>
+<td style="text-align: left;">
+    <div class="hd-item-name">{item["dich_vu"]}</div>
+    <div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
+</td>
+<td class="hd-item-price">
+    {item["thanh_tien"]:,.0f}đ
+</td>
+</tr>"""
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
-                            
+
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
                             get_plkh_data.clear()
