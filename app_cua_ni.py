@@ -734,12 +734,10 @@ def main():
     <div style="font-size: 13px; color: #666;">SĐT: {settings.get('SDT', '')}</div>
     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
-</div>
-<div class="hd-items" style="margin-bottom: 15px;">
+
     <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
     <table style="width: 100%; border-collapse: collapse; border: none !important;">
-        {html_items}
-    </table>
+
 </div>
 {html_huy_hieu_bill_goc}
 <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
