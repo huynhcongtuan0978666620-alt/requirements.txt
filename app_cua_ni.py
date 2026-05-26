@@ -496,73 +496,45 @@ def main():
                     </div>
                 """, unsafe_allow_html=True)
 
-        # --- ĐOẠN CODE MỚI THAY THẾ HOÀN TOÀN ---
-        st.write("")
-        st.markdown('<div class="the-quan-ly-flat">NHẬP NHANH DỊCH VỤ VĂN BẢN</div>', unsafe_allow_html=True)
-        
-        # Ô nhập chữ tự do đúng ý ní
-        nhap_chu_tu_do = st.text_area(
-            "Nhập dịch vụ theo định dạng (Ví dụ: rửa chi tiết 300 tùng). Mỗi dịch vụ viết 1 dòng:",
-            placeholder="rửa chi tiết 300 tùng\nvệ sinh nội thất 1500 tùng mạnh",
-            key=f"nhap_chu_key_{st.session_state.reset_counter}"
-        )
-        
-        if st.button("➕ XỬ LÝ & THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
-            if not nhap_chu_tu_do.strip():
-                st.warning("⚠️ Ní chưa nhập chữ gì vào ô cả!")
-            else:
-                cac_dong = nhap_chu_tu_do.split("\n")
-                so_dong_thanh_cong = 0
-                
-                for line in cac_dong:
-                    line = line.strip()
-                    if not line:
-                        continue
-                    
-                    # LÕI REGEX THÔNG MINH: Lấy giá tiền làm trục tọa độ để cắt chuỗi
-                    match = re.search(r'(\d+(?:[.,]\d{3})*)\s*([kKđĐ]?)', line)
-                    
-                    if match:
-                        price_str = match.group(1)
-                        unit = match.group(2).lower()
-                        start, end = match.span()
+            st.write("")
+            st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
+            
+            max_dv_cho_phep = 3 if st.session_state.get("role") == "NhanVien" else None
+            
+            dich_vu_chon_multi = st.multiselect(
+                "Chạm để chọn một hoặc nhiều dịch vụ cùng lúc...", 
+                options=dv_list if dv_list else ["Đang tải dữ liệu..."], 
+                max_selections=max_dv_cho_phep,
+                placeholder="Chọn tối đa 3 dịch vụ đối với nhân viên..." if max_dv_cho_phep else "Ní cứ chọn thoải mái nhiều dịch vụ ở đây...",
+                key=f"dv_multi_key_{st.session_state.reset_counter}"
+            )
+            
+            if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
+                if not dich_vu_chon_multi:
+                    st.warning("⚠️ Chưa chọn dịch vụ!")
+                else:
+                    for dv in dich_vu_chon_multi:
+                        info_dv = services.get(dv, {"gia": 0.0, "hoa_hong": 0.0})
+                        gia_goc = info_dv.get("gia", 0.0)
+                        phan_tram_hh = info_dv.get("hoa_hong", 0.0)
+                        sl_mac_dinh = 1.0  
                         
-                        # Cắt chuỗi chuẩn xác
-                        ten_dv = line[:start].strip()
-                        ten_tho = line[end:].strip()
-                        
-                        # Tính toán giá tiền
-                        price_val = int(price_str.replace('.', '').replace(',', ''))
-                        if unit == 'k' or price_val < 10000:
-                            gia_cuoi = price_val * 1000
-                        else:
-                            gia_cuoi = price_val
-                        
-                        # Tìm phần trăm hoa hồng từ danh mục nếu trùng tên, không có thì để 0
-                        phan_tram_hh = services.get(ten_dv, {}).get("hoa_hong", 0.0)
-                        
-                        # Kiểm tra trùng trong giỏ hàng để cộng dồn số lượng
-                        existing = next((item for item in st.session_state.gio_hang if item["dich_vu"] == ten_dv), None)
+                        existing = next((item for item in st.session_state.gio_hang if item["dich_vu"] == dv), None)
                         if existing:
-                            existing["so_luong"] += 1.0
+                            existing["so_luong"] += sl_mac_dinh
                             existing["thanh_tien"] = existing["so_luong"] * existing["don_gia"]
                         else:
                             st.session_state.gio_hang.append({
-                                "dich_vu": f"{ten_dv} ({ten_tho if ten_tho else 'Chưa rõ'})", 
-                                "so_luong": 1.0, 
-                                "don_gia": gia_goc,
-                                "thanh_tien": gia_cuoi, 
-                                "phan_tram_hh": phan_tram_hh
+                                "dich_vu": dv, "so_luong": sl_mac_dinh, "don_gia": gia_goc,
+                                "thanh_tien": gia_goc * sl_mac_dinh, "phan_tram_hh": phan_tram_hh
                             })
-                        so_dong_thanh_cong += 1
-                
-                if so_dong_thanh_cong > 0:
-                    st.session_state.start_time = get_now_vn()
+                            
+                    if 'start_time' not in st.session_state or len(st.session_state.gio_hang) == len(dich_vu_chon_multi):
+                        st.session_state.start_time = get_now_vn()
                     st.session_state.reset_counter += 1  
-                    st.toast(f"✅ Đã xử lý thành công {so_dong_thanh_cong} dòng dịch vụ!")
+                    st.toast(f"✅ Đã thêm {len(dich_vu_chon_multi)} dịch vụ vào giỏ!")
                     time.sleep(0.3)
                     st.rerun()
-
 
             # --- KHU VỰC GIỎ HÀNG ---
             t_bill = 0.0
