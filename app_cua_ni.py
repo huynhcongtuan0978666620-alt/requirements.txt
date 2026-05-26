@@ -14,7 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (MINIMALIST & PREMIUM V11 PRO)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (MINIMALIST & PREMIUM V11.1)
 # =====================================================================
 st.set_page_config(
     page_title="LKTV DETAILING - VISION V11", 
@@ -31,11 +31,11 @@ def generate_css_animations():
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
-            overscroll-behavior-y: none !important; /* ĐÃ KHÓA: Ngăn chặn kéo xuống để reload trang trên Android */
+            overscroll-behavior-y: none !important; /* Ngăn chặn kéo xuống để reload trang trên Android */
         }
         
         html {
-            overscroll-behavior: none !important; /* ĐÃ KHÓA TRIỆT ĐỂ cấp độ trình duyệt WebView */
+            overscroll-behavior: none !important; /* Khóa triệt để cấp độ trình duyệt WebView */
         }
 
         .stApp {
@@ -44,7 +44,7 @@ def generate_css_animations():
             background-color: transparent !important;
         }
 
-        /* ĐÃ NÂNG CẤP: Quét sạch bóng menu ba gạch, thanh công cụ và các tàn dư giao diện web */
+        /* Quét sạch bóng menu ba gạch, thanh công cụ và các tàn dư giao diện web */
         header, footer, #MainMenu, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
         div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"],
@@ -93,12 +93,10 @@ def generate_css_animations():
         .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
         .btn-zalo:hover { background-color: #0055d4; }
 
-        /* --- STYLE KHUNG HÓA ĐƠN Độc Lập Chống TRẮNG CHỮ --- */
         .hoa-don-khung { background-color: #ffffff !important; color: #333333 !important; padding: 30px 25px !important; border-radius: 8px !important; border: 1px solid #e0e0e0 !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.05) !important; margin-top: 20px !important; }
         .hd-header { text-align: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
         .hd-title { font-size: 18px; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; font-weight: 700; color: #111111; }
         
-        /* Cấu trúc bảng hóa đơn chống sập dòng */
         .hd-table-sanpham { width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; }
         .hd-table-sanpham tr { border-bottom: 1px dashed #eaeaea !important; }
         .hd-table-sanpham td { padding: 10px 0 !important; vertical-align: top !important; }
@@ -325,12 +323,16 @@ def gui_email_backup(noi_dung):
         server.quit()
     except Exception: pass
 
+# ĐÃ SỬA LỖI TRANG BỊ: Thêm bộ lọc an toàn chống sập nguồn khi chưa cài Secrets Telegram
 def gui_telegram_notification(noi_dung):
     try:
-        bot_token = st.secrets["telegram"]["bot_token"]
-        chat_id = st.secrets["telegram"]["chat_id"]
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
+        if "telegram" in st.secrets:
+            tele_configs = st.secrets["telegram"]
+            bot_token = tele_configs.get("bot_token")
+            chat_id = tele_configs.get("chat_id")
+            if bot_token and chat_id:
+                url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
     except Exception: pass
 
 # =====================================================================
@@ -420,7 +422,6 @@ def main():
         with tabs[0]:
             st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Thành viên đăng nhập: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
             
-            # --- HIỂN THỊ HOÁ ĐƠN VỪA KHỞI TẠO CỐ ĐỊNH ---
             if st.session_state.get("bill_vua_in"):
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
@@ -716,13 +717,11 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
                             
-                            # ĐĂ VÁ LỖI & NÂNG CẤP: Thay thế link web thành cấu trúc Deep Link gọi thẳng App Zalo trên Android WebView
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
                                 sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
                                 if not sdt_zalo_clean.startswith('0') and sdt_zalo_clean != "":
                                     sdt_zalo_clean = '0' + sdt_zalo_clean
-                                # Chuyển đổi sang giao thức gọi Native App Zalo
                                 btn_zalo_html = f'<a href="zalo://conversation?phone={sdt_zalo_clean}" target="_blank" class="btn-zalo">💬 Tìm khách trên ứng dụng Zalo</a>'
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
