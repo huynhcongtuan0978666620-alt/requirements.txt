@@ -667,18 +667,10 @@ def main():
                                 
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                # --- ĐOẠN CODE ĐÃ XÓA SẠCH KHUNG VIỀN SẢN PHẨM ---
-                                html_items += f"""<tr>
-<td style="text-align: left; border: none !important; padding: 6px 0px !important;">
-    <div class="hd-item-name">{item["dich_vu"]}</div>
-    <div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
-</td>
-<td class="hd-item-price" style="border: none !important; padding: 6px 0px !important;">
-    {item["thanh_tien"]:,.0f}đ
-</td>
-</tr>"""
-
+                                     # --- ĐOẠN 1: ÉP XOÁ VIỀN TỪNG Ô DỊCH VỤ ---
+                                html_items += f"""<tr><td style="text-align: left; border: none !important; background: transparent !important; padding: 6px 0px !important;"><div class="hd-item-name">{item["dich_vu"]}</div><div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div></td><td class="hd-item-price" style="text-align: right; border: none !important; background: transparent !important; padding: 6px 0px !important; vertical-align: middle;">{item["thanh_tien"]:,.0f}đ</td></tr>"""
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
+                                
 
                             ws.append_rows(rows_to_append)
                             get_bao_cao_va_bill_tam.clear() 
