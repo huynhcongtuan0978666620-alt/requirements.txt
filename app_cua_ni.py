@@ -27,6 +27,7 @@ def generate_css_animations():
     return """
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
@@ -58,12 +59,12 @@ def generate_css_animations():
         .bang-hieu-lktv {
             display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important;
             margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: #ffffff !important; 
-            box-shadow: 1px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
+            box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
         }
-        .logo-img { width: 80px !important; height: 80px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
+        .logo-img { width: 55px !important; height: 55px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
         .thong-tin-cum { text-align: left !important; }
-        .ten-tiem { font-size: 20px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
-        .thong-tin-phu { font-size: 15px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
+        .ten-tiem { font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
+        .thong-tin-phu { font-size: 11px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
         
         [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
         button[data-baseweb="tab"] { background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important; }
@@ -149,7 +150,7 @@ st.markdown(generate_css_animations(), unsafe_allow_html=True)
 
 st.markdown("""
 <div class="banner-top">QUẢN LÝ DỊCH VỤ</div>
-<div class="banner-bottom">SALON KIM HIỀN © 2026 - V11</div>
+<div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V11</div>
 """, unsafe_allow_html=True)
 
 # =====================================================================
@@ -734,9 +735,9 @@ def main():
     <div style="font-size: 13px; color: #666;">SĐT: {settings.get('SDT', '')}</div>
     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
-    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
 </div>
 {html_huy_hieu_bill_goc}
+<div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Khách hàng:</span> <span style="font-weight:600;">{chot_ten}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span>{st.session_state.full_name}</span></div>
