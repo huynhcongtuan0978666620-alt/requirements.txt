@@ -719,7 +719,8 @@ def main():
                                 btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 CSKH qua Zalo</a>'
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
-                            # Toàn bộ lõi bảng hóa đơn đã được chuyển về table chuẩn POS và xoá viền triệt để bằng CSS nội bộ
+                            
+                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Dịch vụ có trong bill:" và giữ nguyên cấu trúc xóa viền
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
@@ -742,7 +743,8 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span>{st.session_state.full_name}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
 </div>
-<div class="hd-items">
+<div class="hd-items" style="margin-bottom: 15px;">
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
     <table style="width: 100%; border-collapse: collapse; border: none !important;">
         {html_items}
     </table>
@@ -763,7 +765,6 @@ def main():
 </div>
 {btn_zalo_html}
 </div>"""
-
 
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
