@@ -35,8 +35,8 @@ def generate_css_animations():
         }
 
         .stApp {
-            padding-top: 50px !important; 
-            padding-bottom: 75px !important; 
+            padding-top: 20px !important; /* Giảm từ 50px xuống 20px cho thoáng */
+            padding-bottom: 40px !important; 
             background-color: transparent !important;
         }
 
