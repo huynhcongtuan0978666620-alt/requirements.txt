@@ -781,9 +781,6 @@ def main():
 </div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888;">
     Cảm ơn quý khách đã sử dụng dịch vụ!
-</div>
-{btn_zalo_html}
-</div>"""
 
                             st.session_state.update({
                                 "gio_hang": [], "last_submit": bay_gio, "submit_count": st.session_state.submit_count + 1, 
