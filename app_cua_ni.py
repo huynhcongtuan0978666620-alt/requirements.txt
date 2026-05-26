@@ -744,7 +744,7 @@ def main():
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
 </div>
 <div class="hd-items" style="margin-bottom: 15px;">
-    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
     <table style="width: 100%; border-collapse: collapse; border: none !important;">
         {html_items}
     </table>
