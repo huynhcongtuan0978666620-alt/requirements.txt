@@ -513,7 +513,7 @@ def main():
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
                 st.write("")
-                if st.button("🔙 ẨN BILL NÀY", use_container_width=True, type="primary"):
+                if st.button("❌ ĐÓNG & ẨN HÓA ĐƠN NÀY", use_container_width=True, type="primary"):
                     st.session_state.bill_vua_in = None
                     st.rerun()
                 st.markdown("<br><hr>", unsafe_allow_html=True)
@@ -575,7 +575,7 @@ def main():
                 except: pass
 
             if so_lan_den > 0:
-                st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã ghé tiệm {so_lan_den} lần!</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="lsc-vip">🌟 Khách siêu quen: Đã ghé tiệm {so_lan_den} lần!</div>', unsafe_allow_html=True)
             
             if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.hang_hien_tai:
                 st.markdown(f"""
@@ -599,7 +599,7 @@ def main():
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
-            if st.button("✔️ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
+            if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
                     st.warning("⚠️ Vui lòng lựa chọn ít nhất một dịch vụ!")
                 else:
@@ -650,7 +650,7 @@ def main():
                     with c_tt:
                         st.markdown(f"<div style='font-size:11px; color:#888; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
                     with c_del:
-                        st.markdown("<div style='font-size:11px; color:#888; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa dịch vụ</div>", unsafe_allow_html=True)
+                        st.markdown("<div style='font-size:11px; color:#888; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
                         if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.rerun()
@@ -790,7 +790,7 @@ def main():
                             huy_hieu_text_tele = f" | Hạng: {huy_hieu_bill}" if huy_hieu_bill else ""
 
                             noi_dung_mail = (
-                                f"THÔNG BÁO - Đã thanh toán ✔️\n \n=====================\n \n"
+                                f"THÔNG BÁO - Đã thanh toán\n \n=====================\n \n"
                                 f"Mã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách hàng: {chot_ten} - {chot_sdt}{huy_hieu_text_tele}\n"
                                 f"Thu ngân: {st.session_state.full_name}\nThợ thực hiện: {chot_tho}\n \n=====================\n \n"
                                 f"Dịch vụ:{chi_tiet_tele}\n \n=====================\n \n"
@@ -879,7 +879,7 @@ def main():
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
-                if st.button("🔄 Làm mới danh sách", use_container_width=True):
+                if st.button("🔄 Làm mới danh sách đơn chờ", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear() 
                     st.rerun()
                     
