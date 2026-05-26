@@ -953,7 +953,7 @@ def main():
                     
                     c1, c2 = st.columns(2)
                     c1.metric("💰 Tổng doanh thu hôm nay", f"{tong_doanh_thu:,.0f}đ")
-                    c2.metric("💳 Trung bình/đơn", f"{trung_binh:,.0f}đ")
+                    c2.metric("💳 Doanh thu trung bình", f"{trung_binh:,.0f}đ")
                     
                     c3, c4, c5 = st.columns(3)
                     c3.metric("📦 Tổng đơn trong ngày", tong_don)
