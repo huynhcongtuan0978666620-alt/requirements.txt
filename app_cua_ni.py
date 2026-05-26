@@ -131,7 +131,7 @@ def generate_css_animations():
     div.stDeployButton {display:none;}
 </style>
 
-    </style>
+    </style> 123
     """
     
 def render_fireworks_html():
