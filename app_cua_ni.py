@@ -28,12 +28,13 @@ def generate_css_animations():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        /* 🚫 KHÓA CHẾT TÍNH NĂNG KÉO ĐỂ TẢI LẠI TRANG (PULL-TO-REFRESH) VÀ TRÀN MÀN HÌNH CHROME/SAFARI */
-        html, body {
-            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
-            background-color: #f8f9fa !important;
-            overscroll-behavior-y: contain !important; 
-            overscroll-behavior: contain !important;
+        /* 🚫 DIỆT TẬN GỐC THANH "MANAGE APP" VÀ TOÀN BỘ LOGO/MENU HỆ THỐNG GỐC */
+        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
+        div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"] {
+            display: none !important; 
+            visibility: hidden !important;
+            height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
         }
         
         html, body {
