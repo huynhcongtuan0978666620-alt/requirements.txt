@@ -28,6 +28,14 @@ def generate_css_animations():
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
+        /* 🚫 KHÓA CHẾT TÍNH NĂNG KÉO ĐỂ TẢI LẠI TRANG (PULL-TO-REFRESH) VÀ TRÀN MÀN HÌNH CHROME/SAFARI */
+        html, body {
+            font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
+            background-color: #f8f9fa !important;
+            overscroll-behavior-y: contain !important; 
+            overscroll-behavior: contain !important;
+        }
+        
         html, body {
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
             background-color: #fcfcfc !important; 
