@@ -123,7 +123,6 @@ def generate_css_animations(theme="light"):
         .firework-container {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }}
         .css-particle {{ position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; animation: explode-mega 3.0s ease-out 2 forwards; }}
         
-        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn để tránh lỗi f-string */
         @keyframes explode-mega {{ 
             0% {{ transform: translate(0, 0); opacity: 0; }} 
             20% {{ opacity: 0.8; }} 
@@ -133,7 +132,6 @@ def generate_css_animations(theme="light"):
         .balloon-container-css {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }}
         .fixed-balloon {{ position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }}
         
-        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn */
         @keyframes fly-up-skywards-pure {{ 
             0% {{ transform: translateY(110vh); opacity: 0; }} 
             10% {{ opacity: 0.6; }} 
@@ -174,29 +172,52 @@ def render_balloons_html():
     html_balloons += '</div>'
     st.markdown(html_balloons, unsafe_allow_html=True)
 
+def get_now_vn():
+    vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
+    return datetime.now(vn_tz)
+
 # =====================================================================
-# 2. HÀM CORE KẾT NỐI & LIÊN KẾT GOOGLE SHEETS
+# 2. HÀM CORE KẾT NỐI & LIÊN KẾT GOOGLE SHEETS MỚI (CHỐNG LỖI)
 # =====================================================================
+@st.cache_resource
 def get_gspread_client():
-    # Lấy dữ liệu cứng từ Secrets
-    secrets = st.secrets["connections"]["gsheets"]
-    
-    creds_info = {
-        "type": "service_account",
-        "project_id": secrets["project_id"],
-        "private_key_id": secrets["private_key_id"],
-        "private_key": secrets["private_key"].replace("\\n", "\n"), # Rất quan trọng!
-        "client_email": secrets["client_email"],
-        "client_id": secrets["client_id"],
-        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
-        "token_uri": "https://oauth2.googleapis.com/token",
-        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
-        "client_x509_cert_url": secrets["client_x509_cert_url"]
-    }
-    
-    scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-    return gspread.authorize(creds)
+    try:
+        # Lấy dữ liệu từ Secrets
+        if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
+            secrets = dict(st.secrets["connections"]["gsheets"])
+        else:
+            secrets = dict(st.secrets)
+
+        # Định dạng chuẩn bắt buộc của Google
+        creds_info = {
+            "type": secrets.get("type", "service_account"),
+            "project_id": secrets.get("project_id", "hethongphache"),
+            "private_key_id": secrets.get("private_key_id", ""),
+            "private_key": secrets.get("private_key", "").replace("\\n", "\n"),
+            "client_email": secrets.get("client_email", ""),
+            "client_id": secrets.get("client_id", ""),
+            "auth_uri": secrets.get("auth_uri", "https://accounts.google.com/o/oauth2/auth"),
+            "token_uri": secrets.get("token_uri", "https://oauth2.googleapis.com/token"),
+            "auth_provider_x509_cert_url": secrets.get("auth_provider_x509_cert_url", "https://www.googleapis.com/oauth2/v1/certs"),
+            "client_x509_cert_url": secrets.get("client_x509_cert_url", "")
+        }
+
+        # Kiểm tra nhanh
+        if not creds_info["client_email"]:
+            st.error("LỖI: Chưa có 'client_email'. Vui lòng kiểm tra lại file Secrets.")
+            st.stop()
+
+        scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+        return gspread.authorize(creds)
+    except Exception as e:
+        st.error(f"Lỗi đọc Key chứng thực: {e}")
+        st.stop()
+
+def get_spreadsheet_url():
+    if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
+        return st.secrets["connections"]["gsheets"].get("spreadsheet", "")
+    return st.secrets.get("spreadsheet", "")
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str): return ""
@@ -207,8 +228,8 @@ def format_drive_direct_url(link):
 def get_settings():
     try:
         client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("ThietLap").get_all_values()
+        url = get_spreadsheet_url()
+        rows = client.open_by_key(url).worksheet("ThietLap").get_all_values() if len(url) < 50 else client.open_by_url(url).worksheet("ThietLap").get_all_values()
         return {str(row[0]).strip(): str(row[1]).strip() for row in rows if len(row) > 1}
     except Exception:
         return {"TenTiem": "SALON KIM HIỀN", "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN", "SDT": "0947.58.1516", "Slogan": "Nơi Bạn Đặt Niềm Tin"}
@@ -217,8 +238,9 @@ def get_settings():
 def get_service_data():
     try:
         client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("DanhMuc").get_all_values()
+        url = get_spreadsheet_url()
+        sheet = client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
+        rows = sheet.worksheet("DanhMuc").get_all_values()
         danh_sach_dv = {}
         for row in rows[1:]:
             if len(row) >= 2:
@@ -241,16 +263,18 @@ def get_service_data():
 def get_nhan_vien_data():
     try:
         client = get_gspread_client()
-        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-        return sh.worksheet("NhanVien").get_all_values()
+        url = get_spreadsheet_url()
+        sheet = client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
+        return sheet.worksheet("NhanVien").get_all_values()
     except Exception: return []
 
 @st.cache_data(ttl=60)
 def get_khach_hang_data():
     try:
         client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        rows = client.open_by_url(url).worksheet("KhachHang").get_all_values()
+        url = get_spreadsheet_url()
+        sheet = client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
+        rows = sheet.worksheet("KhachHang").get_all_values()
         ds_kh = {}
         for row in rows[1:]:
             if len(row) >= 2:
@@ -264,8 +288,9 @@ def get_khach_hang_data():
 def get_plkh_data():
     try:
         client = get_gspread_client()
-        url = st.secrets["connections"]["gsheets"]["spreadsheet"]
-        return client.open_by_url(url).worksheet("PLKH").get_all_values()
+        url = get_spreadsheet_url()
+        sheet = client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
+        return sheet.worksheet("PLKH").get_all_values()
     except Exception: return []
 
 def get_huy_hieu(tong_chi):
@@ -279,9 +304,10 @@ def get_huy_hieu(tong_chi):
 def get_bao_cao_va_bill_tam():
     try:
         client = get_gspread_client()
-        sh = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"])
-        bc_values = sh.worksheet("BaoCao").get_all_values()
-        tam_records = sh.worksheet("BillTam").get_all_values()
+        url = get_spreadsheet_url()
+        sheet = client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
+        bc_values = sheet.worksheet("BaoCao").get_all_values()
+        tam_records = sheet.worksheet("BillTam").get_all_values()
         return bc_values, tam_records
     except Exception:
         return [], []
@@ -289,7 +315,8 @@ def get_bao_cao_va_bill_tam():
 def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
         client = get_gspread_client()
-        ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
+        url = get_spreadsheet_url()
+        ws = (client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)).worksheet("BillTam")
         chi_tiet = " | ".join([f"{item['dich_vu']} (x{int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']})" for item in gio_hang])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang])
         
@@ -311,7 +338,8 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
 def xoa_bill_tam_dong_gốc(index_sheet_row):
     try:
         client = get_gspread_client()
-        ws = client.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BillTam")
+        url = get_spreadsheet_url()
+        ws = (client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)).worksheet("BillTam")
         ws.delete_rows(index_sheet_row)
         get_bao_cao_va_bill_tam.clear()
         return True
@@ -339,7 +367,7 @@ def gui_email_backup(noi_dung):
         password = "lwui aesw vqal ytcq" 
         receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
         
-        gio_vn_mail = datetime.now(pytz.timezone('Asia/Ho_Chi_Minh')).strftime('%d/%m/%Y %H:%M')
+        gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
         msg = MIMEMultipart()
         msg['From'] = sender_email
         msg['To'] = ", ".join(receiver_emails)
@@ -754,7 +782,8 @@ def main():
                         st.button("Đang đồng bộ dữ liệu lên mây Google...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
-                            ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
+                            url = get_spreadsheet_url()
+                            ws = (cl.open_by_key(url) if len(url) < 50 else cl.open_by_url(url)).worksheet("BaoCao")
                             bay_gio = get_now_vn()
                             ma_hd = f"HD{bay_gio.strftime('%y%m%d%H%M')}"
                             
@@ -803,7 +832,7 @@ def main():
                                 is_sdt_cu = (chot_sdt in ds_kh_hien_tai) or (sdt_khong_0 in ds_kh_hien_tai) or (sdt_co_0 in ds_kh_hien_tai)
                                 
                                 if not is_sdt_cu and chot_ten != "Khách lẻ" and chot_ten != "":
-                                    ws_kh = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("KhachHang")
+                                    ws_kh = (cl.open_by_key(url) if len(url) < 50 else cl.open_by_url(url)).worksheet("KhachHang")
                                     ws_kh.append_row([chot_sdt, chot_ten])
                                     st.cache_data.clear() 
                             
@@ -826,7 +855,6 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
                             
-                            # NÚT KÍCH HOẠT MỞ ZALO VÀ CHỦ ĐỘNG TÌM KIẾM THEO SĐT
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
                                 sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
@@ -836,7 +864,6 @@ def main():
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                             
-                            # Toàn bộ lõi bảng hóa đơn đã được thêm tiêu đề "Dịch vụ có trong bill:" và giữ nguyên cấu trúc xóa viền
                             st.session_state.bill_vua_in = f"""<style>
 .hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{
     border: none !important;
