@@ -177,21 +177,20 @@ def render_balloons_html():
 # =====================================================================
 # 2. HÀM CORE KẾT NỐI & LIÊN KẾT GOOGLE SHEETS
 # =====================================================================
-def get_now_vn():
-    return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
-
-@st.cache_resource
 def get_gspread_client():
-    # Lấy toàn bộ nội dung từ secret gsheets
     creds_info = dict(st.secrets["connections"]["gsheets"])
-    
-    # Loại bỏ những khóa không cần thiết cho Credentials
-    for key in ['spreadsheet', 'telegram']:
-        creds_info.pop(key, None)
+    # Xóa các key phụ không nằm trong JSON credential
+    creds_info.pop('spreadsheet', None)
+    creds_info.pop('telegram', None)
     
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
     creds = Credentials.from_service_account_info(creds_info, scopes=scope)
     return gspread.authorize(creds)
+
+# Khi gọi mở file, dùng lệnh này:
+client = get_gspread_client()
+# spreadsheet_id chính là cái ID ní điền trong Secrets
+spreadsheet = client.open_by_key(st.secrets["connections"]["gsheets"]["spreadsheet"])
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str): return ""
