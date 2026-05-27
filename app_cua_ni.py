@@ -182,9 +182,16 @@ def get_now_vn():
 
 @st.cache_resource
 def get_gspread_client():
-    creds_info = st.secrets["connections"]["gsheets"]["spreadsheet_credentials"] if "spreadsheet_credentials" in st.secrets["connections"]["gsheets"] else st.secrets["connections"]["gsheets"]
+    # Lấy toàn bộ nội dung từ secret gsheets
+    creds_info = dict(st.secrets["connections"]["gsheets"])
+    
+    # Loại bỏ những khóa không cần thiết cho Credentials
+    for key in ['spreadsheet', 'telegram']:
+        creds_info.pop(key, None)
+    
     scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
-    return gspread.authorize(Credentials.from_service_account_info(creds_info, scopes=scope))
+    creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+    return gspread.authorize(creds)
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str): return ""
