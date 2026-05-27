@@ -365,7 +365,7 @@ def main():
     st.markdown(generate_css_animations(st.session_state.theme, st.session_state.get("role")), unsafe_allow_html=True)
     inject_advanced_ui_js()
     
-    st.markdown("""<div class="banner-top">QUẢN LÝ DỊCH VỤ</div><div class="banner-bottom" style="text-align: left; justify-content: flex-start; padding-left: 20px;">SALON KIM HIỀN © 2026 - V13</div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="banner-top">QUẢN LÝ DỊCH VỤ</div><div class="banner-bottom" style="text-align: right; justify-content: flex-start; padding-right: 20px;">SALON KIM HIỀN © 2026 - V13</div>""", unsafe_allow_html=True)
 
     settings = get_settings()
 
