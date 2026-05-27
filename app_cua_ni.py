@@ -27,7 +27,7 @@ def get_now_vn():
     vn_tz = pytz.timezone('Asia/Ho_Chi_Minh')
     return datetime.now(vn_tz)
 
-def generate_css_animations(theme="light"):
+def generate_css_animations(theme="light", role=None):
     is_dark = (theme == "dark")
     bg_app = "#121212" if is_dark else "#fcfcfc"
     bg_box = "#1e1e1e" if is_dark else "#ffffff"
@@ -35,13 +35,21 @@ def generate_css_animations(theme="light"):
     border_color = "#333333" if is_dark else "#eaeaea"
     sub_text = "#aaaaaa" if is_dark else "#666666"
     
+    # PHÂN QUYỀN ẨN/HIỆN THANH CÔNG CỤ CỦA STREAMLIT
+    if role == "Admin":
+        # Admin được giữ lại Menu ẩn và Toolbar để quản lý ứng dụng (Manage App)
+        dev_style = "footer { display: none !important; }"
+    else:
+        # Các vai trò khác (hoặc chưa đăng nhập) bị ẩn sạch bách để tránh ấn nhầm
+        dev_style = "header, footer, #MainMenu, .stAppDeployButton, [data-testid='stStatusWidget'], [data-testid='stToolbar'], [data-testid='stDecoration'] { display: none !important; }"
+    
     return f"""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         html, body {{ font-family: 'Inter', sans-serif !important; background-color: {bg_app} !important; color: {text_color} !important; }}
         .stApp {{ padding-top: 50px !important; padding-bottom: 75px !important; background-color: transparent !important; }}
-        header, footer, #MainMenu, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"] {{ display: none !important; }}
+        {dev_style}
         .banner-top, .banner-bottom {{ position: fixed !important; left: 0 !important; right: 0 !important; height: 40px !important; background: {"#1e1e1e" if is_dark else "#ffffff"} !important; color: {text_color} !important; font-size: 13px !important; font-weight: 600 !important; display: flex !important; align-items: center !important; justify-content: center !important; z-index: 999999 !important; border-bottom: 1px solid {border_color} !important; }}
         .banner-top {{ top: 0px !important; }}
         .banner-bottom {{ bottom: 0 !important; top: auto !important; border-top: 1px solid {border_color} !important; justify-content: flex-start !important; padding-left: 20px !important; }}
@@ -311,7 +319,8 @@ def main():
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
 
-    st.markdown(generate_css_animations(st.session_state.theme), unsafe_allow_html=True)
+    # TRUYỀN THÊM QUYỀN TRUY CẬP ĐỂ XỬ LÝ ẨN/HIỆN THANH CÔNG CỤ ĐỒNG BỘ THEO STATE
+    st.markdown(generate_css_animations(st.session_state.theme, st.session_state.get("role")), unsafe_allow_html=True)
     st.markdown("""<div class="banner-top">QUẢN LÝ DỊCH VỤ</div><div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V12</div>""", unsafe_allow_html=True)
 
     settings = get_settings()
@@ -869,7 +878,6 @@ def main():
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ TRUNG TÂM</div>', unsafe_allow_html=True)
                 if st.button("♻️ ÉP BUỘC XÓA KẾT NỐI & LÀM MỚI BỘ NHỚ", use_container_width=True, type="primary"):
-                    # NÚT NÀY LÀ CỨU CÁNH CHÍNH CHO VIỆC NGHẼN MẠNG
                     st.cache_data.clear()
                     st.cache_resource.clear() 
                     st.success("Đã xóa sạch bộ nhớ tạm và tái tạo lại toàn bộ đường truyền Google Sheets!")
