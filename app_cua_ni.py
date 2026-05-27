@@ -14,109 +14,137 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP (MINIMALIST & PREMIUM V11)
+# 1. CẤU HÌNH GIAO DIỆN & STYLE CSS CAO CẤP CHUYỂN ĐỔI CHỦ ĐỀ (VISION V12.1)
 # =====================================================================
 st.set_page_config(
-    page_title="LKTV DETAILING - VISION V11", 
+    page_title="LKTV DETAILING - VISION V12", 
     layout="centered", 
     page_icon="⚜️",
     initial_sidebar_state="collapsed"
 )
 
-def generate_css_animations():
-    return """
+def generate_css_animations(theme="light"):
+    is_dark = (theme == "dark")
+    bg_app = "#121212" if is_dark else "#fcfcfc"
+    bg_box = "#1e1e1e" if is_dark else "#ffffff"
+    text_color = "#ffffff" if is_dark else "#111111"
+    border_color = "#333333" if is_dark else "#eaeaea"
+    sub_text = "#aaaaaa" if is_dark else "#666666"
+    
+    return f"""
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
-        html, body {
+        html, body {{
             font-family: 'Inter', '-apple-system', BlinkMacSystemFont, sans-serif !important;
-            background-color: #fcfcfc !important; 
-            overscroll-behavior-y: contain !important; 
-        }
+            background-color: {bg_app} !important; 
+            color: {text_color} !important;
+            overscroll-behavior-y: none !important; 
+        }}
+        
+        html {{
+            overscroll-behavior: none !important; 
+        }}
 
-        .stApp {
+        .stApp {{
             padding-top: 50px !important; 
             padding-bottom: 75px !important; 
             background-color: transparent !important;
-        }
+        }}
 
-        header, footer, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
+        /* Giấu sạch menu và tàn dư giao diện thừa của Streamlit */
+        header, footer, #MainMenu, .stAppDeployButton, [data-testid="stStatusWidget"], [data-testid="stToolbar"],
         div[class*="stAppViewerToolbar"], div[data-testid="stAppViewerToolbar"], footer + div,
         div[data-testid="stViewerToolbar"], .stViewerToolbar, [data-testid="stManageAppTR"],
-        div[class^="StyledViewerBottomBar"] {
+        div[class^="StyledViewerBottomBar"] {{
             display: none !important; visibility: hidden !important; height: 0 !important; width: 0 !important; opacity: 0 !important; pointer-events: none !important;
-        }
+        }}
 
-        .banner-top, .banner-bottom {
+        .banner-top, .banner-bottom {{
             position: fixed !important; left: 0 !important; right: 0 !important; height: 40px !important;
-            background: #ffffff !important; color: #111111 !important; font-size: 13px !important; font-weight: 600 !important; 
+            background: {"#1e1e1e" if is_dark else "#ffffff"} !important; color: {text_color} !important; font-size: 13px !important; font-weight: 600 !important; 
             letter-spacing: 2px !important; display: flex !important; align-items: center !important; justify-content: center !important; 
-            z-index: 999999 !important; border-bottom: 1px solid #eaeaea !important; 
-        }
-        .banner-top { top: 0px !important; }
-        .banner-bottom { bottom: 0 !important; top: auto !important; border-top: 1px solid #eaeaea !important; border-bottom: none !important; justify-content: flex-start !important; padding-left: 20px !important; }
+            z-index: 999999 !important; border-bottom: 1px solid {border_color} !important; 
+        }}
+        .banner-top {{ top: 0px !important; }}
+        .banner-bottom {{ bottom: 0 !important; top: auto !important; border-top: 1px solid {border_color} !important; border-bottom: none !important; justify-content: flex-start !important; padding-left: 20px !important; }}
 
-        .bang-hieu-lktv {
+        .bang-hieu-lktv {{
             display: flex !important; align-items: center !important; justify-content: flex-start !important; gap: 15px !important;
-            margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: #ffffff !important; 
-            box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid #f0f0f0 !important;
-        }
-        .logo-img { width: 55px !important; height: 55px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid #eaeaea !important; margin: 0 !important; display: block !important; }
-        .thong-tin-cum { text-align: left !important; }
-        .ten-tiem { font-size: 16px !important; font-weight: 700 !important; color: #111111 !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }
-        .thong-tin-phu { font-size: 11px !important; color: #666666 !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }
+            margin-bottom: 20px !important; padding: 12px 15px !important; border-radius: 8px !important; background: {bg_box} !important; 
+            box-shadow: 0px 2px 12px rgba(0,0,0,0.03) !important; border: 1px solid {border_color} !important;
+        }}
+        .logo-img {{ width: 55px !important; height: 55px !important; object-fit: cover !important; border-radius: 50% !important; border: 1px solid {border_color} !important; margin: 0 !important; display: block !important; }}
+        .thong-tin-cum {{ text-align: left !important; }}
+        .ten-tiem {{ font-size: 16px !important; font-weight: 700 !important; color: {text_color} !important; text-transform: uppercase !important; margin-bottom: 2px !important; letter-spacing: 1px !important; }}
+        .thong-tin-phu {{ font-size: 11px !important; color: {sub_text} !important; margin: 1px 0 !important; font-weight: 400; line-height: 1.3; }}
         
-        [data-testid="stTabs"] [role="tablist"] { gap: 0 !important; border-bottom: 1px solid #eaeaea !important; margin-bottom: 25px !important; }
-        button[data-baseweb="tab"] { background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important; }
-        button[data-baseweb="tab"] p { color: #888888 !important; font-size: 14px !important; font-weight: 600 !important; }
-        button[data-baseweb="tab"][aria-selected="true"] { border-bottom: 2px solid #111111 !important; }
-        button[data-baseweb="tab"][aria-selected="true"] p { color: #111111 !important; }
+        [data-testid="stTabs"] [role="tablist"] {{ gap: 0 !important; border-bottom: 1px solid {border_color} !important; margin-bottom: 25px !important; }}
+        button[data-baseweb="tab"] {{ background-color: transparent !important; border-radius: 0 !important; padding: 12px 20px !important; border: none !important; border-bottom: 2px solid transparent !important; transition: all 0.2s ease !important; }}
+        button[data-baseweb="tab"] p {{ color: {sub_text} !important; font-size: 14px !important; font-weight: 600 !important; }}
+        button[data-baseweb="tab"][aria-selected="true"] {{ border-bottom: 2px solid {text_color} !important; }}
+        button[data-baseweb="tab"][aria-selected="true"] p {{ color: {text_color} !important; }}
 
-        .the-quan-ly-flat { color: #111; font-weight: 600; font-size: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #eaeaea; padding-bottom: 8px;}
-        .nhan-tieu-de { font-size: 11px !important; font-weight: 600 !important; margin-bottom: 8px !important; text-transform: uppercase !important; color: #666 !important; letter-spacing: 0.5px; text-align: center;}
+        .the-quan-ly-flat {{ color: {text_color}; font-weight: 600; font-size: 15px; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid {border_color}; padding-bottom: 8px;}}
+        .nhan-tieu-de {{ font-size: 11px !important; font-weight: 600 !important; margin-bottom: 8px !important; text-transform: uppercase !important; color: {sub_text} !important; letter-spacing: 0.5px; text-align: center;}}
         
-        .box-chung { background-color: #ffffff; padding: 15px 10px; border-radius: 8px; text-align: center; border: 1px solid #eaeaea; font-size: 18px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.02); word-wrap: break-word; }
-        .tong-don-box { color: #111111; }
-        .chiet-khau-box { color: #d93025; } 
-        .khach-tra-box { background-color: #111111; color: #ffffff; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .tien-thua-box { background-color: #f8f9fa; color: #111; padding: 18px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; border: 1px solid #eaeaea; margin: 20px 0; }
+        .box-chung {{ background-color: {bg_box}; padding: 15px 10px; border-radius: 8px; text-align: center; border: 1px solid {border_color}; font-size: 18px; font-weight: 700; box-shadow: 0 2px 8px rgba(0,0,0,0.02); word-wrap: break-word; }}
+        .tong-don-box {{ color: {text_color}; }}
+        .chiet-khau-box {{ color: #d93025; }} 
+        .khach-tra-box {{ background-color: {text_color}; color: {bg_box}; border: none; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }}
+        .tien-thua-box {{ background-color: {"#2a2a2a" if is_dark else "#f8f9fa"}; color: {text_color}; padding: 18px; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 700; border: 1px solid {border_color}; margin: 20px 0; }}
 
-        div[data-testid="stButton"] button { border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }
-        div[data-testid="stButton"] button[kind="primary"] { background-color: #111111 !important; color: #ffffff !important; border: none !important; }
-        div[data-testid="stButton"] button[kind="primary"]:hover { background-color: #333333 !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }
+        div[data-testid="stButton"] button {{ border-radius: 6px !important; font-weight: 600 !important; transition: all 0.2s !important; }}
+        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {text_color} !important; color: {bg_box} !important; border: none !important; }}
+        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: {"#dddddd" if is_dark else "#333333"} !important; box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important; }}
         
-        .btn-zalo { display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }
-        .btn-zalo:hover { background-color: #0055d4; }
+        /* Đồng bộ nhãn font chữ cho Dark Mode */
+        label p, div[data-testid="stMarkdownContainer"] p {{ color: {text_color} !important; }}
+        div[data-testid="stPopover"] div[button] {{ border: none !important; }}
 
-        /* --- STYLE KHUNG HÓA ĐƠN Độc Lập Chống TRẮNG CHỮ --- */
-        .hoa-don-khung { background-color: #ffffff !important; color: #333333 !important; padding: 30px 25px !important; border-radius: 8px !important; border: 1px solid #e0e0e0 !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.05) !important; margin-top: 20px !important; }
-        .hd-header { text-align: center; border-bottom: 1px solid #eaeaea; padding-bottom: 15px; margin-bottom: 20px; }
-        .hd-title { font-size: 18px; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; font-weight: 700; color: #111111; }
+        .btn-zalo {{ display: block; width: 100%; text-align: center; padding: 12px; background-color: #0068ff; color: white !important; font-weight: 700; border-radius: 6px; text-decoration: none; margin-top: 15px; transition: all 0.2s; }}
+        .btn-zalo:hover {{ background-color: #0055d4; }}
+
+        .hoa-don-khung {{ background-color: {bg_box} !important; color: {text_color} !important; padding: 30px 25px !important; border-radius: 8px !important; border: 1px solid {border_color} !important; box-shadow: 0px 10px 30px rgba(0,0,0,0.05) !important; margin-top: 20px !important; }}
+        .hd-header {{ text-align: center; border-bottom: 1px solid {border_color}; padding-bottom: 15px; margin-bottom: 20px; }}
+        .hd-title {{ font-size: 18px; text-transform: uppercase; margin-top: 10px; letter-spacing: 2px; font-weight: 700; color: {text_color}; }}
         
-        /* Cấu trúc bảng hóa đơn chống sập dòng */
-        .hd-table-sanpham { width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; }
-        .hd-table-sanpham tr { border-bottom: 1px dashed #eaeaea !important; }
-        .hd-table-sanpham td { padding: 10px 0 !important; vertical-align: top !important; }
-        .hd-item-name { font-weight: 600 !important; color: #111111 !important; font-size: 14px !important; text-align: left !important; }
-        .hd-item-sub { font-size: 12px !important; color: #666666 !important; margin-top: 3px !important; text-align: left !important; }
-        .hd-item-price { text-align: right !important; font-weight: 700 !important; color: #111111 !important; font-size: 14px !important; white-space: nowrap !important; }
+        .hd-table-sanpham {{ width: 100% !important; border-collapse: collapse !important; margin: 10px 0 !important; }}
+        .hd-table-sanpham tr {{ border-bottom: 1px dashed {border_color} !important; }}
+        .hd-table-sanpham td {{ padding: 10px 0 !important; vertical-align: top !important; }}
+        .hd-item-name {{ font-weight: 600 !important; color: {text_color} !important; font-size: 14px !important; text-align: left !important; }}
+        .hd-item-sub {{ font-size: 12px !important; color: {sub_text} !important; margin-top: 3px !important; text-align: left !important; }}
+        .hd-item-price {{ text-align: right !important; font-weight: 700 !important; color: {text_color} !important; font-size: 14px !important; white-space: nowrap !important; }}
 
-        .hd-items { border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; }
-        .lsc-shake { background-color: #fff1f0; color: #cf1322; padding: 12px; border-radius: 6px; border: 1px solid #ffa39e; text-align: center; font-size: 13px; margin-bottom: 15px; }
-        .lsc-vip { background-color: #f6ffed; color: #389e0d; padding: 10px; border-radius: 6px; border: 1px solid #b7eb8f; text-align: center; font-size: 13px; margin-bottom: 10px; font-weight: 600; }
+        .hd-items {{ border-bottom: 1px solid {border_color}; padding-bottom: 10px; margin-bottom: 15px; }}
+        .lsc-shake {{ background-color: #fff1f0; color: #cf1322; padding: 12px; border-radius: 6px; border: 1px solid #ffa39e; text-align: center; font-size: 13px; margin-bottom: 15px; }}
+        .lsc-vip {{ background-color: #f6ffed; color: #389e0d; padding: 10px; border-radius: 6px; border: 1px solid #b7eb8f; text-align: center; font-size: 13px; margin-bottom: 10px; font-weight: 600; }}
 
-        .firework-container { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }
-        .css-particle { position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; animation: explode-mega 3.0s ease-out 2 forwards; }
-        @keyframes explode-mega { 0% { transform: translate(0, 0); opacity: 0; } 20% { opacity: 0.8; } 100% { transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; } }
+        .firework-container {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999999; overflow: hidden; background: transparent; }}
+        .css-particle {{ position: absolute; width: 4px; height: 4px; border-radius: 50%; opacity: 0; animation: explode-mega 3.0s ease-out 2 forwards; }}
         
-        .balloon-container-css { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }
-        .fixed-balloon { position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }
-        @keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.6; } 90% { opacity: 0.6; } 100% { transform: translateY(-120vh); opacity: 0; } }
+        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn để tránh lỗi f-string */
+        @keyframes explode-mega {{ 
+            0% {{ transform: translate(0, 0); opacity: 0; }} 
+            20% {{ opacity: 0.8; }} 
+            100% {{ transform: translate(var(--cx), var(--cy)) scale(0.1); opacity: 0; }} 
+        }}
+        
+        .balloon-container-css {{ position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden; }}
+        .fixed-balloon {{ position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.6; animation: fly-up-skywards-pure linear forwards; }}
+        
+        /* ĐÃ FIX: Nhân đôi dấu ngoặc nhọn */
+        @keyframes fly-up-skywards-pure {{ 
+            0% {{ transform: translateY(110vh); opacity: 0; }} 
+            10% {{ opacity: 0.6; }} 
+            90% {{ opacity: 0.6; }} 
+            100% {{ transform: translateY(-120vh); opacity: 0; }} 
+        }}
     </style>
     """
-  
+    
 def render_fireworks_html():
-    colors = ['#d4af37', '#111111', '#cccccc']
+    colors = ['#d4af37', '#111111', '#cccccc', '#ff4d4f', '#52c41a']
     html_particles = '<div class="firework-container">'
     centers = [(25, 20), (50, 15), (75, 20)]
     for cx, cy in centers:
@@ -132,7 +160,7 @@ def render_fireworks_html():
     return html_particles
 
 def render_balloons_html():
-    colors = ['#e0e0e0', '#f5f5f5', '#d4af37']
+    colors = ['#e0e0e0', '#f5f5f5', '#d4af37', '#40a9ff']
     html_balloons = '<div class="balloon-container-css">'
     for i in range(20):
         left_pos = random.uniform(5, 95)
@@ -146,15 +174,8 @@ def render_balloons_html():
     html_balloons += '</div>'
     st.markdown(html_balloons, unsafe_allow_html=True)
 
-st.markdown(generate_css_animations(), unsafe_allow_html=True)
-
-st.markdown("""
-<div class="banner-top">QUẢN LÝ DỊCH VỤ</div>
-<div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V11</div>
-""", unsafe_allow_html=True)
-
 # =====================================================================
-# 2. HÀM CORE KẾT NỐI 
+# 2. HÀM CORE KẾT NỐI & LIÊN KẾT GOOGLE SHEETS
 # =====================================================================
 def get_now_vn():
     return datetime.now(pytz.timezone('Asia/Ho_Chi_Minh'))
@@ -322,14 +343,17 @@ def gui_email_backup(noi_dung):
 
 def gui_telegram_notification(noi_dung):
     try:
-        bot_token = st.secrets["telegram"]["bot_token"]
-        chat_id = st.secrets["telegram"]["chat_id"]
-        url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
-        requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
+        if "telegram" in st.secrets:
+            tele_configs = st.secrets["telegram"]
+            bot_token = tele_configs.get("bot_token")
+            chat_id = tele_configs.get("chat_id")
+            if bot_token and chat_id:
+                url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
     except Exception: pass
 
 # =====================================================================
-# 3. LUỒNG ĐIỀU HƯỚNG CHÍNH V11 COMPLETE
+# 3. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
     init_states = {
@@ -338,13 +362,77 @@ def main():
         "bill_vua_in": None, "trigger_boom": False, "trigger_balloons": False,
         "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "start_time": get_now_vn(),
         "reset_counter": 0, "tho_chot_val": "",
-        "hang_hien_tai": "", "tong_chi_tieu_val": 0.0
+        "hang_hien_tai": "", "tong_chi_tieu_val": 0.0,
+        "theme": "light", "scroll_trigger": None
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
 
+    # Render CSS theo Theme hiện tại
+    st.markdown(generate_css_animations(st.session_state.theme), unsafe_allow_html=True)
+
+    st.markdown("""
+    <div class="banner-top">QUẢN LÝ DỊCH VỤ</div>
+    <div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V12</div>
+    """, unsafe_allow_html=True)
+
     settings = get_settings()
 
+    # --- KHU VỰC THAO TÁC TIỆN ÍCH MENU "..." TOÀN CỤC ---
+    c_header, c_menu = st.columns([88, 12])
+    with c_header:
+        display_header(settings)
+    with c_menu:
+        st.markdown("<div style='height:12px;'></div>", unsafe_allow_html=True)
+        with st.popover("...", help="Menu cấu hình nhanh hệ thống"):
+            st.markdown("<div style='font-size:12px; font-weight:700; color:#888; text-align:center;'>TÙY CHỌN HỆ THỐNG</div>", unsafe_allow_html=True)
+            
+            # 1. Chuyển chủ đề Sáng / Tối
+            lbl_theme = "☀️ Chế độ Sáng" if st.session_state.theme == "light" else "🌙 Chế độ Tối"
+            if st.button(lbl_theme, use_container_width=True):
+                st.session_state.theme = "dark" if st.session_state.theme == "light" else "light"
+                st.rerun()
+            
+            # 2. Điều hướng Cuộn Trang
+            c_up, c_down = st.columns(2)
+            with c_up:
+                if st.button("⬆️ Lên", use_container_width=True):
+                    st.session_state.scroll_trigger = "up"
+            with c_down:
+                if st.button("⬇️ Xuống", use_container_width=True):
+                    st.session_state.scroll_trigger = "down"
+            
+            # 3. Làm mới ứng dụng F5
+            if st.button("🔄 Làm mới F5", use_container_width=True):
+                st.rerun()
+                
+            # 4. Kích hoạt hiệu ứng ăn mừng pháo hoa
+            if st.button("🎉 Pháo hoa", use_container_width=True):
+                st.session_state.trigger_boom = True
+                st.rerun()
+                
+            # 5. Trợ giúp nhanh
+            if st.button("💡 Trợ giúp", use_container_width=True):
+                st.info("Hệ thống App Quản Lý Salon Kim Hiền V12 độc quyền.")
+                
+            # 6. Gọi Admin Khẩn cấp thông qua Hotline
+            st.markdown('<a href="tel:0978666620" class="btn-zalo" style="background-color:#28a745; text-align:center; display:block; text-decoration:none; margin-top:5px; padding:8px; font-size:12px;">📞 Gọi cho Admin</a>', unsafe_allow_html=True)
+            
+            # 7. Đăng xuất nhanh
+            if st.session_state["logged_in"]:
+                if st.button("🚪 Đăng xuất", use_container_width=True, type="primary"):
+                    st.session_state.clear()
+                    st.rerun()
+
+    # Thực thi lệnh cuộn trang bằng Javascript
+    if st.session_state.scroll_trigger == "down":
+        st.components.v1.html("<script>window.parent.document.querySelector('section.main').scrollTo({top: window.parent.document.querySelector('section.main').scrollHeight, behavior: 'smooth'});</script>", height=0, width=0)
+        st.session_state.scroll_trigger = None
+    elif st.session_state.scroll_trigger == "up":
+        st.components.v1.html("<script>window.parent.document.querySelector('section.main').scrollTo({top: 0, behavior: 'smooth'});</script>", height=0, width=0)
+        st.session_state.scroll_trigger = None
+
+    # Kích hoạt hiệu ứng hình ảnh nếu được kích hoạt
     if st.session_state.trigger_boom:
         st.markdown(render_fireworks_html(), unsafe_allow_html=True)
         st.session_state.trigger_boom = False
@@ -352,16 +440,28 @@ def main():
         render_balloons_html()  
         st.session_state.trigger_balloons = False
 
-    # --- ĐĂNG NHẬP ---
+    # --- ĐĂNG NHẬP HỆ THỐNG ---
     if not st.session_state["logged_in"]:
-        display_header(settings)
+        # Đọc thông tin tài khoản đã ghi nhớ từ query_params (nếu có)
+        saved_u = st.query_params.get("saved_u", "")
+        saved_p = st.query_params.get("saved_p", "")
+        remember_me_default = True if saved_u else False
+
         with st.form("login_section"):
-            st.markdown("<div class='the-quan-ly-flat' style='text-align: center; border:none;'>ĐĂNG NHẬP HỆ THỐNG</div>", unsafe_allow_html=True)
-            u = st.text_input("Tài khoản (Số điện thoại)")
-            p = st.text_input("Mật khẩu", type="password")
+            st.markdown("<div class='the-quan-ly-flat' style='text-align: center; border:none; margin-bottom: 5px;'>ĐĂNG NHẬP HỆ THỐNG</div>", unsafe_allow_html=True)
+            u = st.text_input("Tài khoản (Số điện thoại)", value=saved_u)
+            p = st.text_input("Mật khẩu", type="password", value=saved_p)
+            remember_me = st.checkbox("Ghi nhớ mật khẩu đăng nhập", value=remember_me_default)
             
-            if st.form_submit_button("Xác nhận", use_container_width=True, type="primary"):
+            if st.form_submit_button("Xác nhận Đăng Nhập", use_container_width=True, type="primary"):
                 if u == "admin" and p == "2026":
+                    if remember_me:
+                        st.query_params["saved_u"] = u
+                        st.query_params["saved_p"] = p
+                    else:
+                        if "saved_u" in st.query_params: del st.query_params["saved_u"]
+                        if "saved_p" in st.query_params: del st.query_params["saved_p"]
+                        
                     st.session_state.update({"logged_in": True, "role": "Admin", "full_name": "Quản lý", "trigger_balloons": True, "tho_chot_val": "Quản lý"})
                     st.rerun()
                 else:
@@ -381,20 +481,26 @@ def main():
                                     break
                                     
                         if found_row:
+                            if remember_me:
+                                st.query_params["saved_u"] = u
+                                st.query_params["saved_p"] = p
+                            else:
+                                if "saved_u" in st.query_params: del st.query_params["saved_u"]
+                                if "saved_p" in st.query_params: del st.query_params["saved_p"]
+                                
                             ten_that = str(found_row[col_ten_idx]).strip() if col_ten_idx != -1 and col_ten_idx < len(found_row) else "Nhân viên"
                             st.session_state.update({"logged_in": True, "role": "NhanVien", "full_name": ten_that, "trigger_balloons": True, "tho_chot_val": ten_that})
                             time.sleep(0.3)
                             st.rerun()
-                        else: st.error("Thông tin đăng nhập không chính xác.")
-                    else: st.error("Lỗi dữ liệu nhân viên hoặc đang bị nghẽn mạng Google.")
+                        else: st.error("Thông tin số điện thoại hoặc mật khẩu không chính xác.")
+                    else: st.error("Lỗi dữ liệu hệ thống hoặc đang bị nghẽn mạng Google Sheets.")
         
-        if st.button("Làm mới ứng dụng", use_container_width=True):
+        if st.button("Làm mới hoàn toàn ứng dụng", use_container_width=True):
             st.session_state.clear()
             st.rerun()
 
-    # --- TRANG CHỦ ---
+    # --- ĐỂ SAU KHI ĐĂNG NHẬP THÀNH CÔNG ---
     else:
-        display_header(settings)
         t_list = ["TẠO ĐƠN HÀNG", "BILL CHỜ", "BÁO CÁO", "CÀI ĐẶT"] if st.session_state["role"] == "Admin" else ["TẠO ĐƠN HÀNG"]
         tabs = st.tabs(t_list)
 
@@ -410,12 +516,11 @@ def main():
                 ds_tho = [str(r[c_ten]).strip() for r in raw_nv[1:] if len(r) > c_ten and str(r[c_ten]).strip()]
 
         # =================================================================
-        # TAB 1: TẠO ĐƠN HÀNG
+        # TAB 1: TIẾN HÀNH LÊN ĐƠN HÀNG
         # =================================================================
         with tabs[0]:
-            st.markdown(f"<div style='text-align: right; font-size: 13px; color: #666; margin-bottom: 15px;'>Thành viên đăng nhập: <b>{st.session_state.full_name}</b> | {get_now_vn().strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
+            st.markdown(f"<div style='text-align: right; font-size: 13px; color: #888; margin-bottom: 15px;'>Thành viên: <b>{st.session_state.full_name}</b> | VN: {get_now_vn().strftime('%H:%M %d/%m/%y')}</div>", unsafe_allow_html=True)
             
-            # --- HIỂN THỊ HOÁ ĐƠN VỪA KHỞI TẠO CỐ ĐỊNH ---
             if st.session_state.get("bill_vua_in"):
                 st.write("")
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
@@ -426,14 +531,12 @@ def main():
                     st.rerun()
                 st.markdown("<br><hr>", unsafe_allow_html=True)
             
-            st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:5px; padding-bottom:5px;">  THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
-            st.markdown('<div style="margin-top: 5px; margin-bottom: 15px; border-bottom: 1px solid #eaeaea;"></div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat" style="border:none; margin-bottom:5px; padding-bottom:5px;">THÔNG TIN KHÁCH HÀNG</div>', unsafe_allow_html=True)
             
             so_lan_den = 0
-            
             c1, c2 = st.columns(2)
             with c1: 
-                kh_sdt = st.text_input("Số điện thoại", value=st.session_state.kh_sdt_val)
+                kh_sdt = st.text_input("Số điện thoại khách", value=st.session_state.kh_sdt_val)
                 if kh_sdt != st.session_state.kh_sdt_val:
                     st.session_state.kh_sdt_val = kh_sdt
                     sdt_nhap_so = kh_sdt.strip()
@@ -485,33 +588,33 @@ def main():
                 except: pass
 
             if so_lan_den > 0:
-                st.markdown(f'<div class="lsc-vip">🌟 Khách quen: Đã sử dụng dịch vụ {so_lan_den} lần!</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="lsc-vip">🌟 Khách siêu quen: Đã ghé tiệm {so_lan_den} lần!</div>', unsafe_allow_html=True)
             
             if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.hang_hien_tai:
                 st.markdown(f"""
                     <div style="text-align: right; margin-top: -10px; margin-bottom: 15px;">
-                        <span style="background-color: #fffbfa; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffe1df; font-size: 11px; font-weight: 700; color: #d4380d; box-shadow: 0 1px 2px rgba(0,0,0,0.05); text-transform: uppercase;">
+                        <span style="background-color: #fffbfa; padding: 4px 12px; border-radius: 12px; border: 1px solid #ffe1df; font-size: 11px; font-weight: 700; color: #d4380d; text-transform: uppercase;">
                             {st.session_state.hang_hien_tai} | Tích lũy: {st.session_state.tong_chi_tieu_val:,.0f} đ
                         </span>
                     </div>
                 """, unsafe_allow_html=True)
 
             st.write("")
-            st.markdown('<div class="the-quan-ly-flat">LÊN ĐƠN DỊCH VỤ / SẢN PHẨM</div>', unsafe_allow_html=True)
+            st.markdown('<div class="the-quan-ly-flat">DANH SÁCH DỊCH VỤ DÙNG</div>', unsafe_allow_html=True)
             
             max_dv_cho_phep = 3 if st.session_state.get("role") == "NhanVien" else None
             
             dich_vu_chon_multi = st.multiselect(
-                "Chạm để chọn một hoặc nhiều dịch vụ cùng lúc...", 
-                options=dv_list if dv_list else ["Đang tải dữ liệu..."], 
+                "Chạm chọn dịch vụ...", 
+                options=dv_list if dv_list else ["Đang tải danh mục..."], 
                 max_selections=max_dv_cho_phep,
-                placeholder="Chọn tối đa 3 dịch vụ đối với nhân viên..." if max_dv_cho_phep else "Ní cứ chọn thoải mái nhiều dịch vụ ở đây...",
+                placeholder="Chọn tối đa 3 dịch vụ..." if max_dv_cho_phep else "Ní cứ chọn thoải mái nhiều dịch vụ...",
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
             if st.button("➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True):
                 if not dich_vu_chon_multi:
-                    st.warning("⚠️ Chưa chọn dịch vụ!")
+                    st.warning("⚠️ Vui lòng lựa chọn ít nhất một dịch vụ!")
                 else:
                     for dv in dich_vu_chon_multi:
                         info_dv = services.get(dv, {"gia": 0.0, "hoa_hong": 0.0})
@@ -532,11 +635,11 @@ def main():
                     if 'start_time' not in st.session_state or len(st.session_state.gio_hang) == len(dich_vu_chon_multi):
                         st.session_state.start_time = get_now_vn()
                     st.session_state.reset_counter += 1  
-                    st.toast(f"✅ Đã thêm {len(dich_vu_chon_multi)} dịch vụ vào giỏ!")
+                    st.toast(f"✅ Đã đưa thành công {len(dich_vu_chon_multi)} dịch vụ!")
                     time.sleep(0.3)
                     st.rerun()
 
-            # --- KHU VỰC GIỎ HÀNG ---
+            # --- KHU VỰC CHI TIẾT GIỎ HÀNG ---
             t_bill = 0.0
             if st.session_state.gio_hang:
                 st.write("")
@@ -544,7 +647,7 @@ def main():
                 st.markdown(f'<div class="the-quan-ly-flat">🛒 GIỎ HÀNG HIỆN TẠI ({so_luong_mon} món)</div>', unsafe_allow_html=True)
                 
                 for idx, item in enumerate(st.session_state.gio_hang):
-                    st.markdown(f"<div style='font-size:14px; font-weight:600; color:#111111; margin-bottom:6px;'>📍 {item['dich_vu']}</div>", unsafe_allow_html=True)
+                    st.markdown(f"<div style='font-size:14px; font-weight:600; margin-bottom:6px;'>📍 {item['dich_vu']}</div>", unsafe_allow_html=True)
                     
                     c_sl, c_tt, c_del = st.columns([5, 3, 2])
                     with c_sl:
@@ -558,9 +661,9 @@ def main():
                             item['thanh_tien'] = new_sl * item['don_gia']
                             st.rerun()
                     with c_tt:
-                        st.markdown(f"<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; color:#111111; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
+                        st.markdown(f"<div style='font-size:11px; color:#888; text-transform:uppercase; margin-bottom:8px; text-align:right;'>Thành tiền</div><div style='font-size:14px; font-weight:700; text-align:right; padding-top:5px;'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
                     with c_del:
-                        st.markdown("<div style='font-size:11px; font-weight:600; color:#666666; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
+                        st.markdown("<div style='font-size:11px; color:#888; text-transform:uppercase; margin-bottom:8px; text-align:center;'>Xóa</div>", unsafe_allow_html=True)
                         if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
                             st.session_state.gio_hang.pop(idx)
                             st.rerun()
@@ -569,20 +672,19 @@ def main():
                     t_bill += item['thanh_tien']
 
                 st.write("")
-                if st.button("💾 LƯU VÀO BILL CHỜ", use_container_width=True):
+                if st.button("💾 TẠM LƯU ĐƠN VÀO BILL CHỜ", use_container_width=True):
                     if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                         st.session_state.update({
                             "gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", 
                             "hang_hien_tai": "", "tong_chi_tieu_val": 0.0,
                             "tho_chot_val": st.session_state.full_name
                         })
-                        st.toast("✅ Đã lưu nháp thành công!")
+                        st.toast("✅ Đã lưu đơn tạm thành công!")
                         time.sleep(1)
                         st.rerun()
 
             if t_bill > 0:
-                # --- VÁ LỖI CHÍ MẠNG Ở ĐÂY: Xóa hoàn toàn dòng st.markdown(st.session_state.bill_vua_in) vô lý gây hiện thẻ div và sập session ---
-                st.markdown('<div class="the-quan-ly-flat">THU NGÂN</div>', unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">THU NGÂN & CHIẾT KHẤU</div>', unsafe_allow_html=True)
                 
                 options_tho = [t for t in ds_tho if t.strip()]
                 if st.session_state.full_name not in options_tho: options_tho.append(st.session_state.full_name)
@@ -592,13 +694,13 @@ def main():
                 try: idx_default = options_tho.index(st.session_state.tho_chot_val)
                 except ValueError: idx_default = 0
                 
-                chot_tho = st.selectbox("Thợ thực hiện (Tính KPI cho thợ):", options=options_tho, index=idx_default)
+                chot_tho = st.selectbox("Thợ thực hiện (Tính KPI):", options=options_tho, index=idx_default)
 
                 col_nhap1, col_nhap2 = st.columns(2)
-                with col_nhap1: tien_giam = st.number_input("Chiết khấu (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
-                with col_nhap2: khuyen_mai = st.number_input("Khuyến mãi (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
+                with col_nhap1: tien_giam = st.number_input("Chiết khấu thẳng (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
+                with col_nhap2: khuyen_mai = st.number_input("Khuyến mãi trừ thêm (VND)", min_value=0.0, max_value=float(t_bill), value=0.0, step=1000.0)
                 
-                ghi_chu = st.text_input("Ghi chú hóa đơn")
+                ghi_chu = st.text_input("Ghi chú đơn hàng")
                 
                 tong_tru_gia = tien_giam + khuyen_mai
                 t_khach_tra = max(0.0, t_bill - tong_tru_gia)
@@ -612,13 +714,13 @@ def main():
                 with col_bill3: st.markdown(f'<div class="nhan-tieu-de">Khuyến mãi</div><div class="box-chung chiet-khau-box">{khuyen_mai:,.0f}</div>', unsafe_allow_html=True)
                 with col_bill4: st.markdown(f'<div class="nhan-tieu-de">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>', unsafe_allow_html=True)
                 
-                st.markdown(f'<div style="text-align:right; font-size:13px; color:#888; margin-top:8px;">Hoa hồng dịch vụ: <b>{t_cong_tho_chinh_xac:,.0f}đ</b></div>', unsafe_allow_html=True)
+                st.markdown(f'<div style="text-align:right; font-size:13px; color:#888; margin-top:8px;">Hoa hồng thợ hưởng: <b>{t_cong_tho_chinh_xac:,.0f}đ</b></div>', unsafe_allow_html=True)
                 
                 st.write("")
-                kh_dua = st.number_input("Tiền khách đưa", 0.0, value=float(t_khach_tra))
+                kh_dua = st.number_input("Số tiền mặt khách trả", 0.0, value=float(t_khach_tra))
                 t_du = kh_dua - t_khach_tra
                 
-                if t_du > 0: st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
+                if t_du > 0: st.markdown(f'<div class="tien-thua-box">Tiền thối lại khách: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
 
                 can_go = True
                 if st.session_state["role"] == "NhanVien" and st.session_state.last_submit:
@@ -626,18 +728,18 @@ def main():
                     han_muc = 1 if st.session_state.submit_count == 1 else 2 if st.session_state.submit_count >= 2 else 0
                     if tg_cho < han_muc:
                         can_go = False
-                        st.markdown(f'<div class="lsc-shake">Vui lòng chờ {round(han_muc - tg_cho, 1)} phút để tạo đơn tiếp theo.</div>', unsafe_allow_html=True)
+                        st.markdown(f'<div class="lsc-shake">Vui lòng chờ {round(han_muc - tg_cho, 1)} phút để bấm tạo hóa đơn tiếp theo.</div>', unsafe_allow_html=True)
 
                 if can_go:
-                    cam_ket = st.checkbox("Xác nhận thông tin chính xác")
+                    cam_ket = st.checkbox("Tôi cam kết số liệu nhập trên là chuẩn xác")
                     if not st.session_state.submitting:
-                        if st.button("Xác nhận & Lưu hóa đơn", use_container_width=True, type="primary"):
+                        if st.button("🚀 XÁC NHẬN & XUẤT HÓA ĐƠN", use_container_width=True, type="primary"):
                             if cam_ket:
                                 st.session_state.submitting = True
                                 st.rerun()
-                            else: st.warning("Vui lòng tích chọn xác nhận.")
+                            else: st.warning("Vui lòng tích chọn xác nhận trước khi lưu.")
                     else:
-                        st.button("Đang đồng bộ dữ liệu...", disabled=True, use_container_width=True)
+                        st.button("Đang đồng bộ dữ liệu lên mây Google...", disabled=True, use_container_width=True)
                         try:
                             cl = get_gspread_client()
                             ws = cl.open_by_url(st.secrets["connections"]["gsheets"]["spreadsheet"]).worksheet("BaoCao")
@@ -667,13 +769,12 @@ def main():
                                 
                                 sl_sach = int(item['so_luong']) if float(item['so_luong']).is_integer() else item['so_luong']
                                 
-                                # --- ĐOẠN 1: ÉP XOÁ VIỀN VÀ NỀN TRỰC TIẾP TRÊN TỪNG Ô ---
                                 html_items += f"""<tr>
-<td style="text-align: left; border: none !important; background: transparent !important; padding: 6px 0px !important;">
+<td style="text-align: left; border: none !important; padding: 6px 0px !important;">
 <div class="hd-item-name">{item["dich_vu"]}</div>
 <div class="hd-item-sub">{sl_sach} x {item['don_gia']:,.0f}đ</div>
 </td>
-<td style="text-align: right; border: none !important; background: transparent !important; padding: 6px 0px !important; vertical-align: middle;">
+<td style="text-align: right; border: none !important; padding: 6px 0px !important; vertical-align: middle;">
 <div class="hd-item-price">{item["thanh_tien"]:,.0f}đ</div>
 </td>
 </tr>"""
@@ -713,10 +814,13 @@ def main():
                             gui_email_backup(noi_dung_mail)
                             gui_telegram_notification(noi_dung_mail)
                             
+                            # NÚT KÍCH HOẠT MỞ ZALO VÀ CHỦ ĐỘNG TÌM KIẾM THEO SĐT
                             btn_zalo_html = ""
                             if chot_sdt and chot_sdt != "":
-                                sdt_zalo = chot_sdt if chot_sdt.startswith('0') else '0' + chot_sdt
-                                btn_zalo_html = f'<a href="https://zalo.me/{sdt_zalo}" target="_blank" class="btn-zalo">💬 CSKH qua Zalo</a>'
+                                sdt_zalo_clean = str(chot_sdt).strip().replace(" ", "").replace("+84", "0")
+                                if not sdt_zalo_clean.startswith('0') and sdt_zalo_clean != "":
+                                    sdt_zalo_clean = '0' + sdt_zalo_clean
+                                btn_zalo_html = f'<a href="zalo://conversation?phone={sdt_zalo_clean}" target="_blank" class="btn-zalo">💬 Nhắn tin cho khách qua Zalo</a>'
                             
                             html_huy_hieu_bill_goc = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px; letter-spacing: 0.5px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                             
@@ -736,6 +840,7 @@ def main():
     <div class="hd-title">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: #888; margin-top:5px;">Mã số: {ma_hd}</div>
 </div>
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Thông tin khách hàng:</div>
 {html_huy_hieu_bill_goc}
 <div style="border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: #444;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span>{bay_gio.strftime('%d/%m/%Y %H:%M')}</span></div>
@@ -744,7 +849,7 @@ def main():
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:600;">{chot_tho}</span></div>
 </div>
 <div class="hd-items" style="margin-bottom: 15px;">
-    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Dịch vụ có trong bill:</div>
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Chi tiết dịch vụ đã sử dụng:</div>
     <table style="width: 100%; border-collapse: collapse; border: none !important;">
         {html_items}
     </table>
@@ -757,6 +862,7 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span>{tien_thoi:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span>{thoi_gian_phuc_vu} phút</span></div>
 </div>
+    <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Sô tiền cần thanh toán:</div>
 <div style="font-size: 15px; font-weight: 700;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG:</span> <span>{t_khach_tra:,.0f}</span></div>
 </div>
@@ -779,12 +885,12 @@ def main():
                             st.session_state.submitting = False
 
         # =================================================================
-        # TAB 2 & 3 & 4 DÀNH CHO ADMIN
+        # TAB 2 & 3 & 4 CẤU HÌNH DÀNH CHO QUẢN TRỊ ADMIN
         # =================================================================
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
-                if st.button("🔄 Làm mới danh sách bill", use_container_width=True):
+                if st.button("🔄 Làm mới danh sách đơn chờ", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear() 
                     st.rerun()
                     
@@ -792,7 +898,7 @@ def main():
                     _, data_tam = get_bao_cao_va_bill_tam()
                     if len(data_tam) > 1:
                         rows_tam = data_tam[1:]
-                        st.write(f"Đang có **{len(rows_tam)}** đơn hàng chờ xử lý:")
+                        st.write(f"Đang ghi nhận **{len(rows_tam)}** đơn hàng nháp chờ xử lý:")
                         
                         for i, row in enumerate(rows_tam):
                             sheet_row_idx = i + 2 
@@ -815,18 +921,18 @@ def main():
                             with st.container(border=True):
                                 col_info, col_act = st.columns([7, 3])
                                 with col_info:
-                                    st.markdown(f"👤 **Khách hàng:** {ten_kh} ({sdt_kh if sdt_kh else 'Không có SĐT'})")
-                                    st.markdown(f"🛠 **Dịch vụ:** `{chi_tiet_dv}`")
+                                    st.markdown(f"👤 **Khách:** {ten_kh} ({sdt_kh if sdt_kh else 'Không SĐT'})")
+                                    st.markdown(f"🛠 **Chi tiết:** `{chi_tiet_dv}`")
                                     try:
                                         tien_float = float(t_tien_str.replace(',','').replace('.',''))
-                                        st.markdown(f"💰 **Tạm tính:** `{tien_float:,.0f}đ` | 🤝 **Thợ tạo:** {tho_lam}")
+                                        st.markdown(f"💰 **Tạm tính:** `{tien_float:,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
                                     except:
-                                        st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ tạo:** {tho_lam}")
+                                        st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}")
                                 
                                 with col_act:
                                     st.write("")
-                                    if st.button("🛒 Nạp & Tính tiền", key=f"load_bill_{sheet_row_idx}", use_container_width=True, type="primary"):
-                                        with st.spinner("Đang chuyển dữ liệu..."):
+                                    if st.button("🛒 Nạp ra chốt đơn", key=f"load_bill_{sheet_row_idx}", use_container_width=True, type="primary"):
+                                        with st.spinner("Đang lấy dữ liệu..."):
                                             new_gio_hang = []
                                             items = chi_tiet_dv.split(" | ")
                                             for item in items:
@@ -875,15 +981,15 @@ def main():
                                                 st.session_state.start_time = get_now_vn() 
                                             
                                             if xoa_bill_tam_dong_gốc(sheet_row_idx):
-                                                st.toast("⚡ Đã nạp sang mục 👉 TẠO ĐƠN HÀNG")
+                                                st.toast("⚡ Đã nạp thành công dữ liệu!")
                                                 time.sleep(0.5)
                                                 st.rerun()
-                    else: st.info("Hiện không có đơn hàng chờ nào.")
-                except Exception as e: st.error(f"Google đang bận, ní chờ vài giây rồi bấm [Làm mới] lại nha: {e}")
+                    else: st.info("Không có đơn chờ xử lý.")
+                except Exception as e: st.error(f"Hệ thống phản hồi chậm, ní vui lòng ấn thử lại: {e}")
 
             with tabs[2]:
-                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO TỔNG HỢP & DASHBOARD</div>', unsafe_allow_html=True)
-                if st.button("⏰ Cập nhật dữ liệu báo cáo", use_container_width=True):
+                st.markdown('<div class="the-quan-ly-flat">BÁO CÁO DOANH THU TỔNG HỢP</div>', unsafe_allow_html=True)
+                if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear()
                     st.rerun()
                 
@@ -903,9 +1009,7 @@ def main():
                         col_ngay = next((c for c in df_bc.columns if 'ngày' in c.lower() or 'ngay' in c.lower()), 'Ngày')
                         col_ma_hd = next((c for c in df_bc.columns if 'mã' in c.lower() or 'hd' in c.lower() or 'hđ' in c.lower()), None)
                         col_khach = next((c for c in df_bc.columns if 'khách' in c.lower() or 'khach' in c.lower()), None)
-                        col_tho = next((c for c in df_bc.columns if 'thợ' in c.lower() or 'phụ trách' in c.lower()), None)
-                        if not col_tho: col_tho = next((c for c in df_bc.columns if 'nhân viên' in c.lower() or 'nhan vien' in c.lower()), 'Nhân viên')
-
+                        
                         df_bc[col_tien] = pd.to_numeric(df_bc[col_tien].astype(str).str.replace(',', '').str.replace('.', ''), errors='coerce').fillna(0)
                         
                         today = get_now_vn().strftime("%d/%m/%Y")
@@ -922,25 +1026,25 @@ def main():
                         df_hien_thi.index = range(1, len(df_hien_thi) + 1)
                     
                     c1, c2 = st.columns(2)
-                    c1.metric("💰 Tổng doanh thu hôm nay", f"{tong_doanh_thu:,.0f}đ")
-                    c2.metric("💳 Doanh thu trung bình", f"{trung_binh:,.0f}đ")
+                    c1.metric("💰 Doanh thu hôm nay", f"{tong_doanh_thu:,.0f}đ")
+                    c2.metric("💳 Bình quân đơn", f"{trung_binh:,.0f}đ")
                     
                     c3, c4, c5 = st.columns(3)
-                    c3.metric("📦 Tổng đơn trong ngày", tong_don)
-                    c4.metric("👥 Tổng khách phục vụ", so_khach)
-                    c5.metric("⏳ Tổng đơn chờ", don_cho)
+                    c3.metric("📦 Tổng đơn", tong_don)
+                    c4.metric("👥 Tổng lượt khách", so_khach)
+                    c5.metric("⏳ Đơn chờ xử lý", don_cho)
                     
                     st.write("")
                     if not df_bc.empty:
                         col_chart, col_kpi = st.columns([6, 4])
                         with col_chart:
-                            st.markdown('<div class="nhan-tieu-de">📈 BIỂU ĐỒ DOANH THU THEO NGÀY</div>', unsafe_allow_html=True)
+                            st.markdown('<div class="nhan-tieu-de">📈 BIỂU ĐỒ DOANH THU PHÁT SINH</div>', unsafe_allow_html=True)
                             df_chart = df_bc.groupby(col_ngay)[col_tien].sum().reset_index()
                             df_chart_7 = df_chart.tail(7).set_index(col_ngay)
                             st.bar_chart(df_chart_7, use_container_width=True)
 
                         with col_kpi:
-                            st.markdown('<div class="nhan-tieu-de">🏆 KPI THỢ HÔM NAY</div>', unsafe_allow_html=True)
+                            st.markdown('<div class="nhan-tieu-de">🏆 KPI DOANH SỐ THỢ HÔM NAY</div>', unsafe_allow_html=True)
                             if not df_today.empty:
                                 if len(df_today.columns) >= 16:
                                     col_tho_name = df_today.columns[15] 
@@ -949,25 +1053,28 @@ def main():
                                     kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
                                     kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
                                     st.dataframe(kpi_df, use_container_width=True, hide_index=True)
-                                else: st.warning("Hiện tại chưa cấu hình đủ số cột để tính KPI thợ.")
-                            else: st.info("Hôm nay chưa có dữ liệu KPI.")
+                                else:
+                                    st.warning(f"Hiện tại chỉ cấu hình được {len(df_today.columns)} cột trên file Sheets.")
+                            else:
+                                st.info("Chưa có ghi nhận giao dịch tính KPI.")
 
                     st.write("")
                     st.markdown('<div class="the-quan-ly-flat">CHI TIẾT 50 GIAO DỊCH GẦN NHẤT</div>', unsafe_allow_html=True)
                     if not df_hien_thi.empty: st.dataframe(df_hien_thi, use_container_width=True)
-                    else: st.info("Chưa có giao dịch hoàn thành nào để hiển thị.")
+                    else: st.info("Không có dữ liệu hiển thị.")
                         
-                except Exception as e: st.error(f"Tạm thời không thể kết nối Google Sheets để lấy báo cáo. Lỗi: {e}")
+                except Exception as e: 
+                    st.error(f"Kết nối mây dữ liệu gián đoạn: {e}")
 
             with tabs[3]:
-                st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG</div>', unsafe_allow_html=True)
-                if st.button("♻️ Clear Cache & Đồng bộ lại"):
+                st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ HỆ THỐNG TRUNG TÂM</div>', unsafe_allow_html=True)
+                if st.button("♻️ Ép buộc xóa bộ nhớ Cache"):
                     st.cache_data.clear()
-                    st.success("Đã xóa bộ nhớ đệm thành công!")
+                    st.success("Đã đồng bộ sạch sẽ dữ liệu mới!")
                     time.sleep(0.5)
                     st.rerun()
                 
-                if st.button("Đăng xuất Admin", use_container_width=True):
+                if st.button("Đăng xuất Admin khẩn cấp", use_container_width=True):
                     st.session_state.clear()
                     st.rerun()
 
