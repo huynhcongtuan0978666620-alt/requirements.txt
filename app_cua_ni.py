@@ -452,7 +452,7 @@ def main():
             if st.session_state.get("bill_vua_in"):
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
-                if st.button("❌ ẨN HÓA BILL NÀY", use_container_width=True, type="primary"):
+                if st.button("❌ ẨN BILL NÀY", use_container_width=True, type="primary"):
                     st.session_state.bill_vua_in = None
                     st.rerun()
                 st.markdown("<br><hr>", unsafe_allow_html=True)
