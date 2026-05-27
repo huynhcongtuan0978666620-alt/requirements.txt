@@ -275,7 +275,7 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
 
 def gui_email_backup(noi_dung):
     try:
-        sender_email = "huynhcongtuan0978666620@gmail.com"
+        sender_email = "tuankietstreamlitapp@gmail.com"
         password = "lwui aesw vqal ytcq" 
         receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
         gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
@@ -321,7 +321,7 @@ def main():
 
     # TRUYỀN THÊM QUYỀN TRUY CẬP ĐỂ XỬ LÝ ẨN/HIỆN THANH CÔNG CỤ ĐỒNG BỘ THEO STATE
     st.markdown(generate_css_animations(st.session_state.theme, st.session_state.get("role")), unsafe_allow_html=True)
-    st.markdown("""<div class="banner-top">QUẢN LÝ DỊCH VỤ</div><div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION V12</div>""", unsafe_allow_html=True)
+    st.markdown("""<div class="banner-top">QUẢN LÝ DỊCH VỤ</div><div class="banner-bottom">SALON KIM HIỀN © 2026 - VISION 12</div>""", unsafe_allow_html=True)
 
     settings = get_settings()
 
@@ -452,7 +452,7 @@ def main():
             if st.session_state.get("bill_vua_in"):
                 st.markdown('<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN DỊCH VỤ VỪA KHỞI TẠO</div>', unsafe_allow_html=True)
                 st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
-                if st.button("❌ ĐÓNG & ẨN HÓA ĐƠN NÀY", use_container_width=True, type="primary"):
+                if st.button("❌ ẨN HÓA BILL NÀY", use_container_width=True, type="primary"):
                     st.session_state.bill_vua_in = None
                     st.rerun()
                 st.markdown("<br><hr>", unsafe_allow_html=True)
@@ -513,7 +513,7 @@ def main():
                 except: pass
 
             if so_lan_den > 0:
-                st.markdown(f'<div class="lsc-vip">🌟 Khách siêu quen: Đã ghé tiệm {so_lan_den} lần!</div>', unsafe_allow_html=True)
+                st.markdown(f'<div class="lsc-vip">🌟 Khách hàng quen: Đã ghé tiệm {so_lan_den} lần!</div>', unsafe_allow_html=True)
             
             if st.session_state["role"] == "Admin" and st.session_state.kh_sdt_val.strip() and st.session_state.hang_hien_tai:
                 st.markdown(f"""
@@ -532,7 +532,7 @@ def main():
                 "Chạm chọn dịch vụ...", 
                 options=dv_list if dv_list else ["Đang tải danh mục..."], 
                 max_selections=max_dv,
-                placeholder="Chọn tối đa 3 dịch vụ..." if max_dv else "Chọn thoải mái nhiều dịch vụ...",
+                placeholder="Chọn tối đa 3 dịch vụ..." if max_dv else "Chọn dịch vụ...",
                 key=f"dv_multi_key_{st.session_state.reset_counter}"
             )
             
@@ -698,7 +698,7 @@ def main():
                             huy_hieu_bill = st.session_state.hang_hien_tai if (st.session_state["role"] == "Admin" and c_sdt and c_ten != "Khách lẻ" and st.session_state.hang_hien_tai != "🌱 TIỀM NĂNG") else ""
                             huy_hieu_tele = f" | Hạng: {huy_hieu_bill}" if huy_hieu_bill else ""
 
-                            nd_mail = f"THÔNG BÁO - Đã thanh toán\n \nMã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}{huy_hieu_tele}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nTrừ: -{tong_tru:,.0f} đ\nKhách đưa: {kh_dua:,.0f} đ\nTiền thối: {t_du:,.0f} đ\nPhục vụ: {tg_phuc_vu} phút\n \nTHỰC THU: {t_khach_tra:,.0f} đ"
+                            nd_mail = f"THÔNG BÁO - Đã thanh toán ✔️\n \nMã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}{huy_hieu_tele}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nTrừ: -{tong_tru:,.0f} đ\nKhách đưa: {kh_dua:,.0f} đ\nTiền thối: {t_du:,.0f} đ\nPhục vụ: {tg_phuc_vu} phút\n \nTHỰC THU: {t_khach_tra:,.0f} đ"
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
                             
@@ -731,7 +731,7 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span>{t_du:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span>{tg_phuc_vu} phút</span></div>
 </div>
-<div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Sô tiền thanh toán:</div>
+<div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="font-size: 15px; font-weight: 700;"><div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px;"><span>TỔNG CỘNG:</span> <span>{t_khach_tra:,.0f}</span></div></div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 {btn_zl}
@@ -753,7 +753,7 @@ def main():
         if st.session_state["role"] == "Admin":
             with tabs[1]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN LÝ BILL CHỜ</div>', unsafe_allow_html=True)
-                if st.button("🔄 Làm mới đơn chờ", use_container_width=True):
+                if st.button("🔄 Làm mới bill chờ", use_container_width=True):
                     get_bao_cao_va_bill_tam.clear() 
                     st.rerun()
                 try:
@@ -853,8 +853,8 @@ def main():
                     
                     c3, c4, c5 = st.columns(3)
                     c3.metric("📦 Tổng đơn", tong_don)
-                    c4.metric("👥 Khách", so_khach)
-                    c5.metric("⏳ Đơn chờ", don_cho)
+                    c4.metric("👥 Tổng khách", so_khach)
+                    c5.metric("⏳ Tổng đơn chờ", don_cho)
                     
                     if not df_bc.empty:
                         col_chart, col_kpi = st.columns([6, 4])
@@ -877,7 +877,7 @@ def main():
 
             with tabs[3]:
                 st.markdown('<div class="the-quan-ly-flat">QUẢN TRỊ TRUNG TÂM</div>', unsafe_allow_html=True)
-                if st.button("♻️ ÉP BUỘC XÓA KẾT NỐI & LÀM MỚI BỘ NHỚ", use_container_width=True, type="primary"):
+                if st.button("♻️ LÀM MỚI BỘ NHỚ", use_container_width=True, type="primary"):
                     st.cache_data.clear()
                     st.cache_resource.clear() 
                     st.success("Đã xóa sạch bộ nhớ tạm và tái tạo lại toàn bộ đường truyền Google Sheets!")
