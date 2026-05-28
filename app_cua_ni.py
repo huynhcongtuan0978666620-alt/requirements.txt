@@ -118,15 +118,9 @@ def apply_v14_theme():
         }}
         div[data-testid="stButton"] button {{ border-radius: 10px !important; font-weight: 600 !important; border: 1px solid {b_light}; background: {card}; }}
         div[data-testid="stButton"] button[kind="primary"] {{ background-color: {p} !important; color: {txt_main} !important; border: none !important; }}
-        .stTextInput>div>div>input, .stNumberInput>div>div>input {{ border-radius: 8px !important; border: 1px solid {b_input}; }}
+        .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input {{ border-radius: 8px !important; border: 1px solid {b_input}; }}
         .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid {p}; padding-bottom: 5px; text-transform: uppercase; }}
-        .box-chung {{ background-color: {THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
-        .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
-        .khach-tra-box {{ background-color: {p} !important; color: {txt_main} !important; border:none; }}
-        .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
         .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 8px solid {p} !important; box-shadow: 0 4px 12px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
-        .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
-        .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
     </style>
     """, unsafe_allow_html=True)
 
@@ -162,11 +156,6 @@ def get_google_sheet_workbook():
         st.error(f"Lỗi khởi tạo kết nối Sheets: {e}")
         st.stop()
 
-def format_drive_direct_url(link):
-    if not link or not isinstance(link, str): return ""
-    match = re.search(r'(pires=|/d/|id=)([a-zA-Z0-9-_]{33,40})', link.strip())
-    return f"https://lh3.googleusercontent.com/d/{match.group(2)}" if match else ""
-
 @st.cache_data(ttl=3600)
 def get_settings():
     try:
@@ -200,31 +189,17 @@ def get_nhan_vien_data():
     try: return get_google_sheet_workbook().worksheet("NhanVien").get_all_values()
     except Exception: return []
 
-@st.cache_data(ttl=60)
-def get_khach_hang_data():
-    try:
-        rows = get_google_sheet_workbook().worksheet("KhachHang").get_all_values()
-        return {str(r[0]).strip().replace(".0", ""): str(r[1]).strip() for r in rows[1:] if len(r) >= 2 and str(r[0]).strip()}
-    except Exception: return {}
-
-@st.cache_data(ttl=15)
-def get_plkh_data():
-    try: return get_google_sheet_workbook().worksheet("PLKH").get_all_values()
-    except Exception: return []
-
-def get_huy_hieu(tong_chi):
-    if tong_chi >= 10000000: return "DIAMOND"
-    elif tong_chi >= 5000000: return "GOLD"
-    elif tong_chi >= 3000000: return "SILVER"
-    elif tong_chi >= 1000000: return "THÂN THIẾT"
-    return "TIỀM NĂNG"
-
 @st.cache_data(ttl=300)
 def get_bao_cao_va_bill_tam():
     try:
         sh = get_google_sheet_workbook()
         return sh.worksheet("BaoCao").get_all_values(), sh.worksheet("BillTam").get_all_values()
     except Exception: return [], []
+
+@st.cache_data
+def convert_df_to_csv(df):
+    # Xuất định dạng utf-8-sig để đọc tiếng Việt chuẩn trên Excel 2010
+    return df.to_csv(index=False).encode('utf-8-sig')
 
 def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
@@ -237,16 +212,8 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
         return True
     except Exception: return False
 
-def xoa_bill_tam_dong_goc(index_sheet_row):
-    try:
-        sh = get_google_sheet_workbook()
-        sh.worksheet("BillTam").delete_rows(index_sheet_row)
-        get_bao_cao_va_bill_tam.clear()
-        return True
-    except Exception: return False
-
 # =====================================================================
-# BƯỚC 3: CƠ CHẾ AUTO-SAVE NGẦM (BACKGROUND THREADING)
+# 3. CƠ CHẾ AUTO-SAVE NGẦM (BACKGROUND THREADING)
 # =====================================================================
 def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
     try:
@@ -254,7 +221,6 @@ def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
         ws = sh.worksheet("BillTam")
         records = ws.get_all_values()
         draft_idx = -1
-        # Tìm xem có bản nháp nào đang làm dở của nhân viên này không
         for i, r in enumerate(records):
             if len(r) >= 7 and str(r[3]).strip() == nhan_vien and str(r[6]).strip() == "ĐANG SOẠN":
                 draft_idx = i + 1 
@@ -263,10 +229,8 @@ def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
         chi_tiet = " | ".join([f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang_copy])
         tong_tien = sum([item['thanh_tien'] for item in gio_hang_copy])
         
-        # Nếu giỏ hàng trống thì xóa nháp cũ
         if not gio_hang_copy and draft_idx != -1:
             ws.delete_rows(draft_idx)
-        # Nếu có hàng thì cập nhật hoặc thêm mới
         elif gio_hang_copy and draft_idx != -1:
             ws.update(f"A{draft_idx}:G{draft_idx}", [[get_now_vn().strftime("%Y-%m-%d %H:%M:%S"), chi_tiet, tong_tien, nhan_vien, kh_sdt, kh_ten, "ĐANG SOẠN"]])
         elif gio_hang_copy and draft_idx == -1:
@@ -275,7 +239,6 @@ def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
     except Exception: pass
 
 def trigger_auto_save():
-    # Gọi hàm lưu ngầm (Threading) để không làm đơ giao diện Streamlit
     t = threading.Thread(target=background_save_draft, args=(
         list(st.session_state.gio_hang), 
         st.session_state.full_name, 
@@ -285,7 +248,7 @@ def trigger_auto_save():
     t.start()
 
 # =====================================================================
-# 3. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
+# 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
     init_states = {
@@ -340,7 +303,6 @@ def main():
 
     # --- KHU VỰC LÀM VIỆC CHÍNH ---
     else:
-        # BƯỚC 3: TỰ ĐỘNG KHÔI PHỤC BẢN NHÁP (AUTO-RECOVERY) SAU KHI ĐĂNG NHẬP
         if not st.session_state.da_load_nhap:
             st.session_state.da_load_nhap = True
             _, tam_records = get_bao_cao_va_bill_tam()
@@ -404,14 +366,13 @@ def main():
                     kh_sdt = st.text_input("Số điện thoại khách", value=st.session_state.kh_sdt_val)
                     if kh_sdt != st.session_state.kh_sdt_val:
                         st.session_state.kh_sdt_val = kh_sdt
-                        if kh_sdt.strip():
-                            trigger_auto_save() # Gọi Auto-save khi cập nhật SĐT
+                        if kh_sdt.strip(): trigger_auto_save()
                         st.rerun() 
                 with c2: 
                     kh_ten = st.text_input("Tên khách hàng", value=st.session_state.kh_ten_val)
                     if kh_ten != st.session_state.kh_ten_val: 
                         st.session_state.kh_ten_val = kh_ten
-                        trigger_auto_save() # Gọi Auto-save khi cập nhật Tên
+                        trigger_auto_save()
                         st.rerun()
 
             with st.container(border=True):
@@ -428,7 +389,7 @@ def main():
                             else:
                                 st.session_state.gio_hang.append({"dich_vu": dv, "so_luong": 1.0, "don_gia": info_dv["gia"], "thanh_tien": info_dv["gia"], "phan_tram_hh": info_dv["hoa_hong"]})
                         st.session_state.reset_counter += 1  
-                        trigger_auto_save() # GỌI AUTO SAVE SAU KHI THÊM MÓN
+                        trigger_auto_save()
                         st.toast("✅ Đã thêm dịch vụ! Đang tự động sao lưu...")
                         time.sleep(0.3)
                         st.rerun()
@@ -444,7 +405,7 @@ def main():
                             if new_sl != item['so_luong']:
                                 item['so_luong'] = new_sl
                                 item['thanh_tien'] = new_sl * item['don_gia']
-                                trigger_auto_save() # GỌI AUTO SAVE KHI ĐỔI SỐ LƯỢNG
+                                trigger_auto_save()
                                 st.rerun()
                         with c_tt:
                             st.markdown(f"<div style='margin-top: 30px; font-weight:800; color:{THEME_COLORS['text_main']};'>{item['thanh_tien']:,.0f}đ</div>", unsafe_allow_html=True)
@@ -452,14 +413,14 @@ def main():
                             st.markdown(f"<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
                             if st.button("🗑️", key=f"del_{idx}", use_container_width=True):
                                 st.session_state.gio_hang.pop(idx)
-                                trigger_auto_save() # GỌI AUTO SAVE KHI XÓA MÓN
+                                trigger_auto_save()
                                 st.rerun()
                         t_bill += item['thanh_tien']
 
                     if st.button("💾 LƯU ĐƠN VÀO BILL CHỜ (ĐẨY XUỐNG BẾP/THỢ)", use_container_width=True):
                         if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"})
-                            trigger_auto_save() # Xóa bản nháp vì đã lưu thật
+                            trigger_auto_save()
                             st.toast("✅ Đã đẩy đơn vào danh sách chờ!")
                             time.sleep(1)
                             st.rerun()
@@ -487,34 +448,91 @@ def main():
                                 ])
                             ws.append_rows(rows_to_append)
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"})
-                            trigger_auto_save() # XÓA BẢN NHÁP VÌ ĐÃ XUẤT HÓA ĐƠN XONG
+                            trigger_auto_save()
                             st.toast("✅ Đã xuất hóa đơn!")
                             time.sleep(1)
                             st.rerun()
                         except Exception as e: st.error(f"Lỗi: {e}")
 
-        # ==================== TAB 3: LỊCH HẸN ====================
+        # ==================== TAB 3: LỊCH HẸN (HOÀN THIỆN) ====================
         with tabs[2]:
             with st.container(border=True):
-                st.markdown('<div class="the-quan-ly-flat">LỊCH HẸN KHÁCH HÀNG</div>', unsafe_allow_html=True)
-                st.markdown(f"""
-                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; background-color: {THEME_COLORS['bg_app']}; border: 2px dashed {THEME_COLORS['border_input']}; border-radius: 12px; margin: 10px 0;">
-                        <div style="font-size: 45px; margin-bottom: 10px; opacity: 0.9;">📅</div>
-                        <div style="font-size: 16px; font-weight: 800; color: {THEME_COLORS['text_title']}; margin-bottom: 5px; text-transform: uppercase;">Chưa có lịch hẹn nào</div>
-                        <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; text-align: center; line-height: 1.5; max-width: 90%;">
-                            Hệ thống quản lý lịch hẹn thông minh đang được xây dựng.<br>Toàn bộ tính năng sẽ được kích hoạt ở phiên bản tiếp theo.
-                        </div>
-                    </div>
-                """, unsafe_allow_html=True)
+                st.markdown('<div class="the-quan-ly-flat">📅 TẠO LỊCH HẸN MỚI</div>', unsafe_allow_html=True)
+                
+                c_hen1, c_hen2 = st.columns(2)
+                with c_hen1:
+                    hen_ten = st.text_input("Tên khách hàng (Hẹn)")
+                    hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
+                with c_hen2:
+                    hen_sdt = st.text_input("Số điện thoại (Hẹn)")
+                    hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
+                
+                hen_dv = st.multiselect("Dịch vụ quan tâm", options=dv_list if dv_list else ["Đang tải..."])
+                hen_tho = st.selectbox("Thợ yêu cầu (nếu có)", options=["Không yêu cầu"] + ds_tho if ds_tho else ["Không yêu cầu", st.session_state.full_name])
+                hen_ghi_chu = st.text_area("Ghi chú thêm (Tình trạng xe/yêu cầu riêng)")
 
-        # ==================== TAB 4: BÁO CÁO ====================
+                if st.button("💾 LƯU LỊCH HẸN", use_container_width=True, type="primary"):
+                    if hen_ten and hen_sdt:
+                        try:
+                            # Yêu cầu ní tạo sẵn Sheet có tên "LichHen" trên Google Sheets nhé
+                            ws_hen = get_google_sheet_workbook().worksheet("LichHen")
+                            ws_hen.append_row([
+                                get_now_vn().strftime("%Y-%m-%d %H:%M:%S"),
+                                str(hen_ngay),
+                                str(hen_gio),
+                                hen_ten,
+                                hen_sdt,
+                                ", ".join(hen_dv),
+                                hen_tho,
+                                hen_ghi_chu,
+                                "CHỜ XÁC NHẬN"
+                            ])
+                            st.toast("✅ Đã lưu lịch hẹn thành công!")
+                            time.sleep(1)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Lỗi khi lưu lịch hẹn. Đảm bảo ní đã tạo Sheet 'LichHen' nhé. Chi tiết: {e}")
+                    else:
+                        st.warning("Vui lòng nhập Tên và Số điện thoại khách hàng.")
+
+        # ==================== TAB 4: BÁO CÁO (HOÀN THIỆN) ====================
         with tabs[3]:
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
-                    st.markdown('<div class="the-quan-ly-flat">BÁO CÁO DOANH THU</div>', unsafe_allow_html=True)
-                    if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
-                        get_bao_cao_va_bill_tam.clear()
-                        st.rerun()
+                    st.markdown('<div class="the-quan-ly-flat">📈 BÁO CÁO DOANH THU TỔNG QUAN</div>', unsafe_allow_html=True)
+                    
+                    try:
+                        data_bc, _ = get_bao_cao_va_bill_tam()
+                        if len(data_bc) > 1:
+                            df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
+                            
+                            c_btn1, c_btn2 = st.columns(2)
+                            with c_btn1:
+                                if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
+                                    get_bao_cao_va_bill_tam.clear()
+                                    st.rerun()
+                            with c_btn2:
+                                # Chuyển CSV sang utf-8-sig để Excel bản cũ hiển thị Tiếng Việt không lỗi
+                                csv_data = convert_df_to_csv(df_bc)
+                                st.download_button(
+                                    label="📥 Xuất File Excel (CSV)", 
+                                    data=csv_data, 
+                                    file_name=f"DoanhThu_{get_now_vn().strftime('%Y%m%d')}.csv", 
+                                    mime="text/csv", 
+                                    use_container_width=True,
+                                    type="primary"
+                                )
+                            
+                            st.markdown(f"**Tổng số giao dịch đã ghi nhận:** {len(df_bc)}")
+                            st.dataframe(df_bc, use_container_width=True)
+                        else:
+                            st.info("Chưa có dữ liệu báo cáo.")
+                            if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
+                                get_bao_cao_va_bill_tam.clear()
+                                st.rerun()
+                                
+                    except Exception as e: 
+                        st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
             else:
                 st.warning("🔒 Chức năng này chỉ dành cho Quản lý.")
 
