@@ -48,7 +48,7 @@ def inject_advanced_ui_js():
             timer = setTimeout(() => { clicks = 0; }, 1000); 
             if(clicks >= 3) {
                 clicks = 0;
-                showPremiumToast('🎉 Chào mừng đến với hệ sinh thái ECO TIME V14 🎉');
+                showPremiumToast('🎉 Chào mừng đến với NHÀ CỦA HIỀN 🎉');
                 for(let i=0; i<60; i++) {
                     let f = parentDoc.createElement('div');
                     f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:50%; background-color:${['#56e8e6', '#ffffff', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
@@ -250,11 +250,11 @@ def get_plkh_data():
     except Exception: return []
 
 def get_huy_hieu(tong_chi):
-    if tong_chi >= 10000000: return "💎 DIAMOND"
-    elif tong_chi >= 5000000: return "🥇 GOLD"
-    elif tong_chi >= 3000000: return "🥈 SILVER"
-    elif tong_chi >= 1000000: return "🥉 THÂN THIẾT"
-    return "🌱 TIỀM NĂNG"
+    if tong_chi >= 10000000: return "DIAMOND"
+    elif tong_chi >= 5000000: return "GOLD"
+    elif tong_chi >= 3000000: return "SILVER"
+    elif tong_chi >= 1000000: return "THÂN THIẾT"
+    return "TIỀM NĂNG"
 
 @st.cache_data(ttl=300)
 def get_bao_cao_va_bill_tam():
@@ -301,7 +301,7 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
 
 def gui_email_backup(noi_dung):
     try:
-        sender_email = "tuankietstreamlitapp@gmail.com"
+        sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
         receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
         gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
@@ -431,8 +431,8 @@ def main():
                         <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 50%; border: 3px solid #56e8e6; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
                         <div style="font-size: 22px; font-weight: 900; color: #111; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                         <div style="font-size: 13px; color: #666; margin-top: 5px; text-align: center;">
-                            <div>📍 {settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
-                            <div style="margin-top: 3px;">📞 Hotline: {settings.get('SDT', '0947.58.1516')}</div>
+                            <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
+                            <div style="margin-top: 3px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
                         </div>
                     </div>
                 """, unsafe_allow_html=True)
@@ -485,9 +485,9 @@ def main():
                                         st.session_state.hang_hien_tai = get_huy_hieu(tong_chi)
                                         break
                                 else:
-                                    st.session_state.hang_hien_tai = "🌱 TIỀM NĂNG"
+                                    st.session_state.hang_hien_tai = "TIỀM NĂNG"
                             except:
-                                st.session_state.hang_hien_tai = "🌱 TIỀM NĂNG"
+                                st.session_state.hang_hien_tai = "TIỀM NĂNG"
                         st.rerun() 
                         
                 with c2: 
@@ -638,13 +638,13 @@ def main():
                             st.markdown(f'<div class="lsc-shake">Vui lòng chờ {round(han_muc - tg_cho, 1)} phút để tạo đơn tiếp.</div>', unsafe_allow_html=True)
 
                     if can_go:
-                        cam_ket = st.checkbox("Tôi cam kết số liệu chuẩn xác")
+                        cam_ket = st.checkbox("Xác nhận đơn hàng")
                         if not st.session_state.submitting:
-                            if st.button("🚀 XÁC NHẬN & XUẤT HÓA ĐƠN", use_container_width=True, type="primary"):
+                            if st.button("🚀 XUẤT HÓA ĐƠN", use_container_width=True, type="primary"):
                                 if cam_ket:
                                     st.session_state.submitting = True
                                     st.rerun()
-                                else: st.warning("Vui lòng xác nhận trước khi lưu.")
+                                else: st.warning("Vui lòng xác nhận.")
                         else:
                             st.button("Đang đồng bộ Google Sheets...", disabled=True, use_container_width=True)
                             try:
@@ -695,7 +695,7 @@ def main():
                                 huy_hieu_bill = st.session_state.hang_hien_tai if (st.session_state["role"] == "Admin" and c_sdt and c_ten != "Khách lẻ" and st.session_state.hang_hien_tai != "🌱 TIỀM NĂNG") else ""
                                 huy_hieu_tele = f" | Hạng: {huy_hieu_bill}" if huy_hieu_bill else ""
 
-                                nd_mail = f"THÔNG BÁO - Đã thanh toán ✔️\n \nMã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}{huy_hieu_tele}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nTrừ: -{tong_tru:,.0f} đ\nKhách đưa: {kh_dua:,.0f} đ\nTiền thối: {t_du:,.0f} đ\nPhục vụ: {tg_phuc_vu} phút\n \nTHỰC THU: {t_khach_tra:,.0f} đ"
+                                nd_mail = f"THÔNG BÁO - Đã thanh toán ✅\n \nMã ĐH: {ma_hd} | {bay_gio.strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}{huy_hieu_tele}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nTrừ: -{tong_tru:,.0f} đ\nKhách đưa: {kh_dua:,.0f} đ\nTiền thối: {t_du:,.0f} đ\nPhục vụ: {tg_phuc_vu} phút\n \nTHỰC THU: {t_khach_tra:,.0f} đ"
                                 gui_email_backup(nd_mail)
                                 gui_telegram_notification(nd_mail)
                                 
@@ -703,7 +703,7 @@ def main():
                                 if c_sdt:
                                     zl_sdt = str(c_sdt).strip().replace(" ", "").replace("+84", "0")
                                     if not zl_sdt.startswith('0') and zl_sdt: zl_sdt = '0' + zl_sdt
-                                    btn_zl = f'<div style="text-align: center; margin-top: 15px;"><a href="https://zalo.me/{zl_sdt}" target="_blank" style="background-color: #0068ff; color: #ffffff; padding: 10px 20px; font-weight: bold; border-radius: 8px; text-decoration: none;">💬 Nhắn Zalo khách</a></div>'
+                                    btn_zl = f'<div style="text-align: center; margin-top: 15px;"><a href="https://zalo.me/{zl_sdt}" target="_blank" style="background-color: #0068ff; color: #ffffff; padding: 10px 20px; font-weight: bold; border-radius: 8px; text-decoration: none;">CSKH qua Zalo 📲</a></div>'
                                 
                                 html_hh = f'<div style="font-size: 11px; color: #d4380d; font-weight: bold; text-align: right; margin-top: -15px; margin-bottom: 15px;">Hạng: {huy_hieu_bill}</div>' if huy_hieu_bill else ""
                                 
@@ -721,6 +721,7 @@ def main():
 <div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
+{html_hh}
 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; color: #333;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Giảm trừ:</span> <span style="text-align: right; font-weight: 600;">-{tong_tru:,.0f}</span></div>
