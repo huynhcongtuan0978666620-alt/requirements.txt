@@ -17,9 +17,9 @@ from email.mime.multipart import MIMEMultipart
 # 1. CẤU HÌNH GIAO DIỆN V14 - ECO TIME (BLUE & WHITE)
 # =====================================================================
 st.set_page_config(
-    page_title="ECO TIME V14", 
+    page_title="LKTV Channel V14", 
     layout="centered", 
-    page_icon="⚜️",
+    page_icon="💎",
     initial_sidebar_state="collapsed"
 )
 
