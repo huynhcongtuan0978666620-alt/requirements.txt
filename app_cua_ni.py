@@ -44,7 +44,7 @@ THEME_COLORS = {
 }
 
 # =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN V15
+# 1. CẤU HÌNH GIAO DIỆN
 # =====================================================================
 st.set_page_config(
     page_title="SALON PRO V15", 
@@ -92,7 +92,6 @@ def apply_v15_theme():
     card = THEME_COLORS['bg_card']
     shadow = THEME_COLORS['shadow_light']
     txt_main = THEME_COLORS['text_main']
-    txt_sub = THEME_COLORS['text_secondary']
     txt_muted = THEME_COLORS['text_muted']
     txt_title = THEME_COLORS['text_title']
     b_light = THEME_COLORS['border_light']
@@ -249,38 +248,47 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
         return True
     except Exception: return False
 
+def xoa_bill_tam_dong_goc(index_sheet_row):
+    try:
+        sh = get_google_sheet_workbook()
+        sh.worksheet("BillTam").delete_rows(index_sheet_row)
+        get_bao_cao_va_bill_tam.clear()
+        return True
+    except Exception: return False
+
 def gui_email_backup(noi_dung):
     try:
-        sender_email = "huynhcongtuan0978666620@gmail.com"
-        password = "lwui aesw vqal ytcq" 
-        receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
-        gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
-        msg = MIMEMultipart()
-        msg['From'] = sender_email
-        msg['To'] = ", ".join(receiver_emails)
-        msg['Subject'] = f"HOÁ ĐƠN SALON DỊCH VỤ - {gio_vn_mail}"
-        msg.attach(MIMEText(noi_dung, 'plain'))
-        
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.starttls()
-        server.login(sender_email, password)
-        server.sendmail(sender_email, receiver_emails, msg.as_string())
-        server.quit()
+        if "email" in st.secrets:
+            sender_email = st.secrets["email"].get("sender")
+            password = st.secrets["email"].get("password")
+            receiver_emails = [sender_email]
+            if sender_email and password:
+                gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
+                msg = MIMEMultipart()
+                msg['From'] = sender_email
+                msg['To'] = ", ".join(receiver_emails)
+                msg['Subject'] = f"HOÁ ĐƠN SALON DỊCH VỤ - {gio_vn_mail}"
+                msg.attach(MIMEText(noi_dung, 'plain'))
+                
+                server = smtplib.SMTP('smtp.gmail.com', 587)
+                server.starttls()
+                server.login(sender_email, password)
+                server.sendmail(sender_email, receiver_emails, msg.as_string())
+                server.quit()
     except Exception: pass
 
 def gui_telegram_notification(noi_dung):
     try:
         if "telegram" in st.secrets:
-            tele_configs = st.secrets["telegram"]
-            bot_token = tele_configs.get("bot_token")
-            chat_id = tele_configs.get("chat_id")
+            bot_token = st.secrets["telegram"].get("bot_token")
+            chat_id = st.secrets["telegram"].get("chat_id")
             if bot_token and chat_id:
                 url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
                 requests.post(url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10)
     except Exception: pass
 
 # =====================================================================
-# 3. CƠ CHẾ AUTO-SAVE NGẦM (BACKGROUND THREADING)
+# 3. CƠ CHẾ AUTO-SAVE NGẦM
 # =====================================================================
 def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
     try:
@@ -392,12 +400,12 @@ def main():
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
 
-        tabs = st.tabs(["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Quản trị"], key="main_tabs_v15")
+        tabs = st.tabs(["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Thêm"], key="main_tabs_v15")
         services = get_service_data()
         dv_list = list(services.keys())
         
         raw_nv = get_nhan_vien_data()
-        ds_tho = [str(r[next((i for i, h in enumerate([str(h).strip().lower() for h in raw_nv[0]]) if 'tên' in h or 'nhân viên' in h), -1)]).strip() for r in raw_nv[1:] if len(r) > next((i for i, h in enumerate([str(h).strip().lower() for h in raw_nv[0]]) if 'tên' in h or 'nhân viên' in h), -1)] if len(raw_nv) > 1 else []
+        ds_tho = [str(r[next((i for i, h in enumerate([str(h).strip().lower() for h in raw_nv[0]]) if 'tên' in h or 'nhân viên' in h), -1)]).strip() for r in raw_nv[1:] if len(r) > 0] if len(raw_nv) > 1 else [st.session_state.full_name]
 
         # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
@@ -416,10 +424,9 @@ def main():
                 """, unsafe_allow_html=True)
             
             with st.container(border=True):
-                st.markdown(f"**Chào mừng, {st.session_state.full_name}!**")
+                st.markdown(f"👋 **Xin chào, {st.session_state.full_name}!**")
                 st.markdown(f"<span style='color:{THEME_COLORS['text_muted']}; font-size:13px;'>Hôm nay là: {get_now_vn().strftime('%d/%m/%Y')}</span>", unsafe_allow_html=True)
                 
-                # Biểu đồ Doanh Thu Nhanh
                 try:
                     bc_values, _ = get_bao_cao_va_bill_tam()
                     if len(bc_values) > 1:
@@ -436,11 +443,10 @@ def main():
                         last_7_days['Ngày'] = last_7_days['DateObj'].dt.strftime('%d/%m')
                         
                         if not last_7_days.empty:
-                            st.markdown("<div style='margin-top:15px; font-weight:bold;'>📉 Tăng trưởng 7 ngày qua</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='margin-top:15px; font-weight:bold; color:{THEME_COLORS['text_title']};'>📉 TĂNG TRƯỞNG 7 NGÀY QUA</div>", unsafe_allow_html=True)
                             st.line_chart(last_7_days.set_index('Ngày')[c_tien], color=THEME_COLORS['primary'])
                 except: pass
 
-            # TÍCH HỢP LỊCH HẸN RA TỔNG QUAN
             with st.container(border=True):
                 st.markdown('<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY</div>', unsafe_allow_html=True)
                 lh_data = get_lich_hen_data()
@@ -449,7 +455,7 @@ def main():
                     today_str = get_now_vn().strftime("%Y-%m-%d")
                     # Lọc lịch hẹn của ngày hôm nay
                     if 'Ngày hẹn' in df_lh.columns:
-                        df_today_lh = df_bc = df_lh[df_lh['Ngày hẹn'] == today_str]
+                        df_today_lh = df_lh[df_lh['Ngày hẹn'] == today_str]
                         if not df_today_lh.empty:
                             for idx, row in df_today_lh.iterrows():
                                 gio = row.get('Giờ hẹn', '--:--')
@@ -459,7 +465,7 @@ def main():
                                 st.markdown(f"""
                                     <div class="lich-hen-item">
                                         <div><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555;">{khach} - {sdt}</span></div>
-                                        <div style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">{dv}</div>
+                                        <div style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']}; text-align:right;">{dv}</div>
                                     </div>
                                 """, unsafe_allow_html=True)
                         else: st.info("Không có lịch hẹn nào được ghi nhận cho hôm nay.")
@@ -543,7 +549,7 @@ def main():
 
             if t_bill > 0:
                 with st.container(border=True):
-                    st.markdown('<div class="the-quan-ly-flat">THU NGÂN & CHIẾT KHẤU</div>', unsafe_allow_html=True)
+                    st.markdown('<div class="the-quan-ly-flat">THU NGÂN & THANH TOÁN</div>', unsafe_allow_html=True)
                     chot_tho = st.selectbox("Thợ thực hiện:", options=ds_tho if ds_tho else [st.session_state.full_name])
                     
                     # Tách bạch 2 dòng tiền giảm trừ
@@ -580,7 +586,6 @@ def main():
                             
                             c_ten = st.session_state.kh_ten_val.strip() if st.session_state.kh_ten_val.strip() else "Khách lẻ"
                             c_sdt = st.session_state.kh_sdt_val.strip()
-                            # Ghi chú tổng hợp
                             g_chu_full = f"[CK: {tien_chiet_khau:,.0f} | KM: {tien_khuyen_mai:,.0f}] {ghi_chu_don}"
 
                             for item in st.session_state.gio_hang:
@@ -620,6 +625,8 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
@@ -638,11 +645,11 @@ def main():
                 
                 c_hen1, c_hen2 = st.columns(2)
                 with c_hen1:
-                    hen_ten = st.text_input("Tên khách hàng (Hẹn)")
                     hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
+                    hen_ten = st.text_input("Tên khách hàng (Hẹn)")
                 with c_hen2:
-                    hen_sdt = st.text_input("Số điện thoại (Hẹn)")
                     hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
+                    hen_sdt = st.text_input("Số điện thoại (Hẹn)")
                 
                 hen_dv = st.multiselect("Dịch vụ quan tâm", options=dv_list if dv_list else ["Đang tải..."])
                 hen_tho = st.selectbox("Thợ yêu cầu (nếu có)", options=["Không yêu cầu"] + ds_tho if ds_tho else ["Không yêu cầu", st.session_state.full_name])
@@ -654,13 +661,13 @@ def main():
                             ws_hen = get_google_sheet_workbook().worksheet("LichHen")
                             # Đảm bảo chèn đúng 8 cột: Ngày hẹn, Giờ hẹn, Tên khách, Số điện thoại, Dịch vụ, Nhân viên, Trạng thái, Ghi Chú
                             ws_hen.append_row([
-                                str(hen_ngay),
-                                str(hen_gio),
+                                str(hen_ngay.strftime("%d/%m/%Y")),
+                                str(hen_gio.strftime("%H:%M")),
                                 hen_ten,
                                 hen_sdt,
                                 ", ".join(hen_dv),
                                 hen_tho,
-                                "CHỜ XÁC NHẬN",
+                                "CHỜ PHỤC VỤ",
                                 hen_ghi_chu
                             ])
                             get_lich_hen_data.clear()
@@ -709,7 +716,7 @@ def main():
                             m4.metric("⏳ Đơn chờ", f"{bill_cho} Bill")
                             
                             # KPI
-                            st.markdown("<div style='margin-top:20px; font-weight:bold;'>🏆 KPI THỢ HÔM NAY</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='margin-top:20px; font-weight:bold; color:{THEME_COLORS['text_title']};'>🏆 KPI THỢ HÔM NAY</div>", unsafe_allow_html=True)
                             if not df_today.empty and len(df_today.columns) >= 16:
                                 kpi_df = df_today.groupby(df_today.columns[15])[c_tien].sum().reset_index()
                                 kpi_df.columns = ["Tên thợ", "Doanh thu tạo ra"]
@@ -719,14 +726,14 @@ def main():
                             else: st.info("Hôm nay chưa có giao dịch nào hoàn thành.")
                             
                             # Báo cáo Trạng thái Nhân Viên
-                            st.markdown("<div style='margin-top:20px; font-weight:bold;'>📍 TRẠNG THÁI NHÂN VIÊN (Phiên làm việc)</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='margin-top:20px; font-weight:bold; color:{THEME_COLORS['text_title']};'>📍 TRẠNG THÁI NHÂN VIÊN (Phiên làm việc)</div>", unsafe_allow_html=True)
                             nv_status = []
                             for nv in ds_tho:
                                 status = "🟢 Đang làm việc" if nv == st.session_state.full_name else "🔴 Offline"
                                 nv_status.append({"Tên nhân viên": nv, "Trạng thái": status})
                             st.dataframe(pd.DataFrame(nv_status), use_container_width=True, hide_index=True)
 
-                            st.markdown("<div style='margin-top:20px; font-weight:bold;'>🧾 DỮ LIỆU TỔNG HỢP</div>", unsafe_allow_html=True)
+                            st.markdown(f"<div style='margin-top:20px; font-weight:bold; color:{THEME_COLORS['text_title']};'>🧾 DỮ LIỆU TỔNG HỢP</div>", unsafe_allow_html=True)
                             c_btn1, c_btn2 = st.columns(2)
                             with c_btn1:
                                 if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
@@ -747,7 +754,7 @@ def main():
             else:
                 st.warning("🔒 Chức năng này chỉ dành cho Quản lý.")
 
-        # ==================== TAB 5: QUẢN TRỊ ====================
+        # ==================== TAB 5: QUẢN TRỊ & THÊM ====================
         with tabs[4]:
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
@@ -759,7 +766,8 @@ def main():
                         _, data_tam = get_bao_cao_va_bill_tam()
                         if len(data_tam) > 1:
                             rows_tam = data_tam[1:]
-                            st.write(f"Đang ghi nhận **{len(rows_tam)}** đơn hàng nháp:")
+                            # Tìm index thực tế của dòng trong file Excel (bỏ qua header)
+                            has_pending = False
                             for i, row in enumerate(rows_tam):
                                 sheet_row_idx = i + 2 
                                 cleaned = [str(c).strip() for c in row]
@@ -767,39 +775,42 @@ def main():
                                 if not valid: continue
                                 real_data = cleaned[valid[0]:]
                                 
-                                t_tao_str = real_data[0] if len(real_data) > 0 else ""
-                                chi_tiet_dv = real_data[1] if len(real_data) > 1 else ""
-                                t_tien_str = real_data[2] if len(real_data) > 2 else "0"
-                                tho_lam = real_data[3] if len(real_data) > 3 else "Chưa rõ"
-                                sdt_kh = real_data[4] if len(real_data) > 4 else ""
-                                ten_kh = real_data[5] if len(real_data) > 5 else "Khách lẻ"
-                                
-                                with st.container(border=True):
-                                    col_info, col_act = st.columns([7, 3])
-                                    with col_info:
-                                        st.markdown(f"👤 **Khách:** {ten_kh} ({sdt_kh})")
-                                        st.markdown(f"🛠 **Chi tiết:** `{chi_tiet_dv}`")
-                                        try: st.markdown(f"💰 **Tạm tính:** `{float(t_tien_str.replace(',','').replace('.','')):,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
-                                        except: st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}")
-                                    with col_act:
-                                        st.write("")
-                                        if st.button("🛒 Nạp ra", key=f"load_{sheet_row_idx}", use_container_width=True, type="primary"):
-                                            with st.spinner("Đang nạp..."):
-                                                new_gio = []
-                                                for item in chi_tiet_dv.split(" | "):
-                                                    if item.strip():
-                                                        match = re.match(r"(.+)\s*\(x([\d\.]+)\)", item.strip())
-                                                        if match:
-                                                            t_dv, s_l = match.group(1).strip(), float(match.group(2))
-                                                            info = services.get(t_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                                                            new_gio.append({"dich_vu": t_dv, "so_luong": s_l, "don_gia": info.get("gia", 0.0), "thanh_tien": info.get("gia", 0.0) * s_l, "phan_tram_hh": info.get("hoa_hong", 0.0)})
-                                                
-                                                st.session_state.update({"gio_hang": new_gio, "kh_sdt_val": sdt_kh, "kh_ten_val": ten_kh, "tho_chot_val": tho_lam, "bill_vua_in": None})
-                                                
-                                                if xoa_bill_tam_dong_gốc(sheet_row_idx):
-                                                    st.toast("⚡ Đã nạp đơn vào giỏ hàng!")
-                                                    time.sleep(0.5)
-                                                    st.rerun()
+                                if len(real_data) >= 7 and real_data[6] == "CHỜ XỬ LÝ":
+                                    has_pending = True
+                                    t_tao_str = real_data[0] if len(real_data) > 0 else ""
+                                    chi_tiet_dv = real_data[1] if len(real_data) > 1 else ""
+                                    t_tien_str = real_data[2] if len(real_data) > 2 else "0"
+                                    tho_lam = real_data[3] if len(real_data) > 3 else "Chưa rõ"
+                                    sdt_kh = real_data[4] if len(real_data) > 4 else ""
+                                    ten_kh = real_data[5] if len(real_data) > 5 else "Khách lẻ"
+                                    
+                                    with st.container(border=True):
+                                        col_info, col_act = st.columns([7, 3])
+                                        with col_info:
+                                            st.markdown(f"👤 **Khách:** {ten_kh} ({sdt_kh})")
+                                            st.markdown(f"🛠 **Chi tiết:** `{chi_tiet_dv}`")
+                                            try: st.markdown(f"💰 **Tạm tính:** `{float(t_tien_str.replace(',','').replace('.','')):,.0f}đ` | 🤝 **Thợ:** {tho_lam}")
+                                            except: st.markdown(f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}")
+                                        with col_act:
+                                            st.write("")
+                                            if st.button("🛒 Nạp ra", key=f"load_{sheet_row_idx}", use_container_width=True, type="primary"):
+                                                with st.spinner("Đang nạp..."):
+                                                    new_gio = []
+                                                    for item in chi_tiet_dv.split(" | "):
+                                                        if item.strip():
+                                                            match = re.match(r"(.+)\s*\(x([\d\.]+)\)", item.strip())
+                                                            if match:
+                                                                t_dv, s_l = match.group(1).strip(), float(match.group(2))
+                                                                info = services.get(t_dv, {"gia": 0.0, "hoa_hong": 0.0})
+                                                                new_gio.append({"dich_vu": t_dv, "so_luong": s_l, "don_gia": info.get("gia", 0.0), "thanh_tien": info.get("gia", 0.0) * s_l, "phan_tram_hh": info.get("hoa_hong", 0.0)})
+                                                    
+                                                    st.session_state.update({"gio_hang": new_gio, "kh_sdt_val": sdt_kh, "kh_ten_val": ten_kh, "tho_chot_val": tho_lam, "bill_vua_in": None})
+                                                    
+                                                    if xoa_bill_tam_dong_goc(sheet_row_idx):
+                                                        st.toast("⚡ Đã nạp đơn chờ vào giỏ hàng!")
+                                                        time.sleep(0.5)
+                                                        st.rerun()
+                            if not has_pending: st.info("Không có đơn chờ duyệt.")
                         else: st.info("Không có đơn chờ duyệt.")
                     except Exception as e: st.error(f"Lỗi đọc đơn chờ: {e}")
 
@@ -818,31 +829,31 @@ def main():
                         cong_thuc_data = []
                         loi_khuyen = ""
                         if "Vàng Đồng" in mau_nhuom:
-                            cong_thuc_data = [["Màu chủ đạo 8.43", 70.0], ["Màu mix vàng 0.43", 20.0], ["Màu mix tự nhiên 0.00", 10.0], ["Oxy 9%", 100.0]]
-                            loi_khuyen = "Phù hợp da trắng. Chải cách chân tóc 2cm. Chờ 30 phút rồi chải chân tóc."
+                            cong_thuc_data = [["Màu chủ đạo 8.43", 70.0], ["Màu mix đồng 0.43", 20.0], ["Màu mix tự nhiên 0.00", 10.0], ["Oxy 9%", 100.0]]
+                            loi_khuyen = "Phù hợp da trắng. Chải thuốc thân và ngọn, chải cách chân tóc 2cm. Chờ 30 phút rồi chải tiếp phần chân tóc."
                         elif "Nâu Lạnh" in mau_nhuom:
                             cong_thuc_data = [["Màu chủ đạo 6.1", 80.0], ["Màu mix tro 0.11", 15.0], ["Màu mix xanh rêu 0.22 (khử đỏ)", 5.0], ["Oxy 6%", 100.0]]
-                            loi_khuyen = "Màu tệp vào tóc lâu phai. Nếu tóc có ánh đỏ nhiều, cân nhắc tăng 0.22 lên 10%."
+                            loi_khuyen = "Màu tệp vào tóc lâu phai. Nếu nền tóc cũ của khách có ánh đỏ/cam nhiều, cân nhắc tăng 0.22 lên 10% để triệt đỏ."
                         elif "Khói Xám" in mau_nhuom:
                             cong_thuc_data = [["Màu chủ đạo 8.11", 70.0], ["Màu mix tro 0.11", 20.0], ["Màu mix tím 0.66 (khử vàng)", 10.0], ["Oxy 3%", 100.0]]
-                            loi_khuyen = "BẮT BUỘC: Nền tóc phải ở Level 9+. Dùng Oxy thấp để hạt màu khói ngậm sâu vào biểu bì."
+                            loi_khuyen = "BẮT BUỘC: Nền tóc phải ở Level 9+. Dùng Oxy thấp (3% hoặc 6%) để hạt màu khói ngậm sâu vào biểu bì, tránh tuột màu nhanh."
                         else:
                             cong_thuc_data = [["Màu chủ đạo", 80.0], ["Màu mix", 20.0], ["Oxy tùy chọn", 100.0]]
-                            loi_khuyen = "Theo dõi sát biểu bì tóc."
+                            loi_khuyen = "Theo dõi sát biểu bì tóc để xả nước kịp thời."
 
                         st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']};'>1. Bảng công thức {mau_nhuom} (Tỷ lệ 1:1)</h4>", unsafe_allow_html=True)
                         st.dataframe(pd.DataFrame(cong_thuc_data, columns=["Thành phần (Thuốc + Trợ nhuộm)", "Tỷ lệ % (Gam/ML)"]), use_container_width=True, hide_index=True)
                         
-                        st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình bôi thuốc chuẩn</h4>", unsafe_allow_html=True)
+                        st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình bôi thuốc chuẩn Salon</h4>", unsafe_allow_html=True)
                         st.markdown(f"""
-                        * **Bước 1:** Chuẩn bị bát nhựa, cân tiểu ly điện tử để đong chính xác tỷ lệ màu và Oxy.
-                        * **Bước 2:** Đánh đều hỗn hợp thuốc nhuộm và Oxy cho đến khi nhuyễn, không vón cục.
-                        * **Bước 3:** Chải thuốc lên thân và ngọn tóc trước (nếu là tóc nguyên thủy chưa nhuộm).
+                        * **Bước 1:** Chuẩn bị bát nhựa, dùng cân tiểu ly điện tử để đong chính xác tỷ lệ hạt màu và Oxy.
+                        * **Bước 2:** Đánh đều hỗn hợp thuốc nhuộm và Oxy cho đến khi nhuyễn mịn, không vón cục.
+                        * **Bước 3:** Chia tóc làm 4 góc. Chải thuốc lên thân và ngọn tóc trước (nếu là tóc nguyên thủy chưa nhuộm).
                         * **Bước 4:** Để thời gian lưu thuốc chuẩn (thường từ 35-45 phút). Kích nhiệt nếu cần thiết.
                         """)
                         
                         st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>3. Lời khuyên kỹ thuật & Đánh giá</h4>", unsafe_allow_html=True)
-                        st.success(f"📌 {loi_khuyen}")
+                        st.success(f"📌 **Bí quyết pha màu:** {loi_khuyen}")
                         st.warning("⚠️ **Lưu ý thao tác:** Luôn đeo găng tay. Khách hàng da đầu nhạy cảm cần dùng tinh chất bảo vệ da đầu trước khi vào thuốc.")
 
                 with st.container(border=True):
