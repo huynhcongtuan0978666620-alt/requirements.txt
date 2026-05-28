@@ -76,16 +76,15 @@ def apply_v14_theme():
     
     st.markdown(f"""
     <style>
+        /* 1. Tổng thể & Reset */
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
-        html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg_app} !important; }}
+        html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg_app} !important; padding-top: 0px !important; }}
         
-        /* Ẩn các thành phần mặc định của Streamlit */
+        /* 2. Ẩn mặc định Streamlit & Ép layout khít */
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
+        [data-testid="stVerticalBlock"] {{ gap: 5px !important; }}
         
-        /* Đã điều chỉnh: Giảm padding-top từ 20px xuống 10px để đưa giao diện lên cao */
-        .stApp {{ padding-top: 10px !important; padding-bottom: 70px !important; }}
-        
-        /* Tùy chỉnh Tabs V14: Đã điều chỉnh margin-bottom từ 20px xuống 5px */
+        /* 3. Tùy chỉnh Tabs */
         [data-testid="stTabs"] [role="tablist"] {{
             background: white; border-radius: 12px; padding: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 5px !important;
         }}
@@ -94,37 +93,33 @@ def apply_v14_theme():
         button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {primary} !important; border-radius: 8px; }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ color: #111 !important; }}
         
-        /* Card UI cho st.container: Đã điều chỉnh margin-bottom từ 15px xuống 8px */
+        /* 4. Card UI (Container) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background-color: white !important;
-            border: none !important;
-            border-radius: 15px !important;
-            border-left: 5px solid {primary} !important;
-            box-shadow: 2px 2px 10px rgba(0,0,0,0.05) !important;
-            padding: 20px !important;
-            margin-bottom: 8px !important;
+            background-color: white !important; border: none !important; border-radius: 15px !important;
+            border-left: 5px solid {primary} !important; box-shadow: 2px 2px 10px rgba(0,0,0,0.05) !important;
+            padding: 15px !important; margin-bottom: 8px !important;
         }}
 
-        /* Buttons */
+        /* 5. Buttons */
         div[data-testid="stButton"] button {{ border-radius: 10px !important; font-weight: 600 !important; border: 1px solid #ddd; background: white; }}
-        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {primary} !important; color: #111 !important; border: none !important; box-shadow: 0 4px 6px rgba(86, 232, 230, 0.3); }}
+        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {primary} !important; color: #111 !important; border: none !important; }}
         
-        /* Inputs */
+        /* 6. Inputs */
         .stTextInput>div>div>input, .stNumberInput>div>div>input {{ border-radius: 8px !important; border: 1px solid #ccc; }}
         
-        /* Typography V14 */
-        .the-quan-ly-flat {{ color: #2c3e50; font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid {primary}; padding-bottom: 8px; text-transform: uppercase; }}
-        .box-chung {{ background-color: #f8f9fa; padding: 15px 10px; border-radius: 10px; text-align: center; border: 1px solid #eaeaea; font-size: 18px; font-weight: 800; color: #333; }}
+        /* 7. Typography V14 & Layout */
+        .the-quan-ly-flat {{ color: #2c3e50; font-weight: 800; font-size: 18px; margin-bottom: 10px; border-bottom: 2px solid {primary}; padding-bottom: 5px; text-transform: uppercase; }}
+        .box-chung {{ background-color: #f8f9fa; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid #eaeaea; font-size: 18px; font-weight: 800; color: #333; }}
         .chiet-khau-box {{ color: #d93025 !important; }} 
         .khach-tra-box {{ background-color: {primary} !important; color: #111 !important; border:none; }}
-        .tien-thua-box {{ background-color: #f8f9fa; color: #111; padding: 18px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {primary}; margin: 20px 0; }}
+        .tien-thua-box {{ background-color: #f8f9fa; color: #111; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {primary}; margin: 10px 0; }}
         
-        /* Hóa đơn xuất */
-        .hoa-don-khung {{ background-color: white !important; color: #111 !important; padding: 30px 25px !important; border-radius: 15px !important; border-top: 8px solid {primary} !important; box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin-top: 10px; }}
+        /* 8. Hóa đơn xuất */
+        .hoa-don-khung {{ background-color: white !important; color: #111 !important; padding: 20px !important; border-radius: 15px !important; border-top: 8px solid {primary} !important; box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-top: 5px; }}
         
-        /* Utilities */
-        .lsc-shake {{ background-color: #fff1f0; color: #cf1322 !important; padding: 12px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 15px; border-left: 4px solid #cf1322; }}
-        .lsc-vip {{ background-color: #eaf2e6; color: #13c2c2 !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 10px; font-weight: 700; border: 1px solid #87e8de; }}
+        /* 9. Utilities */
+        .lsc-shake {{ background-color: #fff1f0; color: #cf1322 !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid #cf1322; }}
+        .lsc-vip {{ background-color: #eaf2e6; color: #13c2c2 !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid #87e8de; }}
     </style>
     """, unsafe_allow_html=True)
 
