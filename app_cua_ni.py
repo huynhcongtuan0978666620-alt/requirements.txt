@@ -317,7 +317,7 @@ def xoa_bill_tam_dong_gốc(index_sheet_row):
 
 def gui_email_backup(noi_dung):
     try:
-        sender_email = "tuankietstreamlitapp@gmail.com"
+        sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq" 
         receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
         gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
