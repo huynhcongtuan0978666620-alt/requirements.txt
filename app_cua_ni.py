@@ -722,13 +722,13 @@ def main():
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; color: #333;">
+<div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;"> </div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Giảm trừ:</span> <span style="text-align: right; font-weight: 600;">-{tong_tru:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span style="text-align: right;">{tg_phuc_vu} phút</span></div>
 </div>
-<div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Cộng tiền:</div>
 <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: #111;"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: #d93025;">{t_khach_tra:,.0f}</span></div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
