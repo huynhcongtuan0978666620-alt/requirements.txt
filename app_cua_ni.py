@@ -51,7 +51,7 @@ def inject_advanced_ui_js():
                 showPremiumToast('🎉 Chào mừng đến với NHÀ CỦA HIỀN 🎉');
                 for(let i=0; i<60; i++) {
                     let f = parentDoc.createElement('div');
-                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:70%; background-color:${['#56e8e6', '#ffffff', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
+                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${['#56e8e6', '#ffffff', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
                     parentDoc.body.appendChild(f);
                     setTimeout(() => {
                         const angle = Math.random() * Math.PI * 2;
@@ -71,8 +71,8 @@ def inject_advanced_ui_js():
 
 def apply_v14_theme():
     # Tông màu theo Brand Identity
-    primary = "#EEF4F8"
-    bg_app = "#6FA8DC"
+    primary = "#6FA8DC"
+    bg_app = "#EEF4F8"
     
     st.markdown(f"""
     <style>
