@@ -71,8 +71,8 @@ def inject_advanced_ui_js():
 
 def apply_v14_theme():
     # Tông màu theo Brand Identity
-    primary = "#F8F3EE"
-    bg_app = "#EEE6DF"
+    primary = "#FCFAF8"
+    bg_app = "#CF7754"
     
     st.markdown(f"""
     <style>
