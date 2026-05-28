@@ -51,7 +51,7 @@ def inject_advanced_ui_js():
                 showPremiumToast('🎉 Chào mừng đến với NHÀ CỦA HIỀN 🎉');
                 for(let i=0; i<60; i++) {
                     let f = parentDoc.createElement('div');
-                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:50%; background-color:${['#56e8e6', '#ffffff', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
+                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:70%; background-color:${['#56e8e6', '#ffffff', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
                     parentDoc.body.appendChild(f);
                     setTimeout(() => {
                         const angle = Math.random() * Math.PI * 2;
@@ -181,7 +181,7 @@ def get_google_sheet_workbook():
         else:
             return client.open_by_url(url)
     except Exception as e:
-        st.error(f"Lỗi khởi tạo kết nối Google Sheets: {e}")
+        st.error(f"Lỗi khởi tạo kết nối Sheets: {e}")
         st.stop()
 
 def format_drive_direct_url(link):
@@ -406,7 +406,7 @@ def main():
 
     # --- KHU VỰC LÀM VIỆC CHÍNH (5 TABS) ---
     else:
-        tabs = st.tabs(["🏠 Tổng quan", "📄 Hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Thêm"])
+        tabs = st.tabs(["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Thêm"])
 
         services = get_service_data()
         dv_list = list(services.keys())
@@ -584,7 +584,7 @@ def main():
                         st.markdown("<div style='margin: 12px 0; border-bottom: 1px dashed #eaeaea;'></div>", unsafe_allow_html=True)
                         t_bill += item['thanh_tien']
 
-                    if st.button("💾 TẠM LƯU ĐƠN VÀO BILL CHỜ", use_container_width=True):
+                    if st.button("💾 LƯU ĐƠN VÀO BILL CHỜ", use_container_width=True):
                         if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "hang_hien_tai": "", "tong_chi_tieu_val": 0.0, "tho_chot_val": st.session_state.full_name})
                             st.toast("✅ Đã lưu đơn tạm!")
@@ -646,7 +646,7 @@ def main():
                                     st.rerun()
                                 else: st.warning("Vui lòng xác nhận.")
                         else:
-                            st.button("Đang đồng bộ Google Sheets...", disabled=True, use_container_width=True)
+                            st.button("Đang đồng bộ...", disabled=True, use_container_width=True)
                             try:
                                 sh = get_google_sheet_workbook()
                                 ws = sh.worksheet("BaoCao")
@@ -721,8 +721,6 @@ def main():
 <div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
-{html_hh}
-{html_hh}
 <div style="font-size: 14px; border-bottom: 1px solid #eaeaea; padding-bottom: 10px; margin-bottom: 15px; color: #333;">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: #d93025; margin-bottom: 8px;"><span>Giảm trừ:</span> <span style="text-align: right; font-weight: 600;">-{tong_tru:,.0f}</span></div>
@@ -730,6 +728,7 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thời gian phục vụ:</span> <span style="text-align: right;">{tg_phuc_vu} phút</span></div>
 </div>
+<div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Cộng tiền:</div>
 <div style="font-size: 13px; font-weight: 600; color: #555; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed #eaeaea; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: #111;"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: #d93025;">{t_khach_tra:,.0f}</span></div>
 <div style="text-align: center; margin-top: 25px; font-size: 13px; color: #888; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
