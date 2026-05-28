@@ -797,7 +797,17 @@ def main():
         with tabs[2]:
             with st.container(border=True):
                 st.markdown('<div class="the-quan-ly-flat">LỊCH HẸN KHÁCH HÀNG</div>', unsafe_allow_html=True)
-                st.info("Tính năng quản lý lịch hẹn đang được phát triển ở phiên bản tiếp theo.")
+                
+                # Giao diện Empty State V14 
+                st.markdown(f"""
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; background-color: {THEME_COLORS['bg_app']}; border: 2px dashed {THEME_COLORS['border_input']}; border-radius: 12px; margin: 10px 0;">
+                        <div style="font-size: 45px; margin-bottom: 10px; opacity: 0.9;">📅</div>
+                        <div style="font-size: 16px; font-weight: 800; color: {THEME_COLORS['text_title']}; margin-bottom: 5px; text-transform: uppercase;">Chưa có lịch hẹn nào</div>
+                        <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; text-align: center; line-height: 1.5; max-width: 90%;">
+                            Hệ thống quản lý lịch hẹn thông minh đang được xây dựng.<br>Toàn bộ tính năng sẽ được kích hoạt ở phiên bản tiếp theo.
+                        </div>
+                    </div>
+                """, unsafe_allow_html=True)
 
         # =================================================================
         # TAB 4: 📊 BÁO CÁO (CHỈ ADMIN)
@@ -936,8 +946,18 @@ def main():
                     except Exception as e: st.error(f"Lỗi đọc đơn chờ: {e}")
 
                 with st.container(border=True):
-                    st.markdown('<div class="the-quan-ly-flat">🧪 LAB V1.3 (Mẻ 3 Lít)</div>', unsafe_allow_html=True)
-                    st.info("Khu vực quản lý công thức dung dịch nội bộ đang được phát triển.")
+                    st.markdown('<div class="the-quan-ly-flat">🧪 QUẢN LÝ PHÒNG LAB</div>', unsafe_allow_html=True)
+                    
+                    # Giao diện Empty State V14 cho khu vực pha chế
+                    st.markdown(f"""
+                        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; background-color: {THEME_COLORS['bg_app']}; border: 2px dashed {THEME_COLORS['border_input']}; border-radius: 12px; margin: 10px 0;">
+                            <div style="font-size: 45px; margin-bottom: 10px; opacity: 0.9;">🧪</div>
+                            <div style="font-size: 16px; font-weight: 800; color: {THEME_COLORS['text_title']}; margin-bottom: 5px; text-transform: uppercase;">Không gian nghiên cứu trống</div>
+                            <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; text-align: center; line-height: 1.5; max-width: 90%;">
+                                Khu vực lưu trữ các công thức cải tiến DBX 1.3 (tiêu chuẩn mẻ 3 lít) đang được chuẩn bị hạ tầng.<br>Sẵn sàng cho việc đồng bộ và vận hành 3 dàn máy khuấy cùng lúc.
+                            </div>
+                        </div>
+                    """, unsafe_allow_html=True)
 
                 with st.container(border=True):
                     st.markdown('<div class="the-quan-ly-flat">HỆ THỐNG</div>', unsafe_allow_html=True)
