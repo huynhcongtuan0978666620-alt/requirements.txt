@@ -451,7 +451,8 @@ def main():
 
     # --- KHU VỰC LÀM VIỆC CHÍNH (5 TABS) ---
     else:
-        tabs = st.tabs(["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Thêm"])
+        # CHÌA KHÓA VÀO ĐÂY: Thêm key="main_tabs_v14" để khóa cứng vị trí Tab không bị nhảy loạn
+        tabs = st.tabs(["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Thêm"], key="main_tabs_v14")
 
         services = get_service_data()
         dv_list = list(services.keys())
