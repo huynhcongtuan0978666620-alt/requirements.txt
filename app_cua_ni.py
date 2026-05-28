@@ -57,7 +57,7 @@ THEME_COLORS = {
 # 1. CẤU HÌNH GIAO DIỆN V14
 # =====================================================================
 st.set_page_config(
-    page_title="LKTV Channel V14", 
+    page_title="LKTV CHANNEL V14", 
     layout="centered", 
     page_icon="💎",
     initial_sidebar_state="collapsed"
