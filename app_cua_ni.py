@@ -79,20 +79,22 @@ def apply_v14_theme():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg_app} !important; }}
         
-        /* Ẩn các thành phần mặc định của Streamlit để giống App PWA */
+        /* Ẩn các thành phần mặc định của Streamlit */
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
-        .stApp {{ padding-top: 20px !important; padding-bottom: 70px !important; }}
         
-        /* Tùy chỉnh Tabs V14 */
+        /* Đã điều chỉnh: Giảm padding-top từ 20px xuống 10px để đưa giao diện lên cao */
+        .stApp {{ padding-top: 10px !important; padding-bottom: 70px !important; }}
+        
+        /* Tùy chỉnh Tabs V14: Đã điều chỉnh margin-bottom từ 20px xuống 5px */
         [data-testid="stTabs"] [role="tablist"] {{
-            background: white; border-radius: 12px; padding: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;
+            background: white; border-radius: 12px; padding: 5px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 5px !important;
         }}
         button[data-baseweb="tab"] {{ background-color: transparent !important; }}
         button[data-baseweb="tab"] p {{ color: #666 !important; font-weight: 600 !important; font-size: 14px; }}
         button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {primary} !important; border-radius: 8px; }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ color: #111 !important; }}
         
-        /* Card UI cho st.container */
+        /* Card UI cho st.container: Đã điều chỉnh margin-bottom từ 15px xuống 8px */
         [data-testid="stVerticalBlockBorderWrapper"] {{
             background-color: white !important;
             border: none !important;
@@ -100,7 +102,7 @@ def apply_v14_theme():
             border-left: 5px solid {primary} !important;
             box-shadow: 2px 2px 10px rgba(0,0,0,0.05) !important;
             padding: 20px !important;
-            margin-bottom: 15px !important;
+            margin-bottom: 8px !important;
         }}
 
         /* Buttons */
@@ -110,7 +112,7 @@ def apply_v14_theme():
         /* Inputs */
         .stTextInput>div>div>input, .stNumberInput>div>div>input {{ border-radius: 8px !important; border: 1px solid #ccc; }}
         
-        /* Typography V13 cũ được map sang V14 */
+        /* Typography V14 */
         .the-quan-ly-flat {{ color: #2c3e50; font-weight: 800; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid {primary}; padding-bottom: 8px; text-transform: uppercase; }}
         .box-chung {{ background-color: #f8f9fa; padding: 15px 10px; border-radius: 10px; text-align: center; border: 1px solid #eaeaea; font-size: 18px; font-weight: 800; color: #333; }}
         .chiet-khau-box {{ color: #d93025 !important; }} 
