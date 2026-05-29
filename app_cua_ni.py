@@ -51,13 +51,6 @@ THEME_COLORS = {
     "shadow_heavy": "rgba(0,0,0,0.08)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
     "shadow_toast": "rgba(0,0,0,0.1)",   # Đổ bóng cho thông báo (toast/popup)
 }
-# ... (phần code phía trên của ní)
-
-THEME_COLORS = {
-    "bg_app": "#a0b369",            
-    "bg_card": "#70c2b4",           
-    # ... các màu khác của ní giữ nguyên
-}
 
 # --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
 def set_app_background(colors):
