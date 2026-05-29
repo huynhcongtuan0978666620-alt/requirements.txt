@@ -454,7 +454,7 @@ def main():
     inject_advanced_ui_js()
     settings = get_settings()
 
-    st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS[text_main']}; background-color: {THEME_COLORS['primary']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
+    st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS['text_main']}; background-color: {THEME_COLORS['primary']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
 
     if not st.session_state["logged_in"]:
         is_auto_logged = check_auto_login()
