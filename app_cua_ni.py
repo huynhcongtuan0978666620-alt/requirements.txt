@@ -21,35 +21,35 @@ THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
     "bg_app": "rgb(36,191,68,0.1)",            # Nền tổng thể của ứng dụng
     "bg_card": "rgb(255,99,71,0.2)",           # Nền thẻ (card) hiển thị nội dung
-    "bg_box_chung": "#000000",      # Nền cho các khung chứa thông tin chung
-    "bg_vip_box": "#000000",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
-    "bg_shake_box": "#000000",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
-    "bg_badge_hang": "#000000",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
+    "bg_box_chung": "#000000",                 # Nền cho các khung chứa thông tin chung
+    "bg_vip_box": "#000000",                   # Nền cho khung thông tin VIP (màu xanh lá nhạt)
+    "bg_shake_box": "#000000",                 # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
+    "bg_badge_hang": "#000000",                # Nền cho các nhãn (badge) hiển thị hạng thành viên
 
     # --- Màu nhấn (Accents) ---
-    "primary": "rgb(230,230,250)",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
-    "accent_vip": "#ffffff",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
-    "accent_danger": "#ffffff",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
-    "accent_zalo": "#ffffff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
-    "accent_chiet_khau": "#ffffff", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
+    "primary": "rgb(230,230,250)",             # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
+    "accent_vip": "#ffffff",                   # Màu nhấn dành riêng cho tính năng/thành viên VIP
+    "accent_danger": "#ffffff",                # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
+    "accent_zalo": "#ffffff",                  # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
+    "accent_chiet_khau": "#cd201f",            # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
     # --- Màu chữ (Text) ---
-    "text_main": "#000000",         # Màu chữ chính (đậm, dễ đọc)
-    "text_secondary": "#ffffff",    # Màu chữ phụ (dùng cho mô tả ngắn)
-    "text_muted": "#ffffff",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
-    "text_title": "#ffffff",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
-    "text_badge": "#ffffff",        # Màu chữ bên trong nhãn (badge)
+    "text_main": "#000000",                     # Màu chữ chính (đậm, dễ đọc)
+    "text_secondary": "#ffffff",                # Màu chữ phụ (dùng cho mô tả ngắn)
+    "text_muted": "#ffffff",                    # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
+    "text_title": "#ffffff",                    # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
+    "text_badge": "#ffffff",                    # Màu chữ bên trong nhãn (badge)
 
     # --- Màu viền (Borders) ---
-    "border_light": "#ffffff",      # Viền mỏng, nhạt cho các thành phần UI
-    "border_input": "#ffffff",      # Viền cho các khung nhập liệu (input)
-    "border_badge": "#ffffff",      # Viền cho các nhãn (badge)
-    "border_vip": "#ffffff",        # Viền dành cho khu vực VIP
+    "border_light": "#ffffff",                  # Viền mỏng, nhạt cho các thành phần UI
+    "border_input": "#ffffff",                  # Viền cho các khung nhập liệu (input)
+    "border_badge": "#ffffff",                  # Viền cho các nhãn (badge)
+    "border_vip": "#ffffff",                    # Viền dành cho khu vực VIP
 
     # --- Đổ bóng (Shadows) ---
-    "shadow_light": "rgba(255,99,71,04)",  # Đổ bóng nhẹ cho các card cơ bản
-    "shadow_heavy": "rgba(255,99,71,04)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
-    "shadow_toast": "rgba(255,99,71,04)",   # Đổ bóng cho thông báo (toast/popup)
+    "shadow_light": "rgba(255,99,71,04)",              # Đổ bóng nhẹ cho các card cơ bản
+    "shadow_heavy": "rgba(255,99,71,04)",              # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
+    "shadow_toast": "rgba(255,99,71,04)",              # Đổ bóng cho thông báo (toast/popup)
 }
 
 # --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
@@ -848,7 +848,7 @@ def main():
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi chú: {ghi_chu_don}</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">GHI CHÚ: {ghi_chu_don}</div>
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
                             st.balloons()
