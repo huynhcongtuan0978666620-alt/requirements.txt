@@ -27,7 +27,7 @@ THEME_COLORS = {
     "bg_badge_hang": "#fffbfa",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
 
     # --- Màu nhấn (Accents) ---
-    "primary": "#6FA8DC",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
+    "primary": "#0000FF",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
     "accent_vip": "#13c2c2",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
     "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
     "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
