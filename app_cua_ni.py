@@ -837,6 +837,7 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span style="text-align: right;">{st.session_state.full_name}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:700; color: {THEME_COLORS['text_main']}; text-align: right;">{chot_tho}</span></div>
 </div>
+    <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 <div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
