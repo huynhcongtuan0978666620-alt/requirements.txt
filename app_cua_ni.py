@@ -108,7 +108,7 @@ def inject_advanced_ui_js():
     function showPremiumToast(text) {{
         let t = parentDoc.createElement('div');
         t.innerText = text;
-        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {THEME_COLORS['bg_card']}; color:{THEME_COLORS['text_main']}; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {THEME_COLORS['shadow_toast']}; border-left: 5px solid {THEME_COLORS['primary']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
+        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {THEME_COLORS['primary']}; color:{THEME_COLORS['text_main']}; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {THEME_COLORS['shadow_toast']}; border-left: 5px solid {THEME_COLORS['primary']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
         parentDoc.body.appendChild(t);
         setTimeout(() => {{ t.style.opacity = '0'; setTimeout(()=>t.remove(), 500); }}, 2500);
     }}
@@ -147,7 +147,7 @@ def inject_advanced_ui_js():
 
 # --- HIỆU ỨNG ĐĂNG NHẬP BALLOONS MƯỢT MÀ ---
 def render_balloons_html():
-    colors = [THEME_COLORS['primary'], THEME_COLORS['bg_card'], THEME_COLORS['accent_vip']]
+    colors = [THEME_COLORS['primary'], THEME_COLORS['primary'], THEME_COLORS['accent_vip']]
     html_balloons = '<div class="balloon-container-css" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden;">'
     for i in range(20):
         left_pos = random.uniform(5, 95)
@@ -455,7 +455,7 @@ def main():
     inject_advanced_ui_js()
     settings = get_settings()
 
-    st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS['primary']}; background-color: {THEME_COLORS['bg_card']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
+    st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS['primary']}; background-color: {THEME_COLORS['primary']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
 
     if not st.session_state["logged_in"]:
         is_auto_logged = check_auto_login()
