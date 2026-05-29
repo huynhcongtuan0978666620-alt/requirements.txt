@@ -318,23 +318,22 @@ def xoa_bill_tam_dong_goc(index_sheet_row):
 
 def gui_email_backup(noi_dung):
     try:
-        if "email" in st.secrets:
-            sender_email = "tuankietstreamlitapp@gmail.com"
-            password = "lwui aesw vqal ytcq" 
-            receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
-            if sender_email and password:
-                gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
-                msg = MIMEMultipart()
-                msg['From'] = sender_email
-                msg['To'] = ", ".join(receiver_emails)
-                msg['Subject'] = f"HOÁ ĐƠN SALON DỊCH VỤ - {gio_vn_mail}"
-                msg.attach(MIMEText(noi_dung, 'plain'))
-                
-                server = smtplib.SMTP('smtp.gmail.com', 587)
-                server.starttls()
-                server.login(sender_email, password)
-                server.sendmail(sender_email, receiver_emails, msg.as_string())
-                server.quit()
+        
+        sender_email = "huynhcongtuan0978666620@gmail.com"
+        password = "lwui aesw vqal ytcq" 
+        receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
+        gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = ", ".join(receiver_emails)
+        msg['Subject'] = f"HOÁ ĐƠN DỊCH VỤ - {gio_vn_mail}"
+        msg.attach(MIMEText(noi_dung, 'plain'))
+        
+        server = smtplib.SMTP('smtp.gmail.com', 587)
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_emails, msg.as_string())
+        server.quit()
     except Exception: pass
 
 def gui_telegram_notification(noi_dung):
