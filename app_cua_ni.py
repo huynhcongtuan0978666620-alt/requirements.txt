@@ -799,7 +799,7 @@ def main():
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "", "submitting": False})
                             trigger_auto_save()
                             
-                            nd_mail = f"THÔNG BÁO - ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \nCảm ơn quý khách đã sử dụng dịch vụ! \n \nChi tiết xin liên hệ Hotline 0947.58.1516 \n \nHỗ trợ 24/7.\n"""
+                            nd_mail = f"THÔNG BÁO\n \nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nChi tiết xin liên hệ Hotline 0947.58.1516 \n\nHỗ trợ 24/7.\n\nCảm ơn quý khách đã sử dụng dịch vụ!\n"""
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
 
