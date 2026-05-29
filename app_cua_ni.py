@@ -1210,7 +1210,7 @@ def main():
                         st.cache_data.clear()
                         st.cache_resource.clear() 
                         st.rerun()
-                    if st.button("🚪 Đăng xuất tài khoản Admin", use_container_width=True):
+                    if st.button("🚪 Đăng xuất tài khoản Admin", use_container_width=True, type="primary"):
                         st.query_params.clear() 
                         st.session_state.clear()
                         st.rerun()
