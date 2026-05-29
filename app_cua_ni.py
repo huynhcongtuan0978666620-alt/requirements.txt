@@ -69,10 +69,10 @@ def inject_advanced_ui_js():
     <script>
     const parentDoc = window.parent.document;
     
-    // --- 8. CHỐNG NGỦ (ANTI-SLEEP PING) ---
+    // --- CHỐNG NGỦ (ANTI-SLEEP PING 30s) CHUẨN KHÔNG VĂNG TAB ---
     setInterval(() => {{
-        fetch(window.location.href, {{cache: "no-store"}}).catch(()=>{{}});
-    }}, 60000); 
+        fetch('/_stcore/health').catch(()=>{});
+    }}, 30000); 
 
     function showPremiumToast(text) {{
         let t = parentDoc.createElement('div');
@@ -82,7 +82,7 @@ def inject_advanced_ui_js():
         setTimeout(() => {{ t.style.opacity = '0'; setTimeout(()=>t.remove(), 500); }}, 2500);
     }}
     
-    // --- 7. HIỆU ỨNG 3 CLICK NỔ CONFETTI ---
+    // --- HIỆU ỨNG 3 CLICK NỔ CONFETTI ---
     if(!parentDoc.body.hasAttribute('data-fw-v15')) {{
         parentDoc.body.setAttribute('data-fw-v15', '1');
         let clicks = 0;
@@ -93,7 +93,7 @@ def inject_advanced_ui_js():
             timer = setTimeout(() => {{ clicks = 0; }}, 1000); 
             if(clicks >= 3) {{
                 clicks = 0;
-                showPremiumToast('🎉 Chào mừng đến với HỆ THỐNG SALON CHUYÊN NGHIỆP 🎉');
+                showPremiumToast('🎉 CỐ LÊN NHÉ! BÃO ĐƠN NÀO! 🎉');
                 for(let i=0; i<60; i++) {{
                     let f = parentDoc.createElement('div');
                     f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{THEME_COLORS['primary']}', '{THEME_COLORS['accent_danger']}', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
@@ -114,7 +114,7 @@ def inject_advanced_ui_js():
     """
     st.components.v1.html(js_code, height=0, width=0)
 
-# --- 7. HIỆU ỨNG ĐĂNG NHẬP BALLOONS MƯỢT MÀ ---
+# --- HIỆU ỨNG ĐĂNG NHẬP BALLOONS MƯỢT MÀ ---
 def render_balloons_html():
     colors = [THEME_COLORS['primary'], THEME_COLORS['bg_card'], THEME_COLORS['accent_vip']]
     html_balloons = '<div class="balloon-container-css" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden;">'
@@ -146,7 +146,9 @@ def apply_v15_theme():
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
         html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg} !important; padding-top: 0px !important; }}
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
+        
         [data-testid="stVerticalBlock"] {{ gap: 14px !important; }}
+        
         [data-testid="stTabs"] [role="tablist"] {{
             background: {card}; border-radius: 12px; padding: 5px; box-shadow: 0 4px 6px {shadow}; margin-bottom: 12px !important;
         }}
@@ -327,6 +329,7 @@ def gui_email_backup(noi_dung):
                 msg['To'] = ", ".join(receiver_emails)
                 msg['Subject'] = f"HOÁ ĐƠN SALON DỊCH VỤ - {gio_vn_mail}"
                 msg.attach(MIMEText(noi_dung, 'plain'))
+                
                 server = smtplib.SMTP('smtp.gmail.com', 587)
                 server.starttls()
                 server.login(sender_email, password)
@@ -380,7 +383,6 @@ def trigger_auto_save():
     t.start()
 
 def check_auto_login():
-    """Hàm tự động đăng nhập nếu phát hiện session hoặc URL params (F5 refresh)"""
     if not st.session_state.get("logged_in", False):
         if "saved_u" in st.query_params and "saved_p" in st.query_params:
             u = st.query_params.get("saved_u")
@@ -411,10 +413,10 @@ def main():
     init_states = {
         "last_submit": None, "submit_count": 0, "submitting": False, 
         "logged_in": False, "role": None, "full_name": None, "gio_hang": [], 
-        "bill_vua_in": None, "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", 
+        "bill_vua_in": None, "kh_sdt_val": "", "kh_ten_val": "", 
         "start_time": get_now_vn(), "reset_counter": 0, "tho_chot_val": "",
         "hang_hien_tai": "", "tong_chi_tieu_val": 0.0, "da_load_nhap": False,
-        "trigger_balloons": False
+        "trigger_balloons": False, "lh_sdt_val": "", "lh_ten_val": "", "current_lh_idx": None
     }
     for key, val in init_states.items():
         if key not in st.session_state: st.session_state[key] = val
@@ -423,22 +425,18 @@ def main():
     inject_advanced_ui_js()
     settings = get_settings()
 
-    # --- 9. CHỮ CHẠY MARQUEE ---
     st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS['primary']}; background-color: {THEME_COLORS['bg_card']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
 
-    # --- CƠ CHẾ TỰ ĐỘNG ĐĂNG NHẬP LẠI KHI ẤN F5 ---
     if not st.session_state["logged_in"]:
         is_auto_logged = check_auto_login()
         if is_auto_logged:
             st.session_state.logged_in = True
             st.session_state.trigger_balloons = True
 
-    # --- HIỆU ỨNG BALLOONS KHI VỪA ĐĂNG NHẬP ---
     if st.session_state.get("trigger_balloons"):
         render_balloons_html()
         st.session_state.trigger_balloons = False
 
-    # ĐĂNG KÝ HOẠT ĐỘNG TOÀN CỤC KHI ĐÃ LOGGED IN (FIX TRẠNG THÁI OFFLINE)
     if st.session_state["logged_in"]:
         global_tracker = get_global_user_tracker()
         global_tracker[st.session_state.full_name] = time.time()
@@ -560,9 +558,12 @@ def main():
                     c_sdt_lh = next((c for c in df_lh.columns if 'điện thoại' in c.lower() or 'sđt' in c.lower() or 'sdt' in c.lower()), None)
                     c_dv_lh = next((c for c in df_lh.columns if 'dịch' in c.lower() or 'dich' in c.lower()), None)
                     c_tt_lh = next((c for c in df_lh.columns if 'trạng thái' in c.lower() or 'trang thai' in c.lower()), None)
+                    c_tho_lh = next((c for c in df_lh.columns if 'nhân viên' in c.lower() or 'nhan vien' in c.lower()), None)
 
                     if c_ngay_lh:
                         df_today_lh = df_lh[df_lh[c_ngay_lh].astype(str).str.contains(today_str, na=False)]
+                        has_items = False
+                        
                         if not df_today_lh.empty:
                             for i, row in df_today_lh.iterrows():
                                 idx_sheet = i + 2 
@@ -571,31 +572,46 @@ def main():
                                 sdt = row.get(c_sdt_lh, '') if c_sdt_lh else ''
                                 dv = row.get(c_dv_lh, '') if c_dv_lh else ''
                                 tt_val = row.get(c_tt_lh, 'CHỜ PHỤC VỤ') if c_tt_lh else 'CHỜ PHỤC VỤ'
+                                tho_yc = row.get(c_tho_lh, 'Không yêu cầu') if c_tho_lh else 'Không yêu cầu'
                                 
+                                if st.session_state["role"] == "NhanVien" and tho_yc != "Không yêu cầu" and tho_yc != st.session_state.full_name:
+                                    continue
+                                    
+                                has_items = True
+
                                 st.markdown(f"""
                                     <div class="lich-hen-item">
                                         <div style="flex: 1;"><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555; font-weight:bold;">{khach} - {sdt}</span><br><span style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">{dv}</span></div>
                                     </div>
                                 """, unsafe_allow_html=True)
                                 
-                                # --- 1. HIỂN THỊ THÔNG BÁO ĐÃ CHỐT HAY CHƯA ---
-                                if tt_val.strip().upper() == "ĐÃ LÊN ĐƠN":
+                                if tt_val.strip().upper() == "ĐÃ CHỐT ĐƠN":
                                     st.markdown(f"<div style='text-align:right; font-weight:bold; font-size:14px; color:#28a745; margin-bottom:10px;'>✅ ĐÃ CHỐT ĐƠN</div>", unsafe_allow_html=True)
+                                    if st.session_state["role"] == "Admin":
+                                        if st.button("🗑️ Xóa lịch hẹn", key=f"del_lh_home_{idx_sheet}"):
+                                            try:
+                                                get_google_sheet_workbook().worksheet("LichHen").delete_rows(idx_sheet)
+                                                get_lich_hen_data.clear()
+                                                st.toast("✅ Đã xóa lịch hẹn khỏi hệ thống!")
+                                                time.sleep(0.5)
+                                                st.rerun()
+                                            except: pass
                                 else:
                                     if st.button("📝 Nạp & Lên Đơn", key=f"lh_home_{idx_sheet}", use_container_width=True):
                                         st.session_state.kh_sdt_val = str(sdt)
                                         st.session_state.kh_ten_val = str(khach)
-                                        # Tự chuyển trạng thái trên Google sheet
+                                        st.session_state.tho_chot_val = str(tho_yc) if tho_yc != "Không yêu cầu" else st.session_state.full_name
+                                        st.session_state.current_lh_idx = idx_sheet
                                         try:
                                             col_idx = df_lh.columns.get_loc(c_tt_lh) + 1 if c_tt_lh else 7
-                                            get_google_sheet_workbook().worksheet("LichHen").update_cell(idx_sheet, col_idx, "ĐÃ LÊN ĐƠN")
+                                            get_google_sheet_workbook().worksheet("LichHen").update_cell(idx_sheet, col_idx, "ĐANG XỬ LÝ")
                                             get_lich_hen_data.clear()
                                         except: pass
                                         st.toast("✅ Đã nạp thông tin. Chuyển sang Tab Lên Hóa Đơn nhé!")
                                         time.sleep(0.5)
                                         st.rerun()
                                 st.markdown("<hr style='margin:8px 0; border:none;'>", unsafe_allow_html=True)
-                        else: st.info("Không có lịch hẹn nào được ghi nhận cho hôm nay.")
+                        if not has_items: st.info("Không có lịch hẹn nào của bạn cho hôm nay.")
                 else: st.info("Dữ liệu lịch hẹn trống.")
 
             if st.session_state.get("bill_vua_in"):
@@ -615,7 +631,6 @@ def main():
                     kh_sdt = st.text_input("Số điện thoại khách", value=st.session_state.kh_sdt_val)
                     if kh_sdt != st.session_state.kh_sdt_val:
                         st.session_state.kh_sdt_val = kh_sdt
-                        # --- 2. TỰ ĐỘNG ĐIỀN TÊN KHÁCH KHI GÕ SĐT ---
                         if kh_sdt.strip():
                             sdt_clean = kh_sdt.strip()
                             ds_kh = get_khach_hang_data()
@@ -625,13 +640,13 @@ def main():
                             if sdt_clean in ds_kh: st.session_state.kh_ten_val = ds_kh[sdt_clean]
                             elif s_k_0 in ds_kh: st.session_state.kh_ten_val = ds_kh[s_k_0]
                             elif s_c_0 in ds_kh: st.session_state.kh_ten_val = ds_kh[s_c_0]
-                            else: st.session_state.kh_ten_val = "Khách lẻ"
+                            else: st.session_state.kh_ten_val = ""
                             trigger_auto_save()
                         else:
-                            st.session_state.kh_ten_val = "Khách lẻ"
+                            st.session_state.kh_ten_val = ""
                         st.rerun() 
                 with c2: 
-                    kh_ten = st.text_input("Tên khách hàng", value=st.session_state.kh_ten_val)
+                    kh_ten = st.text_input("Tên khách hàng", value=st.session_state.kh_ten_val, placeholder="Khách lẻ")
                     if kh_ten != st.session_state.kh_ten_val: 
                         st.session_state.kh_ten_val = kh_ten
                         trigger_auto_save()
@@ -639,7 +654,6 @@ def main():
 
             with st.container(border=True):
                 st.markdown('<div class="the-quan-ly-flat">DANH SÁCH DỊCH VỤ</div>', unsafe_allow_html=True)
-                # --- 3. GIỚI HẠN DỊCH VỤ THEO QUYỀN ---
                 max_dv = 3 if st.session_state.get("role") == "NhanVien" else None
                 pholder_text = "Chọn tối đa 3 dịch vụ..." if max_dv else "Chọn dịch vụ..."
                 
@@ -664,7 +678,6 @@ def main():
             if st.session_state.gio_hang:
                 with st.container(border=True):
                     st.markdown(f'<div class="the-quan-ly-flat">🛒 GIỎ HÀNG ({len(st.session_state.gio_hang)} món)</div>', unsafe_allow_html=True)
-                    # --- 4. GIỚI HẠN SỐ LƯỢNG MÓN THEO QUYỀN ---
                     max_sl = 2.0 if st.session_state.get("role") == "NhanVien" else 1000.0
                     
                     for idx, item in enumerate(st.session_state.gio_hang):
@@ -688,7 +701,7 @@ def main():
 
                     if st.button("💾 LƯU ĐƠN VÀO BILL CHỜ (ĐẨY XUỐNG BẾP/THỢ)", use_container_width=True):
                         if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
-                            st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ"})
+                            st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": ""})
                             trigger_auto_save()
                             st.toast("✅ Đã đẩy đơn vào danh sách chờ thành công!")
                             time.sleep(0.5)
@@ -697,7 +710,11 @@ def main():
             if t_bill > 0:
                 with st.container(border=True):
                     st.markdown('<div class="the-quan-ly-flat">THU NGÂN & THANH TOÁN</div>', unsafe_allow_html=True)
-                    chot_tho = st.selectbox("Thợ thực hiện:", options=ds_tho if ds_tho else [st.session_state.full_name])
+                    
+                    opts_tho = ds_tho if ds_tho else [st.session_state.full_name]
+                    try: default_idx = opts_tho.index(st.session_state.tho_chot_val)
+                    except: default_idx = 0
+                    chot_tho = st.selectbox("Thợ thực hiện:", options=opts_tho, index=default_idx)
                     
                     c_km1, c_km2 = st.columns(2)
                     with c_km1: tien_chiet_khau = st.number_input("Chiết khấu ưu đãi (VND)", value=0.0, step=1000.0)
@@ -711,8 +728,7 @@ def main():
                     t_du = kh_dua - t_khach_tra
 
                     hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
-                    t_cong_tho = sum(item['thanh_tien'] * hs_giam * (item['phan_tram_hh'] / 100.0) for item in st.session_state.gio_hang)
-
+                    
                     st.write("")
                     cb1, cb2, cb3, cb4 = st.columns(4)
                     with cb1: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: center;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>', unsafe_allow_html=True)
@@ -722,7 +738,6 @@ def main():
                     
                     if t_du > 0: st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
 
-                    # Khôi phục Dấu Xác Nhận An Toàn
                     st.markdown(f"""
                         <div style="background-color: #eaf2e6; border: 1px solid #87e8de; border-left: 5px solid #13c2c2; padding: 12px; border-radius: 10px; text-align: center; margin: 15px 0 5px 0; font-weight: 700; color: #111; font-size: 14px;">
                             ✅ ĐÃ XÁC NHẬN SỐ TIỀN THỰC THU: <span style="color:#cf1322; font-size:16px;">{t_khach_tra:,.0f}đ</span><br>
@@ -764,7 +779,16 @@ def main():
                                 chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
                                 
                             ws.append_rows(rows_to_append)
-                            st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "Khách lẻ", "submitting": False})
+                            
+                            # CẬP NHẬT TRẠNG THÁI "ĐÃ CHỐT ĐƠN" VÀO SHEET LICHHEN
+                            if st.session_state.get("current_lh_idx"):
+                                try:
+                                    get_google_sheet_workbook().worksheet("LichHen").update_cell(st.session_state.current_lh_idx, 7, "ĐÃ CHỐT ĐƠN")
+                                    get_lich_hen_data.clear()
+                                except: pass
+                                st.session_state.current_lh_idx = None
+                            
+                            st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "", "submitting": False})
                             trigger_auto_save()
                             
                             nd_mail = f"THÔNG BÁO - Đã thanh toán ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGhi chú: {ghi_chu_don}"
@@ -796,7 +820,6 @@ def main():
 <div style="text-align: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi chú: {ghi_chu_don}</div>
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
-                            # --- 7. BẮN PHÁO HOA ĂN MỪNG ---
                             st.balloons()
                             st.toast("✅ Đã xuất hóa đơn thành công!")
                             time.sleep(1.5)
@@ -805,18 +828,35 @@ def main():
                             st.error(f"Lỗi hệ thống: {e}")
                             st.session_state.submitting = False
 
-        # ==================== TAB 3: LỊCH HẸN ====================
+        # ==================== TAB 3: LỊCH HẸN & CHỨC NĂNG LÊN ĐƠN KHÁCH HẸN ====================
         with tabs[2]:
             with st.container(border=True):
                 st.markdown('<div class="the-quan-ly-flat">📅 TẠO LỊCH HẸN MỚI</div>', unsafe_allow_html=True)
                 
                 c_hen1, c_hen2 = st.columns(2)
+                with c_hen2:
+                    hen_sdt = st.text_input("Số điện thoại (Hẹn)", value=st.session_state.lh_sdt_val)
+                    if hen_sdt != st.session_state.lh_sdt_val:
+                        st.session_state.lh_sdt_val = hen_sdt
+                        if hen_sdt.strip():
+                            sdt_clean = hen_sdt.strip()
+                            ds_kh = get_khach_hang_data()
+                            s_k_0 = sdt_clean[1:] if sdt_clean.startswith('0') else sdt_clean
+                            s_c_0 = '0' + sdt_clean if not sdt_clean.startswith('0') else sdt_clean
+                            if sdt_clean in ds_kh: st.session_state.lh_ten_val = ds_kh[sdt_clean]
+                            elif s_k_0 in ds_kh: st.session_state.lh_ten_val = ds_kh[s_k_0]
+                            elif s_c_0 in ds_kh: st.session_state.lh_ten_val = ds_kh[s_c_0]
+                            else: st.session_state.lh_ten_val = ""
+                        else:
+                            st.session_state.lh_ten_val = ""
+                        st.rerun()
+                    hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
                 with c_hen1:
                     hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
-                    hen_ten = st.text_input("Tên khách hàng (Hẹn)")
-                with c_hen2:
-                    hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
-                    hen_sdt = st.text_input("Số điện thoại (Hẹn)")
+                    hen_ten = st.text_input("Tên khách hàng (Hẹn)", value=st.session_state.lh_ten_val)
+                    if hen_ten != st.session_state.lh_ten_val:
+                        st.session_state.lh_ten_val = hen_ten
+                        st.rerun()
                 
                 hen_dv = st.multiselect("Dịch vụ quan tâm", options=dv_list if dv_list else ["Đang tải..."])
                 hen_tho = st.selectbox("Thợ yêu cầu (nếu có)", options=["Không yêu cầu"] + ds_tho if ds_tho else ["Không yêu cầu", st.session_state.full_name])
@@ -837,29 +877,33 @@ def main():
                                 hen_ghi_chu
                             ])
                             get_lich_hen_data.clear()
+                            st.session_state.lh_sdt_val = ""
+                            st.session_state.lh_ten_val = ""
                             st.toast("✅ Đã lưu lịch hẹn thành công!")
                             time.sleep(0.5)
                             st.rerun()
                         except Exception as e:
-                            st.error(f"Lỗi khi lưu lịch hẹn. Đảm bảo sheet 'LichHen' có đủ 8 cột. Chi tiết: {e}")
+                            st.error(f"Lỗi khi lưu lịch hẹn: {e}")
                     else:
                         st.warning("Vui lòng nhập Tên và Số điện thoại khách hàng.")
 
             with st.container(border=True):
                 st.markdown('<div class="the-quan-ly-flat">📋 ĐIỀU PHỐI LỊCH HẸN</div>', unsafe_allow_html=True)
-                lh_data_full = get_lich_hen_data()
-                if len(lh_data_full) > 1:
-                    df_lh_full = pd.DataFrame(lh_data_full[1:], columns=lh_data_full[0])
+                lh_records = get_lich_hen_data()
+                if len(lh_records) > 1:
+                    df_lh_full = pd.DataFrame(lh_records[1:], columns=lh_records[0])
                     c_ngay_lh = next((c for c in df_lh_full.columns if 'ngày' in c.lower() or 'ngay' in c.lower()), None)
                     c_gio_lh = next((c for c in df_lh_full.columns if 'giờ' in c.lower() or 'gio' in c.lower()), None)
                     c_ten_lh = next((c for c in df_lh_full.columns if 'tên' in c.lower() or 'khách' in c.lower()), None)
                     c_sdt_lh = next((c for c in df_lh_full.columns if 'điện thoại' in c.lower() or 'sđt' in c.lower() or 'sdt' in c.lower()), None)
                     c_dv_lh = next((c for c in df_lh_full.columns if 'dịch' in c.lower() or 'dich' in c.lower()), None)
                     c_tt_lh = next((c for c in df_lh_full.columns if 'trạng thái' in c.lower() or 'trang thai' in c.lower()), None)
+                    c_tho_lh = next((c for c in df_lh_full.columns if 'nhân viên' in c.lower() or 'nhan vien' in c.lower()), None)
 
                     if c_ngay_lh:
-                        # Hiển thị lịch hẹn của ngày hôm nay và tương lai gần
                         df_lh_hien_thi = df_lh_full.tail(15) 
+                        has_items = False
+                        
                         for i, row in df_lh_hien_thi.iterrows():
                             idx_sheet = i + 2
                             gio = row.get(c_gio_lh, '--:--') if c_gio_lh else '--:--'
@@ -868,28 +912,65 @@ def main():
                             dv = row.get(c_dv_lh, '') if c_dv_lh else ''
                             ngay = row.get(c_ngay_lh, '')
                             tt_val = row.get(c_tt_lh, 'CHỜ PHỤC VỤ') if c_tt_lh else 'CHỜ PHỤC VỤ'
+                            tho_yc = row.get(c_tho_lh, 'Không yêu cầu') if c_tho_lh else 'Không yêu cầu'
+                            
+                            if st.session_state["role"] == "NhanVien" and tho_yc != "Không yêu cầu" and tho_yc != st.session_state.full_name:
+                                continue
+                                
+                            has_items = True
                             
                             c_info, c_btn = st.columns([7, 3])
                             with c_info:
                                 st.markdown(f"**{ngay} {gio}** | 👤 {khach} ({sdt})<br>✂️ {dv}", unsafe_allow_html=True)
                             with c_btn:
-                                if tt_val.strip().upper() == "ĐÃ LÊN ĐƠN":
+                                if tt_val.strip().upper() == "ĐÃ CHỐT ĐƠN":
                                     st.markdown(f"<div style='text-align:right; font-weight:bold; font-size:14px; color:#28a745; margin-top:10px;'>✅ ĐÃ CHỐT ĐƠN</div>", unsafe_allow_html=True)
+                                    if st.session_state["role"] == "Admin":
+                                        if st.button("🗑️ Xóa lịch", key=f"del_lh_tab3_{idx_sheet}"):
+                                            try:
+                                                get_google_sheet_workbook().worksheet("LichHen").delete_rows(idx_sheet)
+                                                get_lich_hen_data.clear()
+                                                st.toast("✅ Đã xóa lịch hẹn khỏi hệ thống!")
+                                                time.sleep(0.5)
+                                                st.rerun()
+                                            except: pass
                                 else:
                                     if st.button("📝 Lên Đơn", key=f"lh_tab3_{idx_sheet}", use_container_width=True):
-                                        st.session_state.kh_sdt_val = str(sdt)
-                                        st.session_state.kh_ten_val = str(khach)
+                                        new_gio = []
+                                        if dv:
+                                            for d_v in dv.split(", "):
+                                                d_v_clean = d_v.strip()
+                                                if d_v_clean in services:
+                                                    inf = services[d_v_clean]
+                                                    new_gio.append({
+                                                        "dich_vu": d_v_clean, "so_luong": 1.0,
+                                                        "don_gia": inf["gia"], "thanh_tien": inf["gia"],
+                                                        "phan_tram_hh": inf["hoa_hong"]
+                                                    })
+                                        
+                                        st.session_state.update({
+                                            "gio_hang": new_gio,
+                                            "kh_sdt_val": sdt,
+                                            "kh_ten_val": khach,
+                                            "tho_chot_val": tho_yc if tho_yc != "Không yêu cầu" else st.session_state.full_name,
+                                            "current_lh_idx": idx_sheet
+                                        })
+                                        
                                         try:
                                             col_idx = df_lh_full.columns.get_loc(c_tt_lh) + 1 if c_tt_lh else 7
-                                            get_google_sheet_workbook().worksheet("LichHen").update_cell(idx_sheet, col_idx, "ĐÃ LÊN ĐƠN")
+                                            get_google_sheet_workbook().worksheet("LichHen").update_cell(idx_sheet, col_idx, "ĐANG XỬ LÝ")
                                             get_lich_hen_data.clear()
                                         except: pass
-                                        st.toast("✅ Đã nạp thông tin! Hãy sang Tab Hóa Đơn.")
+                                        
+                                        trigger_auto_save()
+                                        st.toast("⚡ Chuyển dữ liệu lịch hẹn ra giỏ hàng thành công!")
                                         time.sleep(0.5)
                                         st.rerun()
                             st.markdown("<hr style='margin: 5px 0;'>", unsafe_allow_html=True)
+                        if not has_items: st.info("Hiện tại chưa có danh sách lịch hẹn nào.")
+                else: st.info("Hiện tại chưa có dữ liệu danh sách lịch hẹn.")
 
-        # ==================== TAB 4: BÁO CÁO (CẬP NHẬT 6. TB ĐƠN & FIX DÍNH CỘT) ====================
+        # ==================== TAB 4: BÁO CÁO ====================
         with tabs[3]:
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
@@ -918,7 +999,6 @@ def main():
                             khach_hom_nay = len([x for x in df_today[c_ma].unique() if str(x).strip()]) if c_ma and not df_today.empty else 0
                             bill_cho = max(0, len(data_tam) - 1)
                             
-                            # --- 6. TRUNG BÌNH ĐƠN ---
                             tb_don = doanh_thu_ngay / khach_hom_nay if khach_hom_nay > 0 else 0
                             
                             m1, m2, m3, m4, m5 = st.columns(5)
@@ -941,7 +1021,7 @@ def main():
                                     kpi_df["Doanh thu tạo ra"] = kpi_df["Doanh thu tạo ra"].apply(lambda x: f"{x:,.0f} đ")
                                     st.dataframe(kpi_df, use_container_width=True, hide_index=True)
                                 else:
-                                    st.warning("Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện.")
+                                    st.warning("Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao.")
                             else: 
                                 st.info("Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI.")
                             
@@ -981,7 +1061,7 @@ def main():
             else:
                 st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
 
-        # ==================== TAB 5: QUẢN TRỊ & THÊM ====================
+        # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
