@@ -790,7 +790,7 @@ def main():
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "", "submitting": False})
                             trigger_auto_save()
                             
-                            nd_mail = f"THÔNG BÁO - ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \nCẢM ƠN QUÝ KHÁCH ĐÃ SỬ DỤNG DỊCH VỤ"\n
+                            nd_mail = f"THÔNG BÁO - ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \nCẢM ƠN QUÝ KHÁCH ĐÃ SỬ DỤNG DỊCH VỤ"""
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
 
