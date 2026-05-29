@@ -38,7 +38,7 @@ THEME_COLORS = {
     "text_secondary": "#546e7a",                # Chữ phụ (Xanh xám trung tính)
     "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú (Xám bạc thanh lịch)
     "text_title": "#004d40",                    # Chữ tiêu đề (Xanh lục bảo đậm sâu lắng, sang trọng)
-    "text_badge": "#00796b",                    # Chữ trong nhãn (Đồng bộ với primary)
+    "text_badge": "#000000",                    # Chữ trong nhãn (Đồng bộ với primary)
 
     # --- Màu viền (Borders) ---
     "border_light": "#e0e0e0",                  # Viền mỏng siêu nhạt tạo sự gọn gàng
