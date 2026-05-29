@@ -23,8 +23,8 @@ THEME_COLORS = {
     "bg_card": "#666539",           # Nền thẻ (card) hiển thị nội dung
     "bg_box_chung": "#f8f9fa",      # Nền cho các khung chứa thông tin chung
     "bg_vip_box": "#eaf2e6",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
-    "bg_shake_box": "#fff1f0",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
-    "bg_badge_hang": "#fffbfa",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
+    "bg_shake_box": "#ffffff",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
+    "bg_badge_hang": "#ffffff",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
 
     # --- Màu nhấn (Accents) ---
     "primary": "#f0b930",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
