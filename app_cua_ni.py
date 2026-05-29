@@ -18,29 +18,38 @@ from email.mime.multipart import MIMEMultipart
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO
 # =====================================================================
 THEME_COLORS = {
-    "bg_app": "#EEF4F8",            
-    "bg_card": "#ffffff",           
-    "bg_box_chung": "#f8f9fa",      
-    "bg_vip_box": "#eaf2e6",        
-    "bg_shake_box": "#fff1f0",      
-    "bg_badge_hang": "#fffbfa",     
-    "primary": "#6FA8DC",           
-    "accent_vip": "#13c2c2",        
-    "accent_danger": "#cf1322",     
-    "accent_zalo": "#0068ff",       
-    "accent_chiet_khau": "#d93025", 
-    "text_main": "#111111",         
-    "text_secondary": "#555555",    
-    "text_muted": "#888888",        
-    "text_title": "#2c3e50",        
-    "text_badge": "#d4380d",        
-    "border_light": "#eaeaea",      
-    "border_input": "#cccccc",      
-    "border_badge": "#ffe1df",      
-    "border_vip": "#87e8de",        
-    "shadow_light": "rgba(0,0,0,0.05)",  
-    "shadow_heavy": "rgba(0,0,0,0.08)",  
-    "shadow_toast": "rgba(0,0,0,0.1)",   
+    # --- Màu nền (Backgrounds) ---
+    "bg_app": "#EEF4F8",            # Nền tổng thể của ứng dụng
+    "bg_card": "#ffffff",           # Nền thẻ (card) hiển thị nội dung
+    "bg_box_chung": "#f8f9fa",      # Nền cho các khung chứa thông tin chung
+    "bg_vip_box": "#eaf2e6",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
+    "bg_shake_box": "#fff1f0",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
+    "bg_badge_hang": "#fffbfa",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
+
+    # --- Màu nhấn (Accents) ---
+    "primary": "#6FA8DC",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
+    "accent_vip": "#13c2c2",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
+    "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
+    "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
+    "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
+
+    # --- Màu chữ (Text) ---
+    "text_main": "#111111",         # Màu chữ chính (đậm, dễ đọc)
+    "text_secondary": "#555555",    # Màu chữ phụ (dùng cho mô tả ngắn)
+    "text_muted": "#888888",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
+    "text_title": "#2c3e50",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
+    "text_badge": "#d4380d",        # Màu chữ bên trong nhãn (badge)
+
+    # --- Màu viền (Borders) ---
+    "border_light": "#eaeaea",      # Viền mỏng, nhạt cho các thành phần UI
+    "border_input": "#cccccc",      # Viền cho các khung nhập liệu (input)
+    "border_badge": "#ffe1df",      # Viền cho các nhãn (badge)
+    "border_vip": "#87e8de",        # Viền dành cho khu vực VIP
+
+    # --- Đổ bóng (Shadows) ---
+    "shadow_light": "rgba(0,0,0,0.05)",  # Đổ bóng nhẹ cho các card cơ bản
+    "shadow_heavy": "rgba(0,0,0,0.08)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
+    "shadow_toast": "rgba(0,0,0,0.1)",   # Đổ bóng cho thông báo (toast/popup)
 }
 
 # =====================================================================
