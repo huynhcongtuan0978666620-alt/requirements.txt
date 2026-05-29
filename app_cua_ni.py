@@ -19,7 +19,7 @@ from email.mime.multipart import MIMEMultipart
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
-    "bg_app": "rgb(75,0,130)",            # Nền tổng thể của ứng dụng
+    "bg_app": "rgb(245,255,250)",            # Nền tổng thể của ứng dụng
     "bg_card": "#000000",           # Nền thẻ (card) hiển thị nội dung
     "bg_box_chung": "#000000",      # Nền cho các khung chứa thông tin chung
     "bg_vip_box": "#000000",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
@@ -59,7 +59,7 @@ def set_app_background(colors):
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(to bottom, {colors['bg_app']}, rgb(230,230,250));
+        background: linear-gradient(to bottom, {colors['bg_app']}, rgb(160,82,45)));
         #background: linear-gradient(to bottom, {colors['bg_card']}, #ffffff);
         background-attachment: fixed;
     }}
