@@ -59,7 +59,7 @@ def set_app_background(colors):
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(to bottom, {colors['bg_app']}, #ede911);
+        background: linear-gradient(to bottom, {colors['bg_app']}, #666539);
         background-attachment: fixed;
     }}
     </style>
