@@ -20,7 +20,7 @@ from email.mime.multipart import MIMEMultipart
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
     "bg_app": "#ffffff",            # Nền tổng thể của ứng dụng
-    "bg_card": "#1161ed",           # Nền thẻ (card) hiển thị nội dung
+    "bg_card": "#0068ff",           # Nền thẻ (card) hiển thị nội dung
     "bg_box_chung": "#f8f9fa",      # Nền cho các khung chứa thông tin chung
     "bg_vip_box": "#eaf2e6",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
     "bg_shake_box": "#fff1f0",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
@@ -29,7 +29,7 @@ THEME_COLORS = {
     # --- Màu nhấn (Accents) ---
     "primary": "#f0b930",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
     "accent_vip": "#ffffff",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
-    "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
+    "accent_danger": "#ffffff",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
     "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
     "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
@@ -38,7 +38,7 @@ THEME_COLORS = {
     "text_secondary": "#ffffff",    # Màu chữ phụ (dùng cho mô tả ngắn)
     "text_muted": "#ffffff",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
     "text_title": "#ffffff",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
-    "text_badge": "#ffffff",        # Màu chữ bên trong nhãn (badge)
+    "text_badge": "#000000",        # Màu chữ bên trong nhãn (badge)
 
     # --- Màu viền (Borders) ---
     "border_light": "#eaeaea",      # Viền mỏng, nhạt cho các thành phần UI
