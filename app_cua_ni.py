@@ -28,7 +28,7 @@ THEME_COLORS = {
 
     # --- Màu nhấn (Accents) ---
     "primary": "#f0b930",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
-    "accent_vip": "#13c2c2",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
+    "accent_vip": "#000000",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
     "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
     "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
     "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
