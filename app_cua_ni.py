@@ -54,13 +54,12 @@ THEME_COLORS = {
 
 # --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
 def set_app_background(colors):
-    # Dùng { { } } để escape dấu ngoặc nhọn trong f-string của Python
-    # Chuyển màu từ bg_app đậm sang màu trắng nhạt (#ffffff) tạo độ trong trẻo
+    # Sử dụng dấu {{ }} đôi để không bị lỗi f-string trong Python
+    # Gradient chuyển từ màu nền nhẹ xuống màu trắng tinh khôi ở đáy
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(to bottom, {colors['bg_app']}, rgb(0,35,0,0.9));
-        # background: linear-gradient(to bottom, {colors['bg_card']}, #ffffff);
+        background: linear-gradient(to bottom, {colors['bg_app']}, #ffffff);
         background-attachment: fixed;
     }}
     </style>
