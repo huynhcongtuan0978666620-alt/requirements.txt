@@ -34,11 +34,11 @@ THEME_COLORS = {
     "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
     # --- Màu chữ (Text) ---
-    "text_main": "#000000",         # Màu chữ chính (đậm, dễ đọc)
-    "text_secondary": "#000000",    # Màu chữ phụ (dùng cho mô tả ngắn)
-    "text_muted": "#000000",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
+    "text_main": "#ffffff",         # Màu chữ chính (đậm, dễ đọc)
+    "text_secondary": "#ffffff",    # Màu chữ phụ (dùng cho mô tả ngắn)
+    "text_muted": "#ffffff",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
     "text_title": "#ffffff",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
-    "text_badge": "#000000",        # Màu chữ bên trong nhãn (badge)
+    "text_badge": "#ffffff",        # Màu chữ bên trong nhãn (badge)
 
     # --- Màu viền (Borders) ---
     "border_light": "#eaeaea",      # Viền mỏng, nhạt cho các thành phần UI
