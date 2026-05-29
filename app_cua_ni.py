@@ -41,10 +41,10 @@ THEME_COLORS = {
     "text_badge": "#ffffff",        # Màu chữ bên trong nhãn (badge)
 
     # --- Màu viền (Borders) ---
-    "border_light": "#eaeaea",      # Viền mỏng, nhạt cho các thành phần UI
-    "border_input": "#cccccc",      # Viền cho các khung nhập liệu (input)
-    "border_badge": "#ffe1df",      # Viền cho các nhãn (badge)
-    "border_vip": "#87e8de",        # Viền dành cho khu vực VIP
+    "border_light": "#ffffff",      # Viền mỏng, nhạt cho các thành phần UI
+    "border_input": "#ffffff",      # Viền cho các khung nhập liệu (input)
+    "border_badge": "#ffffff",      # Viền cho các nhãn (badge)
+    "border_vip": "#ffffff",        # Viền dành cho khu vực VIP
 
     # --- Đổ bóng (Shadows) ---
     "shadow_light": "rgba(0,0,0,0.05)",  # Đổ bóng nhẹ cho các card cơ bản
