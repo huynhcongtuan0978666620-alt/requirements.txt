@@ -34,7 +34,7 @@ THEME_COLORS = {
     "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
     # --- Màu chữ (Text) ---
-    "text_main": "#111111",         # Màu chữ chính (đậm, dễ đọc)
+    "text_main": "#ffffff",         # Màu chữ chính (đậm, dễ đọc)
     "text_secondary": "#505555",    # Màu chữ phụ (dùng cho mô tả ngắn)
     "text_muted": "#888888",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
     "text_title": "#2c3e50",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
