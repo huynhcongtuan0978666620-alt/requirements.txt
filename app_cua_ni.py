@@ -698,7 +698,7 @@ def main():
                                 st.rerun()
                         t_bill += item['thanh_tien']
 
-                    if st.button("💾 LƯU ĐƠN VÀO BILL CHỜ (ĐẨY XUỐNG BẾP/THỢ)", use_container_width=True):
+                    if st.button("💾 LƯU ĐƠN VÀO BILL CHỜ", use_container_width=True):
                         if luu_bill_tam(st.session_state.gio_hang, st.session_state.full_name, st.session_state.kh_sdt_val, st.session_state.kh_ten_val):
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": ""})
                             trigger_auto_save()
@@ -744,7 +744,7 @@ def main():
                         </div>
                     """, unsafe_allow_html=True)
 
-                    cam_ket = st.checkbox("Xác nhận thông tin đơn hàng đã chính xác")
+                    cam_ket = st.checkbox("Xác nhận đã chính xác")
                     
                     if not st.session_state.submitting:
                         if st.button("🚀 XUẤT HÓA ĐƠN", use_container_width=True, type="primary"):
@@ -790,7 +790,7 @@ def main():
                             st.session_state.update({"gio_hang": [], "kh_sdt_val": "", "kh_ten_val": "", "submitting": False})
                             trigger_auto_save()
                             
-                            nd_mail = f"THÔNG BÁO - Đã Thanh Toán ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGhi chú: {ghi_chu_don}"
+                            nd_mail = f"THÔNG BÁO - ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \nDịch vụ:{chi_tiet_tele}\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \nGhi chú: {ghi_chu_don}"
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
 
@@ -816,7 +816,7 @@ def main():
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">GHI CHÚ: {ghi_chu_don}</div>
+<div style="text-left: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">GHI CHÚ: {ghi_chu_don}</div>
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
                             st.balloons()
@@ -1001,11 +1001,11 @@ def main():
                             tb_don = doanh_thu_ngay / khach_hom_nay if khach_hom_nay > 0 else 0
                             
                             m1, m2, m3, m4, m5 = st.columns(5)
-                            m1.metric("💰 DT Hôm nay", f"{doanh_thu_ngay:,.0f}đ")
-                            m2.metric("💳 DT Tháng", f"{doanh_thu_thang:,.0f}đ")
-                            m3.metric("📈 TB Đơn", f"{tb_don:,.0f}đ")
-                            m4.metric("👥 Khách nay", f"{khach_hom_nay} KH")
-                            m5.metric("⏳ Đơn chờ", f"{bill_cho} Bill")
+                            m1.metric("💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ")
+                            m2.metric("💳 TỔNG DOANH THU TRONG THÁNG", f"{doanh_thu_thang:,.0f}đ")
+                            m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
+                            m4.metric("👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách")
+                            m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
                             
                             st.markdown('<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>', unsafe_allow_html=True)
                             if not df_today.empty:
