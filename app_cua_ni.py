@@ -36,7 +36,7 @@ THEME_COLORS = {
     # --- Màu chữ (Text) ---
     "text_main": "#000000",         # Màu chữ chính (đậm, dễ đọc)
     "text_secondary": "#000000",    # Màu chữ phụ (dùng cho mô tả ngắn)
-    "text_muted": "#ffffff",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
+    "text_muted": "#000000",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
     "text_title": "#ffffff",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
     "text_badge": "#000000",        # Màu chữ bên trong nhãn (badge)
 
