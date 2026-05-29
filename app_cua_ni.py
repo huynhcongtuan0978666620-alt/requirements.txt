@@ -51,6 +51,34 @@ THEME_COLORS = {
     "shadow_heavy": "rgba(0,0,0,0.08)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
     "shadow_toast": "rgba(0,0,0,0.1)",   # Đổ bóng cho thông báo (toast/popup)
 }
+# ... (phần code phía trên của ní)
+
+THEME_COLORS = {
+    "bg_app": "#a0b369",            
+    "bg_card": "#70c2b4",           
+    # ... các màu khác của ní giữ nguyên
+}
+
+# --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
+def set_app_background(colors):
+    # Dùng { { } } để escape dấu ngoặc nhọn trong f-string của Python
+    # Chuyển màu từ bg_app đậm sang màu trắng nhạt (#ffffff) tạo độ trong trẻo
+    gradient_css = f"""
+    <style>
+    .stApp {{
+        background: linear-gradient(to bottom, {colors['bg_app']}, #ffffff);
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(gradient_css, unsafe_allow_html=True)
+
+# Kích hoạt hiệu ứng
+set_app_background(THEME_COLORS)
+# --- HẾT PHẦN THÊM ---
+
+# ... (phần code còn lại của ní)
+
 
 # =====================================================================
 # 📍 BỘ THEO DÕI TRẠNG THÁI NHÂN VIÊN TOÀN CỤC
