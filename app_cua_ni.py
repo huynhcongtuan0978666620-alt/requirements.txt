@@ -27,7 +27,7 @@ THEME_COLORS = {
     "bg_badge_hang": "#efebe9",                 #  5% - Nền nhãn phân hạng (Nâu xám nhạt tối giản)
 
     # --- Màu nhấn (Accents) - Tỷ lệ tạo điểm nhấn: 10% ứng dụng ---
-    "primary": "#00796b",                       # Màu chủ đạo (Xanh Teal đậm thanh lịch cho nút bấm, icon)
+    "primary": "rgba(128,214,157,0.7)",                       # Màu chủ đạo (Xanh Teal đậm thanh lịch cho nút bấm, icon)
     "accent_vip": "#00b0ff",                    # Màu nhấn VIP (Xanh dương hoàng gia sáng)
     "accent_danger": "#d32f2f",                 # Màu nhấn cảnh báo (Đỏ đô thanh lịch, không quá tươi)
     "accent_zalo": "#0068ff",                   # Màu thương hiệu Zalo chuẩn
