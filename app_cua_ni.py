@@ -20,7 +20,7 @@ from email.mime.multipart import MIMEMultipart
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
     "bg_app": "#ffffff",            # Nền tổng thể của ứng dụng
-    "bg_card": "#ff3fff",           # Nền thẻ (card) hiển thị nội dung
+    "bg_card": "#ff8c00",           # Nền thẻ (card) hiển thị nội dung
     "bg_box_chung": "#f8f9fa",      # Nền cho các khung chứa thông tin chung
     "bg_vip_box": "#eaf2e6",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
     "bg_shake_box": "#fff1f0",      # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
