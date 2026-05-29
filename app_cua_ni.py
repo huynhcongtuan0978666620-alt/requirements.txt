@@ -19,7 +19,7 @@ from email.mime.multipart import MIMEMultipart
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) - Tỷ lệ phối nền: 60% tổng thể ứng dụng ---
-    "bg_app": "rgba(224, 242, 241, 0.5)",       # 15% - Nền tổng thể (Xanh mint rất nhạt, trong trẻo)
+    "bg_app": "rgba(128,214,157,0.7)",       # 15% - Nền tổng thể (Xanh mint rất nhạt, trong trẻo)
     "bg_card": "#ffffff",                       # 40% - Nền thẻ nội dung trắng tinh (giúp tăng sự gọn gàng)
     "bg_box_chung": "#f4f7f6",                  # 20% - Nền khung chung (Xanh xám nhạt thanh lịch)
     "bg_vip_box": "#e0f2f1",                    # 10% - Nền khung VIP (Xanh ngọc dịu mát)
