@@ -828,7 +828,7 @@ def main():
 
                             st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
-<div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;"><div style="font-size: 20px; font-weight: 900; color: #000000;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div><div style="font-size: 13px; color: #000000; margin-top:4px;">{settings.get('Diachi', '')}</div><div style="font-size: 13px; color: #000000;">SĐT: {settings.get('SDT', '')}</div><div style="font-size: 18px; font-weight: 800; color: #000000; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div><div style="font-size: 12px; color: #000000; margin-top:5px;">Mã số: {ma_hd}</div></div>
+<div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;"><div style="font-size: 20px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div><div style="font-size: 13px; color: {THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div><div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div><div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div><div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div></div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
 <div style="border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {THEME_COLORS['text_secondary']};">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span style="text-align: right;">{get_now_vn().strftime('%d/%m/%Y %H:%M')}</span></div>
@@ -836,17 +836,19 @@ def main():
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span style="text-align: right;">{st.session_state.full_name}</span></div>
     <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:700; color: {THEME_COLORS['text_main']}; text-align: right;">{chot_tho}</span></div>
 </div>
-    <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 <div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
+    <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
+</div>
 <div style="font-size: 14px; border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; color: {THEME_COLORS['text_main']};">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Cộng tiền:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
+</div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán:</div>
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
-<div style="text-left: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">GHI CHÚ: {ghi_chu_don}</div>
+<div style="text-align: center; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi chú: {ghi_chu_don}</div>
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
                             st.balloons()
