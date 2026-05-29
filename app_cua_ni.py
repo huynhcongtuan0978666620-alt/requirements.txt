@@ -30,8 +30,8 @@ THEME_COLORS = {
     "primary": "#808080",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
     "accent_vip": "#ffffff",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
     "accent_danger": "#ffffff",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
-    "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
-    "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
+    "accent_zalo": "#ffffff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
+    "accent_chiet_khau": "#ffffff", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
     # --- Màu chữ (Text) ---
     "text_main": "#ffffff",         # Màu chữ chính (đậm, dễ đọc)
@@ -47,9 +47,9 @@ THEME_COLORS = {
     "border_vip": "#ffffff",        # Viền dành cho khu vực VIP
 
     # --- Đổ bóng (Shadows) ---
-    "shadow_light": "rgba(0,0,0,0.05)",  # Đổ bóng nhẹ cho các card cơ bản
-    "shadow_heavy": "rgba(0,0,0,0.08)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
-    "shadow_toast": "rgba(0,0,0,0.1)",   # Đổ bóng cho thông báo (toast/popup)
+    "shadow_light": "rgba(255,99,71,04)",  # Đổ bóng nhẹ cho các card cơ bản
+    "shadow_heavy": "rgba(255,99,71,04)",  # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
+    "shadow_toast": "rgba(255,99,71,04)",   # Đổ bóng cho thông báo (toast/popup)
 }
 
 # --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
