@@ -319,9 +319,9 @@ def xoa_bill_tam_dong_goc(index_sheet_row):
 def gui_email_backup(noi_dung):
     try:
         if "email" in st.secrets:
-            sender_email = st.secrets["email"].get("sender")
-            password = st.secrets["email"].get("password")
-            receiver_emails = [sender_email]
+            sender_email = "tuankietstreamlitapp@gmail.com"
+            password = "lwui aesw vqal ytcq" 
+            receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
             if sender_email and password:
                 gio_vn_mail = get_now_vn().strftime('%d/%m/%Y %H:%M')
                 msg = MIMEMultipart()
