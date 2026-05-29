@@ -18,38 +18,38 @@ from email.mime.multipart import MIMEMultipart
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO
 # =====================================================================
 THEME_COLORS = {
-    # --- Màu nền (Backgrounds) ---
-    "bg_app": "rgb(100,152,0,0.4)",            # Nền tổng thể của ứng dụng
-    "bg_card": "rgb(0,116,255,0.1)",           # Nền thẻ (card) hiển thị nội dung
-    "bg_box_chung": "#000000",                 # Nền cho các khung chứa thông tin chung
-    "bg_vip_box": "#000000",                   # Nền cho khung thông tin VIP (màu xanh lá nhạt)
-    "bg_shake_box": "#000000",                 # Nền cho khung tính năng "lắc" hoặc sự kiện đặc biệt
-    "bg_badge_hang": "#000000",                # Nền cho các nhãn (badge) hiển thị hạng thành viên
+    # --- Màu nền (Backgrounds) - Tỷ lệ phối nền: 60% tổng thể ứng dụng ---
+    "bg_app": "rgba(224, 242, 241, 0.5)",       # 15% - Nền tổng thể (Xanh mint rất nhạt, trong trẻo)
+    "bg_card": "#ffffff",                       # 40% - Nền thẻ nội dung trắng tinh (giúp tăng sự gọn gàng)
+    "bg_box_chung": "#f4f7f6",                  # 20% - Nền khung chung (Xanh xám nhạt thanh lịch)
+    "bg_vip_box": "#e0f2f1",                    # 10% - Nền khung VIP (Xanh ngọc dịu mát)
+    "bg_shake_box": "#fff3e0",                  #  5% - Nền khung sự kiện (Cam pastel nhẹ, không bị chói)
+    "bg_badge_hang": "#efebe9",                 #  5% - Nền nhãn phân hạng (Nâu xám nhạt tối giản)
 
-    # --- Màu nhấn (Accents) ---
-    "primary": "rgb(230,230,250)",             # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
-    "accent_vip": "#ffffff",                   # Màu nhấn dành riêng cho tính năng/thành viên VIP
-    "accent_danger": "#ffffff",                # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
-    "accent_zalo": "#ffffff",                  # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
-    "accent_chiet_khau": "#cd201f",            # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
+    # --- Màu nhấn (Accents) - Tỷ lệ tạo điểm nhấn: 10% ứng dụng ---
+    "primary": "#00796b",                       # Màu chủ đạo (Xanh Teal đậm thanh lịch cho nút bấm, icon)
+    "accent_vip": "#00b0ff",                    # Màu nhấn VIP (Xanh dương hoàng gia sáng)
+    "accent_danger": "#d32f2f",                 # Màu nhấn cảnh báo (Đỏ đô thanh lịch, không quá tươi)
+    "accent_zalo": "#0068ff",                   # Màu thương hiệu Zalo chuẩn
+    "accent_chiet_khau": "#e65100",             # Màu nhấn chiết khấu (Cam đất dịu mắt)
 
-    # --- Màu chữ (Text) ---
-    "text_main": "#000000",                     # Màu chữ chính (đậm, dễ đọc)
-    "text_secondary": "#ffffff",                # Màu chữ phụ (dùng cho mô tả ngắn)
-    "text_muted": "#ffffff",                    # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
-    "text_title": "#ffffff",                    # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
-    "text_badge": "#ffffff",                    # Màu chữ bên trong nhãn (badge)
+    # --- Màu chữ (Text) - Tỷ lệ tương phản chuẩn UI ---
+    "text_main": "#263238",                     # Chữ chính (Xanh đen than, dễ đọc hơn đen thuần)
+    "text_secondary": "#546e7a",                # Chữ phụ (Xanh xám trung tính)
+    "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú (Xám bạc thanh lịch)
+    "text_title": "#004d40",                    # Chữ tiêu đề (Xanh lục bảo đậm sâu lắng, sang trọng)
+    "text_badge": "#00796b",                    # Chữ trong nhãn (Đồng bộ với primary)
 
     # --- Màu viền (Borders) ---
-    "border_light": "#ffffff",                  # Viền mỏng, nhạt cho các thành phần UI
-    "border_input": "#ffffff",                  # Viền cho các khung nhập liệu (input)
-    "border_badge": "#ffffff",                  # Viền cho các nhãn (badge)
-    "border_vip": "#ffffff",                    # Viền dành cho khu vực VIP
+    "border_light": "#e0e0e0",                  # Viền mỏng siêu nhạt tạo sự gọn gàng
+    "border_input": "#b2dfdb",                  # Viền khung nhập liệu (Xanh mint nhạt mềm mại)
+    "border_badge": "#b2dfdb",                  # Viền nhãn
+    "border_vip": "#4fc3f7",                    # Viền khu vực VIP
 
-    # --- Đổ bóng (Shadows) ---
-    "shadow_light": "rgba(255,99,71,04)",              # Đổ bóng nhẹ cho các card cơ bản
-    "shadow_heavy": "rgba(255,99,71,04)",              # Đổ bóng sâu hơn (khi di chuột vào hoặc nâng cao)
-    "shadow_toast": "rgba(255,99,71,04)",              # Đổ bóng cho thông báo (toast/popup)
+    # --- Đổ bóng (Shadows) - Tạo chiều sâu mềm mại ---
+    "shadow_light": "rgba(0, 77, 64, 0.03)",    # Đổ bóng siêu nhẹ tông xanh lục bảo
+    "shadow_heavy": "rgba(0, 77, 64, 0.06)",    # Đổ bóng khi hover mượt mà
+    "shadow_toast": "rgba(0, 0, 0, 0.08)",      # Đổ bóng popup thông báo
 }
 
 # --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
