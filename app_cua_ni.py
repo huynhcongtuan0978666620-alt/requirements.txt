@@ -19,7 +19,7 @@ from email.mime.multipart import MIMEMultipart
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
-    "bg_app": "#f2f2ff",            # Nền tổng thể của ứng dụng
+    "bg_app": "#f2ffff",            # Nền tổng thể của ứng dụng
     "bg_card": "#ffffff",           # Nền thẻ (card) hiển thị nội dung
     "bg_box_chung": "#f8f9fa",      # Nền cho các khung chứa thông tin chung
     "bg_vip_box": "#eaf2e6",        # Nền cho khung thông tin VIP (màu xanh lá nhạt)
@@ -27,7 +27,7 @@ THEME_COLORS = {
     "bg_badge_hang": "#fffbfa",     # Nền cho các nhãn (badge) hiển thị hạng thành viên
 
     # --- Màu nhấn (Accents) ---
-    "primary": "#0000FF",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
+    "primary": "#007bff",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
     "accent_vip": "#13c2c2",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
     "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
     "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
