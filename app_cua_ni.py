@@ -71,7 +71,7 @@ def inject_advanced_ui_js():
     
     // --- CHỐNG NGỦ (ANTI-SLEEP PING 30s) CHUẨN KHÔNG VĂNG TAB ---
     setInterval(() => {{
-        fetch('/_stcore/health').catch(()=>{});
+        fetch('/_stcore/health').catch(()=>{{}});
     }}, 30000); 
 
     function showPremiumToast(text) {{
