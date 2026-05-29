@@ -28,13 +28,13 @@ THEME_COLORS = {
 
     # --- Màu nhấn (Accents) ---
     "primary": "#f0b930",           # Màu chủ đạo (thường dùng cho nút bấm, icon chính)
-    "accent_vip": "#000000",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
+    "accent_vip": "#ffffff",        # Màu nhấn dành riêng cho tính năng/thành viên VIP
     "accent_danger": "#cf1322",     # Màu nhấn cho các hành động nguy hiểm/cảnh báo/xóa
     "accent_zalo": "#0068ff",       # Màu thương hiệu Zalo (khi cần dùng để liên kết/chia sẻ)
     "accent_chiet_khau": "#d93025", # Màu nhấn cho phần hiển thị chiết khấu/khuyến mãi
 
     # --- Màu chữ (Text) ---
-    "text_main": "#ffffff",         # Màu chữ chính (đậm, dễ đọc)
+    "text_main": "#000000",         # Màu chữ chính (đậm, dễ đọc)
     "text_secondary": "#ffffff",    # Màu chữ phụ (dùng cho mô tả ngắn)
     "text_muted": "#ffffff",        # Màu chữ mờ (dùng cho thông tin bổ sung, không quan trọng)
     "text_title": "#ffffff",        # Màu chữ tiêu đề (tạo cảm giác chuyên nghiệp)
