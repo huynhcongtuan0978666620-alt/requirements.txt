@@ -851,12 +851,13 @@ def main():
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 \n
 
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ</div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN</div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516</div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc</div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc</div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Đc: 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ)</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Đc: 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ).</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Dịch vụ thêm: Có nhận Make-up tiệc tại nhà.</div>
 </div>"""
                             st.balloons()
                             st.toast("✅ Đã xuất hóa đơn thành công!")
