@@ -15,48 +15,45 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO
-# =====================================================================
+# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO PREMIUM EDITION
 # =====================================================================
 THEME_COLORS = {
-    # --- Màu nền (Backgrounds) - Tỷ lệ phối nền: 60% tổng thể ứng dụng ---
-    "bg_app": "rgba(224,242,241,0.5)",       # 15% - Nền tổng thể (Xanh mint rất nhạt, trong trẻo)
-    "bg_card": "#ffffff",                       # 40% - Nền thẻ nội dung trắng tinh (giúp tăng sự gọn gàng)
-    "bg_box_chung": "#f4f7f6",                  # 20% - Nền khung chung (Xanh xám nhạt thanh lịch)
-    "bg_vip_box": "#e0f2f1",                    # 10% - Nền khung VIP (Xanh ngọc dịu mát)
-    "bg_shake_box": "#fff3e0",                  #  5% - Nền khung sự kiện (Cam pastel nhẹ, không bị chói)
-    "bg_badge_hang": "#efebe9",                 #  5% - Nền nhãn phân hạng (Nâu xám nhạt tối giản)
+    # --- Màu nền (Backgrounds) - Tông Xanh Mint Premium mix Trắng Sữa ---
+    "bg_app": "rgba(235, 245, 241, 0.6)",       # Nền tổng thể xanh mint nhạt hoàng gia
+    "bg_card": "#ffffff",                       # Nền thẻ nội dung trắng tinh khôi
+    "bg_box_chung": "#f4f8f6",                  # Nền khung chung (Xanh xám nhạt thanh lịch)
+    "bg_vip_box": "#e3f2fd",                    # Nền khung VIP (Xanh dương pastel quý phái)
+    "bg_shake_box": "#fff3e0",                  # Nền khung sự kiện (Cam pastel nhẹ)
+    "bg_badge_hang": "#efebe9",                 # Nền nhãn phân hạng
+    "bg_marquee": "#e2f0eb",                    # Nền thanh thông báo chữ chạy mới
 
-    # --- Màu nhấn (Accents) - Tỷ lệ tạo điểm nhấn: 10% ứng dụng ---
-    "primary": "rgba(128, 214, 107, 1)",                       # Màu chủ đạo (Xanh Teal đậm thanh lịch cho nút bấm, icon)
-    "accent_vip": "#00b0ff",                    # Màu nhấn VIP (Xanh dương hoàng gia sáng)
-    "accent_danger": "#d32f2f",                 # Màu nhấn cảnh báo (Đỏ đô thanh lịch, không quá tươi)
+    # --- Màu nhấn (Accents) - Tông Xanh Ngọc Lục Bảo & Vàng Kim Sang Trọng ---
+    "primary": "#0f4c43",                       # Xanh lục bảo đậm (Deep Emerald) - Đổi từ xanh lá cũ sang màu này cực sang!
+    "accent_vip": "#d4af37",                    # Vàng kim loại (Metallic Gold) cho hạng VIP
+    "accent_danger": "#e53935",                 # Đỏ ruby dịu mắt cho cảnh báo
     "accent_zalo": "#0068ff",                   # Màu thương hiệu Zalo chuẩn
-    "accent_chiet_khau": "#e65100",             # Màu nhấn chiết khấu (Cam đất dịu mắt)
+    "accent_chiet_khau": "#e65100",             # Màu nhấn chiết khấu
 
-    # --- Màu chữ (Text) - Tỷ lệ tương phản chuẩn UI ---
-    "text_main": "#263238",                     # Chữ chính (Xanh đen than, dễ đọc hơn đen thuần)
-    "text_secondary": "#546e7a",                # Chữ phụ (Xanh xám trung tính)
-    "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú (Xám bạc thanh lịch)
-    "text_title": "#004d40",                    # Chữ tiêu đề (Xanh lục bảo đậm sâu lắng, sang trọng)
-    "text_badge": "#000000",                    # Chữ trong nhãn (Đồng bộ với primary)
+    # --- Màu chữ (Text) - Tỷ lệ tương phản chuẩn UI cao cấp ---
+    "text_main": "#1a2522",                     # Chữ chính màu than đá sắc nét
+    "text_secondary": "#5a6b66",                # Chữ phụ thanh lịch
+    "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú
+    "text_title": "#0f4c43",                    # Chữ tiêu đề đồng bộ với primary
+    "text_badge": "#ffffff",                    # Chữ trong nhãn (Màu trắng nổi trên nền tối)
 
     # --- Màu viền (Borders) ---
     "border_light": "#e0e0e0",                  # Viền mỏng siêu nhạt tạo sự gọn gàng
-    "border_input": "#b2dfdb",                  # Viền khung nhập liệu (Xanh mint nhạt mềm mại)
+    "border_input": "#b2dfdb",                  # Viền khung nhập liệu
     "border_badge": "#b2dfdb",                  # Viền nhãn
     "border_vip": "#4fc3f7",                    # Viền khu vực VIP
 
     # --- Đổ bóng (Shadows) - Tạo chiều sâu mềm mại ---
-    "shadow_light": "rgba(0, 77, 64, 0.03)",    # Đổ bóng siêu nhẹ tông xanh lục bảo
-    "shadow_heavy": "rgba(0, 77, 64, 0.06)",    # Đổ bóng khi hover mượt mà
+    "shadow_light": "rgba(15, 76, 67, 0.04)",   # Đổ bóng khói siêu nhẹ tông lục bảo
+    "shadow_heavy": "rgba(15, 76, 67, 0.08)",   # Đổ bóng đậm tạo chiều sâu cho hóa đơn
     "shadow_toast": "rgba(0, 0, 0, 0.08)",      # Đổ bóng popup thông báo
 }
 
-# --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
 def set_app_background(colors):
-    # Sử dụng dấu {{ }} đôi để không bị lỗi f-string trong Python
-    # Gradient chuyển từ màu nền nhẹ xuống màu trắng tinh khôi ở đáy
     gradient_css = f"""
     <style>
     .stApp {{
@@ -67,12 +64,8 @@ def set_app_background(colors):
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
 
-# Kích hoạt hiệu ứng
+# Kích hoạt hiệu ứng nền
 set_app_background(THEME_COLORS)
-# --- HẾT PHẦN THÊM ---
-
-# ... (phần code còn lại của ní)
-
 
 # =====================================================================
 # 📍 BỘ THEO DÕI TRẠNG THÁI NHÂN VIÊN TOÀN CỤC
@@ -100,7 +93,7 @@ def inject_advanced_ui_js():
     <script>
     const parentDoc = window.parent.document;
     
-    // --- CHỐNG NGỦ (ANTI-SLEEP PING 30s) CHUẨN KHÔNG VĂNG TAB ---
+    // --- CHỐNG NGỦ (ANTI-SLEEP PING 30s) ---
     setInterval(() => {{
         fetch('/_stcore/health').catch(()=>{{}});
     }}, 30000); 
@@ -108,7 +101,7 @@ def inject_advanced_ui_js():
     function showPremiumToast(text) {{
         let t = parentDoc.createElement('div');
         t.innerText = text;
-        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {THEME_COLORS['primary']}; color:{THEME_COLORS['text_main']}; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {THEME_COLORS['shadow_toast']}; border-left: 5px solid {THEME_COLORS['primary']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
+        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {THEME_COLORS['primary']}; color:#ffffff; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {THEME_COLORS['shadow_toast']}; border-left: 5px solid {THEME_COLORS['accent_vip']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
         parentDoc.body.appendChild(t);
         setTimeout(() => {{ t.style.opacity = '0'; setTimeout(()=>t.remove(), 500); }}, 2500);
     }}
@@ -127,7 +120,7 @@ def inject_advanced_ui_js():
                 showPremiumToast('🎉 CỐ LÊN NHÉ! BÃO ĐƠN NÀO! 🎉');
                 for(let i=0; i<60; i++) {{
                     let f = parentDoc.createElement('div');
-                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{THEME_COLORS['primary']}', '{THEME_COLORS['accent_danger']}', '#40a9ff', '#87e8de'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
+                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{THEME_COLORS['primary']}', '{THEME_COLORS['accent_danger']}', '#40a9ff', '{THEME_COLORS['accent_vip']}'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
                     parentDoc.body.appendChild(f);
                     setTimeout(() => {{
                         const angle = Math.random() * Math.PI * 2;
@@ -145,7 +138,6 @@ def inject_advanced_ui_js():
     """
     st.components.v1.html(js_code, height=0, width=0)
 
-# --- HIỆU ỨNG ĐĂNG NHẬP BALLOONS MƯỢT MÀ ---
 def render_balloons_html():
     colors = [THEME_COLORS['primary'], THEME_COLORS['primary'], THEME_COLORS['accent_vip']]
     html_balloons = '<div class="balloon-container-css" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden;">'
@@ -160,7 +152,6 @@ def render_balloons_html():
     html_balloons += '<style>@keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-120vh); opacity: 0; } }</style></div>'
     st.markdown(html_balloons, unsafe_allow_html=True)
 
-
 def apply_v15_theme():
     p = THEME_COLORS['primary']
     bg = THEME_COLORS['bg_app']
@@ -171,6 +162,7 @@ def apply_v15_theme():
     txt_title = THEME_COLORS['text_title']
     b_light = THEME_COLORS['border_light']
     b_input = THEME_COLORS['border_input']
+    bg_marquee = THEME_COLORS.get('bg_marquee', '#e2f0eb')
 
     st.markdown(f"""
     <style>
@@ -180,17 +172,36 @@ def apply_v15_theme():
         
         [data-testid="stVerticalBlock"] {{ gap: 14px !important; }}
         
+        /* Cải tiến thanh Tab điều hướng cao cấp */
         [data-testid="stTabs"] [role="tablist"] {{
-            background: {card}; border-radius: 12px; padding: 5px; box-shadow: 0 4px 6px {shadow}; margin-bottom: 12px !important;
+            background: {card}; border-radius: 12px; padding: 6px; box-shadow: 0 6px 15px {shadow}; margin-bottom: 16px !important;
+            border: 1px solid rgba(15, 76, 67, 0.05);
         }}
-        button[data-baseweb="tab"] {{ background-color: transparent !important; }}
-        button[data-baseweb="tab"] p {{ color: {txt_muted} !important; font-weight: 600 !important; font-size: 14px; }}
-        button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {p} !important; border-radius: 8px; }}
-        button[data-baseweb="tab"][aria-selected="true"] p {{ color: {txt_main} !important; }}
+        button[data-baseweb="tab"] {{ background-color: transparent !important; border-radius: 8px !important; margin: 0 4px !important; }}
+        button[data-baseweb="tab"] p {{ color: {txt_secondary} !important; font-weight: 600 !important; font-size: 14px; }}
+        button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {p} !important; }}
+        button[data-baseweb="tab"][aria-selected="true"] p {{ color: #ffffff !important; }}
+        div[data-testid="stTabsTabBorder"] {{ display: none !important; }} /* Ẩn vệt gạch đỏ mặc định */
+        
+        /* Làm mịn và tinh tế khối thẻ nội dung (Card) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background-color: {card} !important; border: none !important; border-radius: 15px !important;
-            border-left: 5px solid {p} !important; box-shadow: 2px 2px 10px {shadow} !important;
-            padding: 15px !important; margin-bottom: 12px !important;
+            background-color: {card} !important; border: none !important; border-radius: 20px !important;
+            border-top: 4px solid {p} !important; box-shadow: 0 10px 30px {shadow} !important;
+            padding: 22px !important; margin-bottom: 15px !important;
+        }}
+        
+        /* SỬA LỖI: Thanh thông báo chạy chữ ôm trọn 100% không bị vỡ khung */
+        .custom-marquee {{
+            background-color: {bg_marquee};
+            color: {p};
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            border: 1px solid {b_input};
+            margin-bottom: 20px;
+            width: 100% !important;
+            box-shadow: 0 4px 10px {shadow};
         }}
         
         /* Hiệu ứng Nút bấm mượt mà */
@@ -201,20 +212,23 @@ def apply_v15_theme():
             background: {card}; 
             transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
             box-shadow: 0 2px 4px {shadow} !important;
+            color: {txt_main} !important;
         }}
-        div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 8px rgba(0,0,0,0.06) !important; border-color: {p} !important; }}
+        div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 8px rgba(15,76,67,0.08) !important; border-color: {p} !important; color: {p} !important; }}
         div[data-testid="stButton"] button:active {{ transform: scale(0.96) !important; box-shadow: 0 1px 2px {shadow} !important; background-color: #f1f3f5 !important; }}
-        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {p} !important; color: {txt_main} !important; border: none !important; }}
-        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #5b92c2 !important; color: #fff !important; }}
-        div[data-testid="stButton"] button[kind="primary"]:active {{ transform: scale(0.96) !important; background-color: #4a7fa1 !important; }}
         
-        .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; }}
+        /* Nút bấm loại chính (Primary Button) */
+        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {p} !important; color: #ffffff !important; border: none !important; }}
+        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #0b3831 !important; color: #ffffff !important; box-shadow: 0 6px 15px rgba(15,76,67,0.2) !important; }}
+        div[data-testid="stButton"] button[kind="primary"]:active {{ transform: scale(0.96) !important; background-color: #082823 !important; }}
+        
+        .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; color: {txt_main} !important; }}
         .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }}
         .box-chung {{ background-color: {THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
         .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
-        .khach-tra-box {{ background-color: {p} !important; color: {txt_main} !important; border:none; }}
+        .khach-tra-box {{ background-color: {p} !important; color: #ffffff !important; border:none; }}
         .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
-        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 8px solid {p} !important; box-shadow: 0 4px 12px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
+        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 8px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
         .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
         .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
         .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }}
