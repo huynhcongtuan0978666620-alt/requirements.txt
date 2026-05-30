@@ -30,6 +30,7 @@ def apply_premium_theme():
         background-attachment: fixed;
     }}
     
+    /* Ép các khối chứa nội dung bo góc mềm mại */
     div[data-testid="stVerticalBlock"] > div {{
         background-color: {THEME_COLORS['bg_card']} !important;
         border-radius: 20px !important;
@@ -39,16 +40,28 @@ def apply_premium_theme():
         margin-bottom: 15px;
     }}
     
+    /* ĐOẠN CẢI TIẾN 1: Ép thanh thông báo chạy chữ dàn đều 100% chiều ngang */
     .custom-marquee {{
         background-color: {THEME_COLORS['bg_marquee']};
         color: {THEME_COLORS['primary']};
-        padding: 10px 15px;
-        border-radius: 30px;
+        padding: 12px 20px;
+        border-radius: 12px;
         font-weight: 500;
-        font-size: 14px;
+        font-size: 15px;
         border: 1px solid rgba(15, 76, 67, 0.1);
         margin-bottom: 20px;
-        text-align: center;
+        width: 100% !important;
+    }}
+    
+    /* ĐOẠN CẢI TIẾN 2: Đổi màu thanh gạch chân bên dưới Tab sang màu Xanh Lục Bảo */
+    button[data-baseweb="tab"] {{
+        color: {THEME_COLORS['text_secondary']} !important;
+    }}
+    button[data-baseweb="tab"][aria-selected="true"] {{
+        color: {THEME_COLORS['primary']} !important;
+    }}
+    div[data-testid="stTabsTabBorder"] {{
+        background-color: {THEME_COLORS['primary']} !important;
     }}
     </style>
     """
