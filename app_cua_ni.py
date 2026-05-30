@@ -31,7 +31,7 @@ THEME_COLORS = {
     "bg_marquee": "#e2f0eb",                    # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
 
     # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 211, 105, 1)",                       # Xanh lục bảo đậm quý phái cho nút bấm chính
+    "primary": "rgba(70, 160, 105, 1)",                       # Xanh lục bảo đậm quý phái cho nút bấm chính
     "accent_vip": "#ffb300",                    # Vàng kim cho phân hạng VIP
     "accent_danger": "#d32f2f",                 # Đỏ đô cảnh báo
     "accent_zalo": "#0068ff",                   # Xanh thương hiệu Zalo
