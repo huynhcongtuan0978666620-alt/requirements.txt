@@ -31,7 +31,7 @@ THEME_COLORS = {
     "bg_marquee": "#e2f0eb",                    # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
 
     # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 140, 105, 1)",                       # Xanh lục bảo đậm quý phái cho nút bấm chính
+    "primary": "rgba(70, 140, , 1)",                       # Xanh lục bảo đậm quý phái cho nút bấm chính
     "accent_vip": "#ffb300",                    # Vàng kim cho phân hạng VIP
     "accent_danger": "#d32f2f",                 # Đỏ đô cảnh báo
     "accent_zalo": "#0068ff",                   # Xanh thương hiệu Zalo
@@ -51,7 +51,7 @@ THEME_COLORS = {
     "border_vip": "#4fc3f7",                    
     "shadow_light": "rgba(0, 0, 0, 0.015)",     # Đổ bóng cực nhẹ chống nặng mắt
     "shadow_heavy": "rgba(0, 0, 0, 0.04)",      # Đổ bóng khối hóa đơn mềm mại
-    "shadow_toast": "rgba(0, 0, 0, 0.08)",      
+    "shadow_toast": "rgba(0, 0, 0, 0.6)",      
 }
 
 def set_app_background(colors):
