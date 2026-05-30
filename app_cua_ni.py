@@ -1040,9 +1040,15 @@ def main():
                             
                             st.markdown('<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>', unsafe_allow_html=True)
                             if not df_today.empty:
-                                col_tho_name = next((c for c in df_today.columns if 'thợ' in c.lower() or 'tho' in c.lower() or 'thực hiện' in c.lower()), None)
-                                if not col_tho_name and len(df_today.columns) >= 16:
-                                    col_tho_name = df_today.columns[15]
+                                # Ưu tiên lấy đúng cột "Thợ phụ trách" trong file của ní để tránh bốc nhầm cột "Tiền công thợ"
+                                if "Thợ phụ trách" in df_today.columns:
+                                    col_tho_name = "Thợ phụ trách"
+                                else:
+                                    col_tho_name = next((
+                                        c for c in df_today.columns 
+                                        if ('thợ' in c.lower() or 'tho' in c.lower() or 'thực hiện' in c.lower()) 
+                                        and 'tiền' not in c.lower()
+                                    ), None)
                                 
                                 if col_tho_name:
                                     kpi_df = df_today.groupby(col_tho_name)[c_tien].sum().reset_index()
@@ -1054,7 +1060,7 @@ def main():
                                     st.warning("Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao.")
                             else: 
                                 st.info("Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI.")
-                            
+
                             st.markdown('<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>', unsafe_allow_html=True)
                             nv_status = []
                             current_time = time.time()
