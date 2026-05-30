@@ -164,12 +164,6 @@ def apply_v15_theme():
     b_light = THEME_COLORS['border_light']
     b_input = THEME_COLORS['border_input']
     bg_marquee = THEME_COLORS['bg_marquee']
-    
-    custom_css = f"""
-    <style>
-    #MainMenu {{visibility: hidden;}}
-    footer {{visibility: hidden;}}
-    header {{visibility: hidden;}}
 
     st.markdown(f"""
     <style>
@@ -178,6 +172,10 @@ def apply_v15_theme():
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
         
         [data-testid="stVerticalBlock"] {{ gap: 14px !important; }}
+
+        #MainMenu {{visibility: hidden;}}
+        footer {{visibility: hidden;}}
+        header {{visibility: hidden;}}
         
         /* 1. Trả lại thanh Tab nguyên bản thanh lịch theo ảnh ní thích */
         [data-testid="stTabs"] [role="tablist"] {{
