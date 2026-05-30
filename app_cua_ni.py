@@ -178,7 +178,7 @@ def apply_v15_theme():
             border: 1px solid rgba(15, 76, 67, 0.05);
         }}
         button[data-baseweb="tab"] {{ background-color: transparent !important; border-radius: 8px !important; margin: 0 4px !important; }}
-        button[data-baseweb="tab"] p {{ color: {txt_secondary} !important; font-weight: 600 !important; font-size: 14px; }}
+        button[data-baseweb="tab"] p {{ color: {txt_muted} !important; font-weight: 600 !important; font-size: 14px; }}
         button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {p} !important; }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ color: #ffffff !important; }}
         div[data-testid="stTabsTabBorder"] {{ display: none !important; }} /* Ẩn vệt gạch đỏ mặc định */
@@ -190,7 +190,7 @@ def apply_v15_theme():
             padding: 22px !important; margin-bottom: 15px !important;
         }}
         
-        /* SỬA LỖI: Thanh thông báo chạy chữ ôm trọn 100% không bị vỡ khung */
+        /* Thanh thông báo chạy chữ ôm trọn 100% không bị vỡ khung */
         .custom-marquee {{
             background-color: {bg_marquee};
             color: {p};
