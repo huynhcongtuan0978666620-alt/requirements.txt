@@ -80,7 +80,7 @@ def apply_premium_theme():
     st.markdown(custom_css, unsafe_allow_html=True)
 
 # Kích hoạt hiệu ứng
-set_app_background(THEME_COLORS)
+# set_app_background(THEME_COLORS)
 # --- HẾT PHẦN THÊM ---
 
 # ... (phần code còn lại của ní)
