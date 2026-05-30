@@ -15,7 +15,10 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
-st.set_page_config(page_title="Salon Kim Hiền - Premium", page_icon="💇", layout="centered")
+st.set_page_config(page_title="SALON PRO V15", layout="wide")
+
+# PHẢI GỌI HÀM NÀY Ở ĐÂY
+apply_v15_theme()
 
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
