@@ -760,10 +760,10 @@ def main():
                     
                     st.write("")
                     cb1, cb2, cb3, cb4 = st.columns(4)
-                    with cb1: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: center;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>', unsafe_allow_html=True)
-                    with cb2: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: center;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}</div>', unsafe_allow_html=True)
-                    with cb3: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: center;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}</div>', unsafe_allow_html=True)
-                    with cb4: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: center;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>', unsafe_allow_html=True)
+                    with cb1: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>', unsafe_allow_html=True)
+                    with cb2: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}</div>', unsafe_allow_html=True)
+                    with cb3: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}</div>', unsafe_allow_html=True)
+                    with cb4: st.markdown(f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>', unsafe_allow_html=True)
                     
                     if t_du > 0: st.markdown(f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>', unsafe_allow_html=True)
 
