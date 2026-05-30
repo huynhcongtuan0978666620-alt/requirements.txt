@@ -282,16 +282,6 @@ def apply_v15_theme():
         .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
         .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
         .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
-    
-    /* Ép các khối chứa nội dung bo góc mềm mại */
-    div[data-testid="stVerticalBlock"] > div {{
-        background-color: {THEME_COLORS['bg_card']} !important;
-        border-radius: 20px !important;
-        box-shadow: 0 10px 30px rgba(15, 76, 67, 0.05) !important;
-        padding: 22px !important;
-        border: 1px solid rgba(15, 76, 67, 0.04) !important;
-        margin-bottom: 15px;
-    }}  
     </style>
     """, unsafe_allow_html=True)
 
