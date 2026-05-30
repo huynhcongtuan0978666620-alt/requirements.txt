@@ -190,24 +190,30 @@ def apply_v15_theme():
             padding: 22px !important; margin-bottom: 15px !important;
         }}
         
-        /* SỬA LỖI: Cấu trúc lại thanh chữ chạy chống tràn và cấn khung trên Mobile */
+        /* FIX TRIỆT ĐỂ: Sửa lỗi thanh chữ chạy bị che khuất, cắt nửa chữ trên máy tính */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
             color: {p} !important;
-            padding: 8px 16px !important;
+            padding: 0px 20px !important; /* Bỏ padding top/bottom để điều khiển bằng height */
+            height: 42px !important;       /* Ép cứng chiều cao khung cố định */
             border-radius: 25px !important;
             font-weight: 600 !important;
-            font-size: 13px !important;
+            font-size: 14px !important;
             border: 1px solid rgba(15, 76, 67, 0.1) !important;
             margin: 10px auto 20px auto !important;
             width: 100% !important;
             box-shadow: 0 4px 10px {shadow} !important;
             overflow: hidden !important;
-            display: block !important;
+            
+            /* Dùng Flexbox để ép dòng chữ luôn nằm căn giữa tuyệt đối theo chiều dọc */
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
         }}
         .custom-marquee marquee {{
             margin: 0 !important;
             padding: 0 !important;
+            line-height: 42px !important; /* Chiều cao dòng bằng đúng chiều cao khung */
             display: block !important;
         }}
         
@@ -224,7 +230,7 @@ def apply_v15_theme():
         div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 8px rgba(15,76,67,0.08) !important; border-color: {p} !important; color: {p} !important; }}
         div[data-testid="stButton"] button:active {{ transform: scale(0.96) !important; box-shadow: 0 1px 2px {shadow} !important; background-color: #f1f3f5 !important; }}
         
-        /* SỬA LỖI: Ép chữ trên Nút bấm chính (Xác nhận Đăng nhập) hiển thị màu trắng rõ nét */
+        /* Ép chữ trên Nút bấm chính (Xác nhận Đăng nhập) hiển thị màu trắng rõ nét */
         div[data-testid="stButton"] button[kind="primary"] {{ 
             background-color: {p} !important; 
             color: #ffffff !important; 
