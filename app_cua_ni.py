@@ -15,42 +15,40 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO PREMIUM EDITION
+# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
-    # --- Màu nền (Backgrounds) - Tông Xanh Mint Premium mix Trắng Sữa ---
-    "bg_app": "rgba(235, 245, 241, 0.6)",       # Nền tổng thể xanh mint nhạt hoàng gia
-    "bg_card": "#ffffff",                       # Nền thẻ nội dung trắng tinh khôi
-    "bg_box_chung": "#f4f8f6",                  # Nền khung chung (Xanh xám nhạt thanh lịch)
-    "bg_vip_box": "#e3f2fd",                    # Nền khung VIP (Xanh dương pastel quý phái)
-    "bg_shake_box": "#fff3e0",                  # Nền khung sự kiện (Cam pastel nhẹ)
+    # --- Màu nền (Backgrounds) ---
+    "bg_app": "#f8faf9",                        # Nền tổng thể trắng khói pha mint siêu nhẹ
+    "bg_card": "#ffffff",                       # Nền thẻ trắng tinh khôi sạch sẽ
+    "bg_box_chung": "#f4f7f6",                  # Nền khung chung xanh xám nhạt
+    "bg_vip_box": "#e3f2fd",                    # Nền khung VIP xanh dương pastel
+    "bg_shake_box": "#fff3e0",                  # Nền khung sự kiện cam nhạt
     "bg_badge_hang": "#efebe9",                 # Nền nhãn phân hạng
-    "bg_marquee": "#e2f0eb",                    # Nền thanh thông báo chữ chạy mới
+    "bg_marquee": "#e2f0eb",                    # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
 
-    # --- Màu nhấn (Accents) - Tông Xanh Ngọc Lục Bảo & Vàng Kim Sang Trọng ---
-    "primary": "#0f4c43",                       # Xanh lục bảo đậm (Deep Emerald) - Đổi từ xanh lá cũ sang màu này cực sang!
-    "accent_vip": "#d4af37",                    # Vàng kim loại (Metallic Gold) cho hạng VIP
-    "accent_danger": "#e53935",                 # Đỏ ruby dịu mắt cho cảnh báo
-    "accent_zalo": "#0068ff",                   # Màu thương hiệu Zalo chuẩn
-    "accent_chiet_khau": "#e65100",             # Màu nhấn chiết khấu
+    # --- Màu nhấn (Accents) ---
+    "primary": "#0f4c43",                       # Xanh lục bảo đậm quý phái cho nút bấm chính
+    "accent_vip": "#ffb300",                    # Vàng kim cho phân hạng VIP
+    "accent_danger": "#d32f2f",                 # Đỏ đô cảnh báo
+    "accent_zalo": "#0068ff",                   # Xanh thương hiệu Zalo
+    "accent_chiet_khau": "#e65100",             # Cam đất chiết khấu
 
-    # --- Màu chữ (Text) - Tỷ lệ tương phản chuẩn UI cao cấp ---
-    "text_main": "#1a2522",                     # Chữ chính màu than đá sắc nét
-    "text_secondary": "#5a6b66",                # Chữ phụ thanh lịch
+    # --- Màu chữ (Text) ---
+    "text_main": "#263238",                     # Chữ chính xanh đen than đá (dễ đọc, sang trọng)
+    "text_secondary": "#546e7a",                # Chữ phụ trung tính
     "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú
-    "text_title": "#0f4c43",                    # Chữ tiêu đề đồng bộ với primary
-    "text_badge": "#ffffff",                    # Chữ trong nhãn (Màu trắng nổi trên nền tối)
+    "text_title": "#0f4c43",                    # Chữ tiêu đề xanh lục bảo sâu lắng
+    "text_badge": "#ffffff",                    # Chữ nhãn trắng
 
-    # --- Màu viền (Borders) ---
-    "border_light": "#e0e0e0",                  # Viền mỏng siêu nhạt tạo sự gọn gàng
-    "border_input": "#b2dfdb",                  # Viền khung nhập liệu
-    "border_badge": "#b2dfdb",                  # Viền nhãn
-    "border_vip": "#4fc3f7",                    # Viền khu vực VIP
-
-    # --- Đổ bóng (Shadows) - Tạo chiều sâu mềm mại ---
-    "shadow_light": "rgba(15, 76, 67, 0.04)",   # Đổ bóng khói siêu nhẹ tông lục bảo
-    "shadow_heavy": "rgba(15, 76, 67, 0.08)",   # Đổ bóng đậm tạo chiều sâu cho hóa đơn
-    "shadow_toast": "rgba(0, 0, 0, 0.08)",      # Đổ bóng popup thông báo
+    # --- Màu viền & Đổ bóng ---
+    "border_light": "#eaeaea",                  # Viền mỏng siêu nhạt tối giản
+    "border_input": "#cfd8dc",                  # Viền khung nhập liệu xám nhạt mượt mà
+    "border_badge": "#b2dfdb",                  
+    "border_vip": "#4fc3f7",                    
+    "shadow_light": "rgba(0, 0, 0, 0.015)",     # Đổ bóng cực nhẹ chống nặng mắt
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",      # Đổ bóng khối hóa đơn mềm mại
+    "shadow_toast": "rgba(0, 0, 0, 0.08)",      
 }
 
 def set_app_background(colors):
@@ -162,50 +160,72 @@ def apply_v15_theme():
     txt_title = THEME_COLORS['text_title']
     b_light = THEME_COLORS['border_light']
     b_input = THEME_COLORS['border_input']
-    bg_marquee = THEME_COLORS.get('bg_marquee', '#e2f0eb')
+    bg_marquee = THEME_COLORS['bg_marquee']
 
     st.markdown(f"""
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg} !important; padding-top: 0px !important; }}
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
         
         [data-testid="stVerticalBlock"] {{ gap: 14px !important; }}
         
-        /* Cải tiến thanh Tab điều hướng cao cấp */
+        /* 1. Trả lại thanh Tab nguyên bản thanh lịch theo ảnh ní thích */
         [data-testid="stTabs"] [role="tablist"] {{
-            background: {card}; border-radius: 12px; padding: 6px; box-shadow: 0 6px 15px {shadow}; margin-bottom: 16px !important;
-            border: 1px solid rgba(15, 76, 67, 0.05);
+            background: transparent !important; 
+            border-bottom: 1px solid {b_light} !important;
+            padding: 0px !important; 
+            box-shadow: none !important;
+            margin-bottom: 16px !important;
+            gap: 24px !important;
         }}
-        button[data-baseweb="tab"] {{ background-color: transparent !important; border-radius: 8px !important; margin: 0 4px !important; }}
-        button[data-baseweb="tab"] p {{ color: {txt_muted} !important; font-weight: 600 !important; font-size: 14px; }}
-        button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {p} !important; }}
-        button[data-baseweb="tab"][aria-selected="true"] p {{ color: #ffffff !important; }}
-        div[data-testid="stTabsTabBorder"] {{ display: none !important; }}
+        button[data-baseweb="tab"] {{ 
+            background-color: transparent !important; 
+            border-radius: 0px !important; 
+            margin: 0px !important;
+            padding: 10px 4px !important;
+        }}
+        button[data-baseweb="tab"] p {{ 
+            color: {txt_muted} !important; 
+            font-weight: 600 !important; 
+            font-size: 15px !important; 
+        }}
+        /* Thanh gạch chân đỏ cam đặc trưng khi chọn tab */
+        button[data-baseweb="tab"][aria-selected="true"] {{ 
+            background-color: transparent !important;
+        }}
+        button[data-baseweb="tab"][aria-selected="true"] p {{ 
+            color: #ff4b4b !important; /* Màu đỏ cam thương hiệu của ảnh mẫu */
+        }}
+        div[data-testid="stTabsTabBorder"] {{ 
+            background-color: #ff4b4b !important; /* Ép thanh gạch dưới chuẩn màu đỏ cam */
+            height: 2px !important;
+        }}
         
-        /* Làm mịn và tinh tế khối thẻ nội dung (Card) */
+        /* 2. Khối thẻ Card tối giản phẳng cao cấp (Loại bỏ vệt màu cự đoan ở rìa) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
-            background-color: {card} !important; border: none !important; border-radius: 20px !important;
-            border-top: 4px solid {p} !important; box-shadow: 0 10px 30px {shadow} !important;
-            padding: 22px !important; margin-bottom: 15px !important;
+            background-color: {card} !important; 
+            border: 1px solid {b_light} !important; /* Viền mỏng siêu nhẹ bao quanh */
+            border-radius: 16px !important;
+            box-shadow: 0 4px 16px {shadow} !important;
+            padding: 24px !important; 
+            margin-bottom: 15px !important;
         }}
         
-        /* FIX TRIỆT ĐỂ: Sửa lỗi thanh chữ chạy bị che khuất, cắt nửa chữ trên máy tính */
+        /* 3. Khung chữ chạy viên thuốc chuẩn chỉ, thoáng đãng như ảnh mẫu */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
-            color: {p} !important;
-            padding: 0px 20px !important; /* Bỏ padding top/bottom để điều khiển bằng height */
-            height: 42px !important;       /* Ép cứng chiều cao khung cố định */
-            border-radius: 25px !important;
+            color: #1e3d33 !important; /* Chữ xanh đen đậm dễ đọc */
+            padding: 0px 24px !important; 
+            height: 48px !important;       /* Tăng độ rộng khung lên 48px cho thoáng */
+            border-radius: 24px !important; /* Bo cong viên thuốc hoàn hảo */
             font-weight: 600 !important;
             font-size: 14px !important;
-            border: 1px solid rgba(15, 76, 67, 0.1) !important;
-            margin: 10px auto 20px auto !important;
+            border: none !important;
+            margin: 10px auto 24px auto !important;
             width: 100% !important;
-            box-shadow: 0 4px 10px {shadow} !important;
+            box-shadow: none !important;
             overflow: hidden !important;
-            
-            /* Dùng Flexbox để ép dòng chữ luôn nằm căn giữa tuyệt đối theo chiều dọc */
             display: flex !important;
             align-items: center !important;
             justify-content: center !important;
@@ -213,24 +233,25 @@ def apply_v15_theme():
         .custom-marquee marquee {{
             margin: 0 !important;
             padding: 0 !important;
-            line-height: 42px !important; /* Chiều cao dòng bằng đúng chiều cao khung */
+            line-height: 48px !important; /* Căn giữa chữ tuyệt đối */
             display: block !important;
+            letter-spacing: 0.5px;
         }}
         
-        /* Hiệu ứng Nút bấm mượt mà */
+        /* 4. Tinh chỉnh hệ thống Nút bấm mượt mà */
         div[data-testid="stButton"] button {{ 
             border-radius: 10px !important; 
             font-weight: 600 !important; 
             border: 1px solid {b_light} !important; 
             background: {card} !important; 
-            transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
-            box-shadow: 0 2px 4px {shadow} !important;
+            transition: all 0.15s ease !important;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
             color: {txt_main} !important;
         }}
-        div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 8px rgba(15,76,67,0.08) !important; border-color: {p} !important; color: {p} !important; }}
-        div[data-testid="stButton"] button:active {{ transform: scale(0.96) !important; box-shadow: 0 1px 2px {shadow} !important; background-color: #f1f3f5 !important; }}
+        div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; border-color: {p} !important; color: {p} !important; }}
+        div[data-testid="stButton"] button:active {{ transform: scale(0.97) !important; }}
         
-        /* Ép chữ trên Nút bấm chính (Xác nhận Đăng nhập) hiển thị màu trắng rõ nét */
+        /* Nút bấm chính (Xác nhận đăng nhập / Khách trả) */
         div[data-testid="stButton"] button[kind="primary"] {{ 
             background-color: {p} !important; 
             color: #ffffff !important; 
@@ -240,18 +261,19 @@ def apply_v15_theme():
             color: #ffffff !important;
             font-weight: 600 !important;
         }}
-        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #0b3831 !important; color: #ffffff !important; box-shadow: 0 6px 15px rgba(15,76,67,0.2) !important; }}
+        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #0b3831 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(15,76,67,0.15) !important; }}
         
+        /* Các thành phần bổ trợ cho tiệm */
         .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; color: {txt_main} !important; }}
-        .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }}
+        .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; }}
         .box-chung {{ background-color: {THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
         .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
         .khach-tra-box {{ background-color: {p} !important; color: #ffffff !important; border:none; }}
         .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
-        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 8px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
+        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
         .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
         .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
-        .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }}
+        .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
     </style>
     """, unsafe_allow_html=True)
 
