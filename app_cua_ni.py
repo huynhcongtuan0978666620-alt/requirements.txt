@@ -17,54 +17,67 @@ from email.mime.multipart import MIMEMultipart
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - V15 PRO
 # =====================================================================
+# 2. Định nghĩa bộ màu thương hiệu sang trọng (Xanh Lục Bảo & Trắng Sữa)
 THEME_COLORS = {
-    # --- Màu nền (Backgrounds) - Tỷ lệ phối nền: 60% tổng thể ứng dụng ---
-    "bg_app": "rgba(224,242,241,0.5)",       # 15% - Nền tổng thể (Xanh mint rất nhạt, trong trẻo)
-    "bg_card": "#ffffff",                       # 40% - Nền thẻ nội dung trắng tinh (giúp tăng sự gọn gàng)
-    "bg_box_chung": "#f4f7f6",                  # 20% - Nền khung chung (Xanh xám nhạt thanh lịch)
-    "bg_vip_box": "#e0f2f1",                    # 10% - Nền khung VIP (Xanh ngọc dịu mát)
-    "bg_shake_box": "#fff3e0",                  #  5% - Nền khung sự kiện (Cam pastel nhẹ, không bị chói)
-    "bg_badge_hang": "#efebe9",                 #  5% - Nền nhãn phân hạng (Nâu xám nhạt tối giản)
-
-    # --- Màu nhấn (Accents) - Tỷ lệ tạo điểm nhấn: 10% ứng dụng ---
-    "primary": "rgba(128, 214, 107, 1)",                       # Màu chủ đạo (Xanh Teal đậm thanh lịch cho nút bấm, icon)
-    "accent_vip": "#00b0ff",                    # Màu nhấn VIP (Xanh dương hoàng gia sáng)
-    "accent_danger": "#d32f2f",                 # Màu nhấn cảnh báo (Đỏ đô thanh lịch, không quá tươi)
-    "accent_zalo": "#0068ff",                   # Màu thương hiệu Zalo chuẩn
-    "accent_chiet_khau": "#e65100",             # Màu nhấn chiết khấu (Cam đất dịu mắt)
-
-    # --- Màu chữ (Text) - Tỷ lệ tương phản chuẩn UI ---
-    "text_main": "#263238",                     # Chữ chính (Xanh đen than, dễ đọc hơn đen thuần)
-    "text_secondary": "#546e7a",                # Chữ phụ (Xanh xám trung tính)
-    "text_muted": "#90a4ae",                    # Chữ mờ/ghi chú (Xám bạc thanh lịch)
-    "text_title": "#004d40",                    # Chữ tiêu đề (Xanh lục bảo đậm sâu lắng, sang trọng)
-    "text_badge": "#000000",                    # Chữ trong nhãn (Đồng bộ với primary)
-
-    # --- Màu viền (Borders) ---
-    "border_light": "#e0e0e0",                  # Viền mỏng siêu nhạt tạo sự gọn gàng
-    "border_input": "#b2dfdb",                  # Viền khung nhập liệu (Xanh mint nhạt mềm mại)
-    "border_badge": "#b2dfdb",                  # Viền nhãn
-    "border_vip": "#4fc3f7",                    # Viền khu vực VIP
-
-    # --- Đổ bóng (Shadows) - Tạo chiều sâu mềm mại ---
-    "shadow_light": "rgba(0, 77, 64, 0.03)",    # Đổ bóng siêu nhẹ tông xanh lục bảo
-    "shadow_heavy": "rgba(0, 77, 64, 0.06)",    # Đổ bóng khi hover mượt mà
-    "shadow_toast": "rgba(0, 0, 0, 0.08)",      # Đổ bóng popup thông báo
+    "bg_app": "rgba(235, 245, 241, 0.8)",
+    "bg_card": "#ffffff",
+    "bg_box_chung": "#f4f8f6",
+    "bg_marquee": "#e2f0eb",
+    "primary": "#0f4c43",
+    "text_main": "#1a2522",
+    "text_secondary": "#5a6b66",
+    "text_title": "#0f4c43",
 }
 
-# --- THÊM ĐOẠN NÀY VÀO SAU THEME_COLORS ---
-def set_app_background(colors):
-    # Sử dụng dấu {{ }} đôi để không bị lỗi f-string trong Python
-    # Gradient chuyển từ màu nền nhẹ xuống màu trắng tinh khôi ở đáy
-    gradient_css = f"""
+# 3. Hàm bơm CSS Custom làm mịn và bo tròn các góc Card
+def apply_premium_theme():
+    custom_css = f"""
     <style>
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    
     .stApp {{
-        background: linear-gradient(to bottom, {colors['bg_app']}, #ffffff);
+        background: linear-gradient(to bottom, {THEME_COLORS['bg_app']}, #ffffff) !important;
         background-attachment: fixed;
+    }}
+    
+    /* Ép các khối chứa nội dung bo góc mềm mại */
+    div[data-testid="stVerticalBlock"] > div {{
+        background-color: {THEME_COLORS['bg_card']} !important;
+        border-radius: 20px !important;
+        box-shadow: 0 10px 30px rgba(15, 76, 67, 0.05) !important;
+        padding: 22px !important;
+        border: 1px solid rgba(15, 76, 67, 0.04) !important;
+        margin-bottom: 15px;
+    }}
+    
+    /* ĐOẠN CẢI TIẾN 1: Ép thanh thông báo chạy chữ dàn đều 100% chiều ngang */
+    .custom-marquee {{
+        background-color: {THEME_COLORS['bg_marquee']};
+        color: {THEME_COLORS['primary']};
+        padding: 12px 20px;
+        border-radius: 12px;
+        font-weight: 500;
+        font-size: 15px;
+        border: 1px solid rgba(15, 76, 67, 0.1);
+        margin-bottom: 20px;
+        width: 100% !important;
+    }}
+    
+    /* ĐOẠN CẢI TIẾN 2: Đổi màu thanh gạch chân bên dưới Tab sang màu Xanh Lục Bảo */
+    button[data-baseweb="tab"] {{
+        color: {THEME_COLORS['text_secondary']} !important;
+    }}
+    button[data-baseweb="tab"][aria-selected="true"] {{
+        color: {THEME_COLORS['primary']} !important;
+    }}
+    div[data-testid="stTabsTabBorder"] {{
+        background-color: {THEME_COLORS['primary']} !important;
     }}
     </style>
     """
-    st.markdown(gradient_css, unsafe_allow_html=True)
+    st.markdown(custom_css, unsafe_allow_html=True)
 
 # Kích hoạt hiệu ứng
 set_app_background(THEME_COLORS)
