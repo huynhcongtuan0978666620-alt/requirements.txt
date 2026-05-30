@@ -54,6 +54,20 @@ THEME_COLORS = {
     "shadow_toast": "rgba(0, 0, 0, 0.08)",      
 }
 
+# 3. Hàm bơm CSS Custom làm mịn và bo tròn các góc Card
+def apply_premium_theme():
+    custom_css = f"""
+    <style>
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    
+    .stApp {{
+        background: linear-gradient(to bottom, {THEME_COLORS['bg_app']}, #ffffff) !important;
+        background-attachment: fixed;
+    }}
+
+
 def set_app_background(colors):
     gradient_css = f"""
     <style>
