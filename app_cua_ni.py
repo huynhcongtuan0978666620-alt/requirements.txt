@@ -293,19 +293,6 @@ def apply_v15_theme():
         margin-bottom: 15px;
     }}
     
-    /* ĐOẠN CẢI TIẾN 1: Ép thanh thông báo chạy chữ dàn đều 100% chiều ngang */
-    .custom-marquee {{
-        background-color: {THEME_COLORS['bg_marquee']};
-        color: {THEME_COLORS['primary']};
-        padding: 12px 20px;
-        border-radius: 12px;
-        font-weight: 500;
-        font-size: 15px;
-        border: 1px solid rgba(15, 76, 67, 0.1);
-        margin-bottom: 20px;
-        width: 100% !important;
-    }}
-    
     /* ĐOẠN CẢI TIẾN 2: Đổi màu thanh gạch chân bên dưới Tab sang màu Xanh Lục Bảo */
     button[data-baseweb="tab"] {{
         color: {THEME_COLORS['text_secondary']} !important;
