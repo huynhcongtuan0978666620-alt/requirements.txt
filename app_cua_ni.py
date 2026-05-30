@@ -311,7 +311,7 @@ def apply_v15_theme():
     """, unsafe_allow_html=True)
 
 # Kích hoạt chiếc áo mới cho giao diện
-apply_premium_theme()
+# apply_premium_theme()
 
 # 4. Hiển thị các thành phần UI mẫu trên màn hình
 st.markdown('<div class="custom-marquee"><marquee scrollamount="4">KÍNH CHÀO QUÝ KHÁCH! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA KHÁCH ƠI!</marquee></div>', unsafe_allow_html=True)
