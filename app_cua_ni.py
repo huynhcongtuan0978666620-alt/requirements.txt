@@ -164,6 +164,12 @@ def apply_v15_theme():
     b_light = THEME_COLORS['border_light']
     b_input = THEME_COLORS['border_input']
     bg_marquee = THEME_COLORS['bg_marquee']
+    
+    custom_css = f"""
+    <style>
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
 
     st.markdown(f"""
     <style>
