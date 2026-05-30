@@ -167,16 +167,17 @@ def apply_v15_theme():
 
     st.markdown(f"""
     <style>
+
+    #MainMenu {{visibility: hidden;}}
+    footer {{visibility: hidden;}}
+    header {{visibility: hidden;}}
+    
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap');
         html, body, .stApp {{ font-family: 'Inter', sans-serif !important; background-color: {bg} !important; padding-top: 0px !important; }}
         header, footer, [data-testid='stToolbar'], [data-testid='stDecoration'] {{ display: none !important; }}
         
         [data-testid="stVerticalBlock"] {{ gap: 14px !important; }}
-
-        #MainMenu {{visibility: hidden;}}
-        footer {{visibility: hidden;}}
-        header {{visibility: hidden;}}
-        
+    
         /* 1. Trả lại thanh Tab nguyên bản thanh lịch theo ảnh ní thích */
         [data-testid="stTabs"] [role="tablist"] {{
             background: transparent !important; 
