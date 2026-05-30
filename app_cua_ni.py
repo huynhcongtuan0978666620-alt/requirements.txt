@@ -769,7 +769,7 @@ def main():
 
                     st.markdown(f"""
                         <div style="background-color: #eaf2e6; border: 1px solid #87e8de; border-left: 5px solid #13c2c2; padding: 12px; border-radius: 10px; text-align: center; margin: 15px 0 5px 0; font-weight: 700; color: #111; font-size: 14px;">
-                            👉 XÁC NHẬN SỐ TIỀN THỰC THU: <span style="color:#cf1322; font-size:20px;text-align: right;">{t_khach_tra:,.0f}đ</span><br>
+                            👉 XÁC NHẬN SỐ TIỀN THỰC THU: <span style="color:#cf1322; font-size:35px;text-align: right;">{t_khach_tra:,.0f}đ</span><br>
                             <span style="font-weight:400; font-size:12px; color:#555;text-align: center;">(Hệ thống đang kiểm tra....)</span>
                         </div>
                     """, unsafe_allow_html=True)
