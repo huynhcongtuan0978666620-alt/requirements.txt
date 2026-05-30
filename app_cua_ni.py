@@ -181,7 +181,7 @@ def apply_v15_theme():
         button[data-baseweb="tab"] p {{ color: {txt_muted} !important; font-weight: 600 !important; font-size: 14px; }}
         button[data-baseweb="tab"][aria-selected="true"] {{ background-color: {p} !important; }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ color: #ffffff !important; }}
-        div[data-testid="stTabsTabBorder"] {{ display: none !important; }} /* Ẩn vệt gạch đỏ mặc định */
+        div[data-testid="stTabsTabBorder"] {{ display: none !important; }}
         
         /* Làm mịn và tinh tế khối thẻ nội dung (Card) */
         [data-testid="stVerticalBlockBorderWrapper"] {{
@@ -190,26 +190,33 @@ def apply_v15_theme():
             padding: 22px !important; margin-bottom: 15px !important;
         }}
         
-        /* Thanh thông báo chạy chữ ôm trọn 100% không bị vỡ khung */
+        /* SỬA LỖI: Cấu trúc lại thanh chữ chạy chống tràn và cấn khung trên Mobile */
         .custom-marquee {{
-            background-color: {bg_marquee};
-            color: {p};
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-weight: 600;
-            font-size: 14px;
-            border: 1px solid {b_input};
-            margin-bottom: 20px;
+            background-color: {bg_marquee} !important;
+            color: {p} !important;
+            padding: 8px 16px !important;
+            border-radius: 25px !important;
+            font-weight: 600 !important;
+            font-size: 13px !important;
+            border: 1px solid rgba(15, 76, 67, 0.1) !important;
+            margin: 10px auto 20px auto !important;
             width: 100% !important;
-            box-shadow: 0 4px 10px {shadow};
+            box-shadow: 0 4px 10px {shadow} !important;
+            overflow: hidden !important;
+            display: block !important;
+        }}
+        .custom-marquee marquee {{
+            margin: 0 !important;
+            padding: 0 !important;
+            display: block !important;
         }}
         
         /* Hiệu ứng Nút bấm mượt mà */
         div[data-testid="stButton"] button {{ 
             border-radius: 10px !important; 
             font-weight: 600 !important; 
-            border: 1px solid {b_light}; 
-            background: {card}; 
+            border: 1px solid {b_light} !important; 
+            background: {card} !important; 
             transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1) !important;
             box-shadow: 0 2px 4px {shadow} !important;
             color: {txt_main} !important;
@@ -217,10 +224,17 @@ def apply_v15_theme():
         div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 8px rgba(15,76,67,0.08) !important; border-color: {p} !important; color: {p} !important; }}
         div[data-testid="stButton"] button:active {{ transform: scale(0.96) !important; box-shadow: 0 1px 2px {shadow} !important; background-color: #f1f3f5 !important; }}
         
-        /* Nút bấm loại chính (Primary Button) */
-        div[data-testid="stButton"] button[kind="primary"] {{ background-color: {p} !important; color: #ffffff !important; border: none !important; }}
+        /* SỬA LỖI: Ép chữ trên Nút bấm chính (Xác nhận Đăng nhập) hiển thị màu trắng rõ nét */
+        div[data-testid="stButton"] button[kind="primary"] {{ 
+            background-color: {p} !important; 
+            color: #ffffff !important; 
+            border: none !important; 
+        }}
+        div[data-testid="stButton"] button[kind="primary"] p {{
+            color: #ffffff !important;
+            font-weight: 600 !important;
+        }}
         div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #0b3831 !important; color: #ffffff !important; box-shadow: 0 6px 15px rgba(15,76,67,0.2) !important; }}
-        div[data-testid="stButton"] button[kind="primary"]:active {{ transform: scale(0.96) !important; background-color: #082823 !important; }}
         
         .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; color: {txt_main} !important; }}
         .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }}
