@@ -17,9 +17,6 @@ from email.mime.multipart import MIMEMultipart
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(page_title="SALON PRO V15", layout="wide")
 
-# PHẢI GỌI HÀM NÀY Ở ĐÂY
-apply_v15_theme()
-
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
@@ -497,7 +494,8 @@ def check_auto_login():
                         return True
     return st.session_state.get("logged_in", False)
 
-
+# PHẢI GỌI HÀM NÀY Ở ĐÂY
+apply_v15_theme()
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
