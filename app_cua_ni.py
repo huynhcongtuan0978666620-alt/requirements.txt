@@ -291,19 +291,7 @@ def apply_v15_theme():
         padding: 22px !important;
         border: 1px solid rgba(15, 76, 67, 0.04) !important;
         margin-bottom: 15px;
-    }}
-    
-    /* ĐOẠN CẢI TIẾN 2: Đổi màu thanh gạch chân bên dưới Tab sang màu Xanh Lục Bảo */
-    button[data-baseweb="tab"] {{
-        color: {THEME_COLORS['text_secondary']} !important;
-    }}
-    button[data-baseweb="tab"][aria-selected="true"] {{
-        color: {THEME_COLORS['primary']} !important;
-    }}
-    div[data-testid="stTabsTabBorder"] {{
-        background-color: {THEME_COLORS['primary']} !important;
-    }}
-    
+    }}  
     </style>
     """, unsafe_allow_html=True)
 
