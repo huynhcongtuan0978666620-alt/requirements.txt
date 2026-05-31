@@ -333,7 +333,7 @@ st.markdown(
 )
 
 # Thanh Menu điều hướng tối giản
-# menu_tabs = st.tabs(["Tổng quan", "Lên hóa đơn", "Lịch hẹn", "Báo cáo"])
+# menu_tabs # st.tabs(["Tổng quan", "Lên hóa đơn", "Lịch hẹn", "Báo cáo"])
 
 
 # =====================================================================
@@ -1169,7 +1169,7 @@ def main():
                         st.rerun()
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
-        with tabs[1]:
+        elif selected_tab == "📄 Lên hóa đơn":
             with st.container(border=True):
                 st.markdown(
                     '<div class="the-quan-ly-flat">THÔNG TIN KHÁCH HÀNG</div>',
@@ -1555,7 +1555,7 @@ def main():
                             st.session_state.submitting = False
 
         # ==================== TAB 3: LỊCH HẸN & CHỨC NĂNG LÊN ĐƠN KHÁCH HẸN ====================
-        with tabs[2]:
+        elif selected_tab == "📅 Lịch hẹn":
             with st.container(border=True):
                 st.markdown(
                     '<div class="the-quan-ly-flat">📅 TẠO LỊCH HẸN MỚI</div>',
@@ -1842,7 +1842,7 @@ def main():
                     st.info("Hiện tại chưa có dữ liệu danh sách lịch hẹn.")
 
         # ==================== TAB 4: BÁO CÁO ====================
-        with tabs[3]:
+        elif selected_tab == "📊 Báo cáo":
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
                     st.markdown(
@@ -2054,7 +2054,7 @@ def main():
                 st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
-        with tabs[4]:
+        elif selected_tab == "⚙️ Quản trị & Mở rộng":
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
                     st.markdown(
