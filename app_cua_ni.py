@@ -862,30 +862,36 @@ def main():
                     else:
                         st.error("Hệ thống dữ liệu chưa sẵn sàng.")
 
-# 1. Khởi tạo trạng thái cho Tab nếu chưa có
-        tab_list = ["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Quản trị & Mở rộng"]
-        
+        # 1. Khởi tạo trạng thái cho Tab nếu chưa có
+        tab_list = [
+            "🏠 Tổng quan",
+            "📄 Lên hóa đơn",
+            "📅 Lịch hẹn",
+            "📊 Báo cáo",
+            "⚙️ Quản trị & Mở rộng",
+        ]
+
         # 2. Sử dụng st.radio để thay thế st.tabs
         selected_tab = st.radio(
-            "Điều hướng:", 
-            tab_list, 
-            index=st.session_state.get('active_tab_index', 0), 
-            horizontal=True, 
-            label_visibility="collapsed" # Ẩn tiêu đề radio để nhìn giống tab nhất
+            "Điều hướng:",
+            tab_list,
+            index=st.session_state.get("active_tab_index", 0),
+            horizontal=True,
+            label_visibility="collapsed",  # Ẩn tiêu đề radio để nhìn giống tab nhất
         )
-        
+
         # 3. Lưu lại vị trí tab người dùng chọn vào session_state
         st.session_state.active_tab_index = tab_list.index(selected_tab)
-        
+
         # 4. Ánh xạ nội dung tương ứng (Phần này ní cần bao các khối lệnh phía dưới vào)
         if selected_tab == "🏠 Tổng quan":
             # Ní dán toàn bộ code bên trong tab Tổng quan cũ vào đây
             st.write("Nội dung Tổng quan")
-            
+
         elif selected_tab == "📄 Lên hóa đơn":
             # Ní dán toàn bộ code bên trong tab Lên hóa đơn cũ vào đây
             st.write("Nội dung Lên hóa đơn")
-            
+
         # ... làm tương tự cho các tab còn lại
         # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
