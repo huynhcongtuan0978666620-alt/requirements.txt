@@ -894,7 +894,7 @@ def main():
 
         # ... làm tương tự cho các tab còn lại
         # ==================== TAB 1: TỔNG QUAN ====================
-        with tabs[0]:
+        if selected_tab == "🏠 Tổng quan":
             with st.container(border=True):
                 direct_logo_url = format_drive_direct_url(settings.get("Logo", ""))
                 fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
