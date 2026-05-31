@@ -335,9 +335,9 @@ ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 
 marquee_code = f"""
 <div class="custom-marquee">
-    <marquee scrollamount="4">
+    #<marquee scrollamount="4">
         CHÀO MỪNG <span style="color: "#FF5733"; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
-    </marquee>
+    #</marquee>
 </div>
 """
 
