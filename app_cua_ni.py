@@ -1007,7 +1007,7 @@ def main():
 
                         if not last_7_days.empty:
                             st.markdown(
-                                f"<div style='margin-top:25px; margin-bottom:10px; font-weight:bold; font-size:15px; color:{THEME_COLORS['text_title']}; letter-spacing:0.5px;'>📉 TĂNG TRƯỞNG DOANH THU 7 NGÀY QUA</div>",
+                                f"<div style='margin-top:25px; margin-bottom:10px; font-weight:bold; font-size:15px; color:{THEME_COLORS['text_title']}; letter-spacing:0.5px;'>📉 BÁO CÁO DOANH THU 7 NGÀY QUA</div>",
                                 unsafe_allow_html=True,
                             )
                             st.line_chart(
