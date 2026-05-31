@@ -53,10 +53,12 @@ THEME_COLORS = {
 
 
 def set_app_background(colors):
+    # Ní có thể thay mã màu tại đây để thử các phong cách khác nhau
+    # Ví dụ này là từ màu chủ đạo của ní chuyển dần xuống màu kem nhạt
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(to bottom, {colors['bg_app']}, #"ffffff", );
+        background: linear-gradient(180deg, {colors['bg_app']} 0%, #f9f9f9 100%);
         background-attachment: fixed;
     }}
     </style>
