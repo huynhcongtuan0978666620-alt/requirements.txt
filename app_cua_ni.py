@@ -782,7 +782,6 @@ def main():
             if st.button(
                 "Xác nhận Đăng Nhập", use_container_width=True, type="primary"
             ):
-                st.stop()
                 if u == "admin" and p == "2026":
                     if remember_me:
                         st.query_params.update({"saved_u": u, "saved_p": p})
@@ -862,6 +861,7 @@ def main():
                             )
                     else:
                         st.error("Hệ thống dữ liệu chưa sẵn sàng.")
+                        st.stop()
 
         # 1. Khởi tạo trạng thái cho Tab nếu chưa có
         tab_list = [
