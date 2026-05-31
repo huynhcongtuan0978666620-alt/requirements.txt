@@ -782,7 +782,7 @@ def main():
             if st.button(
                 "Xác nhận Đăng Nhập", use_container_width=True, type="primary"
             ):
-                if u == "admin" and p == "2026":
+                if u == "Admin" and p == "111":
                     if remember_me:
                         st.query_params.update({"saved_u": u, "saved_p": p})
                     st.session_state.update(
