@@ -22,7 +22,7 @@ st.set_page_config(page_title="SALON PRO V15", layout="wide")
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
-    "bg_app": "#000000",  # Nền tổng thể trắng khói pha mint siêu nhẹ
+    "bg_app": "#ffffff",  # Nền tổng thể trắng khói pha mint siêu nhẹ
     "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi sạch sẽ
     "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám nhạt
     "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương pastel
