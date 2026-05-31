@@ -875,6 +875,7 @@ def main():
                             )
                     else:
                         st.error("Hệ thống dữ liệu chưa sẵn sàng.")
+                        st.stop()
 
     # --- KHU VỰC LÀM VIỆC CHÍNH ---
     else:
