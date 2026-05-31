@@ -878,7 +878,7 @@ def main():
     st.stop()
 
     # --- KHU VỰC LÀM VIỆC CHÍNH ---
-    else:
+else:
         if not st.session_state.da_load_nhap:
             st.session_state.da_load_nhap = True
             _, tam_records = get_bao_cao_va_bill_tam()
