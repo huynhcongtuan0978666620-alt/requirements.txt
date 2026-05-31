@@ -862,80 +862,31 @@ def main():
                     else:
                         st.error("Hệ thống dữ liệu chưa sẵn sàng.")
 
-    # --- KHU VỰC LÀM VIỆC CHÍNH ---
-    else:
-        if not st.session_state.da_load_nhap:
-            st.session_state.da_load_nhap = True
-            _, tam_records = get_bao_cao_va_bill_tam()
-            services = get_service_data()
-            for r in tam_records:
-                if (
-                    len(r) >= 7
-                    and str(r[3]).strip() == st.session_state.full_name
-                    and str(r[6]).strip() == "ĐANG SOẠN"
-                ):
-                    st.session_state.kh_sdt_val = str(r[4]).strip()
-                    st.session_state.kh_ten_val = str(r[5]).strip()
-                    chi_tiet_dv = str(r[1]).strip()
-                    new_gio = []
-                    for item in chi_tiet_dv.split(" | "):
-                        if item.strip():
-                            match = re.match(r"(.+)\s*\(x([\d\.]+)\)", item.strip())
-                            if match:
-                                t_dv, s_l = match.group(1).strip(), float(
-                                    match.group(2)
-                                )
-                                info = services.get(t_dv, {"gia": 0.0, "hoa_hong": 0.0})
-                                new_gio.append(
-                                    {
-                                        "dich_vu": t_dv,
-                                        "so_luong": s_l,
-                                        "don_gia": info.get("gia", 0.0),
-                                        "thanh_tien": info.get("gia", 0.0) * s_l,
-                                        "phan_tram_hh": info.get("hoa_hong", 0.0),
-                                    }
-                                )
-                    if new_gio:
-                        st.session_state.gio_hang = new_gio
-                        st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
-                    break
-
-        tabs = st.tabs(
-            [
-                "🏠 Tổng quan",
-                "📄 Lên hóa đơn",
-                "📅 Lịch hẹn",
-                "📊 Báo cáo",
-                "⚙️ Quản trị & Mở rộng",
-            ]
+# 1. Khởi tạo trạng thái cho Tab nếu chưa có
+        tab_list = ["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Quản trị & Mở rộng"]
+        
+        # 2. Sử dụng st.radio để thay thế st.tabs
+        selected_tab = st.radio(
+            "Điều hướng:", 
+            tab_list, 
+            index=st.session_state.get('active_tab_index', 0), 
+            horizontal=True, 
+            label_visibility="collapsed" # Ẩn tiêu đề radio để nhìn giống tab nhất
         )
-        services = get_service_data()
-        dv_list = list(services.keys())
-
-        raw_nv = get_nhan_vien_data()
-        ds_tho = (
-            [
-                str(
-                    r[
-                        next(
-                            (
-                                i
-                                for i, h in enumerate(
-                                    [str(h).strip().lower() for h in raw_nv[0]]
-                                )
-                                if "tên" in h or "nhân viên" in h
-                            ),
-                            -1,
-                        )
-                    ]
-                ).strip()
-                for r in raw_nv[1:]
-                if len(r) > 0
-            ]
-            if len(raw_nv) > 1
-            else [st.session_state.full_name]
-        )
-
+        
+        # 3. Lưu lại vị trí tab người dùng chọn vào session_state
+        st.session_state.active_tab_index = tab_list.index(selected_tab)
+        
+        # 4. Ánh xạ nội dung tương ứng (Phần này ní cần bao các khối lệnh phía dưới vào)
+        if selected_tab == "🏠 Tổng quan":
+            # Ní dán toàn bộ code bên trong tab Tổng quan cũ vào đây
+            st.write("Nội dung Tổng quan")
+            
+        elif selected_tab == "📄 Lên hóa đơn":
+            # Ní dán toàn bộ code bên trong tab Lên hóa đơn cũ vào đây
+            st.write("Nội dung Lên hóa đơn")
+            
+        # ... làm tương tự cho các tab còn lại
         # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
             with st.container(border=True):
