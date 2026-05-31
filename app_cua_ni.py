@@ -641,7 +641,7 @@ def check_auto_login():
         if "saved_u" in st.query_params and "saved_p" in st.query_params:
             u = st.query_params.get("saved_u")
             p = st.query_params.get("saved_p")
-            if u == "admin" and p == "2026":
+            if u == "Admin" and p == "111":
                 st.session_state.update(
                     {
                         "logged_in": True,
