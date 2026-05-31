@@ -328,7 +328,7 @@ def apply_v15_theme():
 
 # 4. Hiển thị các thành phần UI mẫu trên màn hình
 # Sử dụng f-string để chèn tên người đang đăng nhập
-ten_dang_nhap = st.session_state.get('full_name', 'Quý khách')
+ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 
 marquee_code = f"""
 <div class="custom-marquee">
