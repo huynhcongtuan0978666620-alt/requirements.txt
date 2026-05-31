@@ -328,15 +328,21 @@ def apply_v15_theme():
 
 # 4. Hiển thị các thành phần UI mẫu trên màn hình
 # Sử dụng f-string để chèn tên người đang đăng nhập
-ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
+# Xác định màu ní muốn (ví dụ màu đỏ hoặc màu thương hiệu của tiệm)
+mau_chu = "#FF5733" # Ní có thể thay mã màu tại đây
+
+ten_dang_nhap = st.session_state.get('full_name', 'Quý khách')
 
 marquee_code = f"""
 <div class="custom-marquee">
     <marquee scrollamount="4">
-        "<========> CHÀO MỪNG {ten_dang_nhap} ĐẾN VỚI SALON KIM HIỀN <========> CHÚC {ten_dang_nhap} MỘT LÀM VIỆC ĐẦY NĂNG LƯỢNG VÀ CHỐT THẬT NHIỀU BILL NHA <========>"
+        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! 
+        CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
     </marquee>
 </div>
 """
+
+st.markdown(marquee_code, unsafe_allow_html=True)
 
 # Hiển thị ra màn hình
 st.markdown(marquee_code, unsafe_allow_html=True)
