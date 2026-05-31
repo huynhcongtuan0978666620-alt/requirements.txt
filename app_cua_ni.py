@@ -861,7 +861,7 @@ def main():
                             )
                     else:
                         st.error("Hệ thống dữ liệu chưa sẵn sàng.")
-                        st.stop()
+        st.stop()                
 
         # 1. Khởi tạo trạng thái cho Tab nếu chưa có
         tab_list = [
