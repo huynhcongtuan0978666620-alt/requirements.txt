@@ -28,7 +28,7 @@ THEME_COLORS = {
     "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương pastel
     "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
     "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
-    "bg_marquee": "#000008",  # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
+    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
     # --- Màu nhấn (Accents) ---
     "primary": "rgba(70, 140, 150, 1)",  # Xanh lục bảo đậm quý phái cho nút bấm chính
     "accent_vip": "#ffb300",  # Vàng kim cho phân hạng VIP
