@@ -7,54 +7,56 @@ import pytz
 import time
 import re
 import random
-import math
+import threading
 import smtplib
 import requests
-import threading
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
-st.set_page_config(page_title="SALON PRO V15", layout="wide")
+st.set_page_config(
+    page_title="SALON PRO V15",
+    layout="wide",
+    page_icon="💇‍♀️",
+    initial_sidebar_state="collapsed",
+)
 
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
-    "bg_app": "#e8f5f3",  # Nền tổng thể trắng khói pha mint siêu nhẹ
-    "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi sạch sẽ
-    "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám nhạt
-    "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương pastel
-    "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
-    "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
-    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu xanh ngọc mint nhạt chuẩn ảnh ní thích
+    "bg_app": "#e8f5f3",
+    "bg_card": "#ffffff",
+    "bg_box_chung": "#f4f7f6",
+    "bg_vip_box": "#e3f2fd",
+    "bg_shake_box": "#fff3e0",
+    "bg_badge_hang": "#efebe9",
+    "bg_marquee": "#f0f008",
     # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 140, 150, 1)",  # Xanh lục bảo đậm quý phái cho nút bấm chính
-    "accent_vip": "#ffb300",  # Vàng kim cho phân hạng VIP
-    "accent_danger": "#d32f2f",  # Đỏ đô cảnh báo
-    "accent_zalo": "#0068ff",  # Xanh thương hiệu Zalo
-    "accent_chiet_khau": "#e65100",  # Cam đất chiết khấu
+    "primary": "rgba(70, 140, 150, 1)",
+    "accent_vip": "#ffb300",
+    "accent_danger": "#d32f2f",
+    "accent_zalo": "#0068ff",
+    "accent_chiet_khau": "#e65100",
     # --- Màu chữ (Text) ---
-    "text_main": "#263238",  # Chữ chính xanh đen than đá (dễ đọc, sang trọng)
-    "text_secondary": "#546e7a",  # Chữ phụ trung tính
-    "text_muted": "#90a4ae",  # Chữ mờ/ghi chú
-    "text_title": "#0f4c43",  # Chữ tiêu đề xanh lục bảo sâu lắng
-    "text_badge": "#ffffff",  # Chữ nhãn trắng
+    "text_main": "#263238",
+    "text_secondary": "#546e7a",
+    "text_muted": "#90a4ae",
+    "text_title": "#0f4c43",
+    "text_badge": "#ffffff",
     # --- Màu viền & Đổ bóng ---
-    "border_light": "#eaeaea",  # Viền mỏng siêu nhạt tối giản
-    "border_input": "#cfd8dc",  # Viền khung nhập liệu xám nhạt mượt mà
+    "border_light": "#eaeaea",
+    "border_input": "#cfd8dc",
     "border_badge": "#b2dfdb",
     "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",  # Đổ bóng cực nhẹ chống nặng mắt
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng khối hóa đơn mềm mại
+    "shadow_light": "rgba(0, 0, 0, 0.015)",
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
     "shadow_toast": "rgba(0, 0, 0, 0.6)",
 }
 
 
 def set_app_background(colors):
-    # Ní có thể thay mã màu tại đây để thử các phong cách khác nhau
-    # Ví dụ này là từ màu chủ đạo của ní chuyển dần xuống màu kem nhạt
     gradient_css = f"""
     <style>
     .stApp {{
@@ -76,17 +78,6 @@ set_app_background(THEME_COLORS)
 @st.cache_resource
 def get_global_user_tracker():
     return {}
-
-
-# =====================================================================
-# 1. CẤU HÌNH GIAO DIỆN
-# =====================================================================
-st.set_page_config(
-    page_title="SALON PRO V15",
-    layout="centered",
-    page_icon="💇‍♀️",
-    initial_sidebar_state="collapsed",
-)
 
 
 def get_now_vn():
@@ -210,39 +201,39 @@ def apply_v15_theme():
             font-weight: 600 !important; 
             font-size: 15px !important; 
         }}
-        /* Thanh gạch chân đỏ cam đặc trưng khi chọn tab */
         button[data-baseweb="tab"][aria-selected="true"] {{ 
             background-color: transparent !important;
+            color: {THEME_COLORS['primary']} !important;
         }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ 
-            color: #ff4b4b !important; /* Màu đỏ cam thương hiệu của ảnh mẫu */
+            color: #ff4b4b !important; 
         }}
         div[data-testid="stTabsTabBorder"] {{ 
-            background-color: #ff4b4b !important; /* Ép thanh gạch dưới chuẩn màu đỏ cam */
+            background-color: {THEME_COLORS['primary']} !important;
             height: 2px !important;
         }}
         
-        /* 2. Khối thẻ Card tối giản phẳng cao cấp (Loại bỏ vệt màu cự đoan ở rìa) */
+        /* 2. Khối thẻ Card tối giản phẳng cao cấp */
         [data-testid="stVerticalBlockBorderWrapper"] {{
             background-color: {card} !important; 
-            border: 1px solid {b_light} !important; /* Viền mỏng siêu nhẹ bao quanh */
+            border: 1px solid {b_light} !important; 
             border-radius: 16px !important;
             box-shadow: 0 4px 16px {shadow} !important;
             padding: 24px !important; 
             margin-bottom: 15px !important;
         }}
         
-        /* 3. Khung chữ chạy viên thuốc chuẩn chỉ, thoáng đãng như ảnh mẫu */
+        /* 3. Khung chữ chạy viên thuốc chuẩn chỉ */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
-            color: #1e3d33 !important; /* Chữ xanh đen đậm dễ đọc */
-            padding: 0px 24px !important; 
-            height: 48px !important;       /* Tăng độ rộng khung lên 48px cho thoáng */
-            border-radius: 24px !important; /* Bo cong viên thuốc hoàn hảo */
-            font-weight: 600 !important;
-            font-size: 14px !important;
-            border: none !important;
-            margin: 10px auto 24px auto !important;
+            color: {THEME_COLORS['primary']} !important; 
+            padding: 12px 20px !important; 
+            height: 48px !important;       
+            border-radius: 12px !important; 
+            font-weight: 500 !important;
+            font-size: 15px !important;
+            border: 1px solid rgba(15, 76, 67, 0.1) !important;
+            margin-bottom: 20px !important;
             width: 100% !important;
             box-shadow: none !important;
             overflow: hidden !important;
@@ -253,7 +244,7 @@ def apply_v15_theme():
         .custom-marquee marquee {{
             margin: 0 !important;
             padding: 0 !important;
-            line-height: 48px !important; /* Căn giữa chữ tuyệt đối */
+            line-height: 48px !important; 
             display: block !important;
             letter-spacing: 0.5px;
         }}
@@ -271,7 +262,6 @@ def apply_v15_theme():
         div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; border-color: {p} !important; color: {p} !important; }}
         div[data-testid="stButton"] button:active {{ transform: scale(0.97) !important; }}
         
-        /* Nút bấm chính (Xác nhận đăng nhập / Khách trả) */
         div[data-testid="stButton"] button[kind="primary"] {{ 
             background-color: {p} !important; 
             color: #ffffff !important; 
@@ -294,47 +284,15 @@ def apply_v15_theme():
         .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
         .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
         .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
-    
-    /* ĐOẠN CẢI TIẾN 1: Ép thanh thông báo chạy chữ dàn đều 100% chiều ngang */
-    .custom-marquee {{
-        background-color: {THEME_COLORS['bg_marquee']};
-        color: {THEME_COLORS['primary']};
-        padding: 12px 20px;
-        border-radius: 12px;
-        font-weight: 500;
-        font-size: 15px;
-        border: 1px solid rgba(15, 76, 67, 0.1);
-        margin-bottom: 20px;
-        width: 100% !important;
-    }}
-    
-    /* ĐOẠN CẢI TIẾN 2: Đổi màu thanh gạch chân bên dưới Tab sang màu Xanh Lục Bảo */
-    button[data-baseweb="tab"] {{
-        color: {THEME_COLORS['text_secondary']} !important;
-    }}
-    button[data-baseweb="tab"][aria-selected="true"] {{
-        color: {THEME_COLORS['primary']} !important;
-    }}
-    div[data-testid="stTabsTabBorder"] {{
-        background-color: {THEME_COLORS['primary']} !important;
-    }}
-    
     </style>
     """,
         unsafe_allow_html=True,
     )
 
 
-# Kích hoạt chiếc áo mới cho giao diện
-# apply_premium_theme()
-
 # 4. Hiển thị các thành phần UI mẫu trên màn hình
-# Sử dụng f-string để chèn tên người đang đăng nhập
-# Xác định màu ní muốn (ví dụ màu đỏ hoặc màu thương hiệu của tiệm)
-mau_chu = "#FF5733"  # Ní có thể thay mã màu tại đây
-
+mau_chu = "#FF5733"
 ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
-
 marquee_code = f"""
 <div class="custom-marquee">
     <marquee scrollamount="4">
@@ -343,11 +301,7 @@ marquee_code = f"""
     </marquee>
 </div>
 """
-
 st.markdown(marquee_code, unsafe_allow_html=True)
-
-# Thanh Menu điều hướng tối giản
-# menu_tabs = st.tabs(["Tổng quan", "Lên hóa đơn", "Lịch hẹn", "Báo cáo"])
 
 
 # =====================================================================
@@ -426,7 +380,7 @@ def get_service_data():
                     gia_goc = float(
                         str(row[1]).replace(".", "").replace(",", "").strip()
                     )
-                except:
+                except Exception:
                     gia_goc = 0.0
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
@@ -434,7 +388,7 @@ def get_service_data():
                         hoa_hong = float(
                             str(row[2]).replace("%", "").replace(",", ".").strip()
                         )
-                    except:
+                    except Exception:
                         hoa_hong = 0.0
                 danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
         return danh_sach_dv
@@ -546,7 +500,6 @@ def xoa_bill_tam_dong_goc(index_sheet_row):
 
 def gui_email_backup(noi_dung):
     try:
-
         sender_email = "huynhcongtuan0978666620@gmail.com"
         password = "lwui aesw vqal ytcq"
         receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
@@ -724,7 +677,6 @@ def check_auto_login():
     return st.session_state.get("logged_in", False)
 
 
-# PHẢI GỌI HÀM NÀY Ở ĐÂY
 apply_v15_theme()
 
 
@@ -761,8 +713,6 @@ def main():
     apply_v15_theme()
     inject_advanced_ui_js()
     settings = get_settings()
-
-    # st.markdown(f"<marquee behavior='scroll' direction='left' style='font-size: 15px; font-weight: bold; color: {THEME_COLORS['text_main']}; background-color: {THEME_COLORS['primary']}; padding: 8px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 10px;'>🚀 LÊN ĐƠN ĐI NÀO CÁC BẠN ƠI! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU KHÁCH NHÉ! 💸</marquee>", unsafe_allow_html=True)
 
     if not st.session_state["logged_in"]:
         is_auto_logged = check_auto_login()
@@ -1029,7 +979,7 @@ def main():
                                 last_7_days.set_index("Ngày")[c_tien],
                                 color=THEME_COLORS["primary"],
                             )
-                except:
+                except Exception:
                     pass
 
             with st.container(border=True):
@@ -1169,7 +1119,7 @@ def main():
                                                 )
                                                 time.sleep(0.5)
                                                 st.rerun()
-                                            except:
+                                            except Exception:
                                                 pass
                                 else:
                                     if st.button(
@@ -1197,7 +1147,7 @@ def main():
                                                 idx_sheet, col_idx, "ĐANG XỬ LÝ"
                                             )
                                             get_lich_hen_data.clear()
-                                        except:
+                                        except Exception:
                                             pass
                                         st.toast(
                                             "✅ Đã nạp thông tin. Chuyển sang Tab Lên Hóa Đơn nhé!"
@@ -1401,7 +1351,7 @@ def main():
                     opts_tho = ds_tho if ds_tho else [st.session_state.full_name]
                     try:
                         default_idx = opts_tho.index(st.session_state.tho_chot_val)
-                    except:
+                    except Exception:
                         default_idx = 0
                     chot_tho = st.selectbox(
                         "Thợ thực hiện:", options=opts_tho, index=default_idx
@@ -1537,7 +1487,6 @@ def main():
 
                             ws.append_rows(rows_to_append)
 
-                            # CẬP NHẬT TRẠNG THÁI "ĐÃ CHỐT ĐƠN" VÀO SHEET LICHHEN
                             if st.session_state.get("current_lh_idx"):
                                 try:
                                     get_google_sheet_workbook().worksheet(
@@ -1548,7 +1497,7 @@ def main():
                                         "ĐÃ CHỐT ĐƠN",
                                     )
                                     get_lich_hen_data.clear()
-                                except:
+                                except Exception:
                                     pass
                                 st.session_state.current_lh_idx = None
 
@@ -1564,7 +1513,6 @@ def main():
 
                             nd_mail = (
                                 f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nChi tiết xin liên hệ Hotline 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
-                                ""
                             )
 
                             gui_email_backup(nd_mail)
@@ -1830,7 +1778,7 @@ def main():
                                                 )
                                                 time.sleep(0.5)
                                                 st.rerun()
-                                            except:
+                                            except Exception:
                                                 pass
                                 else:
                                     if st.button(
@@ -1882,7 +1830,7 @@ def main():
                                                 idx_sheet, col_idx, "ĐANG XỬ LÝ"
                                             )
                                             get_lich_hen_data.clear()
-                                        except:
+                                        except Exception:
                                             pass
 
                                         trigger_auto_save()
@@ -2005,7 +1953,6 @@ def main():
                                 unsafe_allow_html=True,
                             )
                             if not df_today.empty:
-                                # Ưu tiên lấy đúng cột "Thợ phụ trách" trong file của ní để tránh bốc nhầm cột "Tiền công thợ"
                                 if "Thợ phụ trách" in df_today.columns:
                                     col_tho_name = "Thợ phụ trách"
                                 else:
@@ -2177,7 +2124,7 @@ def main():
                                                 st.markdown(
                                                     f"💰 **Tạm tính:** `{float(t_tien_str.replace(',','').replace('.','')):,.0f}đ` | 🤝 **Thợ:** {tho_lam}"
                                                 )
-                                            except:
+                                            except Exception:
                                                 st.markdown(
                                                     f"💰 **Tạm tính:** `{t_tien_str}đ` | 🤝 **Thợ:** {tho_lam}"
                                                 )
