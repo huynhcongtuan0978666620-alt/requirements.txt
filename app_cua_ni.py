@@ -911,12 +911,12 @@ def main():
                 "⚙️ Quản trị & Mở rộng",
             ]
         )
-        
+
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
         # =====================================================================
         active_tab = st.query_params.get("tab", "0")
-        
+
         # Nếu có lệnh yêu cầu nhảy tab bằng Force, ghi đè lên URL
         if "force_tab" in st.session_state:
             active_tab = str(st.session_state.force_tab)
@@ -1694,10 +1694,10 @@ def main():
                         else:
                             st.session_state.lh_ten_val = ""
                         st.rerun()
-                    
+
                     # Fix lỗi số 2: Chọn thời gian bị khoá cứng
                     hen_gio = st.time_input("Giờ hẹn", key="hen_gio_val")
-                
+
                 with c_hen1:
                     hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
                     hen_ten = st.text_input(
