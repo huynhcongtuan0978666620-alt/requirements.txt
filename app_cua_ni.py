@@ -21,6 +21,7 @@ st.set_page_config(
     page_icon="💇‍♀️",
     initial_sidebar_state="collapsed",
 )
+
 # CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
 st.markdown(
     """
@@ -57,13 +58,7 @@ components.html(
     height=0,
 )
 
-
-def set_app_background(colors):
-    gradient_css = f"""
-    <style>
-    .stApp {{
-        background:# =====================================================================
-        
+# =====================================================================
 # 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
@@ -99,32 +94,25 @@ THEME_COLORS = {
     "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
     "shadow_toast": "rgba(0, 0, 0, 0.6)"    # Đổ bóng thông báo
 }
- linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
-        background-attachment: fixed;
-    }}
-    </style>
-    """
-    st.markdown(gradient_css, unsafe_allow_html=True)
 
 
 def set_app_background(theme):
     """
     Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
     """
-    st.markdown(
-        f"""
-        <style>
-            .stApp {{
-                background-color: {theme['bg_app']};
-            }}
-            /* Định nghĩa thêm các style khác nếu cần */
-            .css-1544g2n {{
-                background-color: {theme['bg_card']};
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    gradient_css = f"""
+    <style>
+    .stApp {{
+        background: linear-gradient(180deg, {theme['bg_app']} 20%, #f9f9f9 80%);
+        background-attachment: fixed;
+    }}
+    /* Định nghĩa thêm các style khác nếu cần */
+    .css-1544g2n {{
+        background-color: {theme['bg_card']};
+    }}
+    </style>
+    """
+    st.markdown(gradient_css, unsafe_allow_html=True)
 
 
 set_app_background(THEME_COLORS)
@@ -1656,7 +1644,7 @@ def main():
                             )
                             trigger_auto_save()
 
-                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nChi tiết xin liên hệ Hotline 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
+                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \n Salon Kim Hiền\n Chi tiết xin liên hệ 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
 
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
@@ -2481,7 +2469,7 @@ def main():
                         unsafe_allow_html=True,
                     )
                     if st.button(
-                        "♻️ LÀM MỚI TOÀN BỘ BỘ NHỚ ĐỆM",
+                        "♻️ LÀM MỚI NHỚ ĐỆM",
                         use_container_width=True,
                         type="primary",
                     ):
@@ -2514,3 +2502,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+}
