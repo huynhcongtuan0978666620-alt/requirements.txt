@@ -105,7 +105,7 @@ def inject_advanced_ui_js():
         fetch('/_stcore/health').catch(()=>{{}});
     }}, 30000); 
 
-    // --- FIX LỖI MẤT TAB KHI F5 & CHUYỂN TAB TỰ ĐỘNG ---
+    // --- CƠ CHẾ ĐỌC VÀ GHI URL ĐỂ GIỮ TAB KHI F5 ---
     function initTabObserver() {{
         const tabs = parentDoc.querySelectorAll('button[data-baseweb="tab"]');
         if (tabs.length === 0) {{
@@ -113,15 +113,6 @@ def inject_advanced_ui_js():
             return;
         }}
         
-        // Đọc Tab từ URL (query_params) và tự động bấm vào Tab đó
-        const urlParams = new URLSearchParams(window.parent.location.search);
-        const activeTabIdx = urlParams.get('tab');
-        if (activeTabIdx !== null && parseInt(activeTabIdx) < tabs.length) {{
-            if (tabs[activeTabIdx].getAttribute('aria-selected') !== 'true') {{
-                tabs[activeTabIdx].click();
-            }}
-        }}
-
         // Gắn sự kiện: Bấm tab nào thì lưu tab đó lên URL
         tabs.forEach((tab, index) => {{
             tab.addEventListener('click', () => {{
@@ -750,6 +741,10 @@ def main():
         if key not in st.session_state:
             st.session_state[key] = val
 
+    # Khởi tạo giá trị mặc định cho Giờ hẹn để tránh mất dữ liệu (Fix Lỗi 2)
+    if "hen_gio_val" not in st.session_state:
+        st.session_state["hen_gio_val"] = get_now_vn().time()
+
     apply_v15_theme()
     inject_advanced_ui_js()
     settings = get_settings()
@@ -916,6 +911,37 @@ def main():
                 "⚙️ Quản trị & Mở rộng",
             ]
         )
+        
+        # =====================================================================
+        # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
+        # =====================================================================
+        active_tab = st.query_params.get("tab", "0")
+        
+        # Nếu có lệnh yêu cầu nhảy tab bằng Force, ghi đè lên URL
+        if "force_tab" in st.session_state:
+            active_tab = str(st.session_state.force_tab)
+            st.query_params["tab"] = active_tab
+            del st.session_state.force_tab
+
+        # Đoạn Script này sẽ bắt Streamlit lập tức click vào đúng Tab hiện tại ngay sau khi Render
+        click_js = f"""
+        <script>
+            function forceTabClick() {{
+                const tabs = window.parent.document.querySelectorAll('button[data-baseweb="tab"]');
+                if (tabs && tabs.length > {active_tab}) {{
+                    if(tabs[{active_tab}].getAttribute('aria-selected') !== 'true') {{
+                        tabs[{active_tab}].click();
+                    }}
+                }}
+            }}
+            forceTabClick();
+            setTimeout(forceTabClick, 50);
+            setTimeout(forceTabClick, 150);
+        </script>
+        """
+        components.html(click_js, height=0)
+        # =====================================================================
+
         services = get_service_data()
         dv_list = list(services.keys())
 
@@ -1093,7 +1119,6 @@ def main():
                             .str.contains(today_str, na=False)
                         ]
 
-                        # Fix Bug 2: Đếm số lượng đơn hẹn
                         so_luong_hen = len(df_today_lh)
                         st.markdown(
                             f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>',
@@ -1169,7 +1194,6 @@ def main():
                                         key=f"lh_home_{idx_sheet}",
                                         use_container_width=True,
                                     ):
-                                        # Fix Bug 1: Nạp cả danh sách Dịch Vụ từ lịch hẹn vào Giỏ Hàng
                                         new_gio = []
                                         if dv:
                                             for d_v in dv.split(", "):
@@ -1222,9 +1246,7 @@ def main():
                                             "✅ Đã nạp thông tin. Đang chuyển sang Tab Lên Hóa Đơn!"
                                         )
                                         time.sleep(0.3)
-                                        st.query_params["tab"] = (
-                                            "1"  # Búng sang Tab 2 tự động
-                                        )
+                                        st.session_state.force_tab = 1
                                         st.rerun()
                                 st.markdown(
                                     "<hr style='margin:8px 0; border:none;'>",
@@ -1672,7 +1694,10 @@ def main():
                         else:
                             st.session_state.lh_ten_val = ""
                         st.rerun()
-                    hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
+                    
+                    # Fix lỗi số 2: Chọn thời gian bị khoá cứng
+                    hen_gio = st.time_input("Giờ hẹn", key="hen_gio_val")
+                
                 with c_hen1:
                     hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
                     hen_ten = st.text_input(
@@ -1911,9 +1936,8 @@ def main():
                                             "⚡ Chuyển dữ liệu lịch hẹn ra giỏ hàng thành công!"
                                         )
                                         time.sleep(0.3)
-                                        st.query_params["tab"] = (
-                                            "1"  # Búng tự động qua Tab 2
-                                        )
+                                        # Fix lỗi số 4: Ép nhảy sang Tab 1
+                                        st.session_state.force_tab = 1
                                         st.rerun()
                             st.markdown(
                                 "<hr style='margin: 5px 0;'>", unsafe_allow_html=True
@@ -2267,7 +2291,8 @@ def main():
                                                             "⚡ Đã nạp đơn chờ vào giỏ hàng thành công!"
                                                         )
                                                         time.sleep(0.3)
-                                                        st.query_params["tab"] = "1"
+                                                        # Fix lỗi số 4: Ép nhảy sang Tab 1
+                                                        st.session_state.force_tab = 1
                                                         st.rerun()
                             if not has_pending:
                                 st.info("Không có đơn chờ duyệt nào hiện tại.")
