@@ -37,7 +37,8 @@ components.html(
 )
 
 # CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
-st.markdown("""
+st.markdown(
+    """
     <style>
         /* Tạo hiệu ứng mờ dần khi chuyển trang */
         .stApp {
@@ -53,7 +54,9 @@ st.markdown("""
             transition: all 0.3s ease-in-out;
         }
     </style>
-""", unsafe_allow_html=True)
+""",
+    unsafe_allow_html=True,
+)
 
 
 # =====================================================================
