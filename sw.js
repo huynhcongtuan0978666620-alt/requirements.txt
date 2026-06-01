@@ -1,17 +1,22 @@
 const CACHE_NAME = 'salon-kim-hien-v1';
+
+// Những thứ ní nên cache: file icon, logo, css tĩnh
 const ASSETS = [
-  '/',
-  '/app_cua_ni' // Tùy thuộc vào đường dẫn của ní, nếu là app chính thì thường là '/'
+  '/', 
+  '/index.html',
+  '/favicon.ico' 
 ];
 
 self.addEventListener('install', (event) => {
+  self.skipWaiting(); // Ép buộc cài đặt ngay không chờ đợi
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
 });
 
 self.addEventListener('fetch', (event) => {
+  // Chiến lược: Thử lấy từ mạng trước, nếu không có mạng thì mới dùng cache
   event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
+    fetch(event.request).catch(() => {
+      return caches.match(event.request);
     })
   );
 });
