@@ -2186,7 +2186,7 @@ def main():
                     except Exception as e:
                         st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
             else:
-                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
+                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền ADMIN.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
