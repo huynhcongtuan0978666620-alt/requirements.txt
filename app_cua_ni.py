@@ -71,7 +71,7 @@ THEME_COLORS = {
     "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
     "bg_marquee": "rgba(70, 140, 150, 1)",  # Nền thanh chạy chữ màu vàng
     # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 140, 150, 1)",  # Màu chủ đạo (Xanh teal)
+    "primary": "#e3f2fd",  # Màu chủ đạo (Xanh teal)
     "accent_vip": "#ffb300",  # Màu vàng kim
     "accent_danger": "#d32f2f",  # Màu cảnh báo đỏ
     "accent_zalo": "#0068ff",  # Màu thương hiệu Zalo
