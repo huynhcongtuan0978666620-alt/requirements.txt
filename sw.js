@@ -1,22 +1,32 @@
-const CACHE_NAME = 'salon-kim-hien-v1';
+const CACHE_NAME = 'salon-kim-hien-v2';
 
-// Những thứ ní nên cache: file icon, logo, css tĩnh
+// 1. Chỉ cache những file "bất biến" để App mở lên được khi mất mạng
 const ASSETS = [
   '/', 
-  '/index.html',
-  '/favicon.ico' 
+  '/index.html'
 ];
 
+// Cài đặt: Lưu file vào két sắt
 self.addEventListener('install', (event) => {
-  self.skipWaiting(); // Ép buộc cài đặt ngay không chờ đợi
+  self.skipWaiting();
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)));
 });
 
+// 2. CHIẾN THUẬT: Stale-While-Revalidate (Lấy cái cũ trước, tải cái mới đè lên sau)
 self.addEventListener('fetch', (event) => {
-  // Chiến lược: Thử lấy từ mạng trước, nếu không có mạng thì mới dùng cache
   event.respondWith(
-    fetch(event.request).catch(() => {
-      return caches.match(event.request);
+    caches.match(event.request).then((cachedResponse) => {
+      // Gọi fetch mới từ server để cập nhật
+      const fetchPromise = fetch(event.request).then((networkResponse) => {
+        // Nếu tải thành công, lưu đè vào cache
+        if (networkResponse.status === 200) {
+            caches.open(CACHE_NAME).then((cache) => cache.put(event.request, networkResponse.clone()));
+        }
+        return networkResponse;
+      });
+
+      // Trả về cái cũ ngay lập tức (để App mượt), sau đó cập nhật dữ liệu mới ở background
+      return cachedResponse || fetchPromise;
     })
   );
 });
