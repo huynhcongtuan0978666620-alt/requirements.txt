@@ -12,6 +12,7 @@ import smtplib
 import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import streamlit.components.v1 as components  # Đảm bảo ní đã import cái này nhé!
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -19,6 +20,20 @@ st.set_page_config(
     layout="wide",
     page_icon="💇‍♀️",
     initial_sidebar_state="collapsed",
+)
+
+# CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG
+components.html(
+    """
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('✅ Service Worker đăng ký thành công!'))
+        .catch(err => console.log('❌ Service Worker lỗi:', err));
+      }
+    </script>
+    """,
+    height=0,
 )
 
 # =====================================================================
