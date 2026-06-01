@@ -63,6 +63,7 @@ def set_app_background(colors):
     <style>
     .stApp {{
         background:# =====================================================================
+        
 # 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
@@ -104,7 +105,24 @@ THEME_COLORS = {
     </style>
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
-
+def set_app_background(theme):
+    """
+    Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
+    """
+    st.markdown(
+        f"""
+        <style>
+            .stApp {{
+                background-color: {theme['bg_app']};
+            }}
+            /* Định nghĩa thêm các style khác nếu cần */
+            .css-1544g2n {{
+                background-color: {theme['bg_card']};
+            }}
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
 
 set_app_background(THEME_COLORS)
 
