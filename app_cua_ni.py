@@ -58,8 +58,6 @@ components.html(
 )
 
 
-
-
 def set_app_background(colors):
     gradient_css = f"""
     <style>
