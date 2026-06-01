@@ -65,7 +65,7 @@ THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
     "bg_app": "#e8f5f3",  # Nền tổng thể xanh mint nhẹ
     "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi
-    "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám
+    "bg_box_chung": "#ffb300",  # Nền khung chung xanh xám
     "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương
     "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
     "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
