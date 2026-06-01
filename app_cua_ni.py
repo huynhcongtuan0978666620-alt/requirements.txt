@@ -677,8 +677,8 @@ def check_auto_login():
                     {
                         "logged_in": True,
                         "role": "Admin",
-                        "full_name": "Quản lý",
-                        "tho_chot_val": "Quản lý",
+                        "full_name": "ADMIN",
+                        "tho_chot_val": "ADMIN",
                     }
                 )
                 return True
@@ -823,8 +823,8 @@ def main():
                         {
                             "logged_in": True,
                             "role": "Admin",
-                            "full_name": "Quản lý",
-                            "tho_chot_val": "Quản lý",
+                            "full_name": "ADMIN",
+                            "tho_chot_val": "ADMIN",
                             "trigger_balloons": True,
                         }
                     )
@@ -2193,7 +2193,7 @@ def main():
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
                     st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">QUẢN LÝ DANH SÁCH BILL CHỜ</div>',
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">ADMIN DANH SÁCH BILL CHỜ</div>',
                         unsafe_allow_html=True,
                     )
                     if st.button(
