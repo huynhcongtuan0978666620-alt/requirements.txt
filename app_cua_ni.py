@@ -69,7 +69,7 @@ THEME_COLORS = {
     "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương
     "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
     "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
-    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu vàng
+    "bg_marquee": "rgba(70, 140, 150, 1)",  # Nền thanh chạy chữ màu vàng
     # --- Màu nhấn (Accents) ---
     "primary": "rgba(70, 140, 150, 1)",  # Màu chủ đạo (Xanh teal)
     "accent_vip": "#ffb300",  # Màu vàng kim
