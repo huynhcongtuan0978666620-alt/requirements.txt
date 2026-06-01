@@ -36,6 +36,26 @@ components.html(
     height=0,
 )
 
+# CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
+st.markdown("""
+    <style>
+        /* Tạo hiệu ứng mờ dần khi chuyển trang */
+        .stApp {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Hiệu ứng trượt nhẹ cho các thẻ container */
+        div[data-testid="stVerticalBlock"] {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
