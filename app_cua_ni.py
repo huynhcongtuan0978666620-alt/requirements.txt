@@ -21,21 +21,6 @@ st.set_page_config(
     page_icon="💇‍♀️",
     initial_sidebar_state="collapsed",
 )
-
-# CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
-components.html(
-    """
-    <script>
-      if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('✅ Service Worker đăng ký thành công!'))
-        .catch(err => console.log('❌ Service Worker lỗi:', err));
-      }
-    </script>
-    """,
-    height=0,
-)
-
 # CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
 st.markdown(
     """
@@ -58,6 +43,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
+# CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
+components.html(
+    """
+    <script>
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('✅ Service Worker đăng ký thành công!'))
+        .catch(err => console.log('❌ Service Worker lỗi:', err));
+      }
+    </script>
+    """,
+    height=0,
+)
 
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
