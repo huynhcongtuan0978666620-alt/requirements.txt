@@ -105,6 +105,8 @@ THEME_COLORS = {
     </style>
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
+
+
 def set_app_background(theme):
     """
     Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
@@ -123,6 +125,7 @@ def set_app_background(theme):
         """,
         unsafe_allow_html=True,
     )
+
 
 set_app_background(THEME_COLORS)
 
