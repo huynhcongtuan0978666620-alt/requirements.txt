@@ -57,42 +57,50 @@ components.html(
     height=0,
 )
 
-# =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
-# =====================================================================
-THEME_COLORS = {
-    "bg_app": "#e8f5f3",
-    "bg_card": "#ffffff",
-    "bg_box_chung": "#f4f7f6",
-    "bg_vip_box": "#e3f2fd",
-    "bg_shake_box": "#fff3e0",
-    "bg_badge_hang": "#efebe9",
-    "bg_marquee": "#f0f008",
-    "primary": "rgba(70, 140, 150, 1)",
-    "accent_vip": "#ffb300",
-    "accent_danger": "#d32f2f",
-    "accent_zalo": "#0068ff",
-    "accent_chiet_khau": "#e65100",
-    "text_main": "#263238",
-    "text_secondary": "#546e7a",
-    "text_muted": "#90a4ae",
-    "text_title": "#0f4c43",
-    "text_badge": "#ffffff",
-    "border_light": "#eaeaea",
-    "border_input": "#cfd8dc",
-    "border_badge": "#b2dfdb",
-    "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",
-}
+
 
 
 def set_app_background(colors):
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
+        background:# =====================================================================
+# 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
+# =====================================================================
+THEME_COLORS = {
+    # --- Màu nền (Backgrounds) ---
+    "bg_app": "#e8f5f3",          # Nền tổng thể xanh mint nhẹ
+    "bg_card": "#ffffff",         # Nền thẻ trắng tinh khôi
+    "bg_box_chung": "#f4f7f6",    # Nền khung chung xanh xám
+    "bg_vip_box": "#e3f2fd",      # Nền khung VIP xanh dương
+    "bg_shake_box": "#fff3e0",    # Nền khung sự kiện cam nhạt
+    "bg_badge_hang": "#efebe9",   # Nền nhãn phân hạng
+    "bg_marquee": "#f0f008",      # Nền thanh chạy chữ màu vàng
+    
+    # --- Màu nhấn (Accents) ---
+    "primary": "rgba(70, 140, 150, 1)", # Màu chủ đạo (Xanh teal)
+    "accent_vip": "#ffb300",            # Màu vàng kim
+    "accent_danger": "#d32f2f",         # Màu cảnh báo đỏ
+    "accent_zalo": "#0068ff",           # Màu thương hiệu Zalo
+    "accent_chiet_khau": "#e65100",     # Màu cam đậm
+    
+    # --- Văn bản (Text) ---
+    "text_main": "#263238",       # Chữ chính
+    "text_secondary": "#546e7a",  # Chữ phụ
+    "text_muted": "#90a4ae",      # Chữ mờ
+    "text_title": "#0f4c43",      # Tiêu đề
+    "text_badge": "#ffffff",      # Chữ trên badge
+    
+    # --- Viền & Đổ bóng (Borders & Shadows) ---
+    "border_light": "#eaeaea",    # Viền mảnh
+    "border_input": "#cfd8dc",    # Viền ô nhập
+    "border_badge": "#b2dfdb",    # Viền badge
+    "border_vip": "#4fc3f7",      # Viền VIP
+    "shadow_light": "rgba(0, 0, 0, 0.015)", # Đổ bóng nhẹ
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
+    "shadow_toast": "rgba(0, 0, 0, 0.6)"    # Đổ bóng thông báo
+}
+ linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
         background-attachment: fixed;
     }}
     </style>
