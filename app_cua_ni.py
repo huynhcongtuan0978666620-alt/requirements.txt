@@ -83,9 +83,9 @@ THEME_COLORS = {
     "text_title": "#0f4c43",  # Tiêu đề
     "text_badge": "#ffffff",  # Chữ trên badge
     # --- Viền & Đổ bóng (Borders & Shadows) ---
-    "border_light": "#eaeaea",  # Viền mảnh
+    "border_light": "#e3f2fd",  # Viền mảnh
     "border_input": "#cfd8dc",  # Viền ô nhập
-    "border_badge": "#b2dfdb",  # Viền badge
+    "border_badge": "#e3f2fd",  # Viền badge
     "border_vip": "#4fc3f7",  # Viền VIP
     "shadow_light": "rgba(0, 0, 0, 0.015)",  # Đổ bóng nhẹ
     "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
