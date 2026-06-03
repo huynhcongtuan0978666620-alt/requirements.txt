@@ -2584,6 +2584,15 @@ def main():
                         * **Kỹ thuật vào thuốc:** Chia toàn bộ tóc thành các tép nhỏ từ 1-2cm. Đi cọ dứt khoát, trải đều thuốc từ thân đến ngọn hoặc cách chân tùy thuộc vào nền tóc thực tế. Chú ý bôi thuốc đẫm, tránh đọng thuốc cục bộ dễ gây loang lổ.
                         * **Xả tóc & Khóa màu:** Theo dõi độ lên màu liên tục, khi đạt thời gian lưu thuốc chuẩn (35-45 phút), tiến hành xả sạch hoàn toàn bằng nước ấm cho đến khi nước trong. Sử dụng dầu xả hoặc dầu hấp chuyên dụng khử kiềm để đóng chặt biểu bì tóc, khóa hạt màu lâu phai và tạo độ bóng mượt.
                         """)
+
+        st.markdown(
+                    "<div style='margin-top: 25px;'></div>", unsafe_allow_html=True
+                )
+                with st.container(border=True):
+                    st.markdown(
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">⚙️ QUẢN TRỊ HỆ THỐNG GỐC</div>',
+                        unsafe_allow_html=True,
+                    )
                         
                         if st.button(
                         "♻️ LÀM MỚI NHỚ ĐỆM",
