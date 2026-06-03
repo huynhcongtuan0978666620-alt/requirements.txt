@@ -2029,9 +2029,9 @@ def main():
                 with st.container(border=True):
 
                     # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
-    if st.session_state.get("role") == "Admin":
+            if st.session_state.get("role") == "Admin":
         total_today = count_orders_today()
-        st.markdown(
+                    st.markdown(
             f"""
             <div class="box-chung" style="background-color: {THEME_COLORS['bg_vip_box']}; border-left: 6px solid {THEME_COLORS['primary']}; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 15px;">
                 📊 <span style="color: {THEME_COLORS['text_title']}; font-weight: 700;">HỆ THỐNG KIỂM SOÁT ĐƠN:</span> 
