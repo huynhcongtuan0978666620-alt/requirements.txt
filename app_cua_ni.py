@@ -1294,18 +1294,34 @@ def main():
                     )
                     st.info("Dữ liệu lịch hẹn trống.")
 
-            if st.session_state.get("bill_vua_in"):
-                with st.container(border=True):
-                    st.markdown(
-                        '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
-                        unsafe_allow_html=True,
-                    )
-                    st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
-                    if st.button(
-                        "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
-                    ):
-                        st.session_state.bill_vua_in = None
-                        st.rerun()
+with tabs[x]: # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
+    
+    # 1. Đoạn code hiển thị bill cũ của ní
+    if st.session_state.get("bill_vua_in"):
+        with st.container(border=True):
+            st.markdown(
+                '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
+                unsafe_allow_html=True,
+            )
+            st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+            if st.button("❌ ẨN BILL NÀY", use_container_width=True, type="primary"):
+                st.session_state.bill_vua_in = None
+                st.rerun()
+
+    # 2. Đoạn code đếm đơn (Admin) - Đã được thụt lề vào trong tabs
+    if st.session_state.get("role") == "Admin":
+        try:
+            so_don_hom_nay = count_orders_today()
+            st.markdown(
+                f"""
+                <div style="background-color: {THEME_COLORS['primary']}; color: white; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+                    <strong style="font-size: 18px;">🔥 TỔNG ĐƠN ĐÃ CHỐT HÔM NAY: {so_don_hom_nay} ĐƠN</strong>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+        except Exception:
+            st.error("Không thể tải số liệu đơn hàng.")
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
