@@ -2405,11 +2405,18 @@ def main():
                                                                 item.strip(),
                                                             )
                                                             if match:
-                                                                t_dv, s_l = match.group(1).strip(), float(match.group(2))
+                                                                t_dv, s_l = match.group(
+                                                                    1
+                                                                ).strip(), float(
+                                                                    match.group(2)
+                                                                )
                                                             else:
                                                                 # Phòng hờ nếu quên ghi (x số lượng) thì mặc định là 1
-                                                                t_dv, s_l = item.strip(), 1.0
-                                                            
+                                                                t_dv, s_l = (
+                                                                    item.strip(),
+                                                                    1.0,
+                                                                )
+
                                                             info = services.get(
                                                                 t_dv,
                                                                 {
@@ -2421,9 +2428,16 @@ def main():
                                                                 {
                                                                     "dich_vu": t_dv,
                                                                     "so_luong": s_l,
-                                                                    "don_gia": info.get("gia", 0.0),
-                                                                    "thanh_tien": info.get("gia", 0.0) * s_l,
-                                                                    "phan_tram_hh": info.get("hoa_hong", 0.0),
+                                                                    "don_gia": info.get(
+                                                                        "gia", 0.0
+                                                                    ),
+                                                                    "thanh_tien": info.get(
+                                                                        "gia", 0.0
+                                                                    )
+                                                                    * s_l,
+                                                                    "phan_tram_hh": info.get(
+                                                                        "hoa_hong", 0.0
+                                                                    ),
                                                                 }
                                                             )
 
@@ -2586,7 +2600,7 @@ def main():
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">⚙️ QUẢN TRỊ HỆ THỐNG GỐC</div>',
                         unsafe_allow_html=True,
                     )
-                        
+
                     if st.button(
                         "♻️ LÀM MỚI NHỚ ĐỆM",
                         use_container_width=True,
