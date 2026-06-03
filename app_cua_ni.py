@@ -1296,7 +1296,7 @@ def main():
 
 
 # Ví dụ: Nếu "Hoá Đơn Dịch Vụ" là tab thứ 2 (chỉ số 1)
-with tabs[1]:  
+with tabs[1]:
     # 1. Đoạn code hiển thị bill cũ của ní
     if st.session_state.get("bill_vua_in"):
         with st.container(border=True):
