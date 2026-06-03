@@ -1294,8 +1294,9 @@ def main():
                     )
                     st.info("Dữ liệu lịch hẹn trống.")
 
-with tabs[x]: # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
-    
+
+with tabs[x]:  # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
+
     # 1. Đoạn code hiển thị bill cũ của ní
     if st.session_state.get("bill_vua_in"):
         with st.container(border=True):
@@ -1318,7 +1319,7 @@ with tabs[x]: # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
                     <strong style="font-size: 18px;">🔥 TỔNG ĐƠN ĐÃ CHỐT HÔM NAY: {so_don_hom_nay} ĐƠN</strong>
                 </div>
                 """,
-                unsafe_allow_html=True
+                unsafe_allow_html=True,
             )
         except Exception:
             st.error("Không thể tải số liệu đơn hàng.")
