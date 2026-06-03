@@ -22,7 +22,29 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# KÍCH HOẠT PWA
+# CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
+st.markdown(
+    """
+    <style>
+        /* Tạo hiệu ứng mờ dần khi chuyển trang */
+        .stApp {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+        
+        /* Hiệu ứng trượt nhẹ cho các thẻ container */
+        div[data-testid="stVerticalBlock"] {
+            transition: all 0.3s ease-in-out;
+        }
+    </style>
+""",
+    unsafe_allow_html=True,
+)
+
+# CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
 components.html(
     """
     <script>
@@ -37,42 +59,53 @@ components.html(
 )
 
 # =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
+# 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
-    "bg_app": "#e8f5f3",
-    "bg_card": "#ffffff",
-    "bg_box_chung": "#f4f7f6",
-    "bg_vip_box": "#e3f2fd",
-    "bg_shake_box": "#fff3e0",
-    "bg_badge_hang": "#efebe9",
-    "bg_marquee": "#f0f008",
-    "primary": "rgba(70, 140, 150, 1)",
-    "accent_vip": "#ffb300",
-    "accent_danger": "#d32f2f",
-    "accent_zalo": "#0068ff",
-    "accent_chiet_khau": "#e65100",
-    "text_main": "#263238",
-    "text_secondary": "#546e7a",
-    "text_muted": "#90a4ae",
-    "text_title": "#0f4c43",
-    "text_badge": "#ffffff",
-    "border_light": "#eaeaea",
-    "border_input": "#cfd8dc",
-    "border_badge": "#b2dfdb",
-    "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",
+    # --- Màu nền (Backgrounds) ---
+    "bg_app": "#e8f5f3",  # Nền tổng thể xanh mint nhẹ
+    "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi
+    "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám
+    "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương
+    "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
+    "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
+    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu vàng
+    # --- Màu nhấn (Accents) ---
+    "primary": "rgba(70, 140, 150, 1)",  # Màu chủ đạo (Xanh teal)
+    "accent_vip": "#ffb300",  # Màu vàng kim
+    "accent_danger": "#d32f2f",  # Màu cảnh báo đỏ
+    "accent_zalo": "#0068ff",  # Màu thương hiệu Zalo
+    "accent_chiet_khau": "#e65100",  # Màu cam đậm
+    # --- Văn bản (Text) ---
+    "text_main": "#263238",  # Chữ chính
+    "text_secondary": "#546e7a",  # Chữ phụ
+    "text_muted": "#90a4ae",  # Chữ mờ
+    "text_title": "#0f4c43",  # Tiêu đề
+    "text_badge": "#ffffff",  # Chữ trên badge
+    # --- Viền & Đổ bóng (Borders & Shadows) ---
+    "border_light": "#eaeaea",  # Viền mảnh
+    "border_input": "#cfd8dc",  # Viền ô nhập
+    "border_badge": "#b2dfdb",  # Viền badge
+    "border_vip": "#4fc3f7",  # Viền VIP
+    "shadow_light": "rgba(0, 0, 0, 0.015)",  # Đổ bóng nhẹ
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
+    "shadow_toast": "rgba(0, 0, 0, 0.6)",  # Đổ bóng thông báo
 }
 
 
-def set_app_background(colors):
+def set_app_background(theme):
+    """
+    Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
+    """
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
+        background: linear-gradient(180deg, {theme['bg_app']} 20%, #f9f9f9 80%);
         background-attachment: fixed;
+    }}
+    /* Định nghĩa thêm các style khác nếu cần */
+    .css-1544g2n {{
+        background-color: {theme['bg_card']};
     }}
     </style>
     """
@@ -90,96 +123,9 @@ def get_global_user_tracker():
     return {}
 
 
-# 🕒 HÀM LẤY GIỜ VIỆT NAM CHUẨN
 def get_now_vn():
     vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
     return datetime.now(vn_tz)
-
-
-# =====================================================================
-# 🌟 CẤU HÌNH BẢNG MÀU CHI TIẾT TỪNG THÀNH PHẦN (DESIGN SYSTEM V15 NÂNG CẤP)
-# =====================================================================
-THEME_DAY = {
-    "bg_app": "#e8f5f3",
-    "bg_card": "#ffffff",
-    "bg_box_chung": "#f4f7f6",
-    "bg_vip_box": "#e3f2fd",
-    "bg_shake_box": "#fff3e0",
-    "bg_badge_hang": "#efebe9",
-    "bg_marquee": "#fff9c4",  # Nền chữ chạy ban ngày (Vàng nhạt thanh lịch)
-    "text_marquee": "#0f4c43",  # Màu chữ chạy ban ngày độc lập
-    "primary": "rgba(70, 140, 150, 1)",
-    "text_primary_btn": "#ffffff",  # Màu chữ của nút Primary ban ngày
-    "accent_vip": "#ffb300",
-    "accent_danger": "#d32f2f",
-    "accent_zalo": "#0068ff",
-    "accent_chiet_khau": "#e65100",
-    "text_main": "#263238",
-    "text_secondary": "#546e7a",
-    "text_muted": "#90a4ae",
-    "text_title": "#0f4c43",
-    "text_badge": "#ffffff",
-    "border_light": "#eaeaea",
-    "border_input": "#cfd8dc",
-    "border_badge": "#b2dfdb",
-    "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",
-}
-
-THEME_NIGHT = {
-    "bg_app": "#0f1a1c",  # Nền tối sang trọng huyền bí (Không bị đen xì)
-    "bg_card": "#162629",  # Nền hộp thẻ ban đêm
-    "bg_box_chung": "#1e3337",
-    "bg_vip_box": "#152d42",
-    "bg_shake_box": "#3d2a15",
-    "bg_badge_hang": "#2e2522",
-    "bg_marquee": "#233d41",  # Nền chữ chạy ban đêm độc lập
-    "text_marquee": "#ffd54f",  # Màu chữ chạy ban đêm (Vàng neon nổi bật)
-    "primary": "#26a69a",
-    "text_primary_btn": "#0f1a1c",  # Màu chữ nút bấm chính ban đêm độc lập
-    "accent_vip": "#ffd54f",
-    "accent_danger": "#ff5252",
-    "accent_zalo": "#29b6f6",
-    "accent_chiet_khau": "#ff7043",
-    "text_main": "#eceff1",
-    "text_secondary": "#b0bec5",
-    "text_muted": "#78909c",
-    "text_title": "#4db6ac",
-    "text_badge": "#0f1a1c",
-    "border_light": "#233d41",
-    "border_input": "#37474f",
-    "border_badge": "#004d40",
-    "border_vip": "#0288d1",
-    "shadow_light": "rgba(0, 0, 0, 0.3)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.5)",
-    "shadow_toast": "rgba(0, 0, 0, 0.7)",
-}
-
-# TỰ ĐỘNG CHUYỂN ĐỔI GIAO DIỆN THEO MÚI GIỜ HOẠT ĐỘNG
-current_hour = get_now_vn().hour
-if 6 <= current_hour < 18:
-    THEME_COLORS = THEME_DAY
-    THEME_MODE_LABEL = "☀️ CHẾ ĐỘ BAN NGÀY"
-else:
-    THEME_COLORS = THEME_NIGHT
-    THEME_MODE_LABEL = "🌙 CHẾ ĐỘ BAN ĐÊM"
-
-
-def set_app_background(colors):
-    gradient_css = f"""
-    <style>
-    .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, {colors['bg_box_chung']} 80%);
-        background-attachment: fixed;
-    }}
-    </style>
-    """
-    st.markdown(gradient_css, unsafe_allow_html=True)
-
-
-set_app_background(THEME_COLORS)
 
 
 def inject_advanced_ui_js():
@@ -192,7 +138,7 @@ def inject_advanced_ui_js():
         fetch('/_stcore/health').catch(()=>{{}});
     }}, 30000); 
 
-    // --- FIX LỖI MẤT TAB KHI F5 & CHUYỂN TAB TỰ ĐỘNG ---
+    // --- CƠ CHẾ ĐỌC VÀ GHI URL ĐỂ GIỮ TAB KHI F5 ---
     function initTabObserver() {{
         const tabs = parentDoc.querySelectorAll('button[data-baseweb="tab"]');
         if (tabs.length === 0) {{
@@ -200,15 +146,6 @@ def inject_advanced_ui_js():
             return;
         }}
         
-        // Đọc Tab từ URL (query_params) và tự động bấm vào Tab đó
-        const urlParams = new URLSearchParams(window.parent.location.search);
-        const activeTabIdx = urlParams.get('tab');
-        if (activeTabIdx !== null && parseInt(activeTabIdx) < tabs.length) {{
-            if (tabs[activeTabIdx].getAttribute('aria-selected') !== 'true') {{
-                tabs[activeTabIdx].click();
-            }}
-        }}
-
         // Gắn sự kiện: Bấm tab nào thì lưu tab đó lên URL
         tabs.forEach((tab, index) => {{
             tab.addEventListener('click', () => {{
@@ -468,67 +405,6 @@ def get_google_sheet_workbook():
     except Exception as e:
         st.error(f"Lỗi khởi tạo kết nối Sheets: {e}")
         st.stop()
-
-
-def count_orders_today():
-    """Tự động quét tấm sheet BaoCao để đếm tổng đơn chốt chuẩn ngày hôm nay"""
-    try:
-        sh = get_google_sheet_workbook()
-        ws = sh.worksheet("BaoCao")
-        records = ws.get_all_values()
-        if len(records) <= 1:
-            return 0
-
-        # Nhận diện cột Ngày tự động để tránh lệch cột
-        header = records[0]
-        c_ngay_idx = -1
-        for idx, col in enumerate(header):
-            if "ngày" in col.lower() or "ngay" in col.lower():
-                c_ngay_idx = idx
-                break
-        if c_ngay_idx == -1:
-            c_ngay_idx = 0
-
-        today_str = get_now_vn().strftime("%d/%m/%Y")
-        count = 0
-        for row in records[1:]:
-            if len(row) > c_ngay_idx:
-                if str(row[c_ngay_idx]).strip() == today_str:
-                    count += 1
-        return count
-    except Exception:
-        return 0
-
-
-def admin_clear_all_data():
-    """Xoá sạch dữ liệu trên sheet LichHen và BaoCao (Giữ lại hàng tiêu đề đầu)"""
-    try:
-        sh = get_google_sheet_workbook()
-
-        # Xoá dọn dẹp LichHen
-        try:
-            ws_lh = sh.worksheet("LichHen")
-            lh_len = len(ws_lh.get_all_values())
-            if lh_len > 1:
-                ws_lh.delete_rows(2, lh_len)
-        except Exception:
-            pass
-
-        # Xoá dọn dẹp BaoCao
-        try:
-            ws_bc = sh.worksheet("BaoCao")
-            bc_len = len(ws_bc.get_all_values())
-            if bc_len > 1:
-                ws_bc.delete_rows(2, bc_len)
-        except Exception:
-            pass
-
-        # Làm sạch toàn bộ bộ nhớ đệm giải phóng tài nguyên cho hệ thống
-        st.cache_data.clear()
-        st.cache_resource.clear()
-        return True
-    except Exception:
-        return False
 
 
 def format_drive_direct_url(link):
@@ -898,6 +774,10 @@ def main():
         if key not in st.session_state:
             st.session_state[key] = val
 
+    # Khởi tạo giá trị mặc định cho Giờ hẹn để tránh mất dữ liệu (Fix Lỗi 2)
+    if "hen_gio_val" not in st.session_state:
+        st.session_state["hen_gio_val"] = get_now_vn().time()
+
     apply_v15_theme()
     inject_advanced_ui_js()
     settings = get_settings()
@@ -1064,6 +944,37 @@ def main():
                 "⚙️ Quản trị & Mở rộng",
             ]
         )
+
+        # =====================================================================
+        # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
+        # =====================================================================
+        active_tab = st.query_params.get("tab", "0")
+
+        # Nếu có lệnh yêu cầu nhảy tab bằng Force, ghi đè lên URL
+        if "force_tab" in st.session_state:
+            active_tab = str(st.session_state.force_tab)
+            st.query_params["tab"] = active_tab
+            del st.session_state.force_tab
+
+        # Đoạn Script này sẽ bắt Streamlit lập tức click vào đúng Tab hiện tại ngay sau khi Render
+        click_js = f"""
+        <script>
+            function forceTabClick() {{
+                const tabs = window.parent.document.querySelectorAll('button[data-baseweb="tab"]');
+                if (tabs && tabs.length > {active_tab}) {{
+                    if(tabs[{active_tab}].getAttribute('aria-selected') !== 'true') {{
+                        tabs[{active_tab}].click();
+                    }}
+                }}
+            }}
+            forceTabClick();
+            setTimeout(forceTabClick, 50);
+            setTimeout(forceTabClick, 150);
+        </script>
+        """
+        components.html(click_js, height=0)
+        # =====================================================================
+
         services = get_service_data()
         dv_list = list(services.keys())
 
@@ -1241,7 +1152,6 @@ def main():
                             .str.contains(today_str, na=False)
                         ]
 
-                        # Fix Bug: Đếm số lượng chính xác đơn hẹn hiển thị cho đúng vai trò người dùng
                         so_luong_hen = len(df_today_lh)
                         st.markdown(
                             f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>',
@@ -1251,8 +1161,7 @@ def main():
                         has_items = False
                         if not df_today_lh.empty:
                             for i, row in df_today_lh.iterrows():
-                                # FIX CHUẨN: Lấy index thật trên sheet để không bao giờ bị xóa nhầm dòng dữ liệu
-                                idx_sheet = int(i) + 2
+                                idx_sheet = i + 2
                                 gio = (
                                     row.get(c_gio_lh, "--:--") if c_gio_lh else "--:--"
                                 )
@@ -1283,7 +1192,7 @@ def main():
 
                                 st.markdown(
                                     f"""
-                                    <div class="lich-hen-item" style="margin-top: 5px;">
+                                    <div class="lich-hen-item">
                                         <div style="flex: 1;"><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555; font-weight:bold;">{khach} - {sdt}</span><br><span style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">{dv}</span></div>
                                     </div>
                                 """,
@@ -1319,13 +1228,11 @@ def main():
                                         use_container_width=True,
                                     ):
                                         new_gio = []
-                                        # Khắc phục lỗi nếu dictionary services chưa sẵn sàng
-                                        active_services = globals().get("services", {})
-                                        if dv and active_services:
+                                        if dv:
                                             for d_v in dv.split(", "):
                                                 d_v_clean = d_v.strip()
-                                                if d_v_clean in active_services:
-                                                    inf = active_services[d_v_clean]
+                                                if d_v_clean in services:
+                                                    inf = services[d_v_clean]
                                                     new_gio.append(
                                                         {
                                                             "dich_vu": d_v_clean,
@@ -1337,6 +1244,68 @@ def main():
                                                             ],
                                                         }
                                                     )
+
+                                        st.session_state.update(
+                                            {
+                                                "gio_hang": new_gio,
+                                                "kh_sdt_val": str(sdt),
+                                                "kh_ten_val": str(khach),
+                                                "tho_chot_val": (
+                                                    str(tho_yc)
+                                                    if tho_yc != "Không yêu cầu"
+                                                    else st.session_state.full_name
+                                                ),
+                                                "current_lh_idx": idx_sheet,
+                                            }
+                                        )
+
+                                        try:
+                                            col_idx = (
+                                                df_lh.columns.get_loc(c_tt_lh) + 1
+                                                if c_tt_lh
+                                                else 7
+                                            )
+                                            get_google_sheet_workbook().worksheet(
+                                                "LichHen"
+                                            ).update_cell(
+                                                idx_sheet, col_idx, "ĐANG XỬ LÝ"
+                                            )
+                                            get_lich_hen_data.clear()
+                                        except Exception:
+                                            pass
+
+                                        trigger_auto_save()
+                                        st.toast(
+                                            "✅ Đã nạp thông tin. Đang chuyển sang Tab Lên Hóa Đơn!"
+                                        )
+                                        time.sleep(0.3)
+                                        st.session_state.force_tab = 1
+                                        st.rerun()
+                                st.markdown(
+                                    "<hr style='margin:8px 0; border:none;'>",
+                                    unsafe_allow_html=True,
+                                )
+                        if not has_items:
+                            st.info("Không có lịch hẹn nào của bạn cho hôm nay.")
+                else:
+                    st.markdown(
+                        '<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY (0)</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.info("Dữ liệu lịch hẹn trống.")
+
+            if st.session_state.get("bill_vua_in"):
+                with st.container(border=True):
+                    st.markdown(
+                        '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+                    if st.button(
+                        "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
+                    ):
+                        st.session_state.bill_vua_in = None
+                        st.rerun()
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
@@ -1452,7 +1421,6 @@ def main():
                         2.0 if st.session_state.get("role") == "NhanVien" else 1000.0
                     )
 
-                    # SỬA LỖI KEY BẰNG CÁCH KẾT HỢP TÊN DỊCH VỤ VÀ INDEX VÀ RESET_COUNTER
                     for idx, item in enumerate(st.session_state.gio_hang):
                         c_sl, c_tt, c_del = st.columns([5, 3, 2])
                         with c_sl:
@@ -1462,7 +1430,7 @@ def main():
                                 max_value=max_sl,
                                 value=float(item["so_luong"]),
                                 step=0.5,
-                                key=f"cart_sl_{item['dich_vu']}_{idx}_{st.session_state.reset_counter}",
+                                key=f"cart_sl_{idx}",
                             )
                             if new_sl != item["so_luong"]:
                                 item["so_luong"] = new_sl
@@ -1476,18 +1444,15 @@ def main():
                             )
                         with c_del:
                             st.markdown(
-                                "<div style='margin-top: 30px;'></div>",
+                                f"<div style='margin-top: 30px;'></div>",
                                 unsafe_allow_html=True,
                             )
                             if st.button(
-                                "🗑️ Xoá",
-                                key=f"del_{item['dich_vu']}_{idx}_{st.session_state.reset_counter}",
+                                "🗑️ Xoá dịch vụ",
+                                key=f"del_{idx}",
                                 use_container_width=True,
                             ):
                                 st.session_state.gio_hang.pop(idx)
-                                st.session_state.reset_counter += (
-                                    1  # Tăng counter để xóa triệt để cache widget cũ
-                                )
                                 trigger_auto_save()
                                 st.rerun()
                         t_bill += item["thanh_tien"]
@@ -1539,12 +1504,8 @@ def main():
 
                     tong_tru = tien_chiet_khau + tien_khuyen_mai
                     t_khach_tra = max(0.0, t_bill - tong_tru)
-
-                    # SỬA LỖI TRÀN DỮ LIỆU KHI KHÁCH ĐƯA TIỀN: Thêm key riêng để cố định dữ liệu nhập vào
                     kh_dua = st.number_input(
-                        "Số tiền mặt khách trả",
-                        value=float(t_khach_tra),
-                        key=f"kh_dua_input_{t_khach_tra}",
+                        "Số tiền mặt khách trả", value=float(t_khach_tra)
                     )
                     t_du = kh_dua - t_khach_tra
                     hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
@@ -1582,105 +1543,110 @@ def main():
                         f"""
                         <div style="background-color: #eaf2e6; border: 1px solid #87e8de; border-left: 5px solid #13c2c2; padding: 12px; border-radius: 10px; text-align: center; margin: 15px 0 5px 0; font-weight: 700; color: #111; font-size: 14px;">
                             👉 XÁC NHẬN SỐ TIỀN THỰC THU: <span style="color:#cf1322; font-size:35px;text-align: right;">{t_khach_tra:,.0f}đ</span><br>
-                            <span style="font-weight:400; font-size:12px; color:#555;text-align: center;">(Vui lòng tích kiểm tra trước khi bấm xuất)</span>
+                            <span style="font-weight:400; font-size:12px; color:#555;text-align: center;">(Hệ thống đang kiểm tra....)</span>
                         </div>
                     """,
                         unsafe_allow_html=True,
                     )
 
-                    cam_ket = st.checkbox("Xác nhận đã chính xác", key="chk_cam_ket")
+                    cam_ket = st.checkbox("Xác nhận đã chính xác")
 
-                    # SỬA TRIỆT ĐỂ LỖI LOGIC ĐỒNG BỘ: Đưa toàn bộ vào khối xử lý khi click nút
-                    if not st.session_state.get("submitting", False):
+                    if not st.session_state.submitting:
                         if st.button(
                             "🚀 XUẤT HÓA ĐƠN", use_container_width=True, type="primary"
                         ):
-                            if not cam_ket:
+                            if cam_ket:
+                                st.session_state.submitting = True
+                                st.rerun()
+                            else:
                                 st.warning(
                                     "⚠️ Vui lòng check ô Xác nhận thông tin đơn hàng trước khi xuất!"
                                 )
-                            else:
-                                st.session_state.submitting = True
+                    else:
+                        st.button(
+                            "Đang đồng bộ...", disabled=True, use_container_width=True
+                        )
+                        try:
+                            ws = get_google_sheet_workbook().worksheet("BaoCao")
+                            ma_hd = f"HD{get_now_vn().strftime('%y%m%d%H%M')}"
+                            rows_to_append = []
+                            chi_tiet_tele = ""
+                            html_items = ""
 
-                                # Tiến hành xử lý đồng bộ ngay lập tức tại đây, không cần rerun để phân nhánh nữa
-                                with st.spinner(
-                                    "⏳ Đang đồng bộ dữ liệu lên hệ thống..."
-                                ):
-                                    try:
-                                        ws = get_google_sheet_workbook().worksheet(
-                                            "BaoCao"
-                                        )
-                                        ma_hd = (
-                                            f"HD{get_now_vn().strftime('%y%m%d%H%M')}"
-                                        )
-                                        rows_to_append = []
-                                        chi_tiet_tele = ""
-                                        html_items = ""
+                            c_ten = (
+                                st.session_state.kh_ten_val.strip()
+                                if st.session_state.kh_ten_val.strip()
+                                else "Khách lẻ"
+                            )
+                            c_sdt = st.session_state.kh_sdt_val.strip()
+                            g_chu_full = f"[CK: {tien_chiet_khau:,.0f} | KM: {tien_khuyen_mai:,.0f}] {ghi_chu_don}"
 
-                                        c_ten = (
-                                            st.session_state.kh_ten_val.strip()
-                                            if st.session_state.kh_ten_val.strip()
-                                            else "Khách lẻ"
-                                        )
-                                        c_sdt = st.session_state.kh_sdt_val.strip()
-                                        g_chu_full = f"[CK: {tien_chiet_khau:,.0f} | KM: {tien_khuyen_mai:,.0f}] {ghi_chu_don}"
+                            for item in st.session_state.gio_hang:
+                                hh_dong = (
+                                    item["thanh_tien"]
+                                    * hs_giam
+                                    * (item["phan_tram_hh"] / 100.0)
+                                )
+                                rows_to_append.append(
+                                    [
+                                        get_now_vn().strftime("%d/%m/%Y"),
+                                        st.session_state.full_name,
+                                        c_ten,
+                                        c_sdt,
+                                        item["dich_vu"],
+                                        item["so_luong"],
+                                        item["don_gia"],
+                                        item["thanh_tien"],
+                                        get_now_vn().strftime("%H:%M:%S"),
+                                        g_chu_full,
+                                        hh_dong,
+                                        ma_hd,
+                                        kh_dua,
+                                        t_du,
+                                        "0 phút",
+                                        chot_tho,
+                                    ]
+                                )
+                                sl_sach = (
+                                    int(item["so_luong"])
+                                    if float(item["so_luong"]).is_integer()
+                                    else item["so_luong"]
+                                )
+                                html_items += f"""<tr><td style="text-align: left; border: none; padding: 6px 0;"><div style="font-weight: 600; color: #111; font-size: 14px;">{item["dich_vu"]}</div><div style="font-size: 12px; color: #666;">{sl_sach} x {item['don_gia']:,.0f}đ</div></td><td style="text-align: right; border: none; padding: 6px 0; vertical-align: middle;"><div style="font-weight: 700; color: #111; font-size: 14px;">{item["thanh_tien"]:,.0f}đ</div></td></tr>"""
+                                chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
 
-                                        for item in st.session_state.gio_hang:
-                                            hh_dong = (
-                                                item["thanh_tien"]
-                                                * hs_giam
-                                                * (item["phan_tram_hh"] / 100.0)
-                                            )
-                                            rows_to_append.append(
-                                                [
-                                                    get_now_vn().strftime("%d/%m/%Y"),
-                                                    st.session_state.full_name,
-                                                    c_ten,
-                                                    c_sdt,
-                                                    item["dich_vu"],
-                                                    item["so_luong"],
-                                                    item["don_gia"],
-                                                    item["thanh_tien"],
-                                                    get_now_vn().strftime("%H:%M:%S"),
-                                                    g_chu_full,
-                                                    hh_dong,
-                                                    ma_hd,
-                                                    kh_dua,
-                                                    t_du,
-                                                    "0 phút",
-                                                    chot_tho,
-                                                ]
-                                            )
-                                            sl_sach = (
-                                                int(item["so_luong"])
-                                                if float(
-                                                    item["so_luoma_hdng"]
-                                                ).is_integer()
-                                                else item["so_luong"]
-                                            )
-                                            html_items += f"""<tr><td style="text-align: left; border: none; padding: 6px 0;"><div style="font-weight: 600; color: #111; font-size: 14px;">{item["dich_vu"]}</div><div style="font-size: 12px; color: #666;">{sl_sach} x {item['don_gia']:,.0f}đ</div></td><td style="text-align: right; border: none; padding: 6px 0; vertical-align: middle;"><div style="font-weight: 700; color: #111; font-size: 14px;">{item["thanh_tien"]:,.0f}đ</div></td></tr>"""
-                                            chi_tiet_tele += f"\n- {item['dich_vu']} (x{sl_sach}): {item['thanh_tien']:,.0f}đ"
+                            ws.append_rows(rows_to_append)
 
-                                        # Ghi vào Google Sheets
-                                        ws.append_rows(rows_to_append)
+                            if st.session_state.get("current_lh_idx"):
+                                try:
+                                    get_google_sheet_workbook().worksheet(
+                                        "LichHen"
+                                    ).update_cell(
+                                        st.session_state.current_lh_idx,
+                                        7,
+                                        "ĐÃ CHỐT ĐƠN",
+                                    )
+                                    get_lich_hen_data.clear()
+                                except Exception:
+                                    pass
+                                st.session_state.current_lh_idx = None
 
-                                        # Cập nhật lịch hẹn nếu có
-                                        if st.session_state.get("current_lh_idx"):
-                                            try:
-                                                get_google_sheet_workbook().worksheet(
-                                                    "LichHen"
-                                                ).update_cell(
-                                                    st.session_state.current_lh_idx,
-                                                    7,
-                                                    "ĐÃ CHỐT ĐƠN",
-                                                )
-                                                get_lich_hen_data.clear()
-                                            except Exception:
-                                                pass
-                                            st.session_state.current_lh_idx = None
+                            st.session_state.update(
+                                {
+                                    "gio_hang": [],
+                                    "kh_sdt_val": "",
+                                    "kh_ten_val": "",
+                                    "submitting": False,
+                                }
+                            )
+                            trigger_auto_save()
 
-                                        # Tạo mẫu hóa đơn lưu vào trạng thái hiển thị
-                                        st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
+                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \n Salon Kim Hiền\n Chi tiết xin liên hệ 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
+
+                            gui_email_backup(nd_mail)
+                            gui_telegram_notification(nd_mail)
+
+                            st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
 <div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;"><div style="font-size: 20px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div><div style="font-size: 13px; color: {THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div><div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div><div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div><div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div></div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
@@ -1704,39 +1670,23 @@ def main():
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi Chú: {ghi_chu_don}</div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ: Salon KIM HIỀN. Hotline: 0947.58.1516</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Đc: 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ).</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Dịch vụ thêm: Có nhận Make-up tiệc tại nhà.</div>
+<div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
 <div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
-
-                                        # Gửi thông báo
-                                        nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n"
-                                        gui_email_backup(nd_mail)
-                                        gui_telegram_notification(nd_mail)
-
-                                        # Reset giỏ hàng sau khi thành công
-                                        st.session_state.update(
-                                            {
-                                                "gio_hang": [],
-                                                "kh_sdt_val": "",
-                                                "kh_ten_val": "",
-                                                "submitting": False,
-                                            }
-                                        )
-                                        trigger_auto_save()
-                                        st.balloons()
-                                        st.toast("✅ Đã xuất hóa đơn thành công!")
-                                        time.sleep(0.5)
-                                        st.rerun()
-
-                                    except Exception as e:
-                                        st.error(f"Lỗi hệ thống: {e}")
-                                        st.session_state.submitting = False
-                    else:
-                        st.button(
-                            "⏳ Đang đồng bộ và xuất bill...",
-                            disabled=True,
-                            use_container_width=True,
-                        )
+                            st.balloons()
+                            st.toast("✅ Đã xuất hóa đơn thành công!")
+                            time.sleep(1.5)
+                            st.rerun()
+                        except Exception as e:
+                            st.error(f"Lỗi hệ thống: {e}")
+                            st.session_state.submitting = False
 
         # ==================== TAB 3: LỊCH HẸN & CHỨC NĂNG LÊN ĐƠN KHÁCH HẸN ====================
         with tabs[2]:
@@ -1777,7 +1727,10 @@ def main():
                         else:
                             st.session_state.lh_ten_val = ""
                         st.rerun()
-                    hen_gio = st.time_input("Giờ hẹn", value=get_now_vn().time())
+
+                    # Fix lỗi số 2: Chọn thời gian bị khoá cứng
+                    hen_gio = st.time_input("Giờ hẹn", key="hen_gio_val")
+
                 with c_hen1:
                     hen_ngay = st.date_input("Ngày hẹn", value=get_now_vn().date())
                     hen_ten = st.text_input(
@@ -2016,9 +1969,8 @@ def main():
                                             "⚡ Chuyển dữ liệu lịch hẹn ra giỏ hàng thành công!"
                                         )
                                         time.sleep(0.3)
-                                        st.query_params["tab"] = (
-                                            "1"  # Búng tự động qua Tab 2
-                                        )
+                                        # Fix lỗi số 4: Ép nhảy sang Tab 1
+                                        st.session_state.force_tab = 1
                                         st.rerun()
                             st.markdown(
                                 "<hr style='margin: 5px 0;'>", unsafe_allow_html=True
@@ -2029,249 +1981,212 @@ def main():
                     st.info("Hiện tại chưa có dữ liệu danh sách lịch hẹn.")
 
         # ==================== TAB 4: BÁO CÁO ====================
-    with tabs[3]:
-        if st.session_state.get("role") == "Admin":
-
-            # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
-            with st.container(border=True):
-                total_today = count_orders_today()
-                st.markdown(
-                    f"""
-                    <div class="box-chung" style="background-color: {THEME_COLORS['bg_vip_box']}; border-left: 6px solid {THEME_COLORS['primary']}; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 15px;">
-                        📊 <span style="color: {THEME_COLORS['text_title']}; font-weight: 700;">HỆ THỐNG KIỂM SOÁT ĐƠN:</span> 
-                        Hôm nay hệ thống tiệm đã chốt thành công <span style="color: {THEME_COLORS['accent_danger']}; font-size: 24px; font-weight: 800;">{total_today}</span> đơn hàng dịch vụ.
-                    </div>
-                    """,
-                    unsafe_allow_html=True,
-                )
-
-            # --- KHU VỰC ĐIỀU HÀNH TỐI CAO ADMIN (XOÁ DỮ LIỆU) ---
-            with st.container(border=True):
-                st.markdown(
-                    f'<div class="the-quan-ly-flat" style="color:{THEME_COLORS["accent_danger"]}; border-bottom: 2px solid {THEME_COLORS["accent_danger"]}; padding-bottom: 8px;">🛠️ ĐIỀU HÀNH TỐI CAO ADMIN</div>',
-                    unsafe_allow_html=True,
-                )
-                st.markdown(
-                    f"<p style='color:{THEME_COLORS['text_main']}; font-weight:600; font-size:14px;'>Múi giờ hệ thống đang nhận diện: <span style='color:{THEME_COLORS['primary']};'>{THEME_MODE_LABEL}</span></p>",
-                    unsafe_allow_html=True,
-                )
-                st.error(
-                    "⚠️ LƯU Ý NGUY HIỂM: Nút bấm dưới đây sẽ quét và dọn sạch TOÀN BỘ danh sách lịch hẹn cùng toàn bộ báo cáo đơn hàng đã chốt trên Google Sheets gốc của hệ thống!"
-                )
-
-                if st.button(
-                    "🔥 KÍCH HOẠT XOÁ TỔNG LỊCH HẸN & KẾT QUẢ ĐÃ CHỐT",
-                    type="primary",
-                    use_container_width=True,
-                ):
-                    with st.spinner(
-                        "Đang thực hiện lệnh xoá tổng dữ liệu và dọn dẹp bộ nhớ đệm..."
-                    ):
-                        if admin_clear_all_data():
-                            st.toast(
-                                "✅ Đã xoá sạch toàn bộ lịch hẹn và kết quả chốt trên hệ thống thành công!",
-                                icon="✅",
-                            )
-                            time.sleep(1)
-                            st.rerun()
-                        else:
-                            st.error(
-                                "Lỗi! Không thể ghi hoặc xoá dữ liệu trên Google Sheets."
-                            )
-
-            st.write("")  # Dãn khoảng cách
-
-            # --- THỐNG KÊ DOANH THU CHUNG ---
-            st.markdown(
-                f'<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
-                unsafe_allow_html=True,
-            )
-
-            try:
-                data_bc, data_tam = get_bao_cao_va_bill_tam()
-                if len(data_bc) > 1:
-                    df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
-                    c_tien = next(
-                        (
-                            c
-                            for c in df_bc.columns
-                            if "tiền" in c.lower() or "tien" in c.lower()
-                        ),
-                        "Thành tiền",
-                    )
-                    c_ngay = next(
-                        (
-                            c
-                            for c in df_bc.columns
-                            if "ngày" in c.lower() or "ngay" in c.lower()
-                        ),
-                        "Ngày",
-                    )
-                    c_ma = next(
-                        (
-                            c
-                            for c in df_bc.columns
-                            if "mã" in c.lower() or "hd" in c.lower()
-                        ),
-                        None,
-                    )
-
-                    df_bc[c_tien] = pd.to_numeric(
-                        df_bc[c_tien]
-                        .astype(str)
-                        .str.replace(",", "")
-                        .str.replace(".", ""),
-                        errors="coerce",
-                    ).fillna(0)
-
-                    today_str = get_now_vn().strftime("%d/%m/%Y")
-                    month_str = get_now_vn().strftime("%m/%Y")
-
-                    df_bc[c_ngay] = df_bc[c_ngay].astype(str).str.strip()
-                    df_today = (
-                        df_bc[df_bc[c_ngay] == today_str]
-                        if c_ngay in df_bc.columns
-                        else pd.DataFrame()
-                    )
-                    df_month = (
-                        df_bc[df_bc[c_ngay].str.contains(month_str, na=False)]
-                        if c_ngay in df_bc.columns
-                        else pd.DataFrame()
-                    )
-
-                    doanh_thu_ngay = df_today[c_tien].sum() if not df_today.empty else 0
-                    doanh_thu_thang = (
-                        df_month[c_tien].sum() if not df_month.empty else 0
-                    )
-                    khach_hom_nay = (
-                        len([x for x in df_today[c_ma].unique() if str(x).strip()])
-                        if c_ma and not df_today.empty
-                        else 0
-                    )
-                    bill_cho = max(0, len(data_tam) - 1)
-                    tb_don = doanh_thu_ngay / khach_hom_nay if khach_hom_nay > 0 else 0
-
-                    # Hiển thị các chỉ số Metric
-                    m1, m2, m3, m4, m5 = st.columns(5)
-                    m1.metric("💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ")
-                    m2.metric(
-                        "💳 TỔNG DOANH THU TRONG THÁNG", f"{doanh_thu_thang:,.0f}đ"
-                    )
-                    m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
-                    m4.metric("👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách")
-                    m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
-
-                    # --- KPI THỢ ---
+        with tabs[3]:
+            if st.session_state["role"] == "Admin":
+                with st.container(border=True):
                     st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
                         unsafe_allow_html=True,
                     )
-                    if not df_today.empty:
-                        if "Thợ phụ trách" in df_today.columns:
-                            col_tho_name = "Thợ phụ trách"
-                        else:
-                            col_tho_name = next(
+
+                    try:
+                        data_bc, data_tam = get_bao_cao_va_bill_tam()
+                        if len(data_bc) > 1:
+                            df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
+                            c_tien = next(
                                 (
                                     c
-                                    for c in df_today.columns
-                                    if (
-                                        "thợ" in c.lower()
-                                        or "tho" in c.lower()
-                                        or "thực hiện" in c.lower()
-                                    )
-                                    and "tiền" not in c.lower()
+                                    for c in df_bc.columns
+                                    if "tiền" in c.lower() or "tien" in c.lower()
+                                ),
+                                "Thành tiền",
+                            )
+                            c_ngay = next(
+                                (
+                                    c
+                                    for c in df_bc.columns
+                                    if "ngày" in c.lower() or "ngay" in c.lower()
+                                ),
+                                "Ngày",
+                            )
+                            c_ma = next(
+                                (
+                                    c
+                                    for c in df_bc.columns
+                                    if "mã" in c.lower() or "hd" in c.lower()
                                 ),
                                 None,
                             )
 
-                        if col_tho_name:
-                            kpi_df = (
-                                df_today.groupby(col_tho_name)[c_tien]
-                                .sum()
-                                .reset_index()
+                            df_bc[c_tien] = pd.to_numeric(
+                                df_bc[c_tien]
+                                .astype(str)
+                                .str.replace(",", "")
+                                .str.replace(".", ""),
+                                errors="coerce",
+                            ).fillna(0)
+                            today_str = get_now_vn().strftime("%d/%m/%Y")
+                            month_str = get_now_vn().strftime("%m/%Y")
+
+                            df_bc[c_ngay] = df_bc[c_ngay].astype(str).str.strip()
+                            df_today = (
+                                df_bc[df_bc[c_ngay] == today_str]
+                                if c_ngay in df_bc.columns
+                                else pd.DataFrame()
                             )
-                            kpi_df.columns = ["Tên thợ", "Doanh thu tạo ra"]
-                            kpi_df = kpi_df.sort_values(
-                                by="Doanh thu tạo ra", ascending=False
+                            df_month = (
+                                df_bc[df_bc[c_ngay].str.contains(month_str, na=False)]
+                                if c_ngay in df_bc.columns
+                                else pd.DataFrame()
                             )
-                            kpi_df["Doanh thu tạo ra"] = kpi_df[
-                                "Doanh thu tạo ra"
-                            ].apply(lambda x: f"{x:,.0f} đ")
+
+                            doanh_thu_ngay = (
+                                df_today[c_tien].sum() if not df_today.empty else 0
+                            )
+                            doanh_thu_thang = (
+                                df_month[c_tien].sum() if not df_month.empty else 0
+                            )
+                            khach_hom_nay = (
+                                len(
+                                    [
+                                        x
+                                        for x in df_today[c_ma].unique()
+                                        if str(x).strip()
+                                    ]
+                                )
+                                if c_ma and not df_today.empty
+                                else 0
+                            )
+                            bill_cho = max(0, len(data_tam) - 1)
+                            tb_don = (
+                                doanh_thu_ngay / khach_hom_nay
+                                if khach_hom_nay > 0
+                                else 0
+                            )
+
+                            m1, m2, m3, m4, m5 = st.columns(5)
+                            m1.metric(
+                                "💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ"
+                            )
+                            m2.metric(
+                                "💳 TỔNG DOANH THU TRONG THÁNG",
+                                f"{doanh_thu_thang:,.0f}đ",
+                            )
+                            m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
+                            m4.metric(
+                                "👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
+                            )
+                            m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
+
+                            st.markdown(
+                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
+                                unsafe_allow_html=True,
+                            )
+                            if not df_today.empty:
+                                if "Thợ phụ trách" in df_today.columns:
+                                    col_tho_name = "Thợ phụ trách"
+                                else:
+                                    col_tho_name = next(
+                                        (
+                                            c
+                                            for c in df_today.columns
+                                            if (
+                                                "thợ" in c.lower()
+                                                or "tho" in c.lower()
+                                                or "thực hiện" in c.lower()
+                                            )
+                                            and "tiền" not in c.lower()
+                                        ),
+                                        None,
+                                    )
+
+                                if col_tho_name:
+                                    kpi_df = (
+                                        df_today.groupby(col_tho_name)[c_tien]
+                                        .sum()
+                                        .reset_index()
+                                    )
+                                    kpi_df.columns = ["Tên thợ", "Doanh thu tạo ra"]
+                                    kpi_df = kpi_df.sort_values(
+                                        by="Doanh thu tạo ra", ascending=False
+                                    )
+                                    kpi_df["Doanh thu tạo ra"] = kpi_df[
+                                        "Doanh thu tạo ra"
+                                    ].apply(lambda x: f"{x:,.0f} đ")
+                                    st.dataframe(
+                                        kpi_df,
+                                        use_container_width=True,
+                                        hide_index=True,
+                                    )
+                                else:
+                                    st.warning(
+                                        "Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao."
+                                    )
+                            else:
+                                st.info(
+                                    "Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI."
+                                )
+
+                            st.markdown(
+                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
+                                unsafe_allow_html=True,
+                            )
+                            nv_status = []
+                            current_time = time.time()
+                            global_tracker = get_global_user_tracker()
+
+                            for nv in ds_tho:
+                                if nv in global_tracker and (
+                                    current_time - global_tracker[nv] < 900
+                                ):
+                                    status = "🟢 Đang làm việc (Online)"
+                                elif nv == st.session_state.full_name:
+                                    status = "🟢 Đang làm việc (Online)"
+                                else:
+                                    status = "🔴 Offline"
+                                nv_status.append(
+                                    {"Tên nhân viên": nv, "Trạng thái hệ thống": status}
+                                )
                             st.dataframe(
-                                kpi_df, use_container_width=True, hide_index=True
+                                pd.DataFrame(nv_status),
+                                use_container_width=True,
+                                hide_index=True,
                             )
-                        else:
-                            st.warning(
-                                "Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao."
+
+                            st.markdown(
+                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🧾 DỮ LIỆU TỔNG HỢP CHI TIẾT</div>',
+                                unsafe_allow_html=True,
                             )
-                    else:
-                        st.info(
-                            "Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI."
-                        )
-
-                    # --- ONLINE/OFFLINE STATUS ---
-                    st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
-                        unsafe_allow_html=True,
-                    )
-                    nv_status = []
-                    current_time = time.time()
-                    global_tracker = get_global_user_tracker()
-
-                    for nv in ds_tho:
-                        if nv in global_tracker and (
-                            current_time - global_tracker[nv] < 900
-                        ):
-                            status = "🟢 Đang làm việc (Online)"
-                        elif nv == st.session_state.full_name:
-                            status = "🟢 Đang làm việc (Online)"
+                            c_btn1, c_btn2 = st.columns(2)
+                            with c_btn1:
+                                if st.button(
+                                    "⏰ Cập nhật dữ liệu", use_container_width=True
+                                ):
+                                    get_bao_cao_va_bill_tam.clear()
+                                    st.rerun()
+                            with c_btn2:
+                                csv_data = convert_df_to_csv(df_bc)
+                                st.download_button(
+                                    "📥 Xuất File Excel (CSV)",
+                                    data=csv_data,
+                                    file_name=f"DoanhThu_{get_now_vn().strftime('%Y%m%d')}.csv",
+                                    mime="text/csv",
+                                    use_container_width=True,
+                                    type="primary",
+                                )
+                            st.dataframe(df_bc, use_container_width=True)
                         else:
-                            status = "🔴 Offline"
-                        nv_status.append(
-                            {"Tên nhân viên": nv, "Trạng thái hệ thống": status}
-                        )
+                            st.info("Chưa có dữ liệu báo cáo.")
+                            if st.button(
+                                "⏰ Cập nhật dữ liệu", use_container_width=True
+                            ):
+                                get_bao_cao_va_bill_tam.clear()
+                                st.rerun()
 
-                    st.dataframe(
-                        pd.DataFrame(nv_status),
-                        use_container_width=True,
-                        hide_index=True,
-                    )
-
-                    # --- BẢNG DỮ LIỆU CHI TIẾT ---
-                    st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🧾 DỮ LIỆU TỔNG HỢP CHI TIẾT</div>',
-                        unsafe_allow_html=True,
-                    )
-                    c_btn1, c_btn2 = st.columns(2)
-                    with c_btn1:
-                        if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
-                            get_bao_cao_va_bill_tam.clear()
-                            st.rerun()
-                    with c_btn2:
-                        csv_data = convert_df_to_csv(df_bc)
-                        st.download_button(
-                            "📥 Xuất File Excel (CSV)",
-                            data=csv_data,
-                            file_name=f"DoanhThu_{get_now_vn().strftime('%Y%m%d')}.csv",
-                            mime="text/csv",
-                            use_container_width=True,
-                            type="primary",
-                        )
-                    st.dataframe(df_bc, use_container_width=True)
-                else:
-                    st.info("Chưa có dữ liệu báo cáo.")
-                    if st.button(
-                        "⏰ Cập nhật dữ liệu",
-                        key="btn_refresh_empty",
-                        use_container_width=True,
-                    ):
-                        get_bao_cao_va_bill_tam.clear()
-                        st.rerun()
-
-            except Exception as e:
-                st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
-        else:
-            st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
+                    except Exception as e:
+                        st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
+            else:
+                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
@@ -2367,36 +2282,30 @@ def main():
                                                                 ).strip(), float(
                                                                     match.group(2)
                                                                 )
-                                                            else:
-                                                                # Phòng hờ nếu quên ghi (x số lượng) thì mặc định là 1
-                                                                t_dv, s_l = (
-                                                                    item.strip(),
-                                                                    1.0,
+                                                                info = services.get(
+                                                                    t_dv,
+                                                                    {
+                                                                        "gia": 0.0,
+                                                                        "hoa_hong": 0.0,
+                                                                    },
                                                                 )
-
-                                                            info = services.get(
-                                                                t_dv,
-                                                                {
-                                                                    "gia": 0.0,
-                                                                    "hoa_hong": 0.0,
-                                                                },
-                                                            )
-                                                            new_gio.append(
-                                                                {
-                                                                    "dich_vu": t_dv,
-                                                                    "so_luong": s_l,
-                                                                    "don_gia": info.get(
-                                                                        "gia", 0.0
-                                                                    ),
-                                                                    "thanh_tien": info.get(
-                                                                        "gia", 0.0
-                                                                    )
-                                                                    * s_l,
-                                                                    "phan_tram_hh": info.get(
-                                                                        "hoa_hong", 0.0
-                                                                    ),
-                                                                }
-                                                            )
+                                                                new_gio.append(
+                                                                    {
+                                                                        "dich_vu": t_dv,
+                                                                        "so_luong": s_l,
+                                                                        "don_gia": info.get(
+                                                                            "gia", 0.0
+                                                                        ),
+                                                                        "thanh_tien": info.get(
+                                                                            "gia", 0.0
+                                                                        )
+                                                                        * s_l,
+                                                                        "phan_tram_hh": info.get(
+                                                                            "hoa_hong",
+                                                                            0.0,
+                                                                        ),
+                                                                    }
+                                                                )
 
                                                     st.session_state.update(
                                                         {
@@ -2415,7 +2324,8 @@ def main():
                                                             "⚡ Đã nạp đơn chờ vào giỏ hàng thành công!"
                                                         )
                                                         time.sleep(0.3)
-                                                        st.query_params["tab"] = "1"
+                                                        # Fix lỗi số 4: Ép nhảy sang Tab 1
+                                                        st.session_state.force_tab = 1
                                                         st.rerun()
                             if not has_pending:
                                 st.info("Không có đơn chờ duyệt nào hiện tại.")
@@ -2539,16 +2449,14 @@ def main():
                         )
 
                         st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng</h4>",
+                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng chi tiết</h4>",
                             unsafe_allow_html=True,
                         )
-                        st.markdown(f"""
-                        * **Chuẩn bị trước khi thao tác:** Đeo găng tay bạt bảo hộ đầy đủ cho thợ và áo choàng bảo vệ cho khách hàng. Thoa một lớp mỏng Vaseline quanh các viền chân tóc (trán, mang tai, sau gáy) để ngăn thuốc nhuộm dính bám vào da.
-                        * **Kỹ thuật vào thuốc:** Chia toàn bộ tóc thành các tép nhỏ từ 1-2cm. Đi cọ dứt khoát, trải đều thuốc từ thân đến ngọn hoặc cách chân tùy thuộc vào nền tóc thực tế. Chú ý bôi thuốc đẫm, tránh đọng thuốc cục bộ dễ gây loang lổ.
-                        * **Xả tóc & Khóa màu:** Theo dõi độ lên màu liên tục, khi đạt thời gian lưu thuốc chuẩn (35-45 phút), tiến hành xả sạch hoàn toàn bằng nước ấm cho đến khi nước trong. Sử dụng dầu xả hoặc dầu hấp chuyên dụng khử kiềm để đóng chặt biểu bì tóc, khóa hạt màu lâu phai và tạo độ bóng mượt.
-                        """)
+                        st.success(f"📌 **Kỹ thuật lưu ý:** {loi_khuyen}")
+                        st.warning(
+                            "⚠️ **An toàn thao tác:** Luôn trang bị găng tay chuyên dụng. Thực hiện bôi tinh chất bảo vệ da đầu nếu nền da đầu khách nhạy cảm."
+                        )
 
-                # ĐÃ SỬA THỤT LỀ CỦA KHỐI NÀY VÀO TRONG "if role == Admin" ĐỂ KHÔNG BỊ LỖI CÚ PHÁP
                 st.markdown(
                     "<div style='margin-top: 25px;'></div>", unsafe_allow_html=True
                 )
@@ -2557,7 +2465,6 @@ def main():
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">⚙️ QUẢN TRỊ HỆ THỐNG GỐC</div>',
                         unsafe_allow_html=True,
                     )
-
                     if st.button(
                         "♻️ LÀM MỚI NHỚ ĐỆM",
                         use_container_width=True,
