@@ -1091,7 +1091,7 @@ def main():
             else [st.session_state.full_name]
         )
 
-# ==================== TAB 1: TỔNG QUAN ====================
+        # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
             with st.container(border=True):
                 direct_logo_url = format_drive_direct_url(settings.get("Logo", ""))
@@ -1175,13 +1175,64 @@ def main():
                 if len(lh_data) > 1:
                     df_lh = pd.DataFrame(lh_data[1:], columns=lh_data[0])
                     today_str = get_now_vn().strftime("%d/%m/%Y")
-                    c_ngay_lh = next((c for c in df_lh.columns if "ngày" in c.lower() or "ngay" in c.lower()), None)
-                    c_gio_lh = next((c for c in df_lh.columns if "giờ" in c.lower() or "gio" in c.lower()), None)
-                    c_ten_lh = next((c for c in df_lh.columns if "tên" in c.lower() or "khách" in c.lower()), None)
-                    c_sdt_lh = next((c for c in df_lh.columns if "điện thoại" in c.lower() or "sđt" in c.lower() or "sdt" in c.lower()), None)
-                    c_dv_lh = next((c for c in df_lh.columns if "dịch" in c.lower() or "dich" in c.lower()), None)
-                    c_tt_lh = next((c for c in df_lh.columns if "trạng thái" in c.lower() or "trang thai" in c.lower()), None)
-                    c_tho_lh = next((c for c in df_lh.columns if "nhân viên" in c.lower() or "nhan vien" in c.lower()), None)
+                    c_ngay_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "ngày" in c.lower() or "ngay" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_gio_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "giờ" in c.lower() or "gio" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_ten_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "tên" in c.lower() or "khách" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_sdt_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "điện thoại" in c.lower()
+                            or "sđt" in c.lower()
+                            or "sdt" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_dv_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "dịch" in c.lower() or "dich" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_tt_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "trạng thái" in c.lower() or "trang thai" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_tho_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "nhân viên" in c.lower() or "nhan vien" in c.lower()
+                        ),
+                        None,
+                    )
 
                     if c_ngay_lh:
                         df_today_lh = df_lh[
@@ -1201,13 +1252,25 @@ def main():
                         if not df_today_lh.empty:
                             for i, row in df_today_lh.iterrows():
                                 # FIX CHUẨN: Lấy index thật trên sheet để không bao giờ bị xóa nhầm dòng dữ liệu
-                                idx_sheet = int(i) + 2 
-                                gio = row.get(c_gio_lh, "--:--") if c_gio_lh else "--:--"
-                                khach = row.get(c_ten_lh, "Khách") if c_ten_lh else "Khách"
+                                idx_sheet = int(i) + 2
+                                gio = (
+                                    row.get(c_gio_lh, "--:--") if c_gio_lh else "--:--"
+                                )
+                                khach = (
+                                    row.get(c_ten_lh, "Khách") if c_ten_lh else "Khách"
+                                )
                                 sdt = row.get(c_sdt_lh, "") if c_sdt_lh else ""
                                 dv = row.get(c_dv_lh, "") if c_dv_lh else ""
-                                tt_val = row.get(c_tt_lh, "CHỜ PHỤC VỤ") if c_tt_lh else "CHỜ PHỤC VỤ"
-                                tho_yc = row.get(c_tho_lh, "Không yêu cầu") if c_tho_lh else "Không yêu cầu"
+                                tt_val = (
+                                    row.get(c_tt_lh, "CHỜ PHỤC VỤ")
+                                    if c_tt_lh
+                                    else "CHỜ PHỤC VỤ"
+                                )
+                                tho_yc = (
+                                    row.get(c_tho_lh, "Không yêu cầu")
+                                    if c_tho_lh
+                                    else "Không yêu cầu"
+                                )
 
                                 if (
                                     st.session_state["role"] == "NhanVien"
@@ -1238,9 +1301,13 @@ def main():
                                             key=f"del_lh_home_{idx_sheet}",
                                         ):
                                             try:
-                                                get_google_sheet_workbook().worksheet("LichHen").delete_rows(idx_sheet)
+                                                get_google_sheet_workbook().worksheet(
+                                                    "LichHen"
+                                                ).delete_rows(idx_sheet)
                                                 get_lich_hen_data.clear()
-                                                st.toast("✅ Đã xóa lịch hẹn khỏi hệ thống!")
+                                                st.toast(
+                                                    "✅ Đã xóa lịch hẹn khỏi hệ thống!"
+                                                )
                                                 time.sleep(0.5)
                                                 st.rerun()
                                             except Exception:
@@ -1253,7 +1320,7 @@ def main():
                                     ):
                                         new_gio = []
                                         # Khắc phục lỗi nếu dictionary services chưa sẵn sàng
-                                        active_services = globals().get('services', {})
+                                        active_services = globals().get("services", {})
                                         if dv and active_services:
                                             for d_v in dv.split(", "):
                                                 d_v_clean = d_v.strip()
@@ -1265,11 +1332,13 @@ def main():
                                                             "so_luong": 1.0,
                                                             "don_gia": inf["gia"],
                                                             "thanh_tien": inf["gia"],
-                                                            "phan_tram_hh": inf["hoa_hong"],
+                                                            "phan_tram_hh": inf[
+                                                                "hoa_hong"
+                                                            ],
                                                         }
                                                     )
 
-# ==================== TAB 2: LÊN HÓA ĐƠN ====================
+        # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
             with st.container(border=True):
                 st.markdown(
@@ -1406,14 +1475,19 @@ def main():
                                 unsafe_allow_html=True,
                             )
                         with c_del:
-                            st.markdown("<div style='margin-top: 30px;'></div>", unsafe_allow_html=True)
+                            st.markdown(
+                                "<div style='margin-top: 30px;'></div>",
+                                unsafe_allow_html=True,
+                            )
                             if st.button(
                                 "🗑️ Xoá",
                                 key=f"del_{item['dich_vu']}_{idx}_{st.session_state.reset_counter}",
                                 use_container_width=True,
                             ):
                                 st.session_state.gio_hang.pop(idx)
-                                st.session_state.reset_counter += 1 # Tăng counter để xóa triệt để cache widget cũ
+                                st.session_state.reset_counter += (
+                                    1  # Tăng counter để xóa triệt để cache widget cũ
+                                )
                                 trigger_auto_save()
                                 st.rerun()
                         t_bill += item["thanh_tien"]
@@ -1465,12 +1539,12 @@ def main():
 
                     tong_tru = tien_chiet_khau + tien_khuyen_mai
                     t_khach_tra = max(0.0, t_bill - tong_tru)
-                    
+
                     # SỬA LỖI TRÀN DỮ LIỆU KHI KHÁCH ĐƯA TIỀN: Thêm key riêng để cố định dữ liệu nhập vào
                     kh_dua = st.number_input(
-                        "Số tiền mặt khách trả", 
+                        "Số tiền mặt khách trả",
                         value=float(t_khach_tra),
-                        key=f"kh_dua_input_{t_khach_tra}" 
+                        key=f"kh_dua_input_{t_khach_tra}",
                     )
                     t_du = kh_dua - t_khach_tra
                     hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
@@ -1518,17 +1592,27 @@ def main():
 
                     # SỬA TRIỆT ĐỂ LỖI LOGIC ĐỒNG BỘ: Đưa toàn bộ vào khối xử lý khi click nút
                     if not st.session_state.get("submitting", False):
-                        if st.button("🚀 XUẤT HÓA ĐƠN", use_container_width=True, type="primary"):
+                        if st.button(
+                            "🚀 XUẤT HÓA ĐƠN", use_container_width=True, type="primary"
+                        ):
                             if not cam_ket:
-                                st.warning("⚠️ Vui lòng check ô Xác nhận thông tin đơn hàng trước khi xuất!")
+                                st.warning(
+                                    "⚠️ Vui lòng check ô Xác nhận thông tin đơn hàng trước khi xuất!"
+                                )
                             else:
                                 st.session_state.submitting = True
-                                
+
                                 # Tiến hành xử lý đồng bộ ngay lập tức tại đây, không cần rerun để phân nhánh nữa
-                                with st.spinner("⏳ Đang đồng bộ dữ liệu lên hệ thống..."):
+                                with st.spinner(
+                                    "⏳ Đang đồng bộ dữ liệu lên hệ thống..."
+                                ):
                                     try:
-                                        ws = get_google_sheet_workbook().worksheet("BaoCao")
-                                        ma_hd = f"HD{get_now_vn().strftime('%y%m%d%H%M')}"
+                                        ws = get_google_sheet_workbook().worksheet(
+                                            "BaoCao"
+                                        )
+                                        ma_hd = (
+                                            f"HD{get_now_vn().strftime('%y%m%d%H%M')}"
+                                        )
                                         rows_to_append = []
                                         chi_tiet_tele = ""
                                         html_items = ""
@@ -1569,7 +1653,9 @@ def main():
                                             )
                                             sl_sach = (
                                                 int(item["so_luong"])
-                                                if float(item["so_luoma_hdng"]).is_integer()
+                                                if float(
+                                                    item["so_luoma_hdng"]
+                                                ).is_integer()
                                                 else item["so_luong"]
                                             )
                                             html_items += f"""<tr><td style="text-align: left; border: none; padding: 6px 0;"><div style="font-weight: 600; color: #111; font-size: 14px;">{item["dich_vu"]}</div><div style="font-size: 12px; color: #666;">{sl_sach} x {item['don_gia']:,.0f}đ</div></td><td style="text-align: right; border: none; padding: 6px 0; vertical-align: middle;"><div style="font-weight: 700; color: #111; font-size: 14px;">{item["thanh_tien"]:,.0f}đ</div></td></tr>"""
@@ -1581,8 +1667,12 @@ def main():
                                         # Cập nhật lịch hẹn nếu có
                                         if st.session_state.get("current_lh_idx"):
                                             try:
-                                                get_google_sheet_workbook().worksheet("LichHen").update_cell(
-                                                    st.session_state.current_lh_idx, 7, "ĐÃ CHỐT ĐƠN"
+                                                get_google_sheet_workbook().worksheet(
+                                                    "LichHen"
+                                                ).update_cell(
+                                                    st.session_state.current_lh_idx,
+                                                    7,
+                                                    "ĐÃ CHỐT ĐƠN",
                                                 )
                                                 get_lich_hen_data.clear()
                                             except Exception:
@@ -1624,12 +1714,14 @@ def main():
                                         gui_telegram_notification(nd_mail)
 
                                         # Reset giỏ hàng sau khi thành công
-                                        st.session_state.update({
-                                            "gio_hang": [],
-                                            "kh_sdt_val": "",
-                                            "kh_ten_val": "",
-                                            "submitting": False
-                                        })
+                                        st.session_state.update(
+                                            {
+                                                "gio_hang": [],
+                                                "kh_sdt_val": "",
+                                                "kh_ten_val": "",
+                                                "submitting": False,
+                                            }
+                                        )
                                         trigger_auto_save()
                                         st.balloons()
                                         st.toast("✅ Đã xuất hóa đơn thành công!")
@@ -1640,7 +1732,11 @@ def main():
                                         st.error(f"Lỗi hệ thống: {e}")
                                         st.session_state.submitting = False
                     else:
-                        st.button("⏳ Đang đồng bộ và xuất bill...", disabled=True, use_container_width=True)
+                        st.button(
+                            "⏳ Đang đồng bộ và xuất bill...",
+                            disabled=True,
+                            use_container_width=True,
+                        )
 
         # ==================== TAB 3: LỊCH HẸN & CHỨC NĂNG LÊN ĐƠN KHÁCH HẸN ====================
         with tabs[2]:
