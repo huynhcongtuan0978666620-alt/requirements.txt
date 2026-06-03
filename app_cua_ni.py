@@ -426,7 +426,65 @@ def get_google_sheet_workbook():
     except Exception as e:
         st.error(f"Lỗi khởi tạo kết nối Sheets: {e}")
         st.stop()
+        
+def count_orders_today():
+    """Tự động quét tấm sheet BaoCao để đếm tổng đơn chốt chuẩn ngày hôm nay"""
+    try:
+        sh = get_google_sheet_workbook()
+        ws = sh.worksheet("BaoCao")
+        records = ws.get_all_values()
+        if len(records) <= 1:
+            return 0
+        
+        # Nhận diện cột Ngày tự động để tránh lệch cột
+        header = records[0]
+        c_ngay_idx = -1
+        for idx, col in enumerate(header):
+            if "ngày" in col.lower() or "ngay" in col.lower():
+                c_ngay_idx = idx
+                break
+        if c_ngay_idx == -1:
+            c_ngay_idx = 0
+            
+        today_str = get_now_vn().strftime("%d/%m/%Y")
+        count = 0
+        for row in records[1:]:
+            if len(row) > c_ngay_idx:
+                if str(row[c_ngay_idx]).strip() == today_str:
+                    count += 1
+        return count
+    except Exception:
+        return 0
 
+def admin_clear_all_data():
+    """Xoá sạch dữ liệu trên sheet LichHen và BaoCao (Giữ lại hàng tiêu đề đầu)"""
+    try:
+        sh = get_google_sheet_workbook()
+        
+        # Xoá dọn dẹp LichHen
+        try:
+            ws_lh = sh.worksheet("LichHen")
+            lh_len = len(ws_lh.get_all_values())
+            if lh_len > 1:
+                ws_lh.delete_rows(2, lh_len)
+        except Exception:
+            pass
+            
+        # Xoá dọn dẹp BaoCao
+        try:
+            ws_bc = sh.worksheet("BaoCao")
+            bc_len = len(ws_bc.get_all_values())
+            if bc_len > 1:
+                ws_bc.delete_rows(2, bc_len)
+        except Exception:
+            pass
+            
+        # Làm sạch toàn bộ bộ nhớ đệm giải phóng tài nguyên cho hệ thống
+        st.cache_data.clear()
+        st.cache_resource.clear()
+        return True
+    except Exception:
+        return False
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str):
@@ -1972,6 +2030,44 @@ def main():
         with tabs[3]:
             if st.session_state["role"] == "Admin":
                 with st.container(border=True):
+
+                    # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
+    if st.session_state.get("role") == "Admin":
+        total_today = count_orders_today()
+        st.markdown(
+            f"""
+            <div class="box-chung" style="background-color: {THEME_COLORS['bg_vip_box']}; border-left: 6px solid {THEME_COLORS['primary']}; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 15px;">
+                📊 <span style="color: {THEME_COLORS['text_title']}; font-weight: 700;">HỆ THỐNG KIỂM SOÁT ĐƠN:</span> 
+                Hôm nay hệ thống tiệm đã chốt thành công <span style="color: {THEME_COLORS['accent_danger']}; font-size: 24px; font-weight: 800;">{total_today}</span> đơn hàng dịch vụ.
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if st.session_state.get("role") == "Admin":
+                with st.container(border=True):
+                    st.markdown(
+                        f'<div class="the-quan-ly-flat" style="color:{THEME_COLORS["accent_danger"]}; border-bottom: 2px solid {THEME_COLORS["accent_danger"]}; padding-bottom: 8px;">🛠️ ĐIỀU HÀNH TỐI CAO ADMIN</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(f"<p style='color:{THEME_COLORS['text_main']}; font-weight:600; font-size:14px;'>Múi giờ hệ thống đang nhận diện: <span style='color:{THEME_COLORS['primary']};'>{THEME_MODE_LABEL}</span></p>", unsafe_allow_html=True)
+                    st.error("⚠️ LƯU Ý NGUY HIỂM: Nút bấm dưới đây sẽ quét và dọn sạch TOÀN BỘ danh sách lịch hẹn cùng toàn bộ báo cáo đơn hàng đã chốt trên Google Sheets gốc của hệ thống!")
+                    
+                    if st.button("🔥 KÍCH HOẠT XOÁ TỔNG LỊCH HẸN & KẾT QUẢ ĐÃ CHỐT", type="primary", use_container_width=True):
+                        with st.spinner("Đang thực hiện lệnh xoá tổng dữ liệu và dọn dẹp bộ nhớ đệm..."):
+                            if admin_clear_all_data():
+                                st.toast("✅ Đã xoá sạch toàn bộ lịch hẹn và kết quả chốt trên hệ thống thành công!", icon="✅")
+                                time.sleep(1)
+                                st.rerun()
+                            else:
+                                st.error("Lỗi! Không thể ghi hoặc xoá dữ liệu trên Google Sheets.")
+
+                    st.write("") # Dãn khoảng cách
+
+    st.markdown(
+        '<div class="the-quan-ly-flat">📊 THỐNG KÊ DOANH THU CHUNG</div>',
+        unsafe_allow_html=True,
+    )
                     st.markdown(
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
                         unsafe_allow_html=True,
