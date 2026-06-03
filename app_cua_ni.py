@@ -14,32 +14,6 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 
-
-def count_orders_today():
-    try:
-        # Thay "HoaDon" bằng tên Sheet chính xác của ní
-        ws = get_google_sheet_workbook().worksheet("HoaDon")
-        data = ws.get_all_values()
-        if not data or len(data) < 2:
-            return 0
-
-        df = pd.DataFrame(data[1:], columns=data[0])
-        today_str = get_now_vn().strftime("%d/%m/%Y")
-
-        # Tìm cột ngày
-        c_ngay = next((c for c in df.columns if "ngày" in c.lower()), None)
-        if not c_ngay:
-            return 0
-
-        # Lọc và đếm
-        df_today = df[df[c_ngay].astype(str).str.contains(today_str, na=False)]
-        return len(df_today)
-    except Exception as e:
-        # Ní sửa lại thông báo lỗi để dễ nhìn hơn
-        print(f"Lỗi khi tải số liệu đơn: {e}")
-        return 0
-
-
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
     page_title="SALON PRO V15",
@@ -703,8 +677,8 @@ def check_auto_login():
                     {
                         "logged_in": True,
                         "role": "Admin",
-                        "full_name": "Admin",
-                        "tho_chot_val": "Admin",
+                        "full_name": "Quản lý",
+                        "tho_chot_val": "Quản lý",
                     }
                 )
                 return True
@@ -849,8 +823,8 @@ def main():
                         {
                             "logged_in": True,
                             "role": "Admin",
-                            "full_name": "Admin",
-                            "tho_chot_val": "Admin",
+                            "full_name": "Quản lý",
+                            "tho_chot_val": "Quản lý",
                             "trigger_balloons": True,
                         }
                     )
@@ -1030,7 +1004,6 @@ def main():
 
         # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
-            # Khối thông tin tiệm
             with st.container(border=True):
                 direct_logo_url = format_drive_direct_url(settings.get("Logo", ""))
                 fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
@@ -1044,11 +1017,10 @@ def main():
                             <div style="margin-top: 3px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
                         </div>
                     </div>
-                    """,
+                """,
                     unsafe_allow_html=True,
                 )
 
-            # Khối chào hỏi và biểu đồ doanh thu
             with st.container(border=True):
                 st.markdown(f"👋 **Xin chào, {st.session_state.full_name}!**")
                 st.markdown(
@@ -1059,20 +1031,61 @@ def main():
                 try:
                     bc_values, _ = get_bao_cao_va_bill_tam()
                     if len(bc_values) > 1:
-                        # ... (giữ nguyên xử lý df_bc và vẽ biểu đồ)
-                        # ...
-                        pass
+                        df_bc = pd.DataFrame(bc_values[1:], columns=bc_values[0])
+                        c_tien = next(
+                            (
+                                c
+                                for c in df_bc.columns
+                                if "tiền" in c.lower() or "tien" in c.lower()
+                            ),
+                            "Thành tiền",
+                        )
+                        c_ngay = next(
+                            (
+                                c
+                                for c in df_bc.columns
+                                if "ngày" in c.lower() or "ngay" in c.lower()
+                            ),
+                            "Ngày",
+                        )
+                        df_bc[c_tien] = pd.to_numeric(
+                            df_bc[c_tien]
+                            .astype(str)
+                            .str.replace(",", "")
+                            .str.replace(".", ""),
+                            errors="coerce",
+                        ).fillna(0)
+                        df_bc["DateObj"] = pd.to_datetime(
+                            df_bc[c_ngay], format="%d/%m/%Y", errors="coerce"
+                        )
+                        last_7_days = df_bc.dropna(subset=["DateObj"])
+                        last_7_days = (
+                            last_7_days.groupby("DateObj")[c_tien]
+                            .sum()
+                            .reset_index()
+                            .tail(7)
+                        )
+                        last_7_days["Ngày"] = last_7_days["DateObj"].dt.strftime(
+                            "%d/%m"
+                        )
+
+                        if not last_7_days.empty:
+                            st.markdown(
+                                f"<div style='margin-top:25px; margin-bottom:10px; font-weight:bold; font-size:15px; color:{THEME_COLORS['text_title']}; letter-spacing:0.5px;'>📉 BÁO CÁO DOANH THU 7 NGÀY QUA</div>",
+                                unsafe_allow_html=True,
+                            )
+                            st.line_chart(
+                                last_7_days.set_index("Ngày")[c_tien],
+                                color=THEME_COLORS["primary"],
+                            )
                 except Exception:
                     pass
 
-            # Khối lịch hẹn và các thông tin quản trị
             with st.container(border=True):
                 lh_data = get_lich_hen_data()
                 if len(lh_data) > 1:
                     df_lh = pd.DataFrame(lh_data[1:], columns=lh_data[0])
                     today_str = get_now_vn().strftime("%d/%m/%Y")
-
-                    # Xác định các cột (giữ nguyên logic lấy cột của ní)
                     c_ngay_lh = next(
                         (
                             c
@@ -1081,7 +1094,56 @@ def main():
                         ),
                         None,
                     )
-                    # ... (các cột khác: c_gio_lh, c_ten_lh, ...)
+                    c_gio_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "giờ" in c.lower() or "gio" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_ten_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "tên" in c.lower() or "khách" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_sdt_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "điện thoại" in c.lower()
+                            or "sđt" in c.lower()
+                            or "sdt" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_dv_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "dịch" in c.lower() or "dich" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_tt_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "trạng thái" in c.lower() or "trang thai" in c.lower()
+                        ),
+                        None,
+                    )
+                    c_tho_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "nhân viên" in c.lower() or "nhan vien" in c.lower()
+                        ),
+                        None,
+                    )
 
                     if c_ngay_lh:
                         df_today_lh = df_lh[
@@ -1089,21 +1151,142 @@ def main():
                             .astype(str)
                             .str.contains(today_str, na=False)
                         ]
-                        so_luong_hen = len(df_today_lh)
 
+                        so_luong_hen = len(df_today_lh)
                         st.markdown(
                             f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>',
                             unsafe_allow_html=True,
                         )
 
+                        has_items = False
                         if not df_today_lh.empty:
                             for i, row in df_today_lh.iterrows():
-                                # ... (giữ nguyên logic vòng lặp hiển thị lịch hẹn và các nút)
-                                pass
-                        else:
+                                idx_sheet = i + 2
+                                gio = (
+                                    row.get(c_gio_lh, "--:--") if c_gio_lh else "--:--"
+                                )
+                                khach = (
+                                    row.get(c_ten_lh, "Khách") if c_ten_lh else "Khách"
+                                )
+                                sdt = row.get(c_sdt_lh, "") if c_sdt_lh else ""
+                                dv = row.get(c_dv_lh, "") if c_dv_lh else ""
+                                tt_val = (
+                                    row.get(c_tt_lh, "CHỜ PHỤC VỤ")
+                                    if c_tt_lh
+                                    else "CHỜ PHỤC VỤ"
+                                )
+                                tho_yc = (
+                                    row.get(c_tho_lh, "Không yêu cầu")
+                                    if c_tho_lh
+                                    else "Không yêu cầu"
+                                )
+
+                                if (
+                                    st.session_state["role"] == "NhanVien"
+                                    and tho_yc != "Không yêu cầu"
+                                    and tho_yc != st.session_state.full_name
+                                ):
+                                    continue
+
+                                has_items = True
+
+                                st.markdown(
+                                    f"""
+                                    <div class="lich-hen-item">
+                                        <div style="flex: 1;"><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555; font-weight:bold;">{khach} - {sdt}</span><br><span style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">{dv}</span></div>
+                                    </div>
+                                """,
+                                    unsafe_allow_html=True,
+                                )
+
+                                if tt_val.strip().upper() == "ĐÃ CHỐT ĐƠN":
+                                    st.markdown(
+                                        f"<div style='text-align:right; font-weight:bold; font-size:14px; color:#28a745; margin-bottom:10px;'>✅ ĐÃ CHỐT ĐƠN</div>",
+                                        unsafe_allow_html=True,
+                                    )
+                                    if st.session_state["role"] == "Admin":
+                                        if st.button(
+                                            "🗑️ Xóa lịch hẹn",
+                                            key=f"del_lh_home_{idx_sheet}",
+                                        ):
+                                            try:
+                                                get_google_sheet_workbook().worksheet(
+                                                    "LichHen"
+                                                ).delete_rows(idx_sheet)
+                                                get_lich_hen_data.clear()
+                                                st.toast(
+                                                    "✅ Đã xóa lịch hẹn khỏi hệ thống!"
+                                                )
+                                                time.sleep(0.5)
+                                                st.rerun()
+                                            except Exception:
+                                                pass
+                                else:
+                                    if st.button(
+                                        "📝 Nạp & Lên Đơn",
+                                        key=f"lh_home_{idx_sheet}",
+                                        use_container_width=True,
+                                    ):
+                                        new_gio = []
+                                        if dv:
+                                            for d_v in dv.split(", "):
+                                                d_v_clean = d_v.strip()
+                                                if d_v_clean in services:
+                                                    inf = services[d_v_clean]
+                                                    new_gio.append(
+                                                        {
+                                                            "dich_vu": d_v_clean,
+                                                            "so_luong": 1.0,
+                                                            "don_gia": inf["gia"],
+                                                            "thanh_tien": inf["gia"],
+                                                            "phan_tram_hh": inf[
+                                                                "hoa_hong"
+                                                            ],
+                                                        }
+                                                    )
+
+                                        st.session_state.update(
+                                            {
+                                                "gio_hang": new_gio,
+                                                "kh_sdt_val": str(sdt),
+                                                "kh_ten_val": str(khach),
+                                                "tho_chot_val": (
+                                                    str(tho_yc)
+                                                    if tho_yc != "Không yêu cầu"
+                                                    else st.session_state.full_name
+                                                ),
+                                                "current_lh_idx": idx_sheet,
+                                            }
+                                        )
+
+                                        try:
+                                            col_idx = (
+                                                df_lh.columns.get_loc(c_tt_lh) + 1
+                                                if c_tt_lh
+                                                else 7
+                                            )
+                                            get_google_sheet_workbook().worksheet(
+                                                "LichHen"
+                                            ).update_cell(
+                                                idx_sheet, col_idx, "ĐANG XỬ LÝ"
+                                            )
+                                            get_lich_hen_data.clear()
+                                        except Exception:
+                                            pass
+
+                                        trigger_auto_save()
+                                        st.toast(
+                                            "✅ Đã nạp thông tin. Đang chuyển sang Tab Lên Hóa Đơn!"
+                                        )
+                                        time.sleep(0.3)
+                                        st.session_state.force_tab = 1
+                                        st.rerun()
+                                st.markdown(
+                                    "<hr style='margin:8px 0; border:none;'>",
+                                    unsafe_allow_html=True,
+                                )
+                        if not has_items:
                             st.info("Không có lịch hẹn nào của bạn cho hôm nay.")
-                    else:
-                        st.info("Dữ liệu lịch hẹn không đúng cấu trúc.")
                 else:
                     st.markdown(
                         '<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY (0)</div>',
@@ -1111,16 +1294,18 @@ def main():
                     )
                     st.info("Dữ liệu lịch hẹn trống.")
 
-                # Các khối thông tin bổ sung đặt ngoài if c_ngay_lh nhưng trong cùng container
-                if st.session_state.get("role") == "Admin":
-                    try:
-                        so_don = count_orders_today()
-                        if so_don is not None:
-                            st.metric("📦 Đơn hàng hôm nay", so_don)
-                        else:
-                            st.warning("⚠️ Không thể đọc được số liệu đơn hàng.")
-                    except Exception as e:
-                        st.error(f"❌ Lỗi hệ thống: {e}")
+            if st.session_state.get("bill_vua_in"):
+                with st.container(border=True):
+                    st.markdown(
+                        '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
+                        unsafe_allow_html=True,
+                    )
+                    st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
+                    if st.button(
+                        "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
+                    ):
+                        st.session_state.bill_vua_in = None
+                        st.rerun()
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
@@ -2001,14 +2186,14 @@ def main():
                     except Exception as e:
                         st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
             else:
-                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Admin.")
+                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
-            if st.session_state.get("role") == "Admin":
+            if st.session_state["role"] == "Admin":
                 with st.container(border=True):
                     st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">Admin DANH SÁCH BILL CHỜ</div>',
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">QUẢN LÝ DANH SÁCH BILL CHỜ</div>',
                         unsafe_allow_html=True,
                     )
                     if st.button(
