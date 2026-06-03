@@ -22,28 +22,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-# CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
-st.markdown(
-    """
-    <style>
-        /* Tạo hiệu ứng mờ dần khi chuyển trang */
-        .stApp {
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-        
-        /* Hiệu ứng trượt nhẹ cho các thẻ container */
-        div[data-testid="stVerticalBlock"] {
-            transition: all 0.3s ease-in-out;
-        }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
-
 # CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
 components.html(
     """
@@ -59,53 +37,42 @@ components.html(
 )
 
 # =====================================================================
-# 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
+# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
-    # --- Màu nền (Backgrounds) ---
-    "bg_app": "#e8f5f3",  # Nền tổng thể xanh mint nhẹ
-    "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi
-    "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám
-    "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương
-    "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
-    "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
-    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu vàng
-    # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 140, 150, 1)",  # Màu chủ đạo (Xanh teal)
-    "accent_vip": "#ffb300",  # Màu vàng kim
-    "accent_danger": "#d32f2f",  # Màu cảnh báo đỏ
-    "accent_zalo": "#0068ff",  # Màu thương hiệu Zalo
-    "accent_chiet_khau": "#e65100",  # Màu cam đậm
-    # --- Văn bản (Text) ---
-    "text_main": "#263238",  # Chữ chính
-    "text_secondary": "#546e7a",  # Chữ phụ
-    "text_muted": "#90a4ae",  # Chữ mờ
-    "text_title": "#0f4c43",  # Tiêu đề
-    "text_badge": "#ffffff",  # Chữ trên badge
-    # --- Viền & Đổ bóng (Borders & Shadows) ---
-    "border_light": "#eaeaea",  # Viền mảnh
-    "border_input": "#cfd8dc",  # Viền ô nhập
-    "border_badge": "#b2dfdb",  # Viền badge
-    "border_vip": "#4fc3f7",  # Viền VIP
-    "shadow_light": "rgba(0, 0, 0, 0.015)",  # Đổ bóng nhẹ
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",  # Đổ bóng thông báo
+    "bg_app": "#e8f5f3",
+    "bg_card": "#ffffff",
+    "bg_box_chung": "#f4f7f6",
+    "bg_vip_box": "#e3f2fd",
+    "bg_shake_box": "#fff3e0",
+    "bg_badge_hang": "#efebe9",
+    "bg_marquee": "#f0f008",
+    "primary": "rgba(70, 140, 150, 1)",
+    "accent_vip": "#ffb300",
+    "accent_danger": "#d32f2f",
+    "accent_zalo": "#0068ff",
+    "accent_chiet_khau": "#e65100",
+    "text_main": "#263238",
+    "text_secondary": "#546e7a",
+    "text_muted": "#90a4ae",
+    "text_title": "#0f4c43",
+    "text_badge": "#ffffff",
+    "border_light": "#eaeaea",
+    "border_input": "#cfd8dc",
+    "border_badge": "#b2dfdb",
+    "border_vip": "#4fc3f7",
+    "shadow_light": "rgba(0, 0, 0, 0.015)",
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
+    "shadow_toast": "rgba(0, 0, 0, 0.6)",
 }
 
 
-def set_app_background(theme):
-    """
-    Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
-    """
+def set_app_background(colors):
     gradient_css = f"""
     <style>
     .stApp {{
-        background: linear-gradient(180deg, {theme['bg_app']} 20%, #f9f9f9 80%);
+        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
         background-attachment: fixed;
-    }}
-    /* Định nghĩa thêm các style khác nếu cần */
-    .css-1544g2n {{
-        background-color: {theme['bg_card']};
     }}
     </style>
     """
@@ -138,7 +105,7 @@ def inject_advanced_ui_js():
         fetch('/_stcore/health').catch(()=>{{}});
     }}, 30000); 
 
-    // --- CƠ CHẾ ĐỌC VÀ GHI URL ĐỂ GIỮ TAB KHI F5 ---
+    // --- FIX LỖI MẤT TAB KHI F5 & CHUYỂN TAB TỰ ĐỘNG ---
     function initTabObserver() {{
         const tabs = parentDoc.querySelectorAll('button[data-baseweb="tab"]');
         if (tabs.length === 0) {{
@@ -146,6 +113,15 @@ def inject_advanced_ui_js():
             return;
         }}
         
+        // Đọc Tab từ URL (query_params) và tự động bấm vào Tab đó
+        const urlParams = new URLSearchParams(window.parent.location.search);
+        const activeTabIdx = urlParams.get('tab');
+        if (activeTabIdx !== null && parseInt(activeTabIdx) < tabs.length) {{
+            if (tabs[activeTabIdx].getAttribute('aria-selected') !== 'true') {{
+                tabs[activeTabIdx].click();
+            }}
+        }}
+
         // Gắn sự kiện: Bấm tab nào thì lưu tab đó lên URL
         tabs.forEach((tab, index) => {{
             tab.addEventListener('click', () => {{
