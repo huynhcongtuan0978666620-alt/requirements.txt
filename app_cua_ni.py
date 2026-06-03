@@ -1307,7 +1307,7 @@ def main():
                         st.session_state.bill_vua_in = None
                         st.rerun()
             if st.session_state.get("role") == "Admin":
-        try:
+               try:
             so_don_hom_nay = count_orders_today()
             st.markdown(
                 f"""
