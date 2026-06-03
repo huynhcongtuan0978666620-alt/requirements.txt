@@ -14,22 +14,23 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 
+
 def count_orders_today():
     try:
         # Thay "HoaDon" bằng tên Sheet chính xác của ní
-        ws = get_google_sheet_workbook().worksheet("HoaDon") 
+        ws = get_google_sheet_workbook().worksheet("HoaDon")
         data = ws.get_all_values()
         if not data or len(data) < 2:
             return 0
-        
+
         df = pd.DataFrame(data[1:], columns=data[0])
         today_str = get_now_vn().strftime("%d/%m/%Y")
-        
+
         # Tìm cột ngày
         c_ngay = next((c for c in df.columns if "ngày" in c.lower()), None)
         if not c_ngay:
             return 0
-            
+
         # Lọc và đếm
         df_today = df[df[c_ngay].astype(str).str.contains(today_str, na=False)]
         return len(df_today)
@@ -37,6 +38,7 @@ def count_orders_today():
         # Ní sửa lại thông báo lỗi để dễ nhìn hơn
         print(f"Lỗi khi tải số liệu đơn: {e}")
         return 0
+
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
