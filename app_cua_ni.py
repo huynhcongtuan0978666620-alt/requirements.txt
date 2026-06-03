@@ -2067,250 +2067,167 @@ def main():
                     st.info("Hiện tại chưa có dữ liệu danh sách lịch hẹn.")
 
         # ==================== TAB 4: BÁO CÁO ====================
-        with tabs[3]:
-            if st.session_state["role"] == "Admin":
-                 with st.container(border=True):
-
-                    # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
-            if st.session_state.get("role") == "Admin":
-        total_today = count_orders_today()
-                    st.markdown(
-            f"""
-            <div class="box-chung" style="background-color: {THEME_COLORS['bg_vip_box']}; border-left: 6px solid {THEME_COLORS['primary']}; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 15px;">
-                📊 <span style="color: {THEME_COLORS['text_title']}; font-weight: 700;">HỆ THỐNG KIỂM SOÁT ĐƠN:</span> 
-                Hôm nay hệ thống tiệm đã chốt thành công <span style="color: {THEME_COLORS['accent_danger']}; font-size: 24px; font-weight: 800;">{total_today}</span> đơn hàng dịch vụ.
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
+    with tabs[3]:
         if st.session_state.get("role") == "Admin":
-                with st.container(border=True):
-                    st.markdown(
-                        f'<div class="the-quan-ly-flat" style="color:{THEME_COLORS["accent_danger"]}; border-bottom: 2px solid {THEME_COLORS["accent_danger"]}; padding-bottom: 8px;">🛠️ ĐIỀU HÀNH TỐI CAO ADMIN</div>',
-                        unsafe_allow_html=True,
+            
+            # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
+            with st.container(border=True):
+                total_today = count_orders_today()
+                st.markdown(
+                    f"""
+                    <div class="box-chung" style="background-color: {THEME_COLORS['bg_vip_box']}; border-left: 6px solid {THEME_COLORS['primary']}; padding: 15px; margin-bottom: 20px; text-align: left; font-size: 15px;">
+                        📊 <span style="color: {THEME_COLORS['text_title']}; font-weight: 700;">HỆ THỐNG KIỂM SOÁT ĐƠN:</span> 
+                        Hôm nay hệ thống tiệm đã chốt thành công <span style="color: {THEME_COLORS['accent_danger']}; font-size: 24px; font-weight: 800;">{total_today}</span> đơn hàng dịch vụ.
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+            # --- KHU VỰC ĐIỀU HÀNH TỐI CAO ADMIN (XOÁ DỮ LIỆU) ---
+            with st.container(border=True):
+                st.markdown(
+                    f'<div class="the-quan-ly-flat" style="color:{THEME_COLORS["accent_danger"]}; border-bottom: 2px solid {THEME_COLORS["accent_danger"]}; padding-bottom: 8px;">🛠️ ĐIỀU HÀNH TỐI CAO ADMIN</div>',
+                    unsafe_allow_html=True,
+                )
+                st.markdown(f"<p style='color:{THEME_COLORS['text_main']}; font-weight:600; font-size:14px;'>Múi giờ hệ thống đang nhận diện: <span style='color:{THEME_COLORS['primary']};'>{THEME_MODE_LABEL}</span></p>", unsafe_allow_html=True)
+                st.error("⚠️ LƯU Ý NGUY HIỂM: Nút bấm dưới đây sẽ quét và dọn sạch TOÀN BỘ danh sách lịch hẹn cùng toàn bộ báo cáo đơn hàng đã chốt trên Google Sheets gốc của hệ thống!")
+                
+                if st.button("🔥 KÍCH HOẠT XOÁ TỔNG LỊCH HẸN & KẾT QUẢ ĐÃ CHỐT", type="primary", use_container_width=True):
+                    with st.spinner("Đang thực hiện lệnh xoá tổng dữ liệu và dọn dẹp bộ nhớ đệm..."):
+                        if admin_clear_all_data():
+                            st.toast("✅ Đã xoá sạch toàn bộ lịch hẹn và kết quả chốt trên hệ thống thành công!", icon="✅")
+                            time.sleep(1)
+                            st.rerun()
+                        else:
+                            st.error("Lỗi! Không thể ghi hoặc xoá dữ liệu trên Google Sheets.")
+
+            st.write("")  # Dãn khoảng cách
+
+            # --- THỐNG KÊ DOANH THU CHUNG ---
+            st.markdown(
+                f'<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
+                unsafe_allow_html=True,
+            )
+
+            try:
+                data_bc, data_tam = get_bao_cao_va_bill_tam()
+                if len(data_bc) > 1:
+                    df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
+                    c_tien = next(
+                        (c for c in df_bc.columns if "tiền" in c.lower() or "tien" in c.lower()),
+                        "Thành tiền",
                     )
-                    st.markdown(f"<p style='color:{THEME_COLORS['text_main']}; font-weight:600; font-size:14px;'>Múi giờ hệ thống đang nhận diện: <span style='color:{THEME_COLORS['primary']};'>{THEME_MODE_LABEL}</span></p>", unsafe_allow_html=True)
-                    st.error("⚠️ LƯU Ý NGUY HIỂM: Nút bấm dưới đây sẽ quét và dọn sạch TOÀN BỘ danh sách lịch hẹn cùng toàn bộ báo cáo đơn hàng đã chốt trên Google Sheets gốc của hệ thống!")
+                    c_ngay = next(
+                        (c for c in df_bc.columns if "ngày" in c.lower() or "ngay" in c.lower()),
+                        "Ngày",
+                    )
+                    c_ma = next(
+                        (c for c in df_bc.columns if "mã" in c.lower() or "hd" in c.lower()),
+                        None,
+                    )
+
+                    df_bc[c_tien] = pd.to_numeric(
+                        df_bc[c_tien].astype(str).str.replace(",", "").str.replace(".", ""),
+                        errors="coerce",
+                    ).fillna(0)
                     
-                    if st.button("🔥 KÍCH HOẠT XOÁ TỔNG LỊCH HẸN & KẾT QUẢ ĐÃ CHỐT", type="primary", use_container_width=True):
-                        with st.spinner("Đang thực hiện lệnh xoá tổng dữ liệu và dọn dẹp bộ nhớ đệm..."):
-                            if admin_clear_all_data():
-                                st.toast("✅ Đã xoá sạch toàn bộ lịch hẹn và kết quả chốt trên hệ thống thành công!", icon="✅")
-                                time.sleep(1)
-                                st.rerun()
-                            else:
-                                st.error("Lỗi! Không thể ghi hoặc xoá dữ liệu trên Google Sheets.")
+                    today_str = get_now_vn().strftime("%d/%m/%Y")
+                    month_str = get_now_vn().strftime("%m/%Y")
 
-                    st.write("") # Dãn khoảng cách
+                    df_bc[c_ngay] = df_bc[c_ngay].astype(str).str.strip()
+                    df_today = df_bc[df_bc[c_ngay] == today_str] if c_ngay in df_bc.columns else pd.DataFrame()
+                    df_month = df_bc[df_bc[c_ngay].str.contains(month_str, na=False)] if c_ngay in df_bc.columns else pd.DataFrame()
 
-    st.markdown(
-        '<div class="the-quan-ly-flat">📊 THỐNG KÊ DOANH THU CHUNG</div>',
-        unsafe_allow_html=True,
-    )
+                    doanh_thu_ngay = df_today[c_tien].sum() if not df_today.empty else 0
+                    doanh_thu_thang = df_month[c_tien].sum() if not df_month.empty else 0
+                    khach_hom_nay = len([x for x in df_today[c_ma].unique() if str(x).strip()]) if c_ma and not df_today.empty else 0
+                    bill_cho = max(0, len(data_tam) - 1)
+                    tb_don = doanh_thu_ngay / khach_hom_nay if khach_hom_nay > 0 else 0
+
+                    # Hiển thị các chỉ số Metric
+                    m1, m2, m3, m4, m5 = st.columns(5)
+                    m1.metric("💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ")
+                    m2.metric("💳 TỔNG DOANH THU TRONG THÁNG", f"{doanh_thu_thang:,.0f}đ")
+                    m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
+                    m4.metric("👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách")
+                    m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
+
+                    # --- KPI THỢ ---
                     st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
                         unsafe_allow_html=True,
                     )
-
-                    try:
-                        data_bc, data_tam = get_bao_cao_va_bill_tam()
-                        if len(data_bc) > 1:
-                            df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
-                            c_tien = next(
-                                (
-                                    c
-                                    for c in df_bc.columns
-                                    if "tiền" in c.lower() or "tien" in c.lower()
-                                ),
-                                "Thành tiền",
-                            )
-                            c_ngay = next(
-                                (
-                                    c
-                                    for c in df_bc.columns
-                                    if "ngày" in c.lower() or "ngay" in c.lower()
-                                ),
-                                "Ngày",
-                            )
-                            c_ma = next(
-                                (
-                                    c
-                                    for c in df_bc.columns
-                                    if "mã" in c.lower() or "hd" in c.lower()
-                                ),
+                    if not df_today.empty:
+                        if "Thợ phụ trách" in df_today.columns:
+                            col_tho_name = "Thợ phụ trách"
+                        else:
+                            col_tho_name = next(
+                                (c for c in df_today.columns if ("thợ" in c.lower() or "tho" in c.lower() or "thực hiện" in c.lower()) and "tiền" not in c.lower()),
                                 None,
                             )
 
-                            df_bc[c_tien] = pd.to_numeric(
-                                df_bc[c_tien]
-                                .astype(str)
-                                .str.replace(",", "")
-                                .str.replace(".", ""),
-                                errors="coerce",
-                            ).fillna(0)
-                            today_str = get_now_vn().strftime("%d/%m/%Y")
-                            month_str = get_now_vn().strftime("%m/%Y")
-
-                            df_bc[c_ngay] = df_bc[c_ngay].astype(str).str.strip()
-                            df_today = (
-                                df_bc[df_bc[c_ngay] == today_str]
-                                if c_ngay in df_bc.columns
-                                else pd.DataFrame()
-                            )
-                            df_month = (
-                                df_bc[df_bc[c_ngay].str.contains(month_str, na=False)]
-                                if c_ngay in df_bc.columns
-                                else pd.DataFrame()
-                            )
-
-                            doanh_thu_ngay = (
-                                df_today[c_tien].sum() if not df_today.empty else 0
-                            )
-                            doanh_thu_thang = (
-                                df_month[c_tien].sum() if not df_month.empty else 0
-                            )
-                            khach_hom_nay = (
-                                len(
-                                    [
-                                        x
-                                        for x in df_today[c_ma].unique()
-                                        if str(x).strip()
-                                    ]
-                                )
-                                if c_ma and not df_today.empty
-                                else 0
-                            )
-                            bill_cho = max(0, len(data_tam) - 1)
-                            tb_don = (
-                                doanh_thu_ngay / khach_hom_nay
-                                if khach_hom_nay > 0
-                                else 0
-                            )
-
-                            m1, m2, m3, m4, m5 = st.columns(5)
-                            m1.metric(
-                                "💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ"
-                            )
-                            m2.metric(
-                                "💳 TỔNG DOANH THU TRONG THÁNG",
-                                f"{doanh_thu_thang:,.0f}đ",
-                            )
-                            m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
-                            m4.metric(
-                                "👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
-                            )
-                            m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
-
-                            st.markdown(
-                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
-                                unsafe_allow_html=True,
-                            )
-                            if not df_today.empty:
-                                if "Thợ phụ trách" in df_today.columns:
-                                    col_tho_name = "Thợ phụ trách"
-                                else:
-                                    col_tho_name = next(
-                                        (
-                                            c
-                                            for c in df_today.columns
-                                            if (
-                                                "thợ" in c.lower()
-                                                or "tho" in c.lower()
-                                                or "thực hiện" in c.lower()
-                                            )
-                                            and "tiền" not in c.lower()
-                                        ),
-                                        None,
-                                    )
-
-                                if col_tho_name:
-                                    kpi_df = (
-                                        df_today.groupby(col_tho_name)[c_tien]
-                                        .sum()
-                                        .reset_index()
-                                    )
-                                    kpi_df.columns = ["Tên thợ", "Doanh thu tạo ra"]
-                                    kpi_df = kpi_df.sort_values(
-                                        by="Doanh thu tạo ra", ascending=False
-                                    )
-                                    kpi_df["Doanh thu tạo ra"] = kpi_df[
-                                        "Doanh thu tạo ra"
-                                    ].apply(lambda x: f"{x:,.0f} đ")
-                                    st.dataframe(
-                                        kpi_df,
-                                        use_container_width=True,
-                                        hide_index=True,
-                                    )
-                                else:
-                                    st.warning(
-                                        "Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao."
-                                    )
-                            else:
-                                st.info(
-                                    "Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI."
-                                )
-
-                            st.markdown(
-                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
-                                unsafe_allow_html=True,
-                            )
-                            nv_status = []
-                            current_time = time.time()
-                            global_tracker = get_global_user_tracker()
-
-                            for nv in ds_tho:
-                                if nv in global_tracker and (
-                                    current_time - global_tracker[nv] < 900
-                                ):
-                                    status = "🟢 Đang làm việc (Online)"
-                                elif nv == st.session_state.full_name:
-                                    status = "🟢 Đang làm việc (Online)"
-                                else:
-                                    status = "🔴 Offline"
-                                nv_status.append(
-                                    {"Tên nhân viên": nv, "Trạng thái hệ thống": status}
-                                )
-                            st.dataframe(
-                                pd.DataFrame(nv_status),
-                                use_container_width=True,
-                                hide_index=True,
-                            )
-
-                            st.markdown(
-                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🧾 DỮ LIỆU TỔNG HỢP CHI TIẾT</div>',
-                                unsafe_allow_html=True,
-                            )
-                            c_btn1, c_btn2 = st.columns(2)
-                            with c_btn1:
-                                if st.button(
-                                    "⏰ Cập nhật dữ liệu", use_container_width=True
-                                ):
-                                    get_bao_cao_va_bill_tam.clear()
-                                    st.rerun()
-                            with c_btn2:
-                                csv_data = convert_df_to_csv(df_bc)
-                                st.download_button(
-                                    "📥 Xuất File Excel (CSV)",
-                                    data=csv_data,
-                                    file_name=f"DoanhThu_{get_now_vn().strftime('%Y%m%d')}.csv",
-                                    mime="text/csv",
-                                    use_container_width=True,
-                                    type="primary",
-                                )
-                            st.dataframe(df_bc, use_container_width=True)
+                        if col_tho_name:
+                            kpi_df = df_today.groupby(col_tho_name)[c_tien].sum().reset_index()
+                            kpi_df.columns = ["Tên thợ", "Doanh thu tạo ra"]
+                            kpi_df = kpi_df.sort_values(by="Doanh thu tạo ra", ascending=False)
+                            kpi_df["Doanh thu tạo ra"] = kpi_df["Doanh thu tạo ra"].apply(lambda x: f"{x:,.0f} đ")
+                            st.dataframe(kpi_df, use_container_width=True, hide_index=True)
                         else:
-                            st.info("Chưa có dữ liệu báo cáo.")
-                            if st.button(
-                                "⏰ Cập nhật dữ liệu", use_container_width=True
-                            ):
-                                get_bao_cao_va_bill_tam.clear()
-                                st.rerun()
+                            st.warning("Hệ thống chưa dò thấy cột thông tin Thợ Thực Hiện trong dữ liệu sheet BaoCao.")
+                    else:
+                        st.info("Hôm nay chưa ghi nhận dữ liệu giao dịch hoàn thành để tính KPI.")
 
-                    except Exception as e:
-                        st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
-            else:
-                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
+                    # --- ONLINE/OFFLINE STATUS ---
+                    st.markdown(
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
+                        unsafe_allow_html=True,
+                    )
+                    nv_status = []
+                    current_time = time.time()
+                    global_tracker = get_global_user_tracker()
+
+                    for nv in ds_tho:
+                        if nv in global_tracker and (current_time - global_tracker[nv] < 900):
+                            status = "🟢 Đang làm việc (Online)"
+                        elif nv == st.session_state.full_name:
+                            status = "🟢 Đang làm việc (Online)"
+                        else:
+                            status = "🔴 Offline"
+                        nv_status.append({"Tên nhân viên": nv, "Trạng thái hệ thống": status})
+                    
+                    st.dataframe(pd.DataFrame(nv_status), use_container_width=True, hide_index=True)
+
+                    # --- BẢNG DỮ LIỆU CHI TIẾT ---
+                    st.markdown(
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🧾 DỮ LIỆU TỔNG HỢP CHI TIẾT</div>',
+                        unsafe_allow_html=True,
+                    )
+                    c_btn1, c_btn2 = st.columns(2)
+                    with c_btn1:
+                        if st.button("⏰ Cập nhật dữ liệu", use_container_width=True):
+                            get_bao_cao_va_bill_tam.clear()
+                            st.rerun()
+                    with c_btn2:
+                        csv_data = convert_df_to_csv(df_bc)
+                        st.download_button(
+                            "📥 Xuất File Excel (CSV)",
+                            data=csv_data,
+                            file_name=f"DoanhThu_{get_now_vn().strftime('%Y%m%d')}.csv",
+                            mime="text/csv",
+                            use_container_width=True,
+                            type="primary",
+                        )
+                    st.dataframe(df_bc, use_container_width=True)
+                else:
+                    st.info("Chưa có dữ liệu báo cáo.")
+                    if st.button("⏰ Cập nhật dữ liệu", key="btn_refresh_empty", use_container_width=True):
+                        get_bao_cao_va_bill_tam.clear()
+                        st.rerun()
+
+            except Exception as e:
+                st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
+        else:
+            st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
