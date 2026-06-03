@@ -1086,16 +1086,15 @@ def main():
                     st.info("Dữ liệu lịch hẹn trống.")
 
                 # Các khối thông tin bổ sung đặt ngoài if c_ngay_lh nhưng trong cùng container
-                if st.session_state.get("bill_vua_in"):
-                    # ... (giữ nguyên logic)
-                    pass
-
                 if st.session_state.get("role") == "Admin":
                     try:
-                        so_don_hom_nay = count_orders_today()
-                        # ... (giữ nguyên logic)
-                    except Exception:
-                        st.error("Không thể tải số liệu đơn hàng.")
+                        so_don = count_orders_today()
+                        if so_don is not None:
+                            st.metric("📦 Đơn hàng hôm nay", so_don)
+                        else:
+                            st.warning("⚠️ Không thể đọc được số liệu đơn hàng.")
+                    except Exception as e:
+                        st.error(f"❌ Lỗi hệ thống: {e}")
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
