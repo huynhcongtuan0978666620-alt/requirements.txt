@@ -2405,35 +2405,27 @@ def main():
                                                                 item.strip(),
                                                             )
                                                             if match:
-                                                                t_dv, s_l = match.group(
-                                                                    1
-                                                                ).strip(), float(
-                                                                    match.group(2)
-                                                                )
-                                                                info = services.get(
-                                                                    t_dv,
-                                                                    {
-                                                                        "gia": 0.0,
-                                                                        "hoa_hong": 0.0,
-                                                                    },
-                                                                )
-                                                                new_gio.append(
-                                                                    {
-                                                                        "dich_vu": t_dv,
-                                                                        "so_luong": s_l,
-                                                                        "don_gia": info.get(
-                                                                            "gia", 0.0
-                                                                        ),
-                                                                        "thanh_tien": info.get(
-                                                                            "gia", 0.0
-                                                                        )
-                                                                        * s_l,
-                                                                        "phan_tram_hh": info.get(
-                                                                            "hoa_hong",
-                                                                            0.0,
-                                                                        ),
-                                                                    }
-                                                                )
+                                                                t_dv, s_l = match.group(1).strip(), float(match.group(2))
+                                                            else:
+                                                                # Phòng hờ nếu quên ghi (x số lượng) thì mặc định là 1
+                                                                t_dv, s_l = item.strip(), 1.0
+                                                            
+                                                            info = services.get(
+                                                                t_dv,
+                                                                {
+                                                                    "gia": 0.0,
+                                                                    "hoa_hong": 0.0,
+                                                                },
+                                                            )
+                                                            new_gio.append(
+                                                                {
+                                                                    "dich_vu": t_dv,
+                                                                    "so_luong": s_l,
+                                                                    "don_gia": info.get("gia", 0.0),
+                                                                    "thanh_tien": info.get("gia", 0.0) * s_l,
+                                                                    "phan_tram_hh": info.get("hoa_hong", 0.0),
+                                                                }
+                                                            )
 
                                                     st.session_state.update(
                                                         {
@@ -2585,7 +2577,8 @@ def main():
                         * **Xả tóc & Khóa màu:** Theo dõi độ lên màu liên tục, khi đạt thời gian lưu thuốc chuẩn (35-45 phút), tiến hành xả sạch hoàn toàn bằng nước ấm cho đến khi nước trong. Sử dụng dầu xả hoặc dầu hấp chuyên dụng khử kiềm để đóng chặt biểu bì tóc, khóa hạt màu lâu phai và tạo độ bóng mượt.
                         """)
 
-        st.markdown(
+                # ĐÃ SỬA THỤT LỀ CỦA KHỐI NÀY VÀO TRONG "if role == Admin" ĐỂ KHÔNG BỊ LỖI CÚ PHÁP
+                st.markdown(
                     "<div style='margin-top: 25px;'></div>", unsafe_allow_html=True
                 )
                 with st.container(border=True):
@@ -2594,7 +2587,7 @@ def main():
                         unsafe_allow_html=True,
                     )
                         
-                        if st.button(
+                    if st.button(
                         "♻️ LÀM MỚI NHỚ ĐỆM",
                         use_container_width=True,
                         type="primary",
