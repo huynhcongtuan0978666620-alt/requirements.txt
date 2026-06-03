@@ -21,6 +21,7 @@ st.set_page_config(
     page_icon="💇‍♀️",
     initial_sidebar_state="collapsed",
 )
+
 # CHÈN ĐOẠN NÀY ĐỂ TẠO HIỆU ỨNG MƯỢT MÀ
 st.markdown(
     """
@@ -57,74 +58,58 @@ components.html(
     height=0,
 )
 
-
-def set_app_background(colors):
-    gradient_css = f"""
-    <style>
-    .stApp {{
-        background:# =====================================================================
-        
+# =====================================================================
 # 🌟 HỆ THỐNG MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
 THEME_COLORS = {
     # --- Màu nền (Backgrounds) ---
-    "bg_app": "#e8f5f3",          # Nền tổng thể xanh mint nhẹ
-    "bg_card": "#ffffff",         # Nền thẻ trắng tinh khôi
-    "bg_box_chung": "#f4f7f6",    # Nền khung chung xanh xám
-    "bg_vip_box": "#e3f2fd",      # Nền khung VIP xanh dương
-    "bg_shake_box": "#fff3e0",    # Nền khung sự kiện cam nhạt
-    "bg_badge_hang": "#efebe9",   # Nền nhãn phân hạng
-    "bg_marquee": "#f0f008",      # Nền thanh chạy chữ màu vàng
-    
+    "bg_app": "#e8f5f3",  # Nền tổng thể xanh mint nhẹ
+    "bg_card": "#ffffff",  # Nền thẻ trắng tinh khôi
+    "bg_box_chung": "#f4f7f6",  # Nền khung chung xanh xám
+    "bg_vip_box": "#e3f2fd",  # Nền khung VIP xanh dương
+    "bg_shake_box": "#fff3e0",  # Nền khung sự kiện cam nhạt
+    "bg_badge_hang": "#efebe9",  # Nền nhãn phân hạng
+    "bg_marquee": "#f0f008",  # Nền thanh chạy chữ màu vàng
     # --- Màu nhấn (Accents) ---
-    "primary": "rgba(70, 140, 150, 1)", # Màu chủ đạo (Xanh teal)
-    "accent_vip": "#ffb300",            # Màu vàng kim
-    "accent_danger": "#d32f2f",         # Màu cảnh báo đỏ
-    "accent_zalo": "#0068ff",           # Màu thương hiệu Zalo
-    "accent_chiet_khau": "#e65100",     # Màu cam đậm
-    
+    "primary": "rgba(70, 140, 150, 1)",  # Màu chủ đạo (Xanh teal)
+    "accent_vip": "#ffb300",  # Màu vàng kim
+    "accent_danger": "#d32f2f",  # Màu cảnh báo đỏ
+    "accent_zalo": "#0068ff",  # Màu thương hiệu Zalo
+    "accent_chiet_khau": "#e65100",  # Màu cam đậm
     # --- Văn bản (Text) ---
-    "text_main": "#263238",       # Chữ chính
+    "text_main": "#263238",  # Chữ chính
     "text_secondary": "#546e7a",  # Chữ phụ
-    "text_muted": "#90a4ae",      # Chữ mờ
-    "text_title": "#0f4c43",      # Tiêu đề
-    "text_badge": "#ffffff",      # Chữ trên badge
-    
+    "text_muted": "#90a4ae",  # Chữ mờ
+    "text_title": "#0f4c43",  # Tiêu đề
+    "text_badge": "#ffffff",  # Chữ trên badge
     # --- Viền & Đổ bóng (Borders & Shadows) ---
-    "border_light": "#eaeaea",    # Viền mảnh
-    "border_input": "#cfd8dc",    # Viền ô nhập
-    "border_badge": "#b2dfdb",    # Viền badge
-    "border_vip": "#4fc3f7",      # Viền VIP
-    "shadow_light": "rgba(0, 0, 0, 0.015)", # Đổ bóng nhẹ
+    "border_light": "#eaeaea",  # Viền mảnh
+    "border_input": "#cfd8dc",  # Viền ô nhập
+    "border_badge": "#b2dfdb",  # Viền badge
+    "border_vip": "#4fc3f7",  # Viền VIP
+    "shadow_light": "rgba(0, 0, 0, 0.015)",  # Đổ bóng nhẹ
     "shadow_heavy": "rgba(0, 0, 0, 0.04)",  # Đổ bóng đậm
-    "shadow_toast": "rgba(0, 0, 0, 0.6)"    # Đổ bóng thông báo
+    "shadow_toast": "rgba(0, 0, 0, 0.6)",  # Đổ bóng thông báo
 }
- linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
-        background-attachment: fixed;
-    }}
-    </style>
-    """
-    st.markdown(gradient_css, unsafe_allow_html=True)
 
 
 def set_app_background(theme):
     """
     Hàm tự động áp dụng các mã màu từ dictionary THEME_COLORS vào CSS của ứng dụng.
     """
-    st.markdown(
-        f"""
-        <style>
-            .stApp {{
-                background-color: {theme['bg_app']};
-            }}
-            /* Định nghĩa thêm các style khác nếu cần */
-            .css-1544g2n {{
-                background-color: {theme['bg_card']};
-            }}
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    gradient_css = f"""
+    <style>
+    .stApp {{
+        background: linear-gradient(180deg, {theme['bg_app']} 20%, #f9f9f9 80%);
+        background-attachment: fixed;
+    }}
+    /* Định nghĩa thêm các style khác nếu cần */
+    .css-1544g2n {{
+        background-color: {theme['bg_card']};
+    }}
+    </style>
+    """
+    st.markdown(gradient_css, unsafe_allow_html=True)
 
 
 set_app_background(THEME_COLORS)
@@ -1656,7 +1641,7 @@ def main():
                             )
                             trigger_auto_save()
 
-                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nChi tiết xin liên hệ Hotline 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
+                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN ✅\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \n Salon Kim Hiền\n Chi tiết xin liên hệ 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
 
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
@@ -2481,7 +2466,7 @@ def main():
                         unsafe_allow_html=True,
                     )
                     if st.button(
-                        "♻️ LÀM MỚI TOÀN BỘ BỘ NHỚ ĐỆM",
+                        "♻️ LÀM MỚI NHỚ ĐỆM",
                         use_container_width=True,
                         type="primary",
                     ):
