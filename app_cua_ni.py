@@ -1285,38 +1285,40 @@ def main():
                                     "<hr style='margin:8px 0; border:none;'>",
                                     unsafe_allow_html=True,
                                 )
-                        if not has_items:
-                            st.info("Không có lịch hẹn nào của bạn cho hôm nay.")
-else:
+if c_ngay_lh:
+                    df_today_lh = df_lh[df_lh[c_ngay_lh].astype(str).str.contains(today_str, na=False)]
+                    so_luong_hen = len(df_today_lh)
+                    
+                    st.markdown(
+                        f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>',
+                        unsafe_allow_html=True,
+                    )
+
+                    if not df_today_lh.empty:
+                        # ... (đoạn vòng lặp for i, row in df_today_lh.iterrows() giữ nguyên)
+                        # Ní nhớ đảm bảo toàn bộ đoạn này thụt lề vào trong 'if not df_today_lh.empty:'
+                        pass 
+                    else:
+                        st.info("Không có lịch hẹn nào của bạn cho hôm nay.")
+                else:
                     st.markdown(
                         '<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY (0)</div>',
                         unsafe_allow_html=True,
                     )
                     st.info("Dữ liệu lịch hẹn trống.")
 
-                # Khối này cần thẳng hàng với 'if' ở phía trên (đã nằm trong with tabs[x])
+                # Các khối bên dưới này phải để ngoài khối if c_ngay_lh: 
+                # hoặc bên trong tùy logic của ní, nhưng PHẢI thẳng hàng với các khối if khác
                 if st.session_state.get("bill_vua_in"):
                     with st.container(border=True):
-                        st.markdown(
-                            '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
-                            unsafe_allow_html=True,
-                        )
-                        st.markdown(st.session_state.bill_vua_in, unsafe_allow_html=True)
-                        if st.button("❌ ẨN BILL NÀY", use_container_width=True, type="primary"):
-                            st.session_state.bill_vua_in = None
-                            st.rerun()
+                        # ... (giữ nguyên)
+                        pass
 
                 if st.session_state.get("role") == "Admin":
                     try:
                         so_don_hom_nay = count_orders_today()
-                        st.markdown(
-                            f"""
-                            <div style="background-color: {THEME_COLORS['primary']}; color: white; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
-                                <strong style="font-size: 18px;">🔥 TỔNG ĐƠN ĐÃ CHỐT HÔM NAY: {so_don_hom_nay} ĐƠN</strong>
-                            </div>
-                            """,
-                            unsafe_allow_html=True,
-                        )
+                        # ... (giữ nguyên)
+                        pass
                     except Exception:
                         st.error("Không thể tải số liệu đơn hàng.")
                         
