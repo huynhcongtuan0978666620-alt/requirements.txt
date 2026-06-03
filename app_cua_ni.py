@@ -45,10 +45,7 @@ components.html(
 def get_global_user_tracker():
     return {}
 
-
-def get_now_vn():
-    vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
-    return datetime.now(v# =====================================================================
+# =====================================================================
 # 🕒 HÀM LẤY GIỜ VIỆT NAM CHUẨN (ĐƯA LÊN ĐẦU ĐỂ PHỤC VỤ THỜI GIAN THỰC)
 # =====================================================================
 def get_now_vn():
