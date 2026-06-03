@@ -2026,7 +2026,7 @@ def main():
         # ==================== TAB 4: BÁO CÁO ====================
         with tabs[3]:
             if st.session_state["role"] == "Admin":
-                with st.container(border=True):
+                 with st.container(border=True):
 
                     # --- KHU VỰC ĐẾM KIỂM SOÁT ĐƠN CHO ADMIN ---
             if st.session_state.get("role") == "Admin":
