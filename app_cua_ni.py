@@ -2319,8 +2319,6 @@ def main():
                         cong_thuc_data = []
                         loi_khuyen = ""
                         diem_so = "9.0/10"
-                        quy_trinh = ""
-
                         if "Vàng Đồng" in mau_nhuom:
                             cong_thuc_data = [
                                 ["Màu chủ đạo 8.43", 70.0],
@@ -2328,56 +2326,79 @@ def main():
                                 ["Màu mix tự nhiên 0.00", 10.0],
                                 ["Oxy 9%", 100.0],
                             ]
-                            quy_trinh = "Đánh đều các tuýp màu 8.43, 0.43 và 0.00 lại với nhau. Sau đó đổ từ từ Oxy 9% vào trộn thật kỹ."
                             loi_khuyen = "Phù hợp da trắng. Chải thuốc thân và ngọn, chải cách chân tóc 2cm. Chờ 30 phút rồi chải tiếp phần chân tóc."
                             diem_so = "9.2/10"
-
                         elif "Nâu Lạnh" in mau_nhuom:
                             cong_thuc_data = [
-                                ["Màu chủ đạo 6.1", 70.0],
-                                ["Màu mix Blue 0.11", 20.0],
-                                ["Màu mix tự nhiên 5.0", 10.0],
+                                ["Màu chủ đạo 6.1", 80.0],
+                                ["Màu mix tro 0.11", 15.0],
+                                ["Màu mix xanh rêu 0.22 (khử đỏ)", 5.0],
                                 ["Oxy 6%", 100.0],
                             ]
-                            quy_trinh = "Trộn đều màu 6.1, 0.11 và 5.0 trước để hạt màu quyện vào nhau, sau đó cho từ từ Oxy 6% vào và đánh đều tay đến khi hỗn hợp nhuyễn mịn."
-                            loi_khuyen = "Thích hợp mọi loại da. Bôi đều hỗn hợp từ chân ra ngọn. Lưu thuốc trên tóc khoảng 40-45 phút sau đó xả sạch."
-                            diem_so = "9.0/10"
-
+                            loi_khuyen = "Màu tệp vào tóc lâu phai. Nếu nền tóc cũ của khách có ánh đỏ/cam nhiều, cân nhắc tăng 0.22 lên 10% để triệt đỏ."
+                            diem_so = "9.5/10"
                         elif "Khói Xám" in mau_nhuom:
                             cong_thuc_data = [
-                                ["Màu chủ đạo 8.11", 60.0],
-                                ["Màu mix Blue 0.11", 20.0],
-                                ["Màu mix Ash 0.88", 10.0],
-                                ["Màu clear 0.00", 10.0],
-                                ["Oxy 6%", 100.0],
+                                ["Màu chủ đạo 8.11", 70.0],
+                                ["Màu mix tro 0.11", 20.0],
+                                ["Màu mix tím 0.66 (khử vàng)", 10.0],
+                                ["Oxy 3%", 100.0],
                             ]
-                            quy_trinh = "Trộn đều các hạt màu thật kỹ trước. Sau đó thêm lượng Oxy tương ứng theo tỷ lệ 1:1 với tổng lượng màu rồi đánh đều."
-                            loi_khuyen = "Bắt buộc nền tóc phải đạt level 9 trở lên (đã qua tẩy trắng). Bôi nhanh tay chải đều từ chân tới ngọn. Thời gian lưu thuốc từ 30-40 phút."
-                            diem_so = "9.5/10"
-
+                            loi_khuyen = "BẮT BUỘC: Nền tóc phải ở Level 9+. Dùng Oxy thấp (3% hoặc 6%) để hạt màu khói ngậm sâu vào biểu bì, tránh tuột màu nhanh."
+                            diem_so = "8.8/10"
                         else:
                             cong_thuc_data = [
-                                ["Màu tự chọn", 50.0],
-                                ["Màu mix tự chọn", 50.0],
-                                ["Oxy phù hợp", 100.0],
+                                ["Màu chủ đạo", 80.0],
+                                ["Màu mix", 20.0],
+                                ["Oxy tùy chọn", 100.0],
                             ]
-                            quy_trinh = "Tùy thuộc vào dòng màu và nền tóc thực tế để căn chỉnh, nên test trước trên 1 lọn tóc nhỏ phía sau gáy."
-                            loi_khuyen = "Cần có kinh nghiệm quan sát nền tóc và hạt màu. Thời gian lưu thuốc dao động từ 30-45 phút tùy chất tóc."
-                            diem_so = "8.0/10"
+                            loi_khuyen = "Theo dõi sát biểu bì tóc để xả nước kịp thời."
+                            diem_so = "8.5/10"
 
-                        st.markdown("**1. Công thức hoàn chỉnh (có cột tỷ lệ %)**")
-                        df_cong_thuc = pd.DataFrame(
-                            cong_thuc_data, columns=["Thành phần", "Tỷ lệ (%)"]
+                        st.markdown(
+                            f"<h4 style='color:{THEME_COLORS['text_title']};'>1. Bảng công thức hoàn chỉnh (Tỷ lệ %)</h4>",
+                            unsafe_allow_html=True,
                         )
                         st.dataframe(
-                            df_cong_thuc, use_container_width=True, hide_index=True
+                            pd.DataFrame(
+                                cong_thuc_data,
+                                columns=[
+                                    "Thành phần (Thuốc + Trợ nhuộm)",
+                                    "Tỷ lệ % (Gam/ML)",
+                                ],
+                            ),
+                            use_container_width=True,
+                            hide_index=True,
                         )
 
-                        st.markdown(f"**2. Quy trình pha chế chuẩn:**\n\n{quy_trinh}")
-                        st.markdown(f"**3. Đánh giá điểm:**\n\n{diem_so} điểm.")
                         st.markdown(
-                            f"**4. Hướng dẫn thao tác/Hướng dẫn sử dụng:**\n\n{loi_khuyen}"
+                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình pha chế / bôi thuốc chuẩn</h4>",
+                            unsafe_allow_html=True,
                         )
+                        st.markdown(f"""
+                        * **Bước 1:** Chuẩn bị bát nhựa sạch, dùng cân tiểu ly điện tử đong chính xác các thành phần theo bảng tỷ lệ %.
+                        * **Bước 2:** Đánh hỗn hợp thuốc nhuộm và Oxy thật đều tay cho đến khi dung dịch nhuyễn mịn hoàn toàn.
+                        * **Bước 3:** Chia tóc làm 4 phần đồng đều. Tiến hành chải thuốc lên thân và ngọn tóc một cách đồng đều.
+                        * **Bước 4:** Để thời gian lưu thuốc ổn định trên tóc từ 35-45 phút tùy thuộc vào độ thẩm thấu của sợi tóc.
+                        """)
+
+                        st.markdown(
+                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>3. Đánh giá chuyên gia chuyên môn</h4>",
+                            unsafe_allow_html=True,
+                        )
+                        st.info(
+                            f"🏆 **Điểm số chất lượng công thức nhuộm:** {diem_so} điểm."
+                        )
+
+                        st.markdown(
+                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng</h4>",
+                            unsafe_allow_html=True,
+                        )
+                        st.markdown(f"""
+                        * **Chuẩn bị trước khi thao tác:** Đeo găng tay bạt bảo hộ đầy đủ cho thợ và áo choàng bảo vệ cho khách hàng. Thoa một lớp mỏng Vaseline quanh các viền chân tóc (trán, mang tai, sau gáy) để ngăn thuốc nhuộm dính bám vào da.
+                        * **Kỹ thuật vào thuốc:** Chia toàn bộ tóc thành các tép nhỏ từ 1-2cm. Đi cọ dứt khoát, trải đều thuốc từ thân đến ngọn hoặc cách chân tùy thuộc vào nền tóc thực tế. Chú ý bôi thuốc đẫm, tránh đọng thuốc cục bộ dễ gây loang lổ.
+                        * **Xả tóc & Khóa màu:** Theo dõi độ lên màu liên tục, khi đạt thời gian lưu thuốc chuẩn (35-45 phút), tiến hành xả sạch hoàn toàn bằng nước ấm cho đến khi nước trong. Sử dụng dầu xả hoặc dầu hấp chuyên dụng khử kiềm để đóng chặt biểu bì tóc, khóa hạt màu lâu phai và tạo độ bóng mượt.
+                        """)
 
 
 if __name__ == "__main__":
