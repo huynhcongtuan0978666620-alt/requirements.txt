@@ -14,12 +14,14 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 
+
 # =====================================================================
 # 🌟 TÍNH NĂNG 3 & 4: BÓC TÁCH BẢNG MÀU & ĐỔI GIAO DIỆN THEO MÚI GIỜ (NGÀY/ĐÊM)
 # =====================================================================
 def get_now_vn():
     vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
     return datetime.now(vn_tz)
+
 
 def get_dynamic_theme_colors():
     """
@@ -29,7 +31,7 @@ def get_dynamic_theme_colors():
     """
     now_vn = get_now_vn()
     hour = now_vn.hour
-    
+
     if 6 <= hour < 18:
         # GIAO DIỆN BAN NGÀY - TƯƠI SÁNG & SANG TRỌNG
         return {
@@ -87,6 +89,7 @@ def get_dynamic_theme_colors():
             "shadow_toast": "rgba(0, 0, 0, 0.8)",
         }
 
+
 # Khởi tạo bảng màu động ngay đầu luồng render
 THEME_COLORS = get_dynamic_theme_colors()
 
@@ -112,6 +115,7 @@ components.html(
     height=0,
 )
 
+
 def set_app_background(colors):
     gradient_css = f"""
     <style>
@@ -123,7 +127,9 @@ def set_app_background(colors):
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
 
+
 set_app_background(THEME_COLORS)
+
 
 # =====================================================================
 # 📍 BỘ THEO DÕI TRẠNG THÁI TOÀN CỤC & HIỆU ỨNG GIAO DIỆN NÂNG CAO
@@ -131,6 +137,7 @@ set_app_background(THEME_COLORS)
 @st.cache_resource
 def get_global_user_tracker():
     return {}
+
 
 def inject_advanced_ui_js():
     js_code = f"""
@@ -212,8 +219,13 @@ def inject_advanced_ui_js():
     """
     components.html(js_code, height=0, width=0)
 
+
 def render_balloons_html():
-    colors = [THEME_COLORS["primary"], THEME_COLORS["primary"], THEME_COLORS["accent_vip"]]
+    colors = [
+        THEME_COLORS["primary"],
+        THEME_COLORS["primary"],
+        THEME_COLORS["accent_vip"],
+    ]
     html_balloons = '<div class="balloon-container-css" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden;">'
     for i in range(20):
         left_pos = random.uniform(5, 95)
@@ -225,6 +237,7 @@ def render_balloons_html():
         html_balloons += f'<div style="position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.8; background-color: {color}; left: {left_pos}vw; width: {w}px; height: {h}px; animation: fly-up-skywards-pure {duration}s linear {delay}s forwards; box-shadow: 0 4px 6px {THEME_COLORS["shadow_light"]};"></div>'
     html_balloons += "<style>@keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-120vh); opacity: 0; } }</style></div>"
     st.markdown(html_balloons, unsafe_allow_html=True)
+
 
 def apply_v16_theme():
     p = THEME_COLORS["primary"]
@@ -348,6 +361,7 @@ def apply_v16_theme():
         unsafe_allow_html=True,
     )
 
+
 apply_v16_theme()
 
 # Hiển thị chữ chạy Marquee chào mừng ở đầu ứng dụng
@@ -361,6 +375,7 @@ marquee_code = f"""
 </div>
 """
 st.markdown(marquee_code, unsafe_allow_html=True)
+
 
 # =====================================================================
 # 2. CƠ CHẾ KẾT NỐI VÀ HÀM TRUY XUẤT DỮ LIỆU ĐỒNG BỘ GOOGLE SHEETS
@@ -380,10 +395,15 @@ def get_google_sheet_workbook():
             "private_key": secrets.get("private_key", "").replace("\\n", "\n"),
             "client_email": secrets.get("client_email", ""),
             "client_id": secrets.get("client_id", ""),
-            "token_uri": secrets.get("token_uri", "https://oauth2.googleapis.com/token"),
+            "token_uri": secrets.get(
+                "token_uri", "https://oauth2.googleapis.com/token"
+            ),
         }
 
-        scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        scope = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         client = gspread.authorize(creds)
         url = secrets.get("spreadsheet", "")
@@ -391,6 +411,7 @@ def get_google_sheet_workbook():
     except Exception as e:
         st.error(f"Lỗi kết nối bộ cơ sở dữ liệu Sheets: {e}")
         st.stop()
+
 
 @st.cache_data(ttl=60)
 def get_orders_count_today():
@@ -400,7 +421,7 @@ def get_orders_count_today():
         rows = sh.worksheet("DoanhThu").get_all_values()
         if len(rows) <= 1:
             return 0
-        
+
         ngay_hom_nay = get_now_vn().strftime("%d/%m/%Y")
         count = 0
         for row in rows[1:]:
@@ -409,6 +430,7 @@ def get_orders_count_today():
         return count
     except Exception:
         return 0
+
 
 @st.cache_data(ttl=3600)
 def get_service_data():
@@ -419,21 +441,27 @@ def get_service_data():
         for row in rows[1:]:
             if len(row) >= 2:
                 ten_dv = str(row[0]).strip()
-                if not ten_dv: continue
+                if not ten_dv:
+                    continue
                 try:
-                    gia_goc = float(str(row[1]).replace(".", "").replace(",", "").strip())
+                    gia_goc = float(
+                        str(row[1]).replace(".", "").replace(",", "").strip()
+                    )
                 except Exception:
                     gia_goc = 0.0
                 hoa_hong = 0.0
                 if len(row) >= 3 and row[2]:
                     try:
-                        hoa_hong = float(str(row[2]).replace("%", "").replace(",", ".").strip())
+                        hoa_hong = float(
+                            str(row[2]).replace("%", "").replace(",", ".").strip()
+                        )
                     except Exception:
                         hoa_hong = 0.0
                 danh_sach_dv[ten_dv] = {"gia": gia_goc, "hoa_hong": hoa_hong}
         return danh_sach_dv
     except Exception:
         return {}
+
 
 @st.cache_data(ttl=30)
 def get_lich_hen_data():
@@ -443,12 +471,13 @@ def get_lich_hen_data():
     except Exception:
         return []
 
+
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ GIAO DIỆN CHỨC NĂNG CHÍNH
 # =====================================================================
 def main():
     inject_advanced_ui_js()
-    
+
     # Khởi tạo trạng thái mặc định cho ứng dụng
     if "logged_in" not in st.session_state:
         st.session_state.logged_in = True
@@ -457,21 +486,27 @@ def main():
 
     # PHÂN QUYỀN GIAO DIỆN ADMIN
     if st.session_state.role == "Admin":
-        st.markdown('<div class="the-quan-ly-flat">⚙️ BẢNG ĐIỀU KHIỂN HỆ THỐNG QUẢN TRỊ</div>', unsafe_allow_html=True)
-        
+        st.markdown(
+            '<div class="the-quan-ly-flat">⚙️ BẢNG ĐIỀU KHIỂN HỆ THỐNG QUẢN TRỊ</div>',
+            unsafe_allow_html=True,
+        )
+
         # --- TÍNH NĂNG 1: HIỂN THỊ BỘ ĐẾM SỐ ĐƠN HÀNG TRONG NGÀY ---
         total_don_hang = get_orders_count_today()
         st.metric(
-            label="📊 Tổng số hóa đơn đã chốt hôm nay", 
-            value=f"{total_don_hang} đơn hàng", 
-            delta="Cập nhật thời gian thực"
+            label="📊 Tổng số hóa đơn đã chốt hôm nay",
+            value=f"{total_don_hang} đơn hàng",
+            delta="Cập nhật thời gian thực",
         )
-        
+
     # HIỂN THỊ KHU VỰC LỊCH HẸN HÔM NAY
-    st.markdown('<div class="the-quan-ly-flat">📅 DANH SÁCH LỊCH HẸN</div>', unsafe_allow_html=True)
-    
+    st.markdown(
+        '<div class="the-quan-ly-flat">📅 DANH SÁCH LỊCH HẸN</div>',
+        unsafe_allow_html=True,
+    )
+
     lich_hen_list = get_lich_hen_data()
-    
+
     if not lich_hen_list:
         st.info("Hiện tại chưa có lịch hẹn nào mới được ghi nhận.")
     else:
@@ -479,15 +514,15 @@ def main():
             tt_val = str(row.get("Trạng thái", "")).strip()
             if tt_val.upper() == "ĐÃ CHỐT ĐƠN":
                 continue
-                
+
             gio = row.get("Giờ", "--:--")
             khach = row.get("Tên Khách", "Khách Lẻ")
             sdt = row.get("Số Điện Thoại", "-------")
             dv = row.get("Dịch Vụ", "Chưa đăng ký")
-            
+
             # Tối ưu giao diện hiển thị danh sách dạng hàng ngang
             col_info, col_action = st.columns([7, 3])
-            
+
             with col_info:
                 st.markdown(
                     f"""
@@ -498,31 +533,37 @@ def main():
                             <span style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">💇‍♀️ {dv}</span>
                         </div>
                     </div>
-                    """, 
-                    unsafe_allow_html=True
+                    """,
+                    unsafe_allow_html=True,
                 )
-            
+
             with col_action:
                 # --- TÍNH NĂNG 2: BỘ ĐÔI NÚT CHỐT NHANH / XÓA LỊCH HẸN TRỰC TIẾP ---
                 st.write("")  # Căn chỉnh lề dọc để khớp với thẻ thông tin
                 sub_col1, sub_col2 = st.columns(2)
-                
+
                 with sub_col1:
-                    if st.button("✅ Chốt", key=f"btn_chot_{idx}", use_container_width=True):
+                    if st.button(
+                        "✅ Chốt", key=f"btn_chot_{idx}", use_container_width=True
+                    ):
                         try:
                             sh = get_google_sheet_workbook()
                             ws = sh.worksheet("LichHen")
                             # Đổi trạng thái lịch hẹn trên Google Sheets thành "Đã chốt đơn"
-                            ws.update_cell(idx + 2, 5, "Đã chốt đơn") 
-                            st.toast(f"🎉 Đã chuyển trạng thái chốt đơn cho khách {khach}!")
+                            ws.update_cell(idx + 2, 5, "Đã chốt đơn")
+                            st.toast(
+                                f"🎉 Đã chuyển trạng thái chốt đơn cho khách {khach}!"
+                            )
                             st.cache_data.clear()
                             time.sleep(1)
                             st.rerun()
                         except Exception as e:
                             st.error(f"Lỗi xử lý: {e}")
-                            
+
                 with sub_col2:
-                    if st.button("❌ Xóa", key=f"btn_xoa_{idx}", use_container_width=True):
+                    if st.button(
+                        "❌ Xóa", key=f"btn_xoa_{idx}", use_container_width=True
+                    ):
                         try:
                             sh = get_google_sheet_workbook()
                             ws = sh.worksheet("LichHen")
@@ -534,6 +575,7 @@ def main():
                             st.rerun()
                         except Exception as e:
                             st.error(f"Lỗi xử lý: {e}")
+
 
 if __name__ == "__main__":
     main()
