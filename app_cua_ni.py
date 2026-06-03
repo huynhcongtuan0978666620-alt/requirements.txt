@@ -1002,7 +1002,7 @@ def main():
             else [st.session_state.full_name]
         )
 
-# ==================== TAB 1: TỔNG QUAN ====================
+        # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
             # Khối thông tin tiệm
             with st.container(border=True):
@@ -1045,16 +1045,30 @@ def main():
                 if len(lh_data) > 1:
                     df_lh = pd.DataFrame(lh_data[1:], columns=lh_data[0])
                     today_str = get_now_vn().strftime("%d/%m/%Y")
-                    
+
                     # Xác định các cột (giữ nguyên logic lấy cột của ní)
-                    c_ngay_lh = next((c for c in df_lh.columns if "ngày" in c.lower() or "ngay" in c.lower()), None)
+                    c_ngay_lh = next(
+                        (
+                            c
+                            for c in df_lh.columns
+                            if "ngày" in c.lower() or "ngay" in c.lower()
+                        ),
+                        None,
+                    )
                     # ... (các cột khác: c_gio_lh, c_ten_lh, ...)
-                    
+
                     if c_ngay_lh:
-                        df_today_lh = df_lh[df_lh[c_ngay_lh].astype(str).str.contains(today_str, na=False)]
+                        df_today_lh = df_lh[
+                            df_lh[c_ngay_lh]
+                            .astype(str)
+                            .str.contains(today_str, na=False)
+                        ]
                         so_luong_hen = len(df_today_lh)
-                        
-                        st.markdown(f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>', unsafe_allow_html=True)
+
+                        st.markdown(
+                            f'<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY ({so_luong_hen})</div>',
+                            unsafe_allow_html=True,
+                        )
 
                         if not df_today_lh.empty:
                             for i, row in df_today_lh.iterrows():
@@ -1065,7 +1079,10 @@ def main():
                     else:
                         st.info("Dữ liệu lịch hẹn không đúng cấu trúc.")
                 else:
-                    st.markdown('<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY (0)</div>', unsafe_allow_html=True)
+                    st.markdown(
+                        '<div class="the-quan-ly-flat">📅 LỊCH HẸN HÔM NAY (0)</div>',
+                        unsafe_allow_html=True,
+                    )
                     st.info("Dữ liệu lịch hẹn trống.")
 
                 # Các khối thông tin bổ sung đặt ngoài if c_ngay_lh nhưng trong cùng container
