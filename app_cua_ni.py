@@ -2320,7 +2320,7 @@ def main():
                         loi_khuyen = ""
                         diem_so = "9.0/10"
                         quy_trinh = ""
-                        
+
                         if "Vàng Đồng" in mau_nhuom:
                             cong_thuc_data = [
                                 ["Màu chủ đạo 8.43", 70.0],
@@ -2331,7 +2331,7 @@ def main():
                             quy_trinh = "Đánh đều các tuýp màu 8.43, 0.43 và 0.00 lại với nhau. Sau đó đổ từ từ Oxy 9% vào trộn thật kỹ."
                             loi_khuyen = "Phù hợp da trắng. Chải thuốc thân và ngọn, chải cách chân tóc 2cm. Chờ 30 phút rồi chải tiếp phần chân tóc."
                             diem_so = "9.2/10"
-                            
+
                         elif "Nâu Lạnh" in mau_nhuom:
                             cong_thuc_data = [
                                 ["Màu chủ đạo 6.1", 70.0],
@@ -2342,7 +2342,7 @@ def main():
                             quy_trinh = "Trộn đều màu 6.1, 0.11 và 5.0 trước để hạt màu quyện vào nhau, sau đó cho từ từ Oxy 6% vào và đánh đều tay đến khi hỗn hợp nhuyễn mịn."
                             loi_khuyen = "Thích hợp mọi loại da. Bôi đều hỗn hợp từ chân ra ngọn. Lưu thuốc trên tóc khoảng 40-45 phút sau đó xả sạch."
                             diem_so = "9.0/10"
-                            
+
                         elif "Khói Xám" in mau_nhuom:
                             cong_thuc_data = [
                                 ["Màu chủ đạo 8.11", 60.0],
@@ -2354,7 +2354,7 @@ def main():
                             quy_trinh = "Trộn đều các hạt màu thật kỹ trước. Sau đó thêm lượng Oxy tương ứng theo tỷ lệ 1:1 với tổng lượng màu rồi đánh đều."
                             loi_khuyen = "Bắt buộc nền tóc phải đạt level 9 trở lên (đã qua tẩy trắng). Bôi nhanh tay chải đều từ chân tới ngọn. Thời gian lưu thuốc từ 30-40 phút."
                             diem_so = "9.5/10"
-                            
+
                         else:
                             cong_thuc_data = [
                                 ["Màu tự chọn", 50.0],
@@ -2366,12 +2366,19 @@ def main():
                             diem_so = "8.0/10"
 
                         st.markdown("**1. Công thức hoàn chỉnh (có cột tỷ lệ %)**")
-                        df_cong_thuc = pd.DataFrame(cong_thuc_data, columns=["Thành phần", "Tỷ lệ (%)"])
-                        st.dataframe(df_cong_thuc, use_container_width=True, hide_index=True)
-                        
+                        df_cong_thuc = pd.DataFrame(
+                            cong_thuc_data, columns=["Thành phần", "Tỷ lệ (%)"]
+                        )
+                        st.dataframe(
+                            df_cong_thuc, use_container_width=True, hide_index=True
+                        )
+
                         st.markdown(f"**2. Quy trình pha chế chuẩn:**\n\n{quy_trinh}")
                         st.markdown(f"**3. Đánh giá điểm:**\n\n{diem_so} điểm.")
-                        st.markdown(f"**4. Hướng dẫn thao tác/Hướng dẫn sử dụng:**\n\n{loi_khuyen}")
+                        st.markdown(
+                            f"**4. Hướng dẫn thao tác/Hướng dẫn sử dụng:**\n\n{loi_khuyen}"
+                        )
+
 
 if __name__ == "__main__":
     main()
