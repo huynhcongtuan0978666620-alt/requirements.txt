@@ -1306,6 +1306,20 @@ def main():
                     ):
                         st.session_state.bill_vua_in = None
                         st.rerun()
+            if st.session_state.get("role") == "Admin":
+        try:
+            so_don_hom_nay = count_orders_today()
+            st.markdown(
+                f"""
+                <div style="background-color: {THEME_COLORS['primary']}; color: white; padding: 10px; border-radius: 10px; text-align: center; margin-bottom: 20px;">
+                    <strong style="font-size: 18px;">🔥 TỔNG ĐƠN ĐÃ CHỐT HÔM NAY: {so_don_hom_nay} ĐƠN</strong>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+        except Exception:
+            st.error("Không thể tải số liệu đơn hàng.")
+                        
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
