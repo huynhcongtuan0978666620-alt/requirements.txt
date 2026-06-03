@@ -2005,7 +2005,7 @@ def main():
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
-            if st.session_state["role"] == "Admin":
+            if st.session_state.get("role") == "Admin":
                 with st.container(border=True):
                     st.markdown(
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">Admin DANH SÁCH BILL CHỜ</div>',
