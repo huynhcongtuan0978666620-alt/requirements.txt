@@ -36,50 +36,6 @@ components.html(
     height=0,
 )
 
-# =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
-# =====================================================================
-THEME_COLORS = {
-    "bg_app": "#e8f5f3",
-    "bg_card": "#ffffff",
-    "bg_box_chung": "#f4f7f6",
-    "bg_vip_box": "#e3f2fd",
-    "bg_shake_box": "#fff3e0",
-    "bg_badge_hang": "#efebe9",
-    "bg_marquee": "#f0f008",
-    "primary": "rgba(70, 140, 150, 1)",
-    "accent_vip": "#ffb300",
-    "accent_danger": "#d32f2f",
-    "accent_zalo": "#0068ff",
-    "accent_chiet_khau": "#e65100",
-    "text_main": "#263238",
-    "text_secondary": "#546e7a",
-    "text_muted": "#90a4ae",
-    "text_title": "#0f4c43",
-    "text_badge": "#ffffff",
-    "border_light": "#eaeaea",
-    "border_input": "#cfd8dc",
-    "border_badge": "#b2dfdb",
-    "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",
-}
-
-
-def set_app_background(colors):
-    gradient_css = f"""
-    <style>
-    .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
-        background-attachment: fixed;
-    }}
-    </style>
-    """
-    st.markdown(gradient_css, unsafe_allow_html=True)
-
-
-set_app_background(THEME_COLORS)
 
 
 # =====================================================================
@@ -92,7 +48,96 @@ def get_global_user_tracker():
 
 def get_now_vn():
     vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
+    return datetime.now(v# =====================================================================
+# 🕒 HÀM LẤY GIỜ VIỆT NAM CHUẨN (ĐƯA LÊN ĐẦU ĐỂ PHỤC VỤ THỜI GIAN THỰC)
+# =====================================================================
+def get_now_vn():
+    vn_tz = pytz.timezone("Asia/Ho_Chi_Minh")
     return datetime.now(vn_tz)
+
+# =====================================================================
+# 🌟 CẤU HÌNH BẢNG MÀU CHI TIẾT TỪNG THÀNH PHẦN (DESIGN SYSTEM V15 NÂNG CẤP)
+# =====================================================================
+THEME_DAY = {
+    "bg_app": "#e8f5f3",
+    "bg_card": "#ffffff",
+    "bg_box_chung": "#f4f7f6",
+    "bg_vip_box": "#e3f2fd",
+    "bg_shake_box": "#fff3e0",
+    "bg_badge_hang": "#efebe9",
+    "bg_marquee": "#fff9c4",            # Nền chữ chạy ban ngày (Vàng nhạt thanh lịch)
+    "text_marquee": "#0f4c43",          # Màu chữ chạy ban ngày độc lập
+    "primary": "rgba(70, 140, 150, 1)", 
+    "text_primary_btn": "#ffffff",      # Màu chữ của nút Primary ban ngày
+    "accent_vip": "#ffb300",            
+    "accent_danger": "#d32f2f",         
+    "accent_zalo": "#0068ff",           
+    "accent_chiet_khau": "#e65100",     
+    "text_main": "#263238",             
+    "text_secondary": "#546e7a",        
+    "text_muted": "#90a4ae",            
+    "text_title": "#0f4c43",            
+    "text_badge": "#ffffff",            
+    "border_light": "#eaeaea",          
+    "border_input": "#cfd8dc",          
+    "border_badge": "#b2dfdb",          
+    "border_vip": "#4fc3f7",            
+    "shadow_light": "rgba(0, 0, 0, 0.015)", 
+    "shadow_heavy": "rgba(0, 0, 0, 0.04)",  
+    "shadow_toast": "rgba(0, 0, 0, 0.6)",   
+}
+
+THEME_NIGHT = {
+    "bg_app": "#0f1a1c",                # Nền tối sang trọng huyền bí (Không bị đen xì)
+    "bg_card": "#162629",               # Nền hộp thẻ ban đêm
+    "bg_box_chung": "#1e3337",          
+    "bg_vip_box": "#152d42",            
+    "bg_shake_box": "#3d2a15",          
+    "bg_badge_hang": "#2e2522",         
+    "bg_marquee": "#233d41",            # Nền chữ chạy ban đêm độc lập
+    "text_marquee": "#ffd54f",          # Màu chữ chạy ban đêm (Vàng neon nổi bật)
+    "primary": "#26a69a",               
+    "text_primary_btn": "#0f1a1c",      # Màu chữ nút bấm chính ban đêm độc lập
+    "accent_vip": "#ffd54f",            
+    "accent_danger": "#ff5252",         
+    "accent_zalo": "#29b6f6",           
+    "accent_chiet_khau": "#ff7043",     
+    "text_main": "#eceff1",             
+    "text_secondary": "#b0bec5",        
+    "text_muted": "#78909c",            
+    "text_title": "#4db6ac",            
+    "text_badge": "#0f1a1c",            
+    "border_light": "#233d41",          
+    "border_input": "#37474f",          
+    "border_badge": "#004d40",          
+    "border_vip": "#0288d1",            
+    "shadow_light": "rgba(0, 0, 0, 0.3)",   
+    "shadow_heavy": "rgba(0, 0, 0, 0.5)",   
+    "shadow_toast": "rgba(0, 0, 0, 0.7)",   
+}
+
+# TỰ ĐỘNG CHUYỂN ĐỔI GIAO DIỆN THEO MÚI GIỜ HOẠT ĐỘNG
+current_hour = get_now_vn().hour
+if 6 <= current_hour < 18:
+    THEME_COLORS = THEME_DAY
+    THEME_MODE_LABEL = "☀️ CHẾ ĐỘ BAN NGÀY"
+else:
+    THEME_COLORS = THEME_NIGHT
+    THEME_MODE_LABEL = "🌙 CHẾ ĐỘ BAN ĐÊM"
+
+def set_app_background(colors):
+    gradient_css = f"""
+    <style>
+    .stApp {{
+        background: linear-gradient(180deg, {colors['bg_app']} 20%, {colors['bg_box_chung']} 80%);
+        background-attachment: fixed;
+    }}
+    </style>
+    """
+    st.markdown(gradient_css, unsafe_allow_html=True)
+
+set_app_background(THEME_COLORS)
+n_tz)
 
 
 def inject_advanced_ui_js():
