@@ -1295,8 +1295,8 @@ def main():
                     st.info("Dữ liệu lịch hẹn trống.")
 
 
-with tabs[x]:  # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
-
+# Ví dụ: Nếu "Hoá Đơn Dịch Vụ" là tab thứ 2 (chỉ số 1)
+with tabs[1]:  
     # 1. Đoạn code hiển thị bill cũ của ní
     if st.session_state.get("bill_vua_in"):
         with st.container(border=True):
@@ -1309,7 +1309,7 @@ with tabs[x]:  # Thay x bằng chỉ số tab "Hoá Đơn Dịch Vụ" của ní
                 st.session_state.bill_vua_in = None
                 st.rerun()
 
-    # 2. Đoạn code đếm đơn (Admin) - Đã được thụt lề vào trong tabs
+    # 2. Đoạn code đếm đơn (Admin)
     if st.session_state.get("role") == "Admin":
         try:
             so_don_hom_nay = count_orders_today()
