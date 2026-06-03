@@ -2584,6 +2584,37 @@ def main():
                         * **Kỹ thuật vào thuốc:** Chia toàn bộ tóc thành các tép nhỏ từ 1-2cm. Đi cọ dứt khoát, trải đều thuốc từ thân đến ngọn hoặc cách chân tùy thuộc vào nền tóc thực tế. Chú ý bôi thuốc đẫm, tránh đọng thuốc cục bộ dễ gây loang lổ.
                         * **Xả tóc & Khóa màu:** Theo dõi độ lên màu liên tục, khi đạt thời gian lưu thuốc chuẩn (35-45 phút), tiến hành xả sạch hoàn toàn bằng nước ấm cho đến khi nước trong. Sử dụng dầu xả hoặc dầu hấp chuyên dụng khử kiềm để đóng chặt biểu bì tóc, khóa hạt màu lâu phai và tạo độ bóng mượt.
                         """)
+                        
+                        if st.button(
+                        "♻️ LÀM MỚI NHỚ ĐỆM",
+                        use_container_width=True,
+                        type="primary",
+                    ):
+                        st.cache_data.clear()
+                        st.cache_resource.clear()
+                        st.rerun()
+                    if st.button(
+                        "🚪 Đăng xuất tài khoản Admin",
+                        use_container_width=True,
+                        type="primary",
+                    ):
+                        st.query_params.clear()
+                        st.session_state.clear()
+                        st.rerun()
+            else:
+                with st.container(border=True):
+                    st.markdown(
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">⚙️ HỆ THỐNG TÀI KHOẢN</div>',
+                        unsafe_allow_html=True,
+                    )
+                    if st.button(
+                        "🚪 Đăng xuất khỏi hệ thống",
+                        use_container_width=True,
+                        type="primary",
+                    ):
+                        st.query_params.clear()
+                        st.session_state.clear()
+                        st.rerun()
 
 
 if __name__ == "__main__":
