@@ -1313,7 +1313,7 @@ def main():
                     so_don_thuc_te = count_orders_today()
                     # Cập nhật số đơn trực tiếp vào chuỗi HTML trước khi hiển thị
                     bill_hien_thi = st.session_state.bill_vua_in.replace(
-                        "Sô đơn trong ngày: #0", f"Đơn trong ngày: {so_don_thuc_te}"
+                        "Sô đơn trong ngày: #0", f"Số ĐH trong ngày: {so_don_thuc_te}"
                     )
 
                     st.markdown(bill_hien_thi, unsafe_allow_html=True)
