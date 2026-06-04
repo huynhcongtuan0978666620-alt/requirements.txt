@@ -719,6 +719,7 @@ def check_auto_login():
 
 apply_v15_theme()
 
+
 def count_orders_today():
     try:
         # Ní kiểm tra đúng tên Sheet "HoaDon" của ní nhé
@@ -727,7 +728,7 @@ def count_orders_today():
         return len(ws.get_all_values()) - 1
     except:
         return 0
-        
+
 
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
