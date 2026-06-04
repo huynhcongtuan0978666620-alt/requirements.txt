@@ -1387,17 +1387,17 @@ def main():
 
                 # 1. Bỏ max_selections ra khỏi hàm multiselect
                 selected_dv = st.multiselect(
-                    "Chọn dịch vụ:", 
-                    options=danh_sach_dich_vu, 
-                    placeholder=pholder_text
+                    "Chọn dịch vụ:", options=danh_sach_dich_vu, placeholder=pholder_text
                 )
 
                 # 2. Tự kiểm tra và thông báo bằng tiếng Việt
                 if st.session_state.get("role") == "NhanVien" and len(selected_dv) > 3:
-                    st.error("⚠️ Ní ơi, nhân viên chỉ được chọn tối đa 3 dịch vụ thôi nhé!")
-                    # Ní có thể để nguyên cho họ chọn tiếp hoặc dùng lệnh 
+                    st.error(
+                        "⚠️ Ní ơi, nhân viên chỉ được chọn tối đa 3 dịch vụ thôi nhé!"
+                    )
+                    # Ní có thể để nguyên cho họ chọn tiếp hoặc dùng lệnh
                     # selected_dv = selected_dv[:3] nếu muốn "cắt" ép buộc.
-                    
+
                 if st.button(
                     "➕ THÊM VÀO GIỎ HÀNG", type="primary", use_container_width=True
                 ):
