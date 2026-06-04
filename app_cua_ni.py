@@ -1019,7 +1019,7 @@ def main():
                     f"""
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 50%; border: 3px solid {THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
-                        <div style="font-size: 22px; font-weight: 1300; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+                        <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                         <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
                             <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
                             <div style="margin-top: 3px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
@@ -1666,7 +1666,7 @@ def main():
                             st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
 <div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;">
-    <div style="font-size: 20px; font-weight: 1300; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+    <div style="font-size: 27px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
     <div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
