@@ -1302,27 +1302,31 @@ def main():
                     )
                     st.info("Dữ liệu lịch hẹn trống.")
 
-            if st.session_state.get("bill_vua_in"):
-                with st.container(border=True):
-                    st.markdown(
-                        '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
-                        unsafe_allow_html=True,
-                    )
+                if st.session_state.get("bill_vua_in"):
+                    with st.container(border=True):
+                        st.markdown(
+                            '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
+                            unsafe_allow_html=True,
+                        )
+                        
+                        # --- [CẬP NHẬT ĐỘNG] LẤY SỐ KHÁCH HÔM NAY ---
+                        # Ní dùng hàm count_orders_today() đã được sửa theo logic 'Khách hàng'
+                        so_khach_hien_tai = count_orders_today()
+                        
+                        # Cập nhật số khách vào chuỗi bill
+                        bill_hien_thi = st.session_state.bill_vua_in.replace(
+                            "Đơn trong ngày: #0", 
+                            f"Khách đã phục vụ hôm nay: #{so_khach_hien_tai}"
+                        )
+                        
+                        st.markdown(bill_hien_thi, unsafe_allow_html=True)
+                        
+                        if st.button(
+                            "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
+                        ):
+                            st.session_state.bill_vua_in = None
+                            st.rerun()
 
-                    # --- [CẬP NHẬT ĐỘNG] LẤY SỐ ĐƠN MỚI NHẤT ---
-                    so_don_thuc_te = count_orders_today()
-                    # Cập nhật số đơn trực tiếp vào chuỗi HTML trước khi hiển thị
-                    bill_hien_thi = st.session_state.bill_vua_in.replace(
-                        "Sô đơn trong ngày: 0", f"Số ĐH trong ngày: {so_don_thuc_te}"
-                    )
-
-                    st.markdown(bill_hien_thi, unsafe_allow_html=True)
-
-                    if st.button(
-                        "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
-                    ):
-                        st.session_state.bill_vua_in = None
-                        st.rerun()
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
