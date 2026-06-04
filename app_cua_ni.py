@@ -729,16 +729,17 @@ def count_orders_today():
     except:
         return 0
 
+
 # --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
 def xoa_toan_bo_don_da_chot():
     """Hàm này dùng để xoá sạch dữ liệu đơn hàng trong Sheet"""
     try:
         # Ní đảm bảo tên sheet 'HoaDon' là chính xác với file của ní nhé
         ws = get_google_sheet_workbook().worksheet("HoaDon")
-        
+
         # Lấy tất cả dữ liệu hiện tại
         all_data = ws.get_all_values()
-        
+
         # Kiểm tra nếu có dữ liệu (dòng 1 là tiêu đề, nên nếu > 1 là có dữ liệu)
         if len(all_data) > 1:
             # Xoá từ dòng 2 đến hết
@@ -749,6 +750,7 @@ def xoa_toan_bo_don_da_chot():
         # Nếu có lỗi (ví dụ không tìm thấy Sheet), hàm sẽ báo lỗi tại đây
         st.error(f"Lỗi khi thực hiện xoá dữ liệu: {e}")
         return False
+
 
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
@@ -1306,14 +1308,16 @@ def main():
                         '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
                         unsafe_allow_html=True,
                     )
-                    
+
                     # --- [CẬP NHẬT ĐỘNG] LẤY SỐ ĐƠN MỚI NHẤT ---
                     so_don_thuc_te = count_orders_today()
                     # Cập nhật số đơn trực tiếp vào chuỗi HTML trước khi hiển thị
-                    bill_hien_thi = st.session_state.bill_vua_in.replace("Đơn trong ngày: #0", f"Đơn trong ngày: #{so_don_thuc_te}")
-                    
+                    bill_hien_thi = st.session_state.bill_vua_in.replace(
+                        "Đơn trong ngày: #0", f"Đơn trong ngày: #{so_don_thuc_te}"
+                    )
+
                     st.markdown(bill_hien_thi, unsafe_allow_html=True)
-                    
+
                     if st.button(
                         "❌ ẨN BILL NÀY", use_container_width=True, type="primary"
                     ):
