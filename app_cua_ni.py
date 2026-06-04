@@ -1018,11 +1018,11 @@ def main():
                 st.markdown(
                     f"""
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 50%; border: 3px solid {THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
+                        <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 60%; border: 3px solid {THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
                         <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-                        <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
+                        <div style="font-size: 16px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
                             <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
-                            <div style="margin-top: 5px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
+                            <div style="margin-top: 3px; font-size: 16px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
                         </div>
                     </div>
                 """,
