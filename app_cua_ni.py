@@ -1022,7 +1022,7 @@ def main():
                         <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
                         <div style="font-size: 13px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
                             <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
-                            <div style="margin-top: 3px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
+                            <div style="margin-top: 5px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
                         </div>
                     </div>
                 """,
