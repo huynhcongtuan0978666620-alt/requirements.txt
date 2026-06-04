@@ -13,6 +13,8 @@ import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
+import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
+
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -1308,8 +1310,6 @@ def main():
                             '<div class="the-quan-ly-flat">🧾 HOÁ ĐƠN VỪA KHỞI TẠO</div>',
                             unsafe_allow_html=True,
                         )
-
-                        import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
 
                         # --- [CẬP NHẬT ĐỘNG] LẤY SỐ KHÁCH HÔM NAY ---
                         so_khach_hien_tai = count_orders_today()
