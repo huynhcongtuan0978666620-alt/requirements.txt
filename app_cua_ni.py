@@ -1309,21 +1309,20 @@ def main():
                             unsafe_allow_html=True,
                         )
 
-                        import re # Ní nhớ thêm dòng này lên đầu file nếu chưa có
+                        import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
 
                         # --- [CẬP NHẬT ĐỘNG] LẤY SỐ KHÁCH HÔM NAY ---
                         so_khach_hien_tai = count_orders_today()
 
-                        # Dùng re.sub để thay thế bất kỳ số nào sau chữ '#' 
+                        # Dùng re.sub để thay thế bất kỳ số nào sau chữ '#'
                         # Ní chú ý: Thay "Đơn trong ngày: #" bằng đúng cụm từ trong file HTML của ní
                         bill_hien_thi = re.sub(
-                            r"Đơn trong ngày: #\d+", 
-                            f"Khách đã phục vụ hôm nay: #{so_khach_hien_tai}", 
-                            st.session_state.bill_vua_in
+                            r"Đơn trong ngày: #\d+",
+                            f"Khách đã phục vụ hôm nay: #{so_khach_hien_tai}",
+                            st.session_state.bill_vua_in,
                         )
-                        
-                        st.markdown(bill_hien_thi, unsafe_allow_html=True)
 
+                        st.markdown(bill_hien_thi, unsafe_allow_html=True)
 
         # ==================== TAB 2: LÊN HÓA ĐƠN ====================
         with tabs[1]:
