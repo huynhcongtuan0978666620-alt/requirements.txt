@@ -1640,7 +1640,7 @@ def main():
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
     <div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
-    <div style="font-size: 13px; font-weight: 700; color: {THEME_COLORS['text_main']}; margin-top:5px; background: #f0f0f0; padding: 3px; display: inline-block; border-radius: 4px;">Số đơn trong ngày: {count_orders_today()}</div>
+    <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:2px;">Đơn trong ngày: #{count_orders_today()}</div>
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
 <div style="border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {THEME_COLORS['text_secondary']};">
