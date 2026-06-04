@@ -719,6 +719,15 @@ def check_auto_login():
 
 apply_v15_theme()
 
+def count_orders_today():
+    try:
+        # Ní kiểm tra đúng tên Sheet "HoaDon" của ní nhé
+        ws = get_google_sheet_workbook().worksheet("HoaDon")
+        # Đếm số dòng dữ liệu (trừ dòng tiêu đề)
+        return len(ws.get_all_values()) - 1
+    except:
+        return 0
+        
 
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
