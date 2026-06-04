@@ -756,13 +756,10 @@ def xoa_toan_bo_don_da_chot():
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
-    def main():
     # Load danh sách trước khi hiển thị
     ws = get_google_sheet_workbook().worksheet("DanhSachDichVu")
     danh_sach_dich_vu = ws.col_values(1)[1:] # Đảm bảo tên sheet khớp với của ní
-    
 
-    
     init_states = {
         "last_submit": None,
         "submit_count": 0,
