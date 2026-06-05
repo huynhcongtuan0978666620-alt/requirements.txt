@@ -82,7 +82,7 @@ components.html(
     st.markdown(gradient_css, unsafe_allow_html=True)
 
 
-set_app_background(THEME_COLORS)
+#set_app_background(THEME_COLORS)
 
 
 # =====================================================================
