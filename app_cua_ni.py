@@ -1482,8 +1482,8 @@ def main():
 
                             </div>
                             """,
-                            unsafe_allow_html=True,
-                        )
+                            unsafe_allow_html=True
+                            )
 
 
                     cam_ket = st.checkbox("Xác nhận đã chính xác")
