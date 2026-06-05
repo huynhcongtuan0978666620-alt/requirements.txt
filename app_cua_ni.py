@@ -13,12 +13,15 @@ import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
-from config import *
+import config
 
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+    
+    config.set_app_background(st, config.THEME_COLORS)
+    time = config.get_now_vn() # Thêm chữ config. vào trước mỗi hàm
     init_states = {
         "last_submit": None,
         "submit_count": 0,
