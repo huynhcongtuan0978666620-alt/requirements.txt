@@ -20,6 +20,20 @@ from config import *
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+    # 1. Gọi các thiết lập Theme (Ní đã làm rồi)
+    set_app_background(st, THEME_COLORS) 
+    
+    # 2. GỌI TÍNH NĂNG Ở ĐÂY (Ní kiểm tra xem 2 dòng này còn không)
+    render_marquee_text()  # Hàm hiển thị hàng chữ chạy
+    
+    # 3. Logic đăng nhập
+    if "logged_in" not in st.session_state:
+        show_login_page()
+    else:
+        # 4. Các tính năng khác như Ẩn Bill
+        show_main_app()
+        
+        
     init_states = {
         "last_submit": None,
         "submit_count": 0,
