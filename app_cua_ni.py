@@ -41,7 +41,7 @@ components.html(
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
-# THEME_COLORS = {
+#THEME_COLORS = {
     "bg_app": "#e8f5f3",
     "bg_card": "#ffffff",
     "bg_box_chung": "#f4f7f6",
@@ -69,7 +69,7 @@ components.html(
 }
 
 
-def set_app_background(colors):
+#def set_app_background(colors):
     gradient_css = f"""
     <style>
     .stApp {{
