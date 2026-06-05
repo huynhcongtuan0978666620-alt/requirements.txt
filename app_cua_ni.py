@@ -14,6 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
+from config import THEME_COLORS
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -40,7 +41,7 @@ components.html(
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
-THEME_COLORS = {
+# THEME_COLORS = {
     "bg_app": "#e8f5f3",
     "bg_card": "#ffffff",
     "bg_box_chung": "#f4f7f6",
