@@ -714,8 +714,8 @@ def xoa_toan_bo_don_da_chot():
 # =====================================================================
 def main():
     # Gọi hàm ở đây, khi mà st (Streamlit) đã được load xong
-    set_app_background(THEME_COLORS) 
-    
+    set_app_background(THEME_COLORS)
+
     init_states = {
         "last_submit": None,
         "submit_count": 0,
