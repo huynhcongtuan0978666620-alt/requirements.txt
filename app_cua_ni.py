@@ -21,7 +21,7 @@ from config import *
 # =====================================================================
 def main():
     # 1. Gọi các thiết lập Theme (Ní đã làm rồi)
-set_app_background(st, THEME_COLORS)
+    set_app_background(st, THEME_COLORS)
 
     init_states = {
         "last_submit": None,
