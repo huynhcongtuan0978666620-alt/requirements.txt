@@ -38,4 +38,3 @@ def set_app_background(colors):
     </style>
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
-
