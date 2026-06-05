@@ -1,6 +1,5 @@
-# =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
-# =====================================================================
+# config.py
+# 1. Định nghĩa bảng màu Minimalism Luxury Edition
 THEME_COLORS = {
     "bg_app": "#e8f5f3",
     "bg_card": "#ffffff",
