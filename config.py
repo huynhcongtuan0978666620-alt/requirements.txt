@@ -1,3 +1,19 @@
+import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
+import pandas as pd
+from datetime import datetime
+import pytz
+import time
+import re
+import random
+import threading
+import smtplib
+import requests
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import streamlit.components.v1 as components
+import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -471,4 +487,267 @@ def get_bao_cao_va_bill_tam():
             sh.worksheet("BaoCao").get_all_values(),
             sh.worksheet("BillTam").get_all_values(),
         )
-    except Excep
+    except Exception:
+        return [], []
+
+
+@st.cache_data(ttl=60)
+def get_lich_hen_data():
+    try:
+        sh = get_google_sheet_workbook()
+        return sh.worksheet("LichHen").get_all_values()
+    except Exception:
+        return []
+
+
+@st.cache_data
+def convert_df_to_csv(df):
+    return df.to_csv(index=False).encode("utf-8-sig")
+
+
+def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
+    try:
+        sh = get_google_sheet_workbook()
+        ws = sh.worksheet("BillTam")
+        chi_tiet = " | ".join(
+            [f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang]
+        )
+        tong_tien = sum([item["thanh_tien"] for item in gio_hang])
+        ws.append_row(
+            [
+                get_now_vn().strftime("%Y-%m-%d %H:%M:%S"),
+                chi_tiet,
+                tong_tien,
+                nhan_vien,
+                str(kh_sdt).strip(),
+                str(kh_ten).strip(),
+                "CHỜ XỬ LÝ",
+            ]
+        )
+        get_bao_cao_va_bill_tam.clear()
+        return True
+    except Exception:
+        return False
+
+
+def xoa_bill_tam_dong_goc(index_sheet_row):
+    try:
+        sh = get_google_sheet_workbook()
+        sh.worksheet("BillTam").delete_rows(index_sheet_row)
+        get_bao_cao_va_bill_tam.clear()
+        return True
+    except Exception:
+        return False
+
+
+def gui_email_backup(noi_dung):
+    try:
+        sender_email = "huynhcongtuan0978666620@gmail.com"
+        password = "lwui aesw vqal ytcq"
+        receiver_emails = ["huynhcongtuan0978666620@gmail.com"]
+        gio_vn_mail = get_now_vn().strftime("%d/%m/%Y %H:%M")
+        msg = MIMEMultipart()
+        msg["From"] = sender_email
+        msg["To"] = ", ".join(receiver_emails)
+        msg["Subject"] = f"HOÁ ĐƠN DỊCH VỤ - {gio_vn_mail}"
+        msg.attach(MIMEText(noi_dung, "plain"))
+        server = smtplib.SMTP("smtp.gmail.com", 587)
+        server.starttls()
+        server.login(sender_email, password)
+        server.sendmail(sender_email, receiver_emails, msg.as_string())
+        server.quit()
+    except Exception:
+        pass
+
+
+def gui_telegram_notification(noi_dung):
+    try:
+        if "telegram" in st.secrets:
+            bot_token = st.secrets["telegram"].get("bot_token")
+            chat_id = st.secrets["telegram"].get("chat_id")
+            if bot_token and chat_id:
+                url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+                requests.post(
+                    url, json={"chat_id": chat_id, "text": noi_dung}, timeout=10
+                )
+    except Exception:
+        pass
+
+
+# =====================================================================
+# 3. CƠ CHẾ AUTO-SAVE NGẦM
+# =====================================================================
+def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
+    try:
+        sh = get_google_sheet_workbook()
+        ws = sh.worksheet("BillTam")
+        records = ws.get_all_values()
+        draft_idx = -1
+        for i, r in enumerate(records):
+            if (
+                len(r) >= 7
+                and str(r[3]).strip() == nhan_vien
+                and str(r[6]).strip() == "ĐANG SOẠN"
+            ):
+                draft_idx = i + 1
+                break
+
+        chi_tiet = " | ".join(
+            [f"{item['dich_vu']} (x{item['so_luong']})" for item in gio_hang_copy]
+        )
+        tong_tien = sum([item["thanh_tien"] for item in gio_hang_copy])
+
+        if not gio_hang_copy and draft_idx != -1:
+            ws.delete_rows(draft_idx)
+        elif gio_hang_copy and draft_idx != -1:
+            ws.update(
+                f"A{draft_idx}:G{draft_idx}",
+                [
+                    [
+                        get_now_vn().strftime("%Y-%m-%d %H:%M:%S"),
+                        chi_tiet,
+                        tong_tien,
+                        nhan_vien,
+                        kh_sdt,
+                        kh_ten,
+                        "ĐANG SOẠN",
+                    ]
+                ],
+            )
+        elif gio_hang_copy and draft_idx == -1:
+            ws.append_row(
+                [
+                    get_now_vn().strftime("%Y-%m-%d %H:%M:%S"),
+                    chi_tiet,
+                    tong_tien,
+                    nhan_vien,
+                    kh_sdt,
+                    kh_ten,
+                    "ĐANG SOẠN",
+                ]
+            )
+        get_bao_cao_va_bill_tam.clear()
+    except Exception:
+        pass
+
+
+def trigger_auto_save():
+    t = threading.Thread(
+        target=background_save_draft,
+        args=(
+            list(st.session_state.gio_hang),
+            st.session_state.full_name,
+            st.session_state.kh_sdt_val,
+            st.session_state.kh_ten_val,
+        ),
+    )
+    t.start()
+
+
+def check_auto_login():
+    if not st.session_state.get("logged_in", False):
+        u = st.query_params.get("saved_u")
+        p = st.query_params.get("saved_p")
+        if u and p:
+            if u == "Admin" and p == "111":
+                st.session_state.update(
+                    {
+                        "logged_in": True,
+                        "role": "Admin",
+                        "full_name": "Quản lý",
+                        "tho_chot_val": "Quản lý",
+                    }
+                )
+                return True
+            else:
+                raw_data = get_nhan_vien_data()
+                if len(raw_data) > 0:
+                    headers = [str(h).strip().lower() for h in raw_data[0]]
+                    col_sdt_idx = next(
+                        (
+                            i
+                            for i, h in enumerate(headers)
+                            if "điện thoại" in h or "sđt" in h or "tai khoan" in h
+                        ),
+                        -1,
+                    )
+                    col_mk_idx = next(
+                        (
+                            i
+                            for i, h in enumerate(headers)
+                            if "mật khẩu" in h or "mat khau" in h or "code" in h
+                        ),
+                        -1,
+                    )
+                    col_ten_idx = next(
+                        (
+                            i
+                            for i, h in enumerate(headers)
+                            if "tên" in h or "nhân viên" in h
+                        ),
+                        -1,
+                    )
+
+                    found_row = next(
+                        (
+                            r
+                            for r in raw_data[1:]
+                            if len(r) > max(col_sdt_idx, col_mk_idx)
+                            and str(r[col_sdt_idx]).strip().lstrip("0")
+                            == u.strip().lstrip("0")
+                            and str(r[col_mk_idx]).strip() == p.strip()
+                            and u.strip()
+                        ),
+                        None,
+                    )
+                    if found_row:
+                        ten_that = (
+                            str(found_row[col_ten_idx]).strip()
+                            if col_ten_idx != -1 and col_ten_idx < len(found_row)
+                            else "Nhân viên"
+                        )
+                        st.session_state.update(
+                            {
+                                "logged_in": True,
+                                "role": "NhanVien",
+                                "full_name": ten_that,
+                                "tho_chot_val": ten_that,
+                            }
+                        )
+                        return True
+    return st.session_state.get("logged_in", False)
+
+
+apply_v15_theme()
+
+
+def count_orders_today():
+    try:
+        # Ní kiểm tra đúng tên Sheet "BaoCao" của ní nhé
+        ws = get_google_sheet_workbook().worksheet("BaoCao")
+        # Đếm số dòng dữ liệu (trừ dòng tiêu đề)
+        return len(ws.get_all_values()) - 1
+    except:
+        return 0
+
+
+# --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
+def xoa_toan_bo_don_da_chot():
+    """Hàm này dùng để xoá sạch dữ liệu đơn hàng trong Sheet"""
+    try:
+        # Ní đảm bảo tên sheet 'HoaDon' là chính xác với file của ní nhé
+        ws = get_google_sheet_workbook().worksheet("HoaDon")
+
+        # Lấy tất cả dữ liệu hiện tại
+        all_data = ws.get_all_values()
+
+        # Kiểm tra nếu có dữ liệu (dòng 1 là tiêu đề, nên nếu > 1 là có dữ liệu)
+        if len(all_data) > 1:
+            # Xoá từ dòng 2 đến hết
+            ws.delete_rows(2, len(all_data))
+            return True
+        return False
+    except Exception as e:
+        # Nếu có lỗi (ví dụ không tìm thấy Sheet), hàm sẽ báo lỗi tại đây
+        st.error(f"Lỗi khi thực hiện xoá dữ liệu: {e}")
+        return False
