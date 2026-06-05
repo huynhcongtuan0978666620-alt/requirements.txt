@@ -1,5 +1,5 @@
 def get_so_thu_tu_don(client, sheet_name):
-    sheet = client.open("Bản sao của BC_DULIEU_DEMO_2026").worksheet(sheet_name)
+    sheet = client.open("Bản sao của BC_DULIEU_DEMO_2026").worksheet(BaoCao)
     data = sheet.get_all_records()
     import pandas as pd
 
