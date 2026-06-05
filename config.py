@@ -1,5 +1,6 @@
-# config.py
-# 1. Định nghĩa bảng màu Minimalism Luxury Edition
+# =====================================================================
+# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
+# =====================================================================
 THEME_COLORS = {
     "bg_app": "#e8f5f3",
     "bg_card": "#ffffff",
@@ -28,12 +29,16 @@ THEME_COLORS = {
 }
 
 
-# 2. Hàm set_app_background
-def set_app_background(st_obj, colors):  # Ní đổi tên tham số thành st_obj cho rõ ràng
+def set_app_background(colors):
     gradient_css = f"""
-        <style>
-        .stApp {{ background-color: {colors['bg_app']}; }}
-        /* ... các dòng CSS khác ... */
-        </style>
+    <style>
+    .stApp {{
+        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
+        background-attachment: fixed;
+    }}
+    </style>
     """
-    st_obj.markdown(gradient_css, unsafe_allow_html=True)  # Dùng st_obj ở đây
+    st.markdown(gradient_css, unsafe_allow_html=True)
+
+
+set_app_background(THEME_COLORS)
