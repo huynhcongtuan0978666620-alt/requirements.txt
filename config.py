@@ -29,7 +29,7 @@ THEME_COLORS = {
 }
 
 
-def set_app_background(colors):
+def set_app_background(st, colors):
     gradient_css = f"""
     <style>
     .stApp {{
