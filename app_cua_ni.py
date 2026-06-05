@@ -758,6 +758,7 @@ def xoa_toan_bo_don_da_chot():
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+ def set_app_background(st, colors):
     init_states = {
         "last_submit": None,
         "submit_count": 0,
