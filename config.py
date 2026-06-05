@@ -26,14 +26,12 @@ THEME_COLORS = {
     "shadow_heavy": "rgba(0, 0, 0, 0.04)",
     "shadow_toast": "rgba(0, 0, 0, 0.6)",
 }
-
-
-def set_app_background(st, colors):
-    # Dùng st truyền vào thay vì st toàn cục
+# 2. Hàm set_app_background
+def set_app_background(st_obj, colors): # Ní đổi tên tham số thành st_obj cho rõ ràng
     gradient_css = f"""
         <style>
         .stApp {{ background-color: {colors['bg_app']}; }}
-        /* ... CSS của ní ... */
+        /* ... các dòng CSS khác ... */
         </style>
     """
-    st.markdown(gradient_css, unsafe_allow_html=True)
+    st_obj.markdown(gradient_css, unsafe_allow_html=True) # Dùng st_obj ở đây
