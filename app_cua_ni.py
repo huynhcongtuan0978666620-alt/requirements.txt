@@ -16,11 +16,12 @@ import streamlit.components.v1 as components
 from config import *
 
 # 1. Gọi các thiết lập Theme (Ní đã làm rồi)
-    set_app_background(st, THEME_COLORS)
+    
 # =====================================================================
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+    config.set_app_background(st, THEME_COLORS)
 
     init_states = {
         "last_submit": None,
