@@ -13,7 +13,12 @@ import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
-import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
+from config import (
+    THEME_COLORS, 
+    set_app_background, 
+    get_now_vn,    # <--- Ní thêm dòng này vào đây
+    # ... liệt kê tất cả các hàm khác mà main() đang dùng
+)
 
 
 # =====================================================================
