@@ -28,13 +28,12 @@ THEME_COLORS = {
 }
 
 
-def set_app_background(colors):
+def set_app_background(st, colors):
+    # Dùng st truyền vào thay vì st toàn cục
     gradient_css = f"""
-    <style>
-    .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
-        background-attachment: fixed;
-    }}
-    </style>
+        <style>
+        .stApp {{ background-color: {colors['bg_app']}; }}
+        /* ... CSS của ní ... */
+        </style>
     """
     st.markdown(gradient_css, unsafe_allow_html=True)
