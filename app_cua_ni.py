@@ -19,6 +19,8 @@ import config
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+        # Thêm dòng này để kiểm tra xem config có những hàm gì
+    st.write(dir(config)) 
     
     config.set_app_background(st, config.THEME_COLORS)
     time = config.get_now_vn() # Thêm chữ config. vào trước mỗi hàm
