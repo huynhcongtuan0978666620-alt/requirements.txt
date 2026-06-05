@@ -14,6 +14,7 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
+from core.theme import apply_v15_theme
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -37,50 +38,6 @@ components.html(
     height=0,
 )
 
-# =====================================================================
-# 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
-# =====================================================================
-THEME_COLORS = {
-    "bg_app": "#e8f5f3",
-    "bg_card": "#ffffff",
-    "bg_box_chung": "#f4f7f6",
-    "bg_vip_box": "#e3f2fd",
-    "bg_shake_box": "#fff3e0",
-    "bg_badge_hang": "#efebe9",
-    "bg_marquee": "#f0f008",
-    "primary": "rgba(70, 140, 150, 1)",
-    "accent_vip": "#ffb300",
-    "accent_danger": "#d32f2f",
-    "accent_zalo": "#0068ff",
-    "accent_chiet_khau": "#e65100",
-    "text_main": "#263238",
-    "text_secondary": "#546e7a",
-    "text_muted": "#90a4ae",
-    "text_title": "#0f4c43",
-    "text_badge": "#ffffff",
-    "border_light": "#eaeaea",
-    "border_input": "#cfd8dc",
-    "border_badge": "#b2dfdb",
-    "border_vip": "#4fc3f7",
-    "shadow_light": "rgba(0, 0, 0, 0.015)",
-    "shadow_heavy": "rgba(0, 0, 0, 0.04)",
-    "shadow_toast": "rgba(0, 0, 0, 0.6)",
-}
-
-
-def set_app_background(colors):
-    gradient_css = f"""
-    <style>
-    .stApp {{
-        background: linear-gradient(180deg, {colors['bg_app']} 20%, #f9f9f9 80%);
-        background-attachment: fixed;
-    }}
-    </style>
-    """
-    st.markdown(gradient_css, unsafe_allow_html=True)
-
-
-set_app_background(THEME_COLORS)
 
 
 # =====================================================================
@@ -276,74 +233,7 @@ def apply_v15_theme():
             font-weight: 500 !important;
             font-size: 15px !important;
             border: 1px solid rgba(15, 76, 67, 0.1) !important;
-            margin-bottom: 20px !important;
-            width: 100% !important;
-            box-shadow: none !important;
-            overflow: hidden !important;
-            display: flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-        }}
-        .custom-marquee marquee {{
-            margin: 0 !important;
-            padding: 0 !important;
-            line-height: 48px !important; 
-            display: block !important;
-            letter-spacing: 0.5px;
-        }}
-        
-        /* 4. Tinh chỉnh hệ thống Nút bấm mượt mà */
-        div[data-testid="stButton"] button {{ 
-            border-radius: 10px !important; 
-            font-weight: 600 !important; 
-            border: 1px solid {b_light} !important; 
-            background: {card} !important; 
-            transition: all 0.15s ease !important;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
-            color: {txt_main} !important;
-        }}
-        div[data-testid="stButton"] button:hover {{ transform: translateY(-1px) !important; box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; border-color: {p} !important; color: {p} !important; }}
-        div[data-testid="stButton"] button:active {{ transform: scale(0.97) !important; }}
-        
-        div[data-testid="stButton"] button[kind="primary"] {{ 
-            background-color: {p} !important; 
-            color: #ffffff !important; 
-            border: none !important; 
-        }}
-        div[data-testid="stButton"] button[kind="primary"] p {{
-            color: #ffffff !important;
-            font-weight: 600 !important;
-        }}
-        div[data-testid="stButton"] button[kind="primary"]:hover {{ background-color: #0b3831 !important; color: #ffffff !important; box-shadow: 0 4px 12px rgba(15,76,67,0.15) !important; }}
-        
-        /* Các thành phần bổ trợ cho tiệm */
-        .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; color: {txt_main} !important; }}
-        .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; }}
-        .box-chung {{ background-color: {THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
-        .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
-        .khach-tra-box {{ background-color: {p} !important; color: #ffffff !important; border:none; }}
-        .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
-        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
-        .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
-        .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
-        .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
-    </style>
-    """,
-        unsafe_allow_html=True,
-    )
 
-
-mau_chu = "#FF5733"
-ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
-marquee_code = f"""
-<div class="custom-marquee">
-    <marquee scrollamount="4">
-        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! 
-        CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
-    </marquee>
-</div>
-"""
-st.markdown(marquee_code, unsafe_allow_html=True)
 
 
 # =====================================================================
