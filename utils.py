@@ -1,6 +1,7 @@
 # utils.py
 from datetime import datetime
 import pytz
+import config
 
 
 def get_now_vn():
