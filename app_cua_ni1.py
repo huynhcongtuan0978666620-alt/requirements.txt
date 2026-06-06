@@ -1,4 +1,7 @@
 import streamlit as st
+import config
+import database
+import utils
 import gspread
 from google.oauth2.service_account import Credentials
 import pandas as pd
@@ -13,7 +16,6 @@ import requests
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
-import re  # Ní nhớ thêm dòng này lên đầu file nếu chưa có
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
