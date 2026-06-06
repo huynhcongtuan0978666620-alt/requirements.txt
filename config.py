@@ -9,7 +9,7 @@ THEME_COLORS = {
     "text_secondary": "#5a6e7f",
     "text_muted": "#888888",
     "border_input": "#d1d5db",
-    "accent": "#6FA8DC"
+    "accent": "#6FA8DC",
 }
 
 # 2. Thông tin kết nối Google Sheet
