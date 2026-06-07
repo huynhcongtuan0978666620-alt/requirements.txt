@@ -15,6 +15,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
+ws = database.get_db_connection()
+st.write(f"Đã kết nối tới sheet có tên: {ws.title}")
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
