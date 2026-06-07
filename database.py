@@ -38,7 +38,7 @@ def get_db_connection():
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
             # Ní thay "Trang1" bằng tên Sheet chính xác trong file của ní, hoặc dùng .sheet1 để lấy trang đầu tiên
-        return (gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)).sheet1
+        return (gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)).NhanVien
 
         # return gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)
     except Exception as e:
