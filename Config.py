@@ -10,7 +10,7 @@ THEME_COLORS = {
     "bg_vip_box": "#e3f2fd",  # Nền riêng cho các khu vực VIP
     "bg_shake_box": "#fff3e0",  # Nền cho hiệu ứng lắc/thông báo
     "bg_badge_hang": "#efebe9",  # Nền các nhãn hạng thành viên
-    "bg_marquee": "#f0f008",  # Màu nền cho chữ chạy (marquee)
+    "bg_marquee": "rgba(70, 140, 150, 1)",  # Màu nền cho chữ chạy (marquee)
     # Màu điểm nhấn (Accents)
     "primary": "rgba(70, 140, 150, 1)",  # Màu chính của thương hiệu
     "accent_vip": "#ffb300",  # Màu nổi bật cho VIP
