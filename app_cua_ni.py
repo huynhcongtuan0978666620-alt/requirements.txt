@@ -28,8 +28,8 @@ ws_khachhang = wb.worksheet("KhachHang")
 data_khachhang = ws_khachhang.get_all_records()
 
 
-#ws = database.get_db_connection()
-#st.write(f"Đã kết nối tới sheet có tên: {ws.title}")
+# ws = database.get_db_connection()
+# st.write(f"Đã kết nối tới sheet có tên: {ws.title}")
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -340,13 +340,13 @@ st.markdown(marquee_code, unsafe_allow_html=True)
 # =====================================================================
 workbook = database.get_db_connection()
 # Ní chèn ngay sau dòng import database
-#import database
+# import database
 
-#try:
-    #test_sheet = database.get_db_connection()
-    #st.success("✅ Kết nối")
-#except Exception as e:
-    #st.error(f"❌ Chưa sẵn sàng, lỗi: {e}")
+# try:
+# test_sheet = database.get_db_connection()
+# st.success("✅ Kết nối")
+# except Exception as e:
+# st.error(f"❌ Chưa sẵn sàng, lỗi: {e}")
 
 
 def format_drive_direct_url(link):
