@@ -200,7 +200,7 @@ def render_balloons_html():
     st.markdown(html_balloons, unsafe_allow_html=True)
 
 
-def apply_v15_theme():
+def apply_v15_theme(Config.THEME_COLORS):
     p = Config.THEME_COLORS["primary"]
     bg = Config.THEME_COLORS["bg_app"]
     card = Config.THEME_COLORS["bg_card"]
@@ -720,7 +720,7 @@ def check_auto_login():
     return st.session_state.get("logged_in", False)
 
 
-apply_v15_theme()
+apply_v15_theme(Config.THEME_COLORS)
 
 
 def count_orders_today():
@@ -789,7 +789,7 @@ def main():
     if "hen_gio_val" not in st.session_state:
         st.session_state["hen_gio_val"] = get_now_vn().time()
 
-    apply_v15_theme()
+    apply_v15_theme(Config.THEME_COLORS)
     inject_advanced_ui_js()
     settings = get_settings()
 
