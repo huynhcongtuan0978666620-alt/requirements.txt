@@ -1,5 +1,5 @@
 import streamlit as st
-import config
+import Config
 import database
 import utils
 import gspread
