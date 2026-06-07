@@ -36,9 +36,13 @@ def get_db_connection():
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
-            
+
         # Sửa dòng này để chỉ định chính xác sheet "NhanVien"
-        return gc.open_by_key(url).worksheet("NhanVien") if len(url) < 50 else gc.open_by_url(url).worksheet("NhanVien")
+        return (
+            gc.open_by_key(url).worksheet("NhanVien")
+            if len(url) < 50
+            else gc.open_by_url(url).worksheet("NhanVien")
+        )
     except Exception as e:
         st.error(f"Lỗi khởi tạo kết nối: {e}")
         st.stop()
