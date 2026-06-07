@@ -347,8 +347,8 @@ def get_google_sheet_workbook():
             "https://www.googleapis.com/auth/spreadsheets",
             "https://www.googleapis.com/auth/drive",
         ]
-        creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-        client = gspread.authorize(creds)
+        # creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+        # client = gspread.authorize(creds)
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
