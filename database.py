@@ -3,6 +3,7 @@ import gspread
 import streamlit as st
 from google.oauth2.service_account import Credentials
 
+
 @st.cache_resource
 def get_db_connection():
     try:
@@ -19,17 +20,22 @@ def get_db_connection():
             "private_key": secrets.get("private_key", "").replace("\\n", "\n"),
             "client_email": secrets.get("client_email", ""),
             "client_id": secrets.get("client_id", ""),
-            "token_uri": secrets.get("token_uri", "https://oauth2.googleapis.com/token"),
+            "token_uri": secrets.get(
+                "token_uri", "https://oauth2.googleapis.com/token"
+            ),
         }
 
-        scope = ["https://www.googleapis.com/auth/spreadsheets", "https://www.googleapis.com/auth/drive"]
+        scope = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         gc = gspread.authorize(creds)
-        
+
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
-            
+
         # TRẢ VỀ WORKBOOK (Cả file Sheets)
         return gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)
     except Exception as e:
