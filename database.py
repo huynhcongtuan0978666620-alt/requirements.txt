@@ -14,3 +14,18 @@ def get_db_connection():
     client = gspread.authorize(creds)
     # Ní nhớ điền đúng tên file Google Sheet của ní ở đây
     return client.open("Bản sao của BC_DULIEU_DEMO_2026").sheet1
+
+        # ... (đoạn trên ní giữ nguyên)
+
+        scope = [
+            "https://www.googleapis.com/auth/spreadsheets",
+            "https://www.googleapis.com/auth/drive",
+        ]
+        
+        # SỬA ĐOẠN NÀY (Bỏ dấu # ở đầu dòng)
+        creds = Credentials.from_service_account_info(creds_info, scopes=scope)
+        client = gspread.authorize(creds)
+        
+        url = secrets.get("spreadsheet", "")
+        # ... (đoạn dưới ní giữ nguyên)
+
