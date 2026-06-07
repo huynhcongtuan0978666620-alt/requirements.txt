@@ -16,8 +16,6 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-
-
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
     page_title="SALON PRO V15",
@@ -326,6 +324,7 @@ st.markdown(marquee_code, unsafe_allow_html=True)
 # 2. CƠ CHẾ KẾT NỐI & DỮ LIỆU CHÍNH
 # =====================================================================
 workbook = database.get_db_connection()
+
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str):
