@@ -306,6 +306,7 @@ def apply_v15_theme():
         unsafe_allow_html=True,
     )
 
+
 ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 marquee_code = f"""
 <div class="custom-marquee">
