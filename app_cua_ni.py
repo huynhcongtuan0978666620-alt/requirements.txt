@@ -16,7 +16,7 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-sheet = database.get_db_connection()
+
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
@@ -325,40 +325,7 @@ st.markdown(marquee_code, unsafe_allow_html=True)
 # =====================================================================
 # 2. CƠ CHẾ KẾT NỐI & DỮ LIỆU CHÍNH
 # =====================================================================
-@st.cache_resource
-def get_google_sheet_workbook():
-    try:
-        if "connections" in st.secrets and "gsheets" in st.secrets["connections"]:
-            secrets = dict(st.secrets["connections"]["gsheets"])
-        else:
-            secrets = dict(st.secrets)
-
-        creds_info = {
-            "type": secrets.get("type", "service_account"),
-            "project_id": secrets.get("project_id", "hethongphache"),
-            "private_key_id": secrets.get("private_key_id", ""),
-            "private_key": secrets.get("private_key", "").replace("\\n", "\n"),
-            "client_email": secrets.get("client_email", ""),
-            "client_id": secrets.get("client_id", ""),
-            "token_uri": secrets.get(
-                "token_uri", "https://oauth2.googleapis.com/token"
-            ),
-        }
-
-        scope = [
-            "https://www.googleapis.com/auth/spreadsheets",
-            "https://www.googleapis.com/auth/drive",
-        ]
-        # creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-        # client = gspread.authorize(creds)
-        url = secrets.get("spreadsheet", "")
-        if not url and "spreadsheet" in st.secrets:
-            url = st.secrets["spreadsheet"]
-        return client.open_by_key(url) if len(url) < 50 else client.open_by_url(url)
-    except Exception as e:
-        st.error(f"Lỗi khởi tạo kết nối Sheets: {e}")
-        st.stop()
-
+workbook = database.get_db_connection()
 
 def format_drive_direct_url(link):
     if not link or not isinstance(link, str):
