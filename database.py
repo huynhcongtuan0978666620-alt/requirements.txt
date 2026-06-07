@@ -31,6 +31,12 @@ def get_db_connection():
         ]
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         gc = gspread.authorize(creds)
+                # Thêm đoạn này để test
+        if gc:
+            st.sidebar.success("Kết nối Sheet thành công!")
+        else:
+            st.sidebar.error("Kết nối Sheet thất bại!")
+            
 
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
