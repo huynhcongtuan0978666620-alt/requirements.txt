@@ -307,7 +307,7 @@ def apply_v15_theme():
     )
 
 
-mau_chu = "#FF5733"
+mau_chu = {Config.THEME_COLORS['accent_vip']}
 ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 marquee_code = f"""
 <div class="custom-marquee">
