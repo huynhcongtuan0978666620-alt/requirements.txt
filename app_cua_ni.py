@@ -26,10 +26,10 @@ try:
     # Nếu chạy được tới đây là NhanVien đã sẵn sàng!
 except Exception as e:
     st.error(f"Lỗi không tìm thấy sheet NhanVien: {e}")
-    
+
 
 # 1. Lấy kết nối 1 lần duy nhất
-#wb = database.get_db_connection()
+# wb = database.get_db_connection()
 
 # 2. Khi cần dùng sheet nào thì "mở" trang đó ra
 ws_nhanvien = wb.worksheet("NhanVien")
