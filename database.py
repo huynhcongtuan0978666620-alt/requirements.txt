@@ -33,16 +33,12 @@ def get_db_connection():
         # MỞ KHÓA VÀ KẾT NỐI
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
         gc = gspread.authorize(creds)
-
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
-            # Ní thay "Trang1" bằng tên Sheet chính xác trong file của ní, hoặc dùng .sheet1 để lấy trang đầu tiên
-        return (
-            gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)
-        ).worksheet("NhanVien")
-
-        # return gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)
+            
+        # Sửa dòng này để chỉ định chính xác sheet "NhanVien"
+        return gc.open_by_key(url).worksheet("NhanVien") if len(url) < 50 else gc.open_by_url(url).worksheet("NhanVien")
     except Exception as e:
         st.error(f"Lỗi khởi tạo kết nối: {e}")
         st.stop()
