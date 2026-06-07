@@ -175,7 +175,7 @@ def render_balloons_html():
     st.markdown(html_balloons, unsafe_allow_html=True)
 
 
-def apply_v15_theme(Config.THEME_COLORS):
+def apply_v15_theme():
     p = Config.THEME_COLORS["primary"]
     bg = Config.THEME_COLORS["bg_app"]
     card = Config.THEME_COLORS["bg_card"]
