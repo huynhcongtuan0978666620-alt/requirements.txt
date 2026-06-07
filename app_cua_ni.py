@@ -329,9 +329,9 @@ import database
 
 try:
     test_sheet = database.get_db_connection()
-    st.success("✅ Kết nối Database thành công!")
+    st.success("✅ Kết nối")
 except Exception as e:
-    st.error(f"❌ Database chưa sẵn sàng, lỗi: {e}")
+    st.error(f"❌ Chưa sẵn sàng, lỗi: {e}")
 
 
 def format_drive_direct_url(link):
