@@ -1,0 +1,31 @@
+# HỆ THỐNG MÃ MÀU CHUẨN PHONG CÁCH "BANKING APP"
+THEME_COLORS = {
+    # 1. MÀU THƯƠNG HIỆU CHỦ ĐẠO (Brand Colors)
+    "primary": "#0068ff",           # Xanh dương đậm (màu chủ đạo của MB)
+    "primary_light": "#e3f2fd",     # Xanh dương nhạt (dùng làm nền cho box nổi bật)
+    "accent_gold": "#ffb300",       # Màu vàng (dùng cho các điểm nhấn hạng VIP/Thăng hạng)
+    "accent_red": "#e53935",        # Màu đỏ (dùng cho icon thông báo, lỗi)
+
+    # 2. MÀU NỀN (Backgrounds)
+    "bg_app": "#f4f6f8",            # Nền tổng thể của toàn bộ app (xám rất nhạt)
+    "bg_card": "#ffffff",           # Nền các thẻ (white)
+    "bg_surface": "#ffffff",        # Nền cho các khối nội dung
+    "bg_bottom_nav": "#ffffff",     # Nền cho thanh điều hướng cuối trang
+
+    # 3. MÀU CHỮ (Typography)
+    "text_main": "#1a237e",         # Màu chữ chính (xanh tím đậm - chuyên nghiệp)
+    "text_secondary": "#546e7a",    # Màu chữ phụ (xám xanh)
+    "text_muted": "#90a4ae",        # Màu chữ mờ (dùng cho gợi ý)
+    "text_white": "#ffffff",        # Màu chữ trên nền đậm (nút bấm)
+
+    # 4. MÀU ĐƯỜNG VIỀN (Borders)
+    "border_light": "#e0e0e0",      # Đường kẻ mỏng, tinh tế
+    "border_card": "#eceff1",       # Viền cho thẻ card
+
+    # 5. MÀU ĐỔ BÓNG (Shadows) - Tạo chiều sâu "nổi" cho thẻ
+    # Ní dùng các mã này cho CSS (box-shadow) để tạo độ nổi khối như app thật
+    "shadow_light": "0 2px 8px rgba(0, 0, 0, 0.05)",
+    "shadow_medium": "0 4px 12px rgba(0, 0, 0, 0.08)",
+    "shadow_heavy": "0 8px 24px rgba(0, 0, 0, 0.12)",
+}
+
