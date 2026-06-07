@@ -306,13 +306,11 @@ def apply_v15_theme():
         unsafe_allow_html=True,
     )
 
-
-mau_chu = {Config.THEME_COLORS["accent_vip"]}
 ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 marquee_code = f"""
 <div class="custom-marquee">
     <marquee scrollamount="4">
-        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! 
+        CHÀO MỪNG <span style="color: {Config.THEME_COLORS["accent_vip"]}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! 
         CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
     </marquee>
 </div>
