@@ -32,15 +32,14 @@ def get_db_connection():
 
         # MỞ KHÓA VÀ KẾT NỐI
         creds = Credentials.from_service_account_info(creds_info, scopes=scope)
-                # ... (đoạn trên giữ nguyên)
+        # ... (đoạn trên giữ nguyên)
         gc = gspread.authorize(creds)
         url = secrets.get("spreadsheet", "")
         if not url and "spreadsheet" in st.secrets:
             url = st.secrets["spreadsheet"]
-            
+
         # TRẢ VỀ CẢ FILE (Workbook) thay vì chỉ 1 sheet
         return gc.open_by_key(url) if len(url) < 50 else gc.open_by_url(url)
     except Exception as e:
         st.error(f"Lỗi khởi tạo kết nối: {e}")
         st.stop()
-        
