@@ -243,7 +243,7 @@ def apply_v15_theme():
         /* 3. Khung chữ chạy viên thuốc chuẩn chỉ */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
-            color: {Config.THEME_COLORS['primary']} !important; 
+            color: {Config.THEME_COLORS['text_badge']} !important; 
             padding: 12px 20px !important; 
             height: 48px !important;       
             border-radius: 12px !important; 
