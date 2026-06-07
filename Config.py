@@ -13,7 +13,7 @@ THEME_COLORS = {
     "bg_marquee": "rgba(70, 140, 150, 1)",  # Màu nền cho chữ chạy (marquee)
     # Màu điểm nhấn (Accents)
     "primary": "rgba(70, 140, 150, 1)",  # Màu chính của thương hiệu
-    "accent_vip": "#ffb300",  # Màu nổi bật cho VIP
+    "accent_vip": "#ffff00",  # Màu nổi bật cho VIP
     "accent_danger": "#d32f2f",  # Màu cảnh báo (lỗi/xóa)
     "accent_zalo": "#0068ff",  # Màu xanh biểu tượng Zalo
     "accent_chiet_khau": "#e65100",  # Màu cho con số chiết khấu
