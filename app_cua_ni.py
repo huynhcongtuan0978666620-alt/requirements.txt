@@ -16,8 +16,20 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-# 1. Lấy kết nối 1 lần duy nhất
+# 1. Gọi hàm kết nối
 wb = database.get_db_connection()
+
+# 2. Sử dụng "wb" để trỏ vào đúng sheet NhanVien
+try:
+    ws_nhanvien = wb.worksheet("NhanVien")
+    data_nhanvien = ws_nhanvien.get_all_records()
+    # Nếu chạy được tới đây là NhanVien đã sẵn sàng!
+except Exception as e:
+    st.error(f"Lỗi không tìm thấy sheet NhanVien: {e}")
+    
+
+# 1. Lấy kết nối 1 lần duy nhất
+#wb = database.get_db_connection()
 
 # 2. Khi cần dùng sheet nào thì "mở" trang đó ra
 ws_nhanvien = wb.worksheet("NhanVien")
