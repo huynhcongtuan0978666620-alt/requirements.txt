@@ -761,7 +761,7 @@ def main():
     if "hen_gio_val" not in st.session_state:
         st.session_state["hen_gio_val"] = get_now_vn().time()
 
-    apply_v15_theme(Config.THEME_COLORS)
+    apply_v15_theme()
     inject_advanced_ui_js()
     settings = get_settings()
 
