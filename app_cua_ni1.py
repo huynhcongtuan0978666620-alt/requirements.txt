@@ -42,7 +42,7 @@ components.html(
 # =====================================================================
 # 🌟 MENU ĐIỀU CHỈNH MÀU SẮC (DESIGN SYSTEM) - MINIMALISM LUXURY EDITION
 # =====================================================================
-THEME_COLORS = {
+Config.THEME_COLORS = {
     "bg_app": "#e8f5f3",
     "bg_card": "#ffffff",
     "bg_box_chung": "#f4f7f6",
@@ -82,7 +82,7 @@ def set_app_background(colors):
     st.markdown(gradient_css, unsafe_allow_html=True)
 
 
-set_app_background(THEME_COLORS)
+set_app_background(Config.THEME_COLORS)
 
 
 # =====================================================================
@@ -143,7 +143,7 @@ def inject_advanced_ui_js():
     function showPremiumToast(text) {{
         let t = parentDoc.createElement('div');
         t.innerText = text;
-        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {THEME_COLORS['primary']}; color:#ffffff; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {THEME_COLORS['shadow_toast']}; border-left: 5px solid {THEME_COLORS['accent_vip']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
+        t.style.cssText = "position:fixed; top:15%; left:50%; transform:translate(-50%, -50%); background: {Config.THEME_COLORS['primary']}; color:#ffffff; padding:15px 30px; border-radius:12px; font-weight:bold; box-shadow: 0 10px 30px {Config.THEME_COLORS['shadow_toast']}; border-left: 5px solid {Config.THEME_COLORS['accent_vip']}; z-index:9999999; font-size:15px; transition: opacity 0.5s; text-align:center;";
         parentDoc.body.appendChild(t);
         setTimeout(() => {{ t.style.opacity = '0'; setTimeout(()=>t.remove(), 500); }}, 2500);
     }}
@@ -162,7 +162,7 @@ def inject_advanced_ui_js():
                 showPremiumToast('🎉 CỐ LÊN NHÉ! BÃO ĐƠN NÀO! 🎉');
                 for(let i=0; i<60; i++) {{
                     let f = parentDoc.createElement('div');
-                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{THEME_COLORS['primary']}', '{THEME_COLORS['accent_danger']}', '#40a9ff', '{THEME_COLORS['accent_vip']}'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
+                    f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{Config.THEME_COLORS['primary']}', '{Config.THEME_COLORS['accent_danger']}', '#40a9ff', '{Config.THEME_COLORS['accent_vip']}'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
                     parentDoc.body.appendChild(f);
                     setTimeout(() => {{
                         const angle = Math.random() * Math.PI * 2;
@@ -183,9 +183,9 @@ def inject_advanced_ui_js():
 
 def render_balloons_html():
     colors = [
-        THEME_COLORS["primary"],
-        THEME_COLORS["primary"],
-        THEME_COLORS["accent_vip"],
+        Config.THEME_COLORS["primary"],
+        Config.THEME_COLORS["primary"],
+        Config.THEME_COLORS["accent_vip"],
     ]
     html_balloons = '<div class="balloon-container-css" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; pointer-events: none; z-index: 9999998; overflow: hidden;">'
     for i in range(20):
@@ -195,22 +195,22 @@ def render_balloons_html():
         w, h = int(40 * size_ratio), int(55 * size_ratio)
         delay = round(random.uniform(0.0, 2.0), 2)
         duration = round(random.uniform(4.0, 6.0), 2)
-        html_balloons += f'<div style="position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.8; background-color: {color}; left: {left_pos}vw; width: {w}px; height: {h}px; animation: fly-up-skywards-pure {duration}s linear {delay}s forwards; box-shadow: 0 4px 6px {THEME_COLORS["shadow_light"]};"></div>'
+        html_balloons += f'<div style="position: absolute; bottom: -100px; border-radius: 50% 50% 50% 50% / 40% 40% 60% 60%; opacity: 0.8; background-color: {color}; left: {left_pos}vw; width: {w}px; height: {h}px; animation: fly-up-skywards-pure {duration}s linear {delay}s forwards; box-shadow: 0 4px 6px {Config.THEME_COLORS["shadow_light"]};"></div>'
     html_balloons += "<style>@keyframes fly-up-skywards-pure { 0% { transform: translateY(110vh); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(-120vh); opacity: 0; } }</style></div>"
     st.markdown(html_balloons, unsafe_allow_html=True)
 
 
 def apply_v15_theme():
-    p = THEME_COLORS["primary"]
-    bg = THEME_COLORS["bg_app"]
-    card = THEME_COLORS["bg_card"]
-    shadow = THEME_COLORS["shadow_light"]
-    txt_main = THEME_COLORS["text_main"]
-    txt_muted = THEME_COLORS["text_muted"]
-    txt_title = THEME_COLORS["text_title"]
-    b_light = THEME_COLORS["border_light"]
-    b_input = THEME_COLORS["border_input"]
-    bg_marquee = THEME_COLORS["bg_marquee"]
+    p = Config.THEME_COLORS["primary"]
+    bg = Config.THEME_COLORS["bg_app"]
+    card = Config.THEME_COLORS["bg_card"]
+    shadow = Config.THEME_COLORS["shadow_light"]
+    txt_main = Config.THEME_COLORS["text_main"]
+    txt_muted = Config.THEME_COLORS["text_muted"]
+    txt_title = Config.THEME_COLORS["text_title"]
+    b_light = Config.THEME_COLORS["border_light"]
+    b_input = Config.THEME_COLORS["border_input"]
+    bg_marquee = Config.THEME_COLORS["bg_marquee"]
 
     st.markdown(
         f"""
@@ -248,13 +248,13 @@ def apply_v15_theme():
         }}
         button[data-baseweb="tab"][aria-selected="true"] {{ 
             background-color: transparent !important;
-            color: {THEME_COLORS['primary']} !important;
+            color: {Config.THEME_COLORS['primary']} !important;
         }}
         button[data-baseweb="tab"][aria-selected="true"] p {{ 
             color: #ff4b4b !important; 
         }}
         div[data-testid="stTabsTabBorder"] {{ 
-            background-color: {THEME_COLORS['primary']} !important;
+            background-color: {Config.THEME_COLORS['primary']} !important;
             height: 2px !important;
         }}
         
@@ -271,7 +271,7 @@ def apply_v15_theme():
         /* 3. Khung chữ chạy viên thuốc chuẩn chỉ */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
-            color: {THEME_COLORS['primary']} !important; 
+            color: {Config.THEME_COLORS['primary']} !important; 
             padding: 12px 20px !important; 
             height: 48px !important;       
             border-radius: 12px !important; 
@@ -321,13 +321,13 @@ def apply_v15_theme():
         /* Các thành phần bổ trợ cho tiệm */
         .stTextInput>div>div>input, .stNumberInput>div>div>input, .stDateInput>div>div>input, .stTimeInput>div>div>input, .stTextArea>div>div>textarea {{ border-radius: 8px !important; border: 1px solid {b_input}; color: {txt_main} !important; }}
         .the-quan-ly-flat {{ color: {txt_title}; font-weight: 800; font-size: 18px; margin-top: 15px !important; margin-bottom: 15px !important; border-bottom: 2px solid {p}; padding-bottom: 8px; text-transform: uppercase; }}
-        .box-chung {{ background-color: {THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
-        .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
+        .box-chung {{ background-color: {Config.THEME_COLORS['bg_box_chung']}; padding: 10px; border-radius: 10px; text-align: center; border: 1px solid {b_light}; font-size: 18px; font-weight: 800; color: {txt_main}; }}
+        .chiet-khau-box {{ color: {Config.THEME_COLORS['accent_chiet_khau']} !important; }} 
         .khach-tra-box {{ background-color: {p} !important; color: #ffffff !important; border:none; }}
-        .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
-        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
-        .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
-        .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
+        .tien-thua-box {{ background-color: {Config.THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
+        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {Config.THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
+        .lsc-shake {{ background-color: {Config.THEME_COLORS['bg_shake_box']}; color: {Config.THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {Config.THEME_COLORS['accent_danger']}; }}
+        .lsc-vip {{ background-color: {Config.THEME_COLORS['bg_vip_box']}; color: {Config.THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {Config.THEME_COLORS['border_vip']}; }}
         .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
     </style>
     """,
@@ -812,11 +812,11 @@ def main():
     if not st.session_state["logged_in"]:
         with st.container(border=True):
             st.markdown(
-                f"<h2 style='text-align:center; color:{THEME_COLORS['text_title']}; font-weight:800;'>SALON PRO V15</h2>",
+                f"<h2 style='text-align:center; color:{Config.THEME_COLORS['text_title']}; font-weight:800;'>SALON PRO V15</h2>",
                 unsafe_allow_html=True,
             )
             st.markdown(
-                f"<p style='text-align:center; color:{THEME_COLORS['text_muted']}; margin-top:-10px; margin-bottom:20px;'>ĐĂNG NHẬP HỆ THỐNG</p>",
+                f"<p style='text-align:center; color:{Config.THEME_COLORS['text_muted']}; margin-top:-10px; margin-bottom:20px;'>ĐĂNG NHẬP HỆ THỐNG</p>",
                 unsafe_allow_html=True,
             )
             u = st.text_input("Tài khoản (Số điện thoại)")
@@ -1021,9 +1021,9 @@ def main():
                 st.markdown(
                     f"""
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                        <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 65%; border: 3px solid {THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
-                        <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-                        <div style="font-size: 14px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
+                        <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 65%; border: 3px solid {Config.THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
+                        <div style="font-size: 30px; font-weight: 900; color: {Config.THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+                        <div style="font-size: 14px; color: {Config.THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
                             <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
                             <div style="margin-top: 5px; font-size: 18px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
                         </div>
@@ -1035,7 +1035,7 @@ def main():
             with st.container(border=True):
                 st.markdown(f"👋 **Xin chào, {st.session_state.full_name}!**")
                 st.markdown(
-                    f"<span style='color:{THEME_COLORS['text_muted']}; font-size:13px;'>Hôm nay là: {get_now_vn().strftime('%d/%m/%Y')}</span>",
+                    f"<span style='color:{Config.THEME_COLORS['text_muted']}; font-size:13px;'>Hôm nay là: {get_now_vn().strftime('%d/%m/%Y')}</span>",
                     unsafe_allow_html=True,
                 )
 
@@ -1082,12 +1082,12 @@ def main():
 
                         if not last_7_days.empty:
                             st.markdown(
-                                f"<div style='margin-top:25px; margin-bottom:10px; font-weight:bold; font-size:15px; color:{THEME_COLORS['text_title']}; letter-spacing:0.5px;'>📉 BÁO CÁO DOANH THU 7 NGÀY QUA</div>",
+                                f"<div style='margin-top:25px; margin-bottom:10px; font-weight:bold; font-size:15px; color:{Config.THEME_COLORS['text_title']}; letter-spacing:0.5px;'>📉 BÁO CÁO DOANH THU 7 NGÀY QUA</div>",
                                 unsafe_allow_html=True,
                             )
                             st.line_chart(
                                 last_7_days.set_index("Ngày")[c_tien],
-                                color=THEME_COLORS["primary"],
+                                color=Config.THEME_COLORS["primary"],
                             )
                 except Exception:
                     pass
@@ -1204,7 +1204,7 @@ def main():
                                 st.markdown(
                                     f"""
                                     <div class="lich-hen-item">
-                                        <div style="flex: 1;"><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555; font-weight:bold;">{khach} - {sdt}</span><br><span style="font-size:12px; font-weight:600; color:{THEME_COLORS['primary']};">{dv}</span></div>
+                                        <div style="flex: 1;"><span style="color:#d93025; font-weight:800; font-size:16px;">{gio}</span><br><span style="font-size:13px; color:#555; font-weight:bold;">{khach} - {sdt}</span><br><span style="font-size:12px; font-weight:600; color:{Config.THEME_COLORS['primary']};">{dv}</span></div>
                                     </div>
                                 """,
                                     unsafe_allow_html=True,
@@ -1457,7 +1457,7 @@ def main():
                                 st.rerun()
                         with c_tt:
                             st.markdown(
-                                f"<div style='margin-top: 30px; font-weight:800; color:{THEME_COLORS['text_main']};'>{item['thanh_tien']:,.0f}đ</div>",
+                                f"<div style='margin-top: 30px; font-weight:800; color:{Config.THEME_COLORS['text_main']};'>{item['thanh_tien']:,.0f}đ</div>",
                                 unsafe_allow_html=True,
                             )
                         with c_del:
@@ -1532,22 +1532,22 @@ def main():
                     cb1, cb2, cb3, cb4 = st.columns(4)
                     with cb1:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {Config.THEME_COLORS["text_muted"]}; text-align: left;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>',
                             unsafe_allow_html=True,
                         )
                     with cb2:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {Config.THEME_COLORS["text_muted"]}; text-align: left;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}</div>',
                             unsafe_allow_html=True,
                         )
                     with cb3:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {Config.THEME_COLORS["text_muted"]}; text-align: left;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}</div>',
                             unsafe_allow_html=True,
                         )
                     with cb4:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {Config.THEME_COLORS["text_muted"]}; text-align: left;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>',
                             unsafe_allow_html=True,
                         )
 
@@ -1666,44 +1666,44 @@ def main():
 
                             st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
-<div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;">
-    <div style="font-size: 27px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-    <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
-    <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
-    <div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
-    <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
-    <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()}</div>
+<div style="text-align: center; border-bottom: 1px dashed {Config.THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;">
+    <div style="font-size: 27px; font-weight: 900; color: {Config.THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+    <div style="font-size: 13px; color: {Config.THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
+    <div style="font-size: 13px; color: {Config.THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
+    <div style="font-size: 18px; font-weight: 800; color: {Config.THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
+    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
+    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()}</div>
 </div>
-<div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
-<div style="border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {THEME_COLORS['text_secondary']};">
+<div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
+<div style="border-bottom: 1px solid {Config.THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {Config.THEME_COLORS['text_secondary']};">
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Ngày:</span> <span style="text-align: right;">{get_now_vn().strftime('%d/%m/%Y %H:%M')}</span></div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Khách hàng:</span> <span style="font-weight:700; color: {THEME_COLORS['text_main']}; text-align: right;">{c_ten}</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Khách hàng:</span> <span style="font-weight:700; color: {Config.THEME_COLORS['text_main']}; text-align: right;">{c_ten}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 6px;"><span>Thu ngân:</span> <span style="text-align: right;">{st.session_state.full_name}</span></div>
-    <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:700; color: {THEME_COLORS['text_main']}; text-align: right;">{chot_tho}</span></div>
+    <div style="display: flex; justify-content: space-between;"><span>Thợ thực hiện:</span> <span style="font-weight:700; color: {Config.THEME_COLORS['text_main']}; text-align: right;">{chot_tho}</span></div>
 </div>
-<div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
+<div style="margin-bottom: 15px;"><div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;">Chi tiết dịch vụ:</div>
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
-<div style="font-size: 14px; border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; color: {THEME_COLORS['text_main']};">
+<div style="font-size: 14px; border-bottom: 1px solid {Config.THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; color: {Config.THEME_COLORS['text_main']};">
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tổng tiền dịch vụ:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
-    <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}</span></div>
-    <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; color: {Config.THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; color: {Config.THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối lại:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
 </div>
-<div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán cuối cùng:</div>
-<div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
+<div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán cuối cùng:</div>
+<div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {Config.THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {Config.THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi Chú: {ghi_chu_don}</div>
-<div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516.</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc.</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc.</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Đc: 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ).</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Dịch vụ thêm: Có nhận Make-up tiệc tại nhà.</div>
-<div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
-<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
+<div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Đc: 131 Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, AG (Cũ).</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Dịch vụ thêm: Có nhận Make-up tiệc tại nhà.</div>
+<div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
+<div style="text-align: center; margin-top: 15px; font-size: 13px; color: {Config.THEME_COLORS['text_muted']}; font-style: italic;">Cảm ơn quý khách đã sử dụng dịch vụ!</div>
 </div>"""
                             st.balloons()
                             st.toast("✅ Đã xuất hóa đơn thành công!")
@@ -2395,7 +2395,7 @@ def main():
                         use_container_width=True,
                     ):
                         st.markdown(
-                            f"<div style='margin: 15px 0; border-bottom: 2px dashed {THEME_COLORS['primary']};'></div>",
+                            f"<div style='margin: 15px 0; border-bottom: 2px dashed {Config.THEME_COLORS['primary']};'></div>",
                             unsafe_allow_html=True,
                         )
 
@@ -2439,7 +2439,7 @@ def main():
                             diem_so = "8.5/10"
 
                         st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']};'>1. Bảng công thức hoàn chỉnh (Tỷ lệ %)</h4>",
+                            f"<h4 style='color:{Config.THEME_COLORS['text_title']};'>1. Bảng công thức hoàn chỉnh (Tỷ lệ %)</h4>",
                             unsafe_allow_html=True,
                         )
                         st.dataframe(
@@ -2455,7 +2455,7 @@ def main():
                         )
 
                         st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình pha chế / bôi thuốc chuẩn</h4>",
+                            f"<h4 style='color:{Config.THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình pha chế / bôi thuốc chuẩn</h4>",
                             unsafe_allow_html=True,
                         )
                         st.markdown(f"""
@@ -2466,7 +2466,7 @@ def main():
                         """)
 
                         st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>3. Đánh giá chuyên gia chuyên môn</h4>",
+                            f"<h4 style='color:{Config.THEME_COLORS['text_title']}; margin-top: 15px;'>3. Đánh giá chuyên gia chuyên môn</h4>",
                             unsafe_allow_html=True,
                         )
                         st.info(
@@ -2474,7 +2474,7 @@ def main():
                         )
 
                         st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng chi tiết</h4>",
+                            f"<h4 style='color:{Config.THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng chi tiết</h4>",
                             unsafe_allow_html=True,
                         )
                         st.success(f"📌 **Kỹ thuật lưu ý:** {loi_khuyen}")
