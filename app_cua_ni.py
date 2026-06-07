@@ -692,7 +692,7 @@ def check_auto_login():
     return st.session_state.get("logged_in", False)
 
 
-apply_v15_theme(Config.THEME_COLORS)
+apply_v15_theme()
 
 
 def count_orders_today():
