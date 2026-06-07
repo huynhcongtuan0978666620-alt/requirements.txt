@@ -1637,13 +1637,13 @@ def main():
 
                             st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
-<div style="text-align: center; border-bottom: 1px dashed {Config.THEME_COLORS['border_input']}; padding-bottom: 20px; margin-bottom: 30px;">
-    <div style="font-size: 22px; font-weight: 900; color: {Config.THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
-    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
-    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
-    <div style="font-size: 16px; font-weight: 800; color: {Config.THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
-    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
-    <div style="font-size: 12px; color: {Config.THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()}</div>
+<div style="text-align: center; border-bottom: 1px dashed {Config.THEME_COLORS['border_input']}; padding-bottom: 10px; margin-bottom: 10px;">
+    <div style="font-size: 25px; font-weight: 900; color: {Config.THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+    <div style="font-size: 10px; color: {Config.THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
+    <div style="font-size: 10px; color: {Config.THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
+    <div style="font-size: 18px; font-weight: 800; color: {Config.THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
+    <div style="font-size: 10px; color: {Config.THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
+    <div style="font-size: 10px; color: {Config.THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()}</div>
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {Config.THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {Config.THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
 <div style="border-bottom: 1px solid {Config.THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {Config.THEME_COLORS['text_secondary']};">
