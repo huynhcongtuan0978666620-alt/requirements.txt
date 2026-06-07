@@ -326,12 +326,12 @@ st.markdown(marquee_code, unsafe_allow_html=True)
 workbook = database.get_db_connection()
 # Ní chèn ngay sau dòng import database
 import database
+
 try:
     test_sheet = database.get_db_connection()
     st.success("✅ Kết nối Database thành công!")
 except Exception as e:
     st.error(f"❌ Database chưa sẵn sàng, lỗi: {e}")
-    
 
 
 def format_drive_direct_url(link):
