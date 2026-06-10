@@ -1532,7 +1532,7 @@ def main():
                         "Số tiền mặt khách trả (VND)", value=float(t_khach_tra)
                     )
                     t_du = kh_dua - t_khach_tra
-                    hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
+                    hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1000
 
                     st.write("")
                     cb1, cb2, cb3, cb4 = st.columns(4)
