@@ -16,26 +16,12 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-# 1. Gọi kết nối duy nhất 1 lần
-try:
-    wb = database.get_db_connection()
-
-    # 2. Lấy dữ liệu các Sheet cần thiết
-    ws_nhanvien = wb.worksheet("NhanVien")
-    data_nhanvien = ws_nhanvien.get_all_records()
-
-    ws_khachhang = wb.worksheet("KhachHang")
-    data_khachhang = ws_khachhang.get_all_records()
-
-    # Debug nhẹ để xem cột (chỉ cần dòng này thôi ní)
-    # st.write("Cấu trúc cột NhanVien:", data_nhanvien[0].keys())
-
-except Exception as e:
-    st.error(f"Hệ thống dữ liệu chưa sẵn sàng: {e}")
-    st.stop()  # Dừng App nếu không lấy được dữ liệu
-
-# Bây giờ ní có thể dùng data_nhanvien và data_khachhang ở bất cứ đâu phía dưới!
-
+# Sửa lại dòng so sánh trong hàm đăng nhập của ní
+if str(row.get('Số Điện Thoại')) == str(input_sdt) and str(row.get('Mật Khẩu')) == str(input_mk):
+    st.session_state['logged_in'] = True
+    st.session_state['user_name'] = row.get('Tên Nhân Viên') # Ní có thể lấy luôn tên nhân viên
+    st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
+    break
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
     page_title="SALON PRO V15",
