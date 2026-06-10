@@ -1691,14 +1691,14 @@ def main():
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
 <div style="font-size: 14px; border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; color: {THEME_COLORS['text_main']};">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tổng tiền dịch vụ:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tổng tiền dịch vụ:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}đ</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}đ</span></div>
-    <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối lại:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}đ</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}đ</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền thối lại:</span> <span style="text-align: right; font-weight: 600;">{t_du:,.0f}đ</span></div>
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Số tiền cần thanh toán cuối cùng:</div>
-<div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}</span></div>
+<div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}đ</span></div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi Chú: {ghi_chu_don}</div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
