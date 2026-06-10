@@ -1529,10 +1529,10 @@ def main():
                     tong_tru = tien_chiet_khau + tien_khuyen_mai
                     t_khach_tra = max(0, t_bill - tong_tru)
                     kh_dua = st.number_input(
-                        "Số tiền mặt khách trả (VND)", value=float(t_khach_tra)
+                        "Số tiền mặt khách trả (VND)", value=float(t_khach_tra), value=0, step=1000
                     )
                     t_du = kh_dua - t_khach_tra
-                    hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1000
+                    hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
 
                     st.write("")
                     cb1, cb2, cb3, cb4 = st.columns(4)
