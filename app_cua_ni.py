@@ -17,9 +17,13 @@ import streamlit.components.v1 as components
 import database
 
 # Sửa lại dòng so sánh trong hàm đăng nhập của ní
-if str(row.get('Số Điện Thoại')) == str(input_sdt) and str(row.get('Mật Khẩu')) == str(input_mk):
-    st.session_state['logged_in'] = True
-    st.session_state['user_name'] = row.get('Tên Nhân Viên') # Ní có thể lấy luôn tên nhân viên
+if str(row.get("Số Điện Thoại")) == str(input_sdt) and str(row.get("Mật Khẩu")) == str(
+    input_mk
+):
+    st.session_state["logged_in"] = True
+    st.session_state["user_name"] = row.get(
+        "Tên Nhân Viên"
+    )  # Ní có thể lấy luôn tên nhân viên
     st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
     break
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
