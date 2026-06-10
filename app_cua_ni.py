@@ -36,24 +36,27 @@ except Exception as e:
     st.stop()
 
 # 3. GIAO DIỆN ĐĂNG NHẬP
-input_sdt = st.text_input("Số điện thoại")
-input_mk = st.text_input("Mật khẩu", type="password")
+# Thêm key để Streamlit phân biệt được các widget
+input_sdt = st.text_input("Số điện thoại", key="login_sdt")
+input_mk = st.text_input("Mật khẩu", type="password", key="login_mk")
 
-if st.button("Đăng nhập"):
+if st.button("Đăng nhập", key="btn_login"):
     for row in data_nhanvien:
-        # Làm sạch tên cột trước khi so sánh
+        # Làm sạch dữ liệu từ Sheet
         sdt_sheet = str(row.get("Số Điện Thoại", "")).strip()
         mk_sheet = str(row.get("Mật Khẩu", "")).strip()
 
+        # So sánh
         if sdt_sheet == str(input_sdt).strip() and mk_sheet == str(input_mk).strip():
             st.session_state["logged_in"] = True
             st.session_state["user_name"] = row.get("Tên Nhân Viên")
             st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
-            st.rerun()  # Dùng st.rerun() để làm mới trang sau khi đăng nhập
+            st.rerun() 
             break
     else:
+        # Nếu chạy hết vòng lặp mà không tìm thấy (lệnh else của for)
         st.error("Số điện thoại hoặc mật khẩu không đúng!")
-
+        
 # CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
 components.html(
     """
