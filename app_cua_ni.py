@@ -21,11 +21,12 @@ wb = database.get_db_connection()
 
 # Đoạn code thăm dò:
 if wb:
-    st.write(data_nhanvien[0])  # In ra dòng đầu tiên để xem tên cột
-    # st.write("### Danh sách các Sheet tìm thấy trong file:")
+    
+    st.write("### Danh sách các Sheet tìm thấy trong file:")
     # Liệt kê tất cả các sheet để xem tên thật sự là gì
     danh_sach_ten = [sheet.title for sheet in wb.worksheets()]
     st.write(danh_sach_ten)
+    st.write(data_nhanvien[0])  # In ra dòng đầu tiên để xem tên cột
 
     # Kiểm tra xem sheet 'NhanVien' có nằm trong đó không
     if "NhanVien" in danh_sach_ten:
