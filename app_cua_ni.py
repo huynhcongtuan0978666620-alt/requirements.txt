@@ -17,10 +17,17 @@ import streamlit.components.v1 as components
 import database
 
 import streamlit as st
+
 # 1. CẤU HÌNH TRANG (PHẢI LÀ DÒNG ĐẦU TIÊN)
-st.set_page_config(page_title="SALON PRO V15", layout="wide", page_icon="💇‍♀️", initial_sidebar_state="collapsed")
+st.set_page_config(
+    page_title="SALON PRO V15",
+    layout="wide",
+    page_icon="💇‍♀️",
+    initial_sidebar_state="collapsed",
+)
 
 import database
+
 # Các thư viện khác...
 
 # 2. KHỞI TẠO DỮ LIỆU
@@ -38,14 +45,14 @@ input_mk = st.text_input("Mật khẩu", type="password")
 if st.button("Đăng nhập"):
     for row in data_nhanvien:
         # Làm sạch tên cột trước khi so sánh
-        sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
-        mk_sheet = str(row.get('Mật Khẩu', '')).strip()
-        
+        sdt_sheet = str(row.get("Số Điện Thoại", "")).strip()
+        mk_sheet = str(row.get("Mật Khẩu", "")).strip()
+
         if sdt_sheet == str(input_sdt).strip() and mk_sheet == str(input_mk).strip():
-            st.session_state['logged_in'] = True
-            st.session_state['user_name'] = row.get('Tên Nhân Viên')
+            st.session_state["logged_in"] = True
+            st.session_state["user_name"] = row.get("Tên Nhân Viên")
             st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
-            st.rerun() # Dùng st.rerun() để làm mới trang sau khi đăng nhập
+            st.rerun()  # Dùng st.rerun() để làm mới trang sau khi đăng nhập
             break
     else:
         st.error("Số điện thoại hoặc mật khẩu không đúng!")
