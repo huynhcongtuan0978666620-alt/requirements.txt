@@ -1515,11 +1515,11 @@ def main():
                     c_km1, c_km2 = st.columns(2)
                     with c_km1:
                         tien_chiet_khau = st.number_input(
-                            "Chiết khấu ưu đãi (VND)", value=0.0, step=1000.0
+                            "Chiết khấu ưu đãi (VND)", value=0, step=1000
                         )
                     with c_km2:
                         tien_khuyen_mai = st.number_input(
-                            "Trừ khuyến mãi (VND)", value=0.0, step=1000.0
+                            "Trừ khuyến mãi (VND)", value=0, step=1000
                         )
 
                     ghi_chu_don = st.text_input(
@@ -1527,9 +1527,9 @@ def main():
                     )
 
                     tong_tru = tien_chiet_khau + tien_khuyen_mai
-                    t_khach_tra = max(0.0, t_bill - tong_tru)
+                    t_khach_tra = max(0, t_bill - tong_tru)
                     kh_dua = st.number_input(
-                        "Số tiền mặt khách trả", value=float(t_khach_tra)
+                        "Số tiền mặt khách trả (VND)", value=float(t_khach_tra)
                     )
                     t_du = kh_dua - t_khach_tra
                     hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
@@ -1538,28 +1538,28 @@ def main():
                     cb1, cb2, cb3, cb4 = st.columns(4)
                     with cb1:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Tổng bill</div><div class="box-chung">{t_bill:,.0f}đ</div>',
                             unsafe_allow_html=True,
                         )
                     with cb2:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Chiết khấu</div><div class="box-chung chiet-khau-box">{tien_chiet_khau:,.0f}đ</div>',
                             unsafe_allow_html=True,
                         )
                     with cb3:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Khuyến mãi</div><div class="box-chung chiet-khau-box">{tien_khuyen_mai:,.0f}đ</div>',
                             unsafe_allow_html=True,
                         )
                     with cb4:
                         st.markdown(
-                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}</div>',
+                            f'<div style="font-size: 11px; font-weight: 600; color: {THEME_COLORS["text_muted"]}; text-align: left;">Thực thu</div><div class="box-chung khach-tra-box">{t_khach_tra:,.0f}đ</div>',
                             unsafe_allow_html=True,
                         )
 
                     if t_du > 0:
                         st.markdown(
-                            f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f} VND</span></div>',
+                            f'<div class="tien-thua-box">Tiền thối lại: <span>{t_du:,.0f}đ</span></div>',
                             unsafe_allow_html=True,
                         )
 
@@ -1584,7 +1584,7 @@ def main():
                                 st.rerun()
                             else:
                                 st.warning(
-                                    "⚠️ Vui lòng check ô Xác nhận thông tin đơn hàng trước khi xuất!"
+                                    "⚠️ Vui lòng check ô Xác nhận thông tin đơn hàng trước khi xuất HĐ!"
                                 )
                     else:
                         st.button(
