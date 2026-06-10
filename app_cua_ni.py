@@ -339,6 +339,7 @@ def apply_v15_theme():
         unsafe_allow_html=True,
     )
 
+
 mau_chu = "#FF5733"
 marquee_code = f"""
 <div class="custom-marquee">
