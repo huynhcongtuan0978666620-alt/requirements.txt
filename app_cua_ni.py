@@ -1691,7 +1691,7 @@ def main():
     <table style="width: 100%; border-collapse: collapse;">{html_items}</table>
 </div>
 <div style="font-size: 14px; border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; color: {THEME_COLORS['text_main']};">
-    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tổng tiền dịch vụ:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f}</span></div>
+    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tổng tiền dịch vụ:</span> <span style="text-align: right; font-weight: 600;">{t_bill:,.0f đ}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Chiết khấu:</span> <span style="text-align: right; font-weight: 600;">-{tien_chiet_khau:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; color: {THEME_COLORS['accent_chiet_khau']}; margin-bottom: 8px;"><span>Khuyến mãi:</span> <span style="text-align: right; font-weight: 600;">-{tien_khuyen_mai:,.0f}</span></div>
     <div style="display: flex; justify-content: space-between; margin-bottom: 8px;"><span>Tiền khách đưa:</span> <span style="text-align: right; font-weight: 600;">{kh_dua:,.0f}</span></div>
