@@ -1023,7 +1023,10 @@ def main():
             with st.container(border=True):
                 direct_logo_url = format_drive_direct_url(settings.get("Logo", ""))
                 fallback_gif = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                st.write("https://github.com/huynhcongtuan0978666620-alt/requirements.txt/blob/main/288382613.png", direct_logo_url)
+                st.write(
+                    "https://github.com/huynhcongtuan0978666620-alt/requirements.txt/blob/main/288382613.png",
+                    direct_logo_url,
+                )
                 st.markdown(
                     f"""
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
