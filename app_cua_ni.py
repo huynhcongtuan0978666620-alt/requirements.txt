@@ -26,7 +26,6 @@ if wb:
     # Liệt kê tất cả các sheet để xem tên thật sự là gì
     danh_sach_ten = [sheet.title for sheet in wb.worksheets()]
     st.write(danh_sach_ten)
-    
 
     # Kiểm tra xem sheet 'NhanVien' có nằm trong đó không
     if "NhanVien" in danh_sach_ten:
