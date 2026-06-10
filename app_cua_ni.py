@@ -51,12 +51,12 @@ if st.button("Đăng nhập", key="btn_login"):
             st.session_state["logged_in"] = True
             st.session_state["user_name"] = row.get("Tên Nhân Viên")
             st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
-            st.rerun() 
+            st.rerun()
             break
     else:
         # Nếu chạy hết vòng lặp mà không tìm thấy (lệnh else của for)
         st.error("Số điện thoại hoặc mật khẩu không đúng!")
-        
+
 # CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
 components.html(
     """
