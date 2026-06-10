@@ -16,56 +16,25 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-# import database
-wb = database.get_db_connection()
-
-# Đoạn code thăm dò:
-if wb:
-
-    st.write("### Danh sách các Sheet tìm thấy trong file:")
-    # Liệt kê tất cả các sheet để xem tên thật sự là gì
-    danh_sach_ten = [sheet.title for sheet in wb.worksheets()]
-    st.write(danh_sach_ten)
-
-    # Kiểm tra xem sheet 'NhanVien' có nằm trong đó không
-    if "NhanVien" in danh_sach_ten:
-        st.success("✅ Tìm thấy sheet 'NhanVien'!")
-        # Thử đọc 1 dòng đầu tiên để xem dữ liệu có chảy về không
-        test_data = wb.worksheet("NhanVien").get_all_records()
-        st.write("Số dòng dữ liệu đọc được:", len(test_data))
-        st.write(data_nhanvien[0])  # In ra dòng đầu tiên để xem tên cột
-    else:
-        st.error(
-            "❌ Không tìm thấy sheet tên là 'NhanVien'. Hãy kiểm tra lại khoảng trắng hoặc tên!"
-        )
-
-
-# 1. Gọi hàm kết nối
-wb = database.get_db_connection()
-
-# 2. Sử dụng "wb" để trỏ vào đúng sheet NhanVien
+# 1. Gọi kết nối duy nhất 1 lần
 try:
+    wb = database.get_db_connection()
+    
+    # 2. Lấy dữ liệu các Sheet cần thiết
     ws_nhanvien = wb.worksheet("NhanVien")
     data_nhanvien = ws_nhanvien.get_all_records()
-    # Nếu chạy được tới đây là NhanVien đã sẵn sàng!
+    
+    ws_khachhang = wb.worksheet("KhachHang")
+    data_khachhang = ws_khachhang.get_all_records()
+    
+    # Debug nhẹ để xem cột (chỉ cần dòng này thôi ní)
+    # st.write("Cấu trúc cột NhanVien:", data_nhanvien[0].keys())
+
 except Exception as e:
-    st.error(f"Lỗi không tìm thấy sheet NhanVien: {e}")
+    st.error(f"Hệ thống dữ liệu chưa sẵn sàng: {e}")
+    st.stop() # Dừng App nếu không lấy được dữ liệu
 
-
-# 1. Lấy kết nối 1 lần duy nhất
-# wb = database.get_db_connection()
-
-# 2. Khi cần dùng sheet nào thì "mở" trang đó ra
-ws_nhanvien = wb.worksheet("NhanVien")
-data_nhanvien = ws_nhanvien.get_all_records()
-
-# Khi cần dùng sheet KhachHang
-ws_khachhang = wb.worksheet("KhachHang")
-data_khachhang = ws_khachhang.get_all_records()
-
-
-# ws = database.get_db_connection()
-# st.write(f"Đã kết nối tới sheet có tên: {ws.title}")
+# Bây giờ ní có thể dùng data_nhanvien và data_khachhang ở bất cứ đâu phía dưới!
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
