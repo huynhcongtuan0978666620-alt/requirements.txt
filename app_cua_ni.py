@@ -1530,10 +1530,8 @@ def main():
                     t_khach_tra = max(0, t_bill - tong_tru)
                     kh_dua = st.number_input(
                         "Số tiền mặt khách trả (VND)",
-                        value=float(t_khach_tra),
-                        format="%d",
-                        min_value=0,
-                        step=1000,
+                        value=int(t_khach_tra),
+                        step=1000, format="%d",
                     )
                     t_du = kh_dua - t_khach_tra
                     hs_giam = t_khach_tra / t_bill if t_bill > 0 else 1.0
