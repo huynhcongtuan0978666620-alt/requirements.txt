@@ -15,7 +15,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
-#import database
+
+# import database
 wb = database.get_db_connection()
 
 # Đoạn code thăm dò:
@@ -23,8 +24,8 @@ if wb:
     st.write("### Danh sách các Sheet tìm thấy trong file:")
     # Liệt kê tất cả các sheet để xem tên thật sự là gì
     danh_sach_ten = [sheet.title for sheet in wb.worksheets()]
-    st.write(danh_sach_ten) 
-    
+    st.write(danh_sach_ten)
+
     # Kiểm tra xem sheet 'NhanVien' có nằm trong đó không
     if "NhanVien" in danh_sach_ten:
         st.success("✅ Tìm thấy sheet 'NhanVien'!")
@@ -32,8 +33,10 @@ if wb:
         test_data = wb.worksheet("NhanVien").get_all_records()
         st.write("Số dòng dữ liệu đọc được:", len(test_data))
     else:
-        st.error("❌ Không tìm thấy sheet tên là 'NhanVien'. Hãy kiểm tra lại khoảng trắng hoặc tên!")
-        
+        st.error(
+            "❌ Không tìm thấy sheet tên là 'NhanVien'. Hãy kiểm tra lại khoảng trắng hoặc tên!"
+        )
+
 
 # 1. Gọi hàm kết nối
 wb = database.get_db_connection()
