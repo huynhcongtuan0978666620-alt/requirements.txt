@@ -276,7 +276,7 @@ def apply_v15_theme():
         /* 3. Khung chữ chạy viên thuốc chuẩn chỉ */
         .custom-marquee {{
             background-color: {bg_marquee} !important;
-            color: {THEME_COLORS['text_secondary']} !important; 
+            color: {THEME_COLORS['text_main']} !important; 
             padding: 12px 20px !important; 
             height: 48px !important;       
             border-radius: 12px !important; 
@@ -330,7 +330,7 @@ def apply_v15_theme():
         .chiet-khau-box {{ color: {THEME_COLORS['accent_chiet_khau']} !important; }} 
         .khach-tra-box {{ background-color: {p} !important; color: #ffffff !important; border:none; }}
         .tien-thua-box {{ background-color: {THEME_COLORS['bg_box_chung']}; color: {txt_main}; padding: 15px; border-radius: 10px; text-align: center; font-size: 18px; font-weight: 700; border: 1px dashed {p}; margin: 10px 0; }}
-        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 20px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
+        .hoa-don-khung {{ background-color: {card} !important; color: {txt_main} !important; padding: 25px !important; border-radius: 15px !important; border-top: 6px solid {p} !important; box-shadow: 0 6px 20px {THEME_COLORS['shadow_heavy']}; margin-top: 5px; }}
         .lsc-shake {{ background-color: {THEME_COLORS['bg_shake_box']}; color: {THEME_COLORS['accent_danger']} !important; padding: 10px; border-radius: 8px; text-align: center; font-size: 13px; font-weight:600; margin-bottom: 10px; border-left: 4px solid {THEME_COLORS['accent_danger']}; }}
         .lsc-vip {{ background-color: {THEME_COLORS['bg_vip_box']}; color: {THEME_COLORS['accent_vip']} !important; padding: 8px; border-radius: 8px; text-align: center; font-size: 13px; margin-bottom: 8px; font-weight: 700; border: 1px solid {THEME_COLORS['border_vip']}; }}
         .lich-hen-item {{ background: #fff; padding: 12px; border-radius: 10px; border: 1px solid #eee; border-left: 4px solid {p}; margin-bottom: 8px; }}
