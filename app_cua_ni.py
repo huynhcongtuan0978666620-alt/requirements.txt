@@ -19,20 +19,20 @@ import database
 # 1. Gọi kết nối duy nhất 1 lần
 try:
     wb = database.get_db_connection()
-    
+
     # 2. Lấy dữ liệu các Sheet cần thiết
     ws_nhanvien = wb.worksheet("NhanVien")
     data_nhanvien = ws_nhanvien.get_all_records()
-    
+
     ws_khachhang = wb.worksheet("KhachHang")
     data_khachhang = ws_khachhang.get_all_records()
-    
+
     # Debug nhẹ để xem cột (chỉ cần dòng này thôi ní)
     # st.write("Cấu trúc cột NhanVien:", data_nhanvien[0].keys())
 
 except Exception as e:
     st.error(f"Hệ thống dữ liệu chưa sẵn sàng: {e}")
-    st.stop() # Dừng App nếu không lấy được dữ liệu
+    st.stop()  # Dừng App nếu không lấy được dữ liệu
 
 # Bây giờ ní có thể dùng data_nhanvien và data_khachhang ở bất cứ đâu phía dưới!
 
