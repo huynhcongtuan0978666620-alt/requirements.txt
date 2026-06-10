@@ -16,23 +16,39 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-# Sửa lại dòng so sánh trong hàm đăng nhập của ní
-if str(row.get("Số Điện Thoại")) == str(input_sdt) and str(row.get("Mật Khẩu")) == str(
-    input_mk
-):
-    st.session_state["logged_in"] = True
-    st.session_state["user_name"] = row.get(
-        "Tên Nhân Viên"
-    )  # Ní có thể lấy luôn tên nhân viên
-    st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
-    break
-# 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
-st.set_page_config(
-    page_title="SALON PRO V15",
-    layout="wide",
-    page_icon="💇‍♀️",
-    initial_sidebar_state="collapsed",
-)
+import streamlit as st
+# 1. CẤU HÌNH TRANG (PHẢI LÀ DÒNG ĐẦU TIÊN)
+st.set_page_config(page_title="SALON PRO V15", layout="wide", page_icon="💇‍♀️", initial_sidebar_state="collapsed")
+
+import database
+# Các thư viện khác...
+
+# 2. KHỞI TẠO DỮ LIỆU
+try:
+    wb = database.get_db_connection()
+    data_nhanvien = wb.worksheet("NhanVien").get_all_records()
+except Exception as e:
+    st.error(f"Hệ thống dữ liệu chưa sẵn sàng: {e}")
+    st.stop()
+
+# 3. GIAO DIỆN ĐĂNG NHẬP
+input_sdt = st.text_input("Số điện thoại")
+input_mk = st.text_input("Mật khẩu", type="password")
+
+if st.button("Đăng nhập"):
+    for row in data_nhanvien:
+        # Làm sạch tên cột trước khi so sánh
+        sdt_sheet = str(row.get('Số Điện Thoại', '')).strip()
+        mk_sheet = str(row.get('Mật Khẩu', '')).strip()
+        
+        if sdt_sheet == str(input_sdt).strip() and mk_sheet == str(input_mk).strip():
+            st.session_state['logged_in'] = True
+            st.session_state['user_name'] = row.get('Tên Nhân Viên')
+            st.success(f"Chào ní {row.get('Tên Nhân Viên')}!")
+            st.rerun() # Dùng st.rerun() để làm mới trang sau khi đăng nhập
+            break
+    else:
+        st.error("Số điện thoại hoặc mật khẩu không đúng!")
 
 # CHÈN ĐOẠN NÀY NGAY DƯỚI SET_PAGE_CONFIG ĐỂ KÍCH HOẠT PWA
 components.html(
