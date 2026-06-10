@@ -16,8 +16,6 @@ from email.mime.multipart import MIMEMultipart
 import streamlit.components.v1 as components
 import database
 
-import streamlit as st
-
 # 1. CẤU HÌNH TRANG (PHẢI LÀ DÒNG ĐẦU TIÊN)
 st.set_page_config(
     page_title="SALON PRO V15",
@@ -26,7 +24,6 @@ st.set_page_config(
     initial_sidebar_state="collapsed",
 )
 
-import database
 
 # Các thư viện khác...
 
