@@ -727,16 +727,24 @@ def check_auto_login():
 
 apply_v15_theme()
 
-
 def count_orders_today():
     try:
-        # Ní kiểm tra đúng tên Sheet "BaoCao" của ní nhé
-        ws = get_google_sheet_workbook().worksheet("BaoCao")
-        # Đếm số dòng dữ liệu (trừ dòng tiêu đề)
-        return len(ws.get_all_values()) - 1
-    except:
-        return 0
-
+        # 1. Kết nối đến Workbook rồi mở sheet "BaoCao"
+        wb = get_db_connection()
+        ws_baocao = wb.worksheet("BaoCao")
+        data = ws_baocao.get_all_records()
+        
+        # 2. Lấy ngày hiện tại (Định dạng phải khớp với cột 'Ngay' trong sheet)
+        # Ní kiểm tra xem trong sheet nó lưu là 11/06/2026 hay 2026-06-11 nhé!
+        today = datetime.now().strftime("%d/%m/%Y") 
+        
+        # 3. Đếm số dòng có ngày bằng hôm nay
+        # Ní thay 'Ngay' bằng tên cột thật sự trong sheet của ní
+        count = sum(1 for row in data if str(row.get('Ngay')) == today)
+        
+        return count
+    except Exception as e:
+        return 0 # Nếu lỗi thì trả về 0 cho an toàn
 
 # --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
 def xoa_toan_bo_don_da_chot():
@@ -1681,7 +1689,7 @@ def main():
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
     <div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
     <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:5px;">Mã số: {ma_hd}</div>
-    <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()}</div>
+    <div style="font-size: 12px; color: {THEME_COLORS['text_muted']}; margin-top:2px;">Số ĐH trong ngày: {count_orders_today()} Đơn</div>
 </div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;">Thông tin khách hàng:</div>
 <div style="border-bottom: 1px solid {THEME_COLORS['border_light']}; padding-bottom: 10px; margin-bottom: 15px; font-size: 14px; color: {THEME_COLORS['text_secondary']};">
