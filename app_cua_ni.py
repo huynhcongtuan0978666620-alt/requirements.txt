@@ -727,24 +727,26 @@ def check_auto_login():
 
 apply_v15_theme()
 
+
 def count_orders_today():
     try:
         # 1. Kết nối đến Workbook rồi mở sheet "BaoCao"
         wb = get_db_connection()
         ws_baocao = wb.worksheet("BaoCao")
         data = ws_baocao.get_all_records()
-        
+
         # 2. Lấy ngày hiện tại (Định dạng phải khớp với cột 'Ngay' trong sheet)
         # Ní kiểm tra xem trong sheet nó lưu là 11/06/2026 hay 2026-06-11 nhé!
-        today = datetime.now().strftime("%d/%m/%Y") 
-        
+        today = datetime.now().strftime("%d/%m/%Y")
+
         # 3. Đếm số dòng có ngày bằng hôm nay
         # Ní thay 'Ngay' bằng tên cột thật sự trong sheet của ní
-        count = sum(1 for row in data if str(row.get('Ngay')) == today)
-        
+        count = sum(1 for row in data if str(row.get("Ngay")) == today)
+
         return count
     except Exception as e:
-        return 0 # Nếu lỗi thì trả về 0 cho an toàn
+        return 0  # Nếu lỗi thì trả về 0 cho an toàn
+
 
 # --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
 def xoa_toan_bo_don_da_chot():
