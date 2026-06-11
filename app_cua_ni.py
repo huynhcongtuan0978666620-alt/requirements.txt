@@ -741,7 +741,7 @@ def count_orders_today():
 
         # 3. Đếm số dòng có ngày bằng hôm nay
         # Ní thay 'Ngay' bằng tên cột thật sự trong sheet của ní
-        count = sum(1 for row in data if str(row.get("Ngay")) == today)
+        count = sum(1 for row in data if str(row.get("Ngày")) == today)
 
         return count
     except Exception as e:
