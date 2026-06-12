@@ -726,28 +726,31 @@ def check_auto_login():
 
 apply_v15_theme()
 
+
 # KIỂM TRA NGÀY
 def count_orders_today():
     try:
         wb = get_db_connection()
         ws_baocao = wb.worksheet("BaoCao")
         data = ws_baocao.get_all_records()
-        
+
         # --- ĐOẠN KIỂM TRA MỚI ---
         if data:
             st.write("--- Dữ liệu dòng đầu tiên từ Sheet BaoCao ---")
-            st.write(data[0]) 
+            st.write(data[0])
             # Dòng này giúp ní xem tên cột và định dạng dữ liệu ngày tháng thực tế
         # -------------------------
-        
-        today = datetime.now().strftime("%d/%m/%Y") 
-        count = sum(1 for row in data if str(row.get('Ngay', '')).strip() == today)
+
+        today = datetime.now().strftime("%d/%m/%Y")
+        count = sum(1 for row in data if str(row.get("Ngay", "")).strip() == today)
         return count
     except Exception as e:
-        st.write("Lỗi hàm đếm đơn:", e) # Nếu lỗi thì in ra lỗi để mình sửa
+        st.write("Lỗi hàm đếm đơn:", e)  # Nếu lỗi thì in ra lỗi để mình sửa
         return 0
 
+
 # KIỂM TRA NGÀY
+
 
 # --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
 def xoa_toan_bo_don_da_chot():
