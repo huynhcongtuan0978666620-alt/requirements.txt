@@ -742,7 +742,7 @@ def count_orders_today():
         # -------------------------
 
         today = datetime.now().strftime("%d/%m/%Y")
-        count = sum(1 for row in data if str(row.get("Ngay", "")).strip() == today)
+        count = sum(1 for row in data if str(row.get("Ngày", "")).strip() == today)
         return count
     except Exception as e:
         st.write("Lỗi hàm đếm đơn:", e)  # Nếu lỗi thì in ra lỗi để mình sửa
