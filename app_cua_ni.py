@@ -2222,7 +2222,9 @@ def main():
                                     use_container_width=True,
                                     type="primary",
                                 )
-                            st.dataframe(df_bc, use_container_width=True)
+                            df_hien_thi = df_bc.copy()
+                            df_hien_thi.index = df_hien_thi.index + 1  # Cộng thêm 1 vào chỉ số để nó chạy từ 1
+                            st.dataframe(df_hien_thi, use_container_width=True)
                         else:
                             st.info("Chưa có dữ liệu báo cáo.")
                             if st.button(
@@ -2234,7 +2236,7 @@ def main():
                     except Exception as e:
                         st.error(f"Lỗi tải dữ liệu báo cáo: {e}")
             else:
-                st.warning("🔒 Chức năng này chỉ dành cho tài khoản có quyền Quản lý.")
+                st.warning("🔒 Chức năng này chỉ dành cho Quản lý.")
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
