@@ -2223,7 +2223,9 @@ def main():
                                     type="primary",
                                 )
                             df_hien_thi = df_bc.copy()
-                            df_hien_thi.index = df_hien_thi.index + 1  # Cộng thêm 1 vào chỉ số để nó chạy từ 1
+                            df_hien_thi.index = (
+                                df_hien_thi.index + 1
+                            )  # Cộng thêm 1 vào chỉ số để nó chạy từ 1
                             st.dataframe(df_hien_thi, use_container_width=True)
                         else:
                             st.info("Chưa có dữ liệu báo cáo.")
