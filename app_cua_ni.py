@@ -473,16 +473,17 @@ def get_plkh_data():
         if len(data) > 1:
             # Tạo DataFrame với header chính là dòng đầu tiên
             df = pd.DataFrame(data[1:], columns=data[0])
-            
+
             # Cột trong sheet là: "Tổng tiền đã chi tiêu"
             # Ta ép nó thành số để tính toán
             col_name = "Tổng tiền đã chi tiêu"
             if col_name in df.columns:
-                df[col_name] = pd.to_numeric(df[col_name], errors='coerce').fillna(0)
+                df[col_name] = pd.to_numeric(df[col_name], errors="coerce").fillna(0)
             return df
         return pd.DataFrame()
     except Exception as e:
         return pd.DataFrame()
+
 
 def get_huy_hieu(tong_chi_value):
     # Đảm bảo đầu vào là số
@@ -490,7 +491,7 @@ def get_huy_hieu(tong_chi_value):
         val = float(tong_chi_value)
     except:
         val = 0
-        
+
     if val >= 10000000:
         return "DIAMOND"
     elif val >= 5000000:
@@ -500,7 +501,6 @@ def get_huy_hieu(tong_chi_value):
     elif val >= 1000000:
         return "THÂN THIẾT"
     return "TIỀM NĂNG"
-
 
 
 @st.cache_data(ttl=120)
