@@ -964,7 +964,7 @@ def main():
                         st.session_state.gio_hang = new_gio
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
-        # 2. KHỞI TẠO TABS (Nó phải nằm trong khối else này!)
+       # 1. Khởi tạo trạng thái
         if "active_tab" not in st.session_state:
             st.session_state.active_tab = "🏠 Tổng quan"
 
@@ -976,21 +976,24 @@ def main():
             "⚙️ Quản trị & Mở rộng",
         ]
 
+        # 2. TẠO TABS (CHỈ GỌI 1 LẦN DUY NHẤT)
         tabs = st.tabs(tab_names)
 
-        # 3. Logic hiển thị nội dung từng tab
+        # 3. LOGIC HIỂN THỊ NỘI DUNG TỪNG TAB
+        # Dùng một biến tạm để lưu chỉ số tab cần mở
         for i, tab_name in enumerate(tab_names):
-            with tabs[i]:
-                if st.session_state.active_tab != tab_name:
-                    st.session_state.active_tab = tab_name
-                    st.rerun()
-
-                # Gọi các hàm show_... của ní ở đây
-                if tab_name == "🏠 Tổng quan":
-                    show_tong_quan()
-                elif tab_name == "📄 Lên hóa đơn":
-                    show_len_hoa_don()
-                # ... và các tab còn lại
+            if st.session_state.active_tab == tab_name:
+                with tabs[i]:
+                    # Ní gọi hàm hiển thị nội dung ở đây
+                    if tab_name == "🏠 Tổng quan":
+                        show_tong_quan()
+                    elif tab_name == "📄 Lên hóa đơn":
+                        show_len_hoa_don()
+                    # ... các tab khác
+            
+            # Phần xử lý chuyển tab (khi click vào tab khác)
+            # Dùng st.button hoặc chỉ cần click vào tab là Streamlit tự chuyển
+            # Lưu ý: Không cần st.rerun() trong vòng lặp này!
 
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
