@@ -785,28 +785,32 @@ def xoa_toan_bo_don_da_chot():
         st.error(f"Lỗi khi thực hiện xoá dữ liệu: {e}")
         return False
 
+
 def tinh_hoa_hong_tho(df_bao_cao):
     """
     Tính hoa hồng dựa trên tổng doanh thu của thợ và % hoa hồng (cột ‰)
     """
     # Lọc các cột cần thiết: Tên Thợ, Thành tiền, % Hoa hồng
     # Giả sử cột tên thợ là 'Thợ', cột thành tiền là 'Thành tiền', cột % hoa hồng là '‰'
-    
+
     # Đảm bảo cột thành tiền là kiểu số
-    df_bao_cao['Thành tiền'] = pd.to_numeric(df_bao_cao['Thành tiền'], errors='coerce').fillna(0)
-    df_bao_cao['‰'] = pd.to_numeric(df_bao_cao['‰'], errors='coerce').fillna(0)
-    
+    df_bao_cao["Thành tiền"] = pd.to_numeric(
+        df_bao_cao["Thành tiền"], errors="coerce"
+    ).fillna(0)
+    df_bao_cao["‰"] = pd.to_numeric(df_bao_cao["‰"], errors="coerce").fillna(0)
+
     # Tính tiền hoa hồng cho từng dòng
-    df_bao_cao['Tiền HH'] = df_bao_cao['Thành tiền'] * (df_bao_cao['‰'] / 100)
-    
+    df_bao_cao["Tiền HH"] = df_bao_cao["Thành tiền"] * (df_bao_cao["‰"] / 100)
+
     # Gom nhóm theo tên thợ
-    df_kq = df_bao_cao.groupby('Thợ').agg({
-        'Thành tiền': 'sum',
-        'Tiền HH': 'sum'
-    }).reset_index()
-    
+    df_kq = (
+        df_bao_cao.groupby("Thợ")
+        .agg({"Thành tiền": "sum", "Tiền HH": "sum"})
+        .reset_index()
+    )
+
     return df_kq
-    
+
 
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
@@ -2122,7 +2126,7 @@ def main():
                                 "KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
                             )
                             m5.metric("TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
-                            
+
                             # --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
@@ -2130,37 +2134,79 @@ def main():
                             )
                             if not df_today.empty:
                                 # 1. Xác định cột Thợ
-                                col_tho_name = next((c for c in df_today.columns if ("thợ" in c.lower() or "tho" in c.lower() or "thực hiện" in c.lower()) and "tiền" not in c.lower()), None)
+                                col_tho_name = next(
+                                    (
+                                        c
+                                        for c in df_today.columns
+                                        if (
+                                            "thợ" in c.lower()
+                                            or "tho" in c.lower()
+                                            or "thực hiện" in c.lower()
+                                        )
+                                        and "tiền" not in c.lower()
+                                    ),
+                                    None,
+                                )
                                 # 2. Xác định cột % hoa hồng (Ví dụ cột trong sheet tên là "‰")
-                                col_hh = next((c for c in df_today.columns if "‰" in c or "%" in c), None)
+                                col_hh = next(
+                                    (
+                                        c
+                                        for c in df_today.columns
+                                        if "‰" in c or "%" in c
+                                    ),
+                                    None,
+                                )
 
                                 if col_tho_name and col_hh:
                                     # Chuyển đổi dữ liệu sang dạng số để tính toán
-                                    df_today[c_tien] = pd.to_numeric(df_today[c_tien], errors='coerce').fillna(0)
-                                    df_today[col_hh] = pd.to_numeric(df_today[col_hh], errors='coerce').fillna(0)
-                                    
+                                    df_today[c_tien] = pd.to_numeric(
+                                        df_today[c_tien], errors="coerce"
+                                    ).fillna(0)
+                                    df_today[col_hh] = pd.to_numeric(
+                                        df_today[col_hh], errors="coerce"
+                                    ).fillna(0)
+
                                     # Tính tiền hoa hồng từng đơn
-                                    df_today['HH_Tung_Don'] = df_today[c_tien] * (df_today[col_hh] / 100)
-                                    
+                                    df_today["HH_Tung_Don"] = df_today[c_tien] * (
+                                        df_today[col_hh] / 100
+                                    )
+
                                     # Gom nhóm theo Thợ
-                                    kpi_df = df_today.groupby(col_tho_name).agg({
-                                        c_tien: 'sum',
-                                        'HH_Tung_Don': 'sum'
-                                    }).reset_index()
-                                    
-                                    kpi_df.columns = ["Tên thợ", "Doanh thu", "Tiền hoa hồng"]
-                                    kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
-                                    
+                                    kpi_df = (
+                                        df_today.groupby(col_tho_name)
+                                        .agg({c_tien: "sum", "HH_Tung_Don": "sum"})
+                                        .reset_index()
+                                    )
+
+                                    kpi_df.columns = [
+                                        "Tên thợ",
+                                        "Doanh thu",
+                                        "Tiền hoa hồng",
+                                    ]
+                                    kpi_df = kpi_df.sort_values(
+                                        by="Doanh thu", ascending=False
+                                    )
+
                                     # Format hiển thị
-                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
-                                    kpi_df["Tiền hoa hồng"] = kpi_df["Tiền hoa hồng"].apply(lambda x: f"{x:,.0f} đ")
-                                    
-                                    st.dataframe(kpi_df, use_container_width=True, hide_index=True)
+                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(
+                                        lambda x: f"{x:,.0f} đ"
+                                    )
+                                    kpi_df["Tiền hoa hồng"] = kpi_df[
+                                        "Tiền hoa hồng"
+                                    ].apply(lambda x: f"{x:,.0f} đ")
+
+                                    st.dataframe(
+                                        kpi_df,
+                                        use_container_width=True,
+                                        hide_index=True,
+                                    )
                                 else:
-                                    st.warning("⚠️ Cần cột 'Thợ' và cột '‰' trong dữ liệu để tính hoa hồng.")
+                                    st.warning(
+                                        "⚠️ Cần cột 'Thợ' và cột '‰' trong dữ liệu để tính hoa hồng."
+                                    )
                             else:
                                 st.info("Hôm nay chưa có dữ liệu giao dịch hoàn thành.")
-                                
+
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
                                 unsafe_allow_html=True,
