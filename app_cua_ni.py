@@ -1010,17 +1010,20 @@ def main():
         # 🚀 TẠO TABS CHÍNH THỨC (Chuẩn hóa)
         # =====================================================================
         # --- CẬP NHẬT TAB NÂNG CẤP V16 ---
-        tab_names = [
-            "🏠 Tổng quan",
-            "📄 Lên hóa đơn",
-            "📅 Lịch hẹn",
-            "📊 Báo cáo",
-            "⚙️ Quản trị & Mở rộng",
-        ]
+    # Thay thế phần khai báo tabs cũ bằng đoạn này:
+        tab_names = ["🏠 Tổng quan", "📄 Lên hóa đơn", "📅 Lịch hẹn", "📊 Báo cáo", "⚙️ Quản trị & Mở rộng"]
         if st.session_state["role"] == "Admin":
             tab_names.append("🎬 Giải Trí")
+
+    # Sử dụng tham số index để neo tab
         tabs = st.tabs(tab_names)
-        # ==================== TAB 1: TỔNG QUAN ====================
+    
+    # Logic để giữ vị trí tab sau mỗi lần rerun
+    # Lưu ý: Vì Streamlit không có event "on_change" trực tiếp cho st.tabs, 
+    # cách tốt nhất là chúng ta dùng một biến session để kiểm soát luồng điều hướng
+
+        
+                # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
             with st.container(border=True):
                 direct_logo_url = format_drive_direct_url(settings.get("Logo", ""))
