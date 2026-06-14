@@ -991,7 +991,7 @@ def main():
                 if st.session_state.active_tab != tab_names[i]:
                     st.session_state.active_tab = tab_names[i]
                     st.rerun()
-                
+
                 # Ní đặt các nội dung (các hàm show_...) ở dưới đây là ngon lành!
 
                 # Ní đặt nội dung của các tab vào đây
