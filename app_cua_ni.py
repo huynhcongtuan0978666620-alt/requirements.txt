@@ -468,21 +468,39 @@ def get_khach_hang_data():
 @st.cache_data(ttl=15)
 def get_plkh_data():
     try:
-        return get_google_sheet_workbook().worksheet("PLKH").get_all_values()
-    except Exception:
-        return []
+        # Lấy dữ liệu
+        data = get_google_sheet_workbook().worksheet("PLKH").get_all_values()
+        if len(data) > 1:
+            # Tạo DataFrame với header chính là dòng đầu tiên
+            df = pd.DataFrame(data[1:], columns=data[0])
+            
+            # Cột trong sheet là: "Tổng tiền đã chi tiêu"
+            # Ta ép nó thành số để tính toán
+            col_name = "Tổng tiền đã chi tiêu"
+            if col_name in df.columns:
+                df[col_name] = pd.to_numeric(df[col_name], errors='coerce').fillna(0)
+            return df
+        return pd.DataFrame()
+    except Exception as e:
+        return pd.DataFrame()
 
-
-def get_huy_hieu(tong_chi):
-    if tong_chi >= 10000000:
+def get_huy_hieu(tong_chi_value):
+    # Đảm bảo đầu vào là số
+    try:
+        val = float(tong_chi_value)
+    except:
+        val = 0
+        
+    if val >= 10000000:
         return "DIAMOND"
-    elif tong_chi >= 5000000:
+    elif val >= 5000000:
         return "GOLD"
-    elif tong_chi >= 3000000:
+    elif val >= 3000000:
         return "SILVER"
-    elif tong_chi >= 1000000:
+    elif val >= 1000000:
         return "THÂN THIẾT"
     return "TIỀM NĂNG"
+
 
 
 @st.cache_data(ttl=120)
