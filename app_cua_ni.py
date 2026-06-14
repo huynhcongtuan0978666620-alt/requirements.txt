@@ -966,7 +966,7 @@ def main():
                     break
 
                 # 1. Khởi tạo trạng thái để app ghi nhớ tab
-        if 'active_tab' not in st.session_state:
+        if "active_tab" not in st.session_state:
             st.session_state.active_tab = "🏠 Tổng quan"
 
         # 2. Định nghĩa danh sách tên tab
@@ -991,10 +991,9 @@ def main():
                 if st.session_state.active_tab != tab_name:
                     st.session_state.active_tab = tab_name
                     st.rerun()
-                
+
                 # Ní đặt nội dung của các tab vào đây
                 # Ví dụ: if tab_name == "🏠 Tổng quan": ...
-
 
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
