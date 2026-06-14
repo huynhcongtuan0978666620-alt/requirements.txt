@@ -785,39 +785,60 @@ def xoa_toan_bo_don_da_chot():
         st.error(f"Lỗi khi thực hiện xoá dữ liệu: {e}")
         return False
 
+
 def tinh_hoa_hong_tho(df_bao_cao):
     """
     Hàm tính hoa hồng tự động dò cột 'Tiền Công Thợ (%)' và cột 'Thợ'
     """
     # 1. Đảm bảo Thành tiền là số
-    df_bao_cao["Thành tiền"] = pd.to_numeric(df_bao_cao["Thành tiền"], errors="coerce").fillna(0)
-    
+    df_bao_cao["Thành tiền"] = pd.to_numeric(
+        df_bao_cao["Thành tiền"], errors="coerce"
+    ).fillna(0)
+
     # 2. Tự động tìm tên cột Hoa hồng (ưu tiên cột Tiền Công Thợ (%))
     col_hh = "Tiền Công Thợ (%)"
     if col_hh not in df_bao_cao.columns:
         # Nếu không thấy thì tìm đại cột nào có chữ "thợ" và "%"
-        col_hh = next((c for c in df_bao_cao.columns if "thợ" in c.lower() and ("%" in c or "‰" in c)), None)
-    
+        col_hh = next(
+            (
+                c
+                for c in df_bao_cao.columns
+                if "thợ" in c.lower() and ("%" in c or "‰" in c)
+            ),
+            None,
+        )
+
     # 3. Tự động tìm tên cột Thợ
-    col_tho = next((c for c in df_bao_cao.columns if "thợ" in c.lower() and "tiền" not in c.lower()), "Thợ")
-    
+    col_tho = next(
+        (
+            c
+            for c in df_bao_cao.columns
+            if "thợ" in c.lower() and "tiền" not in c.lower()
+        ),
+        "Thợ",
+    )
+
     # 4. Tính toán
     if col_hh and col_hh in df_bao_cao.columns:
-        df_bao_cao[col_hh] = pd.to_numeric(df_bao_cao[col_hh], errors="coerce").fillna(0)
+        df_bao_cao[col_hh] = pd.to_numeric(df_bao_cao[col_hh], errors="coerce").fillna(
+            0
+        )
         df_bao_cao["Tiền HH"] = df_bao_cao["Thành tiền"] * (df_bao_cao[col_hh] / 100)
     else:
-        df_bao_cao["Tiền HH"] = 0 # Nếu không có cột % thì hoa hồng = 0
-    
+        df_bao_cao["Tiền HH"] = 0  # Nếu không có cột % thì hoa hồng = 0
+
     # 5. Gom nhóm
-    df_kq = df_bao_cao.groupby(col_tho).agg({
-        "Thành tiền": "sum", 
-        "Tiền HH": "sum"
-    }).reset_index()
-    
+    df_kq = (
+        df_bao_cao.groupby(col_tho)
+        .agg({"Thành tiền": "sum", "Tiền HH": "sum"})
+        .reset_index()
+    )
+
     # Đổi tên cột cho đẹp bảng KPI
     df_kq.columns = ["Tên thợ", "Doanh thu", "Tiền hoa hồng"]
-    
+
     return df_kq
+
 
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
@@ -2134,53 +2155,88 @@ def main():
                             )
                             m5.metric("TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
 
-# --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
+                            # --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
                                 unsafe_allow_html=True,
                             )
-                            
+
                             if not df_today.empty:
                                 # 1. Lấy dữ liệu DanhMuc để ghép hoa hồng
-                                data_dm = get_data_sheet("DanhMuc") 
+                                data_dm = get_data_sheet("DanhMuc")
                                 df_dm = pd.DataFrame(data_dm[1:], columns=data_dm[0])
-                                
+
                                 # Ghép (Merge) dữ liệu
                                 df_merged = df_today.merge(
-                                    df_dm[['Tên Dịch Vụ', 'Tiền Công Thợ (%)']], 
-                                    left_on='Dịch vụ', 
-                                    right_on='Tên Dịch Vụ', 
-                                    how='left'
+                                    df_dm[["Tên Dịch Vụ", "Tiền Công Thợ (%)"]],
+                                    left_on="Dịch vụ",
+                                    right_on="Tên Dịch Vụ",
+                                    how="left",
                                 )
-                                
+
                                 # 2. Xác định cột Thợ
-                                col_tho_name = next((c for c in df_merged.columns if ("thợ" in c.lower() or "tho" in c.lower() or "thực hiện" in c.lower()) and "tiền" not in c.lower()), None)
+                                col_tho_name = next(
+                                    (
+                                        c
+                                        for c in df_merged.columns
+                                        if (
+                                            "thợ" in c.lower()
+                                            or "tho" in c.lower()
+                                            or "thực hiện" in c.lower()
+                                        )
+                                        and "tiền" not in c.lower()
+                                    ),
+                                    None,
+                                )
                                 col_hh = "Tiền Công Thợ (%)"
 
                                 if col_tho_name and col_hh in df_merged.columns:
                                     # Chuyển đổi sang số
-                                    df_merged[c_tien] = pd.to_numeric(df_merged[c_tien], errors="coerce").fillna(0)
-                                    df_merged[col_hh] = pd.to_numeric(df_merged[col_hh], errors="coerce").fillna(0)
-                                    
+                                    df_merged[c_tien] = pd.to_numeric(
+                                        df_merged[c_tien], errors="coerce"
+                                    ).fillna(0)
+                                    df_merged[col_hh] = pd.to_numeric(
+                                        df_merged[col_hh], errors="coerce"
+                                    ).fillna(0)
+
                                     # Tính hoa hồng
-                                    df_merged["HH_Tung_Don"] = df_merged[c_tien] * (df_merged[col_hh] / 100)
-                                    
+                                    df_merged["HH_Tung_Don"] = df_merged[c_tien] * (
+                                        df_merged[col_hh] / 100
+                                    )
+
                                     # Gom nhóm
-                                    kpi_df = df_merged.groupby(col_tho_name).agg({
-                                        c_tien: "sum", 
-                                        "HH_Tung_Don": "sum"
-                                    }).reset_index()
-                                    
-                                    kpi_df.columns = ["Tên thợ", "Doanh thu", "Tiền hoa hồng"]
-                                    kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
-                                    
+                                    kpi_df = (
+                                        df_merged.groupby(col_tho_name)
+                                        .agg({c_tien: "sum", "HH_Tung_Don": "sum"})
+                                        .reset_index()
+                                    )
+
+                                    kpi_df.columns = [
+                                        "Tên thợ",
+                                        "Doanh thu",
+                                        "Tiền hoa hồng",
+                                    ]
+                                    kpi_df = kpi_df.sort_values(
+                                        by="Doanh thu", ascending=False
+                                    )
+
                                     # Định dạng hiển thị
-                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
-                                    kpi_df["Tiền hoa hồng"] = kpi_df["Tiền hoa hồng"].apply(lambda x: f"{x:,.0f} đ")
-                                    
-                                    st.dataframe(kpi_df, use_container_width=True, hide_index=True)
+                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(
+                                        lambda x: f"{x:,.0f} đ"
+                                    )
+                                    kpi_df["Tiền hoa hồng"] = kpi_df[
+                                        "Tiền hoa hồng"
+                                    ].apply(lambda x: f"{x:,.0f} đ")
+
+                                    st.dataframe(
+                                        kpi_df,
+                                        use_container_width=True,
+                                        hide_index=True,
+                                    )
                                 else:
-                                    st.warning(f"⚠️ Chưa tìm thấy cột '{col_hh}' hoặc cột 'Thợ' trong dữ liệu sau khi merge.")
+                                    st.warning(
+                                        f"⚠️ Chưa tìm thấy cột '{col_hh}' hoặc cột 'Thợ' trong dữ liệu sau khi merge."
+                                    )
                             else:
                                 st.info("Hôm nay chưa có dữ liệu giao dịch hoàn thành.")
 
