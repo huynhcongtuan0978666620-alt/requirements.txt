@@ -785,32 +785,39 @@ def xoa_toan_bo_don_da_chot():
         st.error(f"Lỗi khi thực hiện xoá dữ liệu: {e}")
         return False
 
-
 def tinh_hoa_hong_tho(df_bao_cao):
     """
-    Tính hoa hồng dựa trên tổng doanh thu của thợ và % hoa hồng (cột ‰)
+    Hàm tính hoa hồng tự động dò cột 'Tiền Công Thợ (%)' và cột 'Thợ'
     """
-    # Lọc các cột cần thiết: Tên Thợ, Thành tiền, % Hoa hồng
-    # Giả sử cột tên thợ là 'Thợ', cột thành tiền là 'Thành tiền', cột % hoa hồng là '‰'
-
-    # Đảm bảo cột thành tiền là kiểu số
-    df_bao_cao["Thành tiền"] = pd.to_numeric(
-        df_bao_cao["Thành tiền"], errors="coerce"
-    ).fillna(0)
-    df_bao_cao["‰"] = pd.to_numeric(df_bao_cao["‰"], errors="coerce").fillna(0)
-
-    # Tính tiền hoa hồng cho từng dòng
-    df_bao_cao["Tiền HH"] = df_bao_cao["Thành tiền"] * (df_bao_cao["‰"] / 100)
-
-    # Gom nhóm theo tên thợ
-    df_kq = (
-        df_bao_cao.groupby("Thợ")
-        .agg({"Thành tiền": "sum", "Tiền HH": "sum"})
-        .reset_index()
-    )
-
+    # 1. Đảm bảo Thành tiền là số
+    df_bao_cao["Thành tiền"] = pd.to_numeric(df_bao_cao["Thành tiền"], errors="coerce").fillna(0)
+    
+    # 2. Tự động tìm tên cột Hoa hồng (ưu tiên cột Tiền Công Thợ (%))
+    col_hh = "Tiền Công Thợ (%)"
+    if col_hh not in df_bao_cao.columns:
+        # Nếu không thấy thì tìm đại cột nào có chữ "thợ" và "%"
+        col_hh = next((c for c in df_bao_cao.columns if "thợ" in c.lower() and ("%" in c or "‰" in c)), None)
+    
+    # 3. Tự động tìm tên cột Thợ
+    col_tho = next((c for c in df_bao_cao.columns if "thợ" in c.lower() and "tiền" not in c.lower()), "Thợ")
+    
+    # 4. Tính toán
+    if col_hh and col_hh in df_bao_cao.columns:
+        df_bao_cao[col_hh] = pd.to_numeric(df_bao_cao[col_hh], errors="coerce").fillna(0)
+        df_bao_cao["Tiền HH"] = df_bao_cao["Thành tiền"] * (df_bao_cao[col_hh] / 100)
+    else:
+        df_bao_cao["Tiền HH"] = 0 # Nếu không có cột % thì hoa hồng = 0
+    
+    # 5. Gom nhóm
+    df_kq = df_bao_cao.groupby(col_tho).agg({
+        "Thành tiền": "sum", 
+        "Tiền HH": "sum"
+    }).reset_index()
+    
+    # Đổi tên cột cho đẹp bảng KPI
+    df_kq.columns = ["Tên thợ", "Doanh thu", "Tiền hoa hồng"]
+    
     return df_kq
-
 
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
@@ -2132,6 +2139,23 @@ def main():
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
                                 unsafe_allow_html=True,
                             )
+                            # --- ĐOẠN GHÉP DỮ LIỆU HOA HỒNG (BẮT BUỘC) ---
+                            # Lấy danh mục để lấy tỷ lệ hoa hồng
+                            data_dm = get_data_sheet("DanhMuc") # Đảm bảo tên hàm này khớp với hàm lấy sheet của ní
+                            df_dm = pd.DataFrame(data_dm[1:], columns=data_dm[0])
+                            
+                            # Merge vào df_today dựa trên tên Dịch vụ
+                            # Lưu ý: Ní kiểm tra tên cột khớp nhau (vd: 'Dịch vụ' và 'Tên Dịch Vụ')
+                            df_today = df_today.merge(
+                                df_dm[['Tên Dịch Vụ', 'Tiền Công Thợ (%)']], 
+                                left_on='Dịch vụ', 
+                                right_on='Tên Dịch Vụ', 
+                                how='left'
+                            )
+                            
+                            # --- KPI THỢ HÔM NAY ---
+                            if not df_today.empty:
+                                # ... (phần code KPI của ní giữ nguyên từ đây)
                             if not df_today.empty:
                                 # 1. Xác định cột Thợ
                                 col_tho_name = next(
