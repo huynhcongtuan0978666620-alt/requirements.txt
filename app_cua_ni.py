@@ -2166,7 +2166,6 @@ def main():
                                 # Ní thay 'sh' bằng tên biến kết nối sheet của ní nếu cần
                                 rows = sh.worksheet("DanhMuc").get_all_values()
                                 df_dm = pd.DataFrame(rows[1:], columns=rows[0])
-                                
 
                                 # 2. Ghép (Merge) dữ liệu vào df_today
                                 # Giả sử cột dịch vụ bên df_today là 'Dịch vụ'
