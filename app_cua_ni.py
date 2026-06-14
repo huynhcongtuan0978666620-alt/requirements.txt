@@ -778,9 +778,6 @@ def xoa_toan_bo_don_da_chot():
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
-if 'active_tab' not in st.session_state:
-    st.session_state.active_tab = "🏠 Tổng quan"
-    
     init_states = {
         "last_submit": None,
         "submit_count": 0,
@@ -968,15 +965,36 @@ if 'active_tab' not in st.session_state:
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
 
-        tabs = st.tabs(
-            [
-                "🏠 Tổng quan",
-                "📄 Lên hóa đơn",
-                "📅 Lịch hẹn",
-                "📊 Báo cáo",
-                "⚙️ Quản trị & Mở rộng",
-            ]
-        )
+                # 1. Khởi tạo trạng thái để app ghi nhớ tab
+        if 'active_tab' not in st.session_state:
+            st.session_state.active_tab = "🏠 Tổng quan"
+
+        # 2. Định nghĩa danh sách tên tab
+        tab_names = [
+            "🏠 Tổng quan",
+            "📄 Lên hóa đơn",
+            "📅 Lịch hẹn",
+            "📊 Báo cáo",
+            "⚙️ Quản trị & Mở rộng",
+        ]
+
+        # 3. Tạo tabs và hiển thị dựa trên session_state
+        # Chúng ta dùng index để biết tab nào đang được chọn
+        current_idx = tab_names.index(st.session_state.active_tab)
+        tabs = st.tabs(tab_names)
+
+        # 4. Logic cập nhật lại tab khi ní click
+        # Ní đặt các khối nội dung của ní vào đây
+        for i, tab_name in enumerate(tab_names):
+            with tabs[i]:
+                # Nếu ní bấm vào một tab khác với tab đang lưu, cập nhật và rerun
+                if st.session_state.active_tab != tab_name:
+                    st.session_state.active_tab = tab_name
+                    st.rerun()
+                
+                # Ní đặt nội dung của các tab vào đây
+                # Ví dụ: if tab_name == "🏠 Tổng quan": ...
+
 
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
