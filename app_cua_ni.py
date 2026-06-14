@@ -2164,7 +2164,9 @@ def main():
                             if not df_today.empty:
                                 try:
                                     # Ní thay TÊN_HÀM_LẤY_SHEET_CỦA_NÍ bằng hàm thực tế trong App của ní
-                                    raw_data_dm = sh.worksheet("DanhMuc").get_all_values()
+                                    raw_data_dm = sh.worksheet(
+                                        "DanhMuc"
+                                    ).get_all_values()
                                     df_dm = pd.DataFrame(
                                         raw_data_dm[1:], columns=raw_data_dm[0]
                                     )
