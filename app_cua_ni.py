@@ -2148,7 +2148,7 @@ def main():
                                     None,
                                 )
 
-                                # 2. Xác định cột "Tiền Công Thợ" (Tỷ lệ %)
+                                # 2. Xác định cột "Tiền Công Thợ (%)" (Tỷ lệ %)
                                 # Nếu trong df_today chưa có cột này, ní cần đảm bảo là đã nạp dữ liệu từ DanhMuc vào
                                 col_hh = "Tiền Công Thợ"
 
