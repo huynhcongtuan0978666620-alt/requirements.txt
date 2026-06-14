@@ -930,8 +930,8 @@ def main():
                         {
                             "logged_in": True,
                             "role": "CEO",
-                            "full_name": "Quản lý",
-                            "tho_chot_val": "Quản lý",
+                            "full_name": "CEO",
+                            "tho_chot_val": "CEO",
                             "trigger_balloons": True,
                         }
                     )
