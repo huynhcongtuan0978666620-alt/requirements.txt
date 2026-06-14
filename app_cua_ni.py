@@ -1008,6 +1008,7 @@ def main():
         # =====================================================================
         # 🚀 TẠO TABS CHÍNH THỨC (Chuẩn hóa)
         # =====================================================================
+        # --- CẬP NHẬT TAB NÂNG CẤP V16 ---
         tab_names = [
             "🏠 Tổng quan",
             "📄 Lên hóa đơn",
@@ -1015,8 +1016,9 @@ def main():
             "📊 Báo cáo",
             "⚙️ Quản trị & Mở rộng",
         ]
+        if st.session_state["role"] == "Admin":
+            tab_names.append("🎬 Giải Trí")
         tabs = st.tabs(tab_names)
-
         # ==================== TAB 1: TỔNG QUAN ====================
         with tabs[0]:
             with st.container(border=True):
@@ -2504,7 +2506,22 @@ def main():
                         st.query_params.clear()
                         st.session_state.clear()
                         st.rerun()
-
-
+                        
+        # ==================== TAB 6: GIẢI TRÍ (ADMIN) ====================
+        if st.session_state["role"] == "Admin":
+            with tabs[5]: # Vì là tab cuối cùng vừa thêm
+                st.markdown('<div class="the-quan-ly-flat">🎬 GÓC GIẢI TRÍ ADMIN</div>', unsafe_allow_html=True)
+                
+                # Cho phép ní tìm link hoặc mặc định một kênh giải trí
+                youtube_url = st.text_input("Dán link YouTube tại đây:", value="https://www.youtube.com/watch?v=dQw4w9WgXcQ")
+                
+                if youtube_url:
+                    try:
+                        st.video(youtube_url)
+                    except Exception:
+                        st.error("Không thể tải video, ní kiểm tra lại đường dẫn nhé!")
+                
+                st.info("💡 Mẹo: Ní có thể vừa mở tab này, vừa làm việc ở các tab khác trên các cửa sổ trình duyệt riêng biệt nếu muốn!")
+                
 if __name__ == "__main__":
     main()
