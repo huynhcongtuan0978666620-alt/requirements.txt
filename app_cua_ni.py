@@ -474,22 +474,26 @@ def get_plkh_data():
             df = pd.DataFrame(raw_data[1:], columns=raw_data[0])
             # Chuyển tên cột cho đúng với sheet của ní
             col_name = "Tổng tiền đã chi tiêu"
-            df[col_name] = pd.to_numeric(df[col_name], errors='coerce').fillna(0)
-            df['SĐT'] = df['SĐT'].astype(str).str.strip()
+            df[col_name] = pd.to_numeric(df[col_name], errors="coerce").fillna(0)
+            df["SĐT"] = df["SĐT"].astype(str).str.strip()
             return df
         return pd.DataFrame()
     except Exception as e:
         st.error(f"Lỗi kết nối PLKH: {e}")
         return pd.DataFrame()
 
+
 def get_huy_hieu(tong_chi):
     val = float(tong_chi)
-    if val >= 10000000: return "DIAMOND"
-    if val >= 5000000: return "GOLD"
-    if val >= 3000000: return "SILVER"
-    if val >= 1000000: return "THÂN THIẾT"
+    if val >= 10000000:
+        return "DIAMOND"
+    if val >= 5000000:
+        return "GOLD"
+    if val >= 3000000:
+        return "SILVER"
+    if val >= 1000000:
+        return "THÂN THIẾT"
     return "TIỀM NĂNG"
-    
 
 
 @st.cache_data(ttl=120)
@@ -1403,24 +1407,26 @@ def main():
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
-                    
+
                     # --- PHẦN KIỂM TRA MỚI ---
                     if kh_sdt and len(kh_sdt) >= 9:
                         df = get_plkh_data()
                         sdt_input = kh_sdt.strip()
-                        
+
                         if not df.empty:
                             # Tìm kiếm
-                            khach = df[df['SĐT'] == sdt_input]
-                            
+                            khach = df[df["SĐT"] == sdt_input]
+
                             if not khach.empty:
                                 # Nếu tìm thấy
-                                tien = khach.iloc[0]['Tổng tiền đã chi tiêu']
+                                tien = khach.iloc[0]["Tổng tiền đã chi tiêu"]
                                 huy_hieu = get_huy_hieu(tien)
                                 st.success(f"✨ Khách hàng hạng: {huy_hieu}")
                             else:
                                 # NẾU KHÔNG TÌM THẤY: In ra cho ní biết nó đang tìm cái gì
-                                st.info(f"🔎 Đang tìm SĐT: '{sdt_input}' trong hệ thống...")
+                                st.info(
+                                    f"🔎 Đang tìm SĐT: '{sdt_input}' trong hệ thống..."
+                                )
                                 # st.write(df['SĐT'].tolist()) # Bỏ dấu # nếu ní muốn xem danh sách SĐT máy đang thấy
                         else:
                             st.warning("⚠️ Bảng PLKH trống hoặc không thể đọc.")
@@ -1431,10 +1437,7 @@ def main():
                         st.session_state.kh_sdt_val = kh_sdt
                         # ...
                         st.rerun()
-                
 
-
-                        
                 with c2:
                     kh_ten = st.text_input(
                         "Tên khách hàng",
