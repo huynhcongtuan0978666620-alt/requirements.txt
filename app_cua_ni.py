@@ -1419,7 +1419,7 @@ def main():
                                 huy_hieu = get_huy_hieu(tien)
                                 st.success(f"✨ Khách hàng: **{huy_hieu}**")
                             else:
-                                st.info(f"🔎 Chưa tìm thấy hạng cho SĐT: {sdt_input}")
+                                st.info(f"🔎 '{sdt_input}' Chưa sử dụng dịch vụ!")
 
                     # --- XỬ LÝ DỮ LIỆU KHI THAY ĐỔI SĐT ---
                     if kh_sdt != st.session_state.kh_sdt_val:
