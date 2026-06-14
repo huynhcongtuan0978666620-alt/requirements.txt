@@ -964,7 +964,7 @@ def main():
                         st.session_state.gio_hang = new_gio
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
-    # 2. KHỞI TẠO TABS (Nó phải nằm trong khối else này!)
+        # 2. KHỞI TẠO TABS (Nó phải nằm trong khối else này!)
         if "active_tab" not in st.session_state:
             st.session_state.active_tab = "🏠 Tổng quan"
 
@@ -983,15 +983,15 @@ def main():
             with tabs[i]:
                 if st.session_state.active_tab != tab_name:
                     st.session_state.active_tab = tab_name
-                    st.rerun() 
-                
+                    st.rerun()
+
                 # Gọi các hàm show_... của ní ở đây
                 if tab_name == "🏠 Tổng quan":
                     show_tong_quan()
                 elif tab_name == "📄 Lên hóa đơn":
                     show_len_hoa_don()
                 # ... và các tab còn lại
-        
+
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
         # =====================================================================
