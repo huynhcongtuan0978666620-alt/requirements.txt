@@ -464,6 +464,7 @@ def get_khach_hang_data():
     except Exception:
         return {}
 
+
 @st.cache_data(ttl=15)
 def get_plkh_data():
     try:
@@ -472,21 +473,22 @@ def get_plkh_data():
         if len(raw_data) > 1:
             # Tạo DataFrame: lấy dòng đầu làm cột
             df = pd.DataFrame(raw_data[1:], columns=raw_data[0])
-            
+
             # Cột trong sheet của ní tên là: "Tổng tiền đã chi tiêu"
             # Ní nhớ dán đúng tên này vào nhé!
             col_name = "Tổng tiền đã chi tiêu"
-            
+
             # Ép kiểu cột tiền sang số (numeric), nếu lỗi thì gán bằng 0
-            df[col_name] = pd.to_numeric(df[col_name], errors='coerce').fillna(0)
-            
+            df[col_name] = pd.to_numeric(df[col_name], errors="coerce").fillna(0)
+
             # Đảm bảo cột SĐT là dạng chuỗi để so sánh
-            df['SĐT'] = df['SĐT'].astype(str).str.strip()
+            df["SĐT"] = df["SĐT"].astype(str).str.strip()
             return df
         return pd.DataFrame()
     except Exception as e:
         st.error(f"Lỗi tải PLKH: {e}")
         return pd.DataFrame()
+
 
 def get_huy_hieu(tong_chi):
     # Dùng float để so sánh cho chắc chắn
@@ -501,6 +503,7 @@ def get_huy_hieu(tong_chi):
         return "THÂN THIẾT"
     return "TIỀM NĂNG"
 
+
 @st.cache_data(ttl=120)
 def get_bao_cao_va_bill_tam():
     try:
@@ -512,6 +515,7 @@ def get_bao_cao_va_bill_tam():
     except Exception:
         return [], []
 
+
 @st.cache_data(ttl=60)
 def get_lich_hen_data():
     try:
@@ -520,9 +524,11 @@ def get_lich_hen_data():
     except Exception:
         return []
 
+
 @st.cache_data
 def convert_df_to_csv(df):
     return df.to_csv(index=False).encode("utf-8-sig")
+
 
 def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     try:
@@ -548,6 +554,7 @@ def luu_bill_tam(gio_hang, nhan_vien, kh_sdt="", kh_ten="Khách lẻ"):
     except Exception:
         return False
 
+
 def xoa_bill_tam_dong_goc(index_sheet_row):
     try:
         sh = get_google_sheet_workbook()
@@ -556,6 +563,7 @@ def xoa_bill_tam_dong_goc(index_sheet_row):
         return True
     except Exception:
         return False
+
 
 def gui_email_backup(noi_dung):
     try:
@@ -589,6 +597,7 @@ def gui_telegram_notification(noi_dung):
                 )
     except Exception:
         pass
+
 
 # =====================================================================
 # 3. CƠ CHẾ AUTO-SAVE NGẦM
@@ -646,6 +655,7 @@ def background_save_draft(gio_hang_copy, nhan_vien, kh_sdt, kh_ten):
     except Exception:
         pass
 
+
 def trigger_auto_save():
     t = threading.Thread(
         target=background_save_draft,
@@ -657,6 +667,7 @@ def trigger_auto_save():
         ),
     )
     t.start()
+
 
 def check_auto_login():
     if not st.session_state.get("logged_in", False):
@@ -731,7 +742,9 @@ def check_auto_login():
                         return True
     return st.session_state.get("logged_in", False)
 
+
 apply_v15_theme()
+
 
 # KIỂM TRA NGÀY
 def count_orders_today():
@@ -753,6 +766,7 @@ def count_orders_today():
     except Exception as e:
         st.write("Lỗi hàm đếm đơn:", e)  # Nếu lỗi thì in ra lỗi để mình sửa
         return 0
+
 
 # --- HÀM MỚI: DỌN DẸP DỮ LIỆU ---
 def xoa_toan_bo_don_da_chot():
@@ -1359,16 +1373,16 @@ def main():
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
-                    
+
                     # --- PHẦN MỚI: TÍNH HUY HIỆU ---
                     if kh_sdt.strip():
                         df_plkh = get_plkh_data()
                         sdt_clean = kh_sdt.strip()
                         # Tìm trong bảng PLKH (lọc theo cột 'SĐT')
                         if not df_plkh.empty:
-                            khach_data = df_plkh[df_plkh['SĐT'] == sdt_clean]
+                            khach_data = df_plkh[df_plkh["SĐT"] == sdt_clean]
                             if not khach_data.empty:
-                                tien_chi = khach_data.iloc[0]['Tổng tiền đã chi tiêu']
+                                tien_chi = khach_data.iloc[0]["Tổng tiền đã chi tiêu"]
                                 huy_hieu = get_huy_hieu(tien_chi)
                                 st.success(f"📌 Hạng thành viên: **{huy_hieu}**")
                     # ------------------------------
@@ -1379,8 +1393,16 @@ def main():
                             sdt_clean = kh_sdt.strip()
                             ds_kh = get_khach_hang_data()
                             # Các logic xử lý SĐT cũ của ní
-                            s_k_0 = sdt_clean[1:] if sdt_clean.startswith("0") else sdt_clean
-                            s_c_0 = "0" + sdt_clean if not sdt_clean.startswith("0") else sdt_clean
+                            s_k_0 = (
+                                sdt_clean[1:]
+                                if sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
+                            s_c_0 = (
+                                "0" + sdt_clean
+                                if not sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
 
                             if sdt_clean in ds_kh:
                                 st.session_state.kh_ten_val = ds_kh[sdt_clean]
