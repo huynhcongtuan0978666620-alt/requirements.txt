@@ -468,39 +468,28 @@ def get_khach_hang_data():
 @st.cache_data(ttl=15)
 def get_plkh_data():
     try:
-        # Lấy dữ liệu
-        data = get_google_sheet_workbook().worksheet("PLKH").get_all_values()
-        if len(data) > 1:
-            # Tạo DataFrame với header chính là dòng đầu tiên
-            df = pd.DataFrame(data[1:], columns=data[0])
-
-            # Cột trong sheet là: "Tổng tiền đã chi tiêu"
-            # Ta ép nó thành số để tính toán
+        # Lấy dữ liệu thô
+        raw_data = get_google_sheet_workbook().worksheet("PLKH").get_all_values()
+        if len(raw_data) > 1:
+            df = pd.DataFrame(raw_data[1:], columns=raw_data[0])
+            # Chuyển tên cột cho đúng với sheet của ní
             col_name = "Tổng tiền đã chi tiêu"
-            if col_name in df.columns:
-                df[col_name] = pd.to_numeric(df[col_name], errors="coerce").fillna(0)
+            df[col_name] = pd.to_numeric(df[col_name], errors='coerce').fillna(0)
+            df['SĐT'] = df['SĐT'].astype(str).str.strip()
             return df
         return pd.DataFrame()
     except Exception as e:
+        st.error(f"Lỗi kết nối PLKH: {e}")
         return pd.DataFrame()
 
-
-def get_huy_hieu(tong_chi_value):
-    # Đảm bảo đầu vào là số
-    try:
-        val = float(tong_chi_value)
-    except:
-        val = 0
-
-    if val >= 10000000:
-        return "DIAMOND"
-    elif val >= 5000000:
-        return "GOLD"
-    elif val >= 3000000:
-        return "SILVER"
-    elif val >= 1000000:
-        return "THÂN THIẾT"
+def get_huy_hieu(tong_chi):
+    val = float(tong_chi)
+    if val >= 10000000: return "DIAMOND"
+    if val >= 5000000: return "GOLD"
+    if val >= 3000000: return "SILVER"
+    if val >= 1000000: return "THÂN THIẾT"
     return "TIỀM NĂNG"
+    
 
 
 @st.cache_data(ttl=120)
@@ -1409,38 +1398,43 @@ def main():
                     unsafe_allow_html=True,
                 )
                 c1, c2 = st.columns(2)
+
                 with c1:
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
-                    if kh_sdt != st.session_state.kh_sdt_val:
-                        st.session_state.kh_sdt_val = kh_sdt
-                        if kh_sdt.strip():
-                            sdt_clean = kh_sdt.strip()
-                            ds_kh = get_khach_hang_data()
-                            s_k_0 = (
-                                sdt_clean[1:]
-                                if sdt_clean.startswith("0")
-                                else sdt_clean
-                            )
-                            s_c_0 = (
-                                "0" + sdt_clean
-                                if not sdt_clean.startswith("0")
-                                else sdt_clean
-                            )
-
-                            if sdt_clean in ds_kh:
-                                st.session_state.kh_ten_val = ds_kh[sdt_clean]
-                            elif s_k_0 in ds_kh:
-                                st.session_state.kh_ten_val = ds_kh[s_k_0]
-                            elif s_c_0 in ds_kh:
-                                st.session_state.kh_ten_val = ds_kh[s_c_0]
+                    
+                    # --- PHẦN KIỂM TRA MỚI ---
+                    if kh_sdt and len(kh_sdt) >= 9:
+                        df = get_plkh_data()
+                        sdt_input = kh_sdt.strip()
+                        
+                        if not df.empty:
+                            # Tìm kiếm
+                            khach = df[df['SĐT'] == sdt_input]
+                            
+                            if not khach.empty:
+                                # Nếu tìm thấy
+                                tien = khach.iloc[0]['Tổng tiền đã chi tiêu']
+                                huy_hieu = get_huy_hieu(tien)
+                                st.success(f"✨ Khách hàng hạng: {huy_hieu}")
                             else:
-                                st.session_state.kh_ten_val = ""
-                            trigger_auto_save()
+                                # NẾU KHÔNG TÌM THẤY: In ra cho ní biết nó đang tìm cái gì
+                                st.info(f"🔎 Đang tìm SĐT: '{sdt_input}' trong hệ thống...")
+                                # st.write(df['SĐT'].tolist()) # Bỏ dấu # nếu ní muốn xem danh sách SĐT máy đang thấy
                         else:
-                            st.session_state.kh_ten_val = ""
+                            st.warning("⚠️ Bảng PLKH trống hoặc không thể đọc.")
+                    # ------------------------
+
+                    if kh_sdt != st.session_state.kh_sdt_val:
+                        # ... (Giữ nguyên logic cũ của ní ở đây)
+                        st.session_state.kh_sdt_val = kh_sdt
+                        # ...
                         st.rerun()
+                
+
+
+                        
                 with c2:
                     kh_ten = st.text_input(
                         "Tên khách hàng",
