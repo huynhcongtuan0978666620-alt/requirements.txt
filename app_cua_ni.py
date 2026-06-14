@@ -734,17 +734,27 @@ def count_orders_today():
         data_bc, _ = get_bao_cao_va_bill_tam()
         if len(data_bc) > 1:
             df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
-            
+
             # Tìm cột Ngày và cột Mã hóa đơn
-            c_ngay = next((c for c in df_bc.columns if "ngày" in c.lower() or "ngay" in c.lower()), "Ngày")
-            c_ma = next((c for c in df_bc.columns if "mã" in c.lower() or "hd" in c.lower()), None)
-            
+            c_ngay = next(
+                (
+                    c
+                    for c in df_bc.columns
+                    if "ngày" in c.lower() or "ngay" in c.lower()
+                ),
+                "Ngày",
+            )
+            c_ma = next(
+                (c for c in df_bc.columns if "mã" in c.lower() or "hd" in c.lower()),
+                None,
+            )
+
             today_str = get_now_vn().strftime("%d/%m/%Y")
-            
+
             if c_ngay in df_bc.columns and c_ma:
                 # Lọc ra các dòng của ngày hôm nay
                 df_today = df_bc[df_bc[c_ngay].astype(str).str.strip() == today_str]
-                
+
                 # Đếm số lượng mã hóa đơn duy nhất (tránh đếm trùng nếu 1 bill có nhiều dòng dịch vụ)
                 so_don = len([x for x in df_today[c_ma].unique() if str(x).strip()])
                 return so_don
