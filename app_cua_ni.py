@@ -2155,95 +2155,51 @@ def main():
                             )
                             m5.metric("TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
 
-                            # --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
+# --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
                                 unsafe_allow_html=True,
                             )
+                            
                             if not df_today.empty:
-                                # 1. Lấy dữ liệu DanhMuc để lấy % Hoa Hồng
-                                rows = sh.worksheet("DanhMuc").get_all_values()
-                                df_dm = pd.DataFrame(rows[1:], columns=rows[0])
-
-                                # 2. Ghép dữ liệu Hoa hồng vào df_today
-                                # Ní đảm bảo tên cột trong merge khớp với sheet của ní nhé
-                                df_today = df_today.merge(
-                                    df_dm[["Tên Sản Phẩm", "Tiền Công Thợ (%)"]],
-                                    left_on="Dịch vụ",  # Cột tên dịch vụ trong sheet BaoCao
-                                    right_on="Tên Sản Phẩm",
-                                    how="left",
-                                )
-
-                                # 3. Xác định cột Thợ
-                                col_tho_name = (
-                                    "Thợ phụ trách"
-                                    if "Thợ phụ trách" in df_today.columns
-                                    else next(
-                                        (
-                                            c
-                                            for c in df_today.columns
-                                            if (
-                                                "thợ" in c.lower()
-                                                or "tho" in c.lower()
-                                                or "thực hiện" in c.lower()
-                                            )
-                                            and "tiền" not in c.lower()
-                                        ),
-                                        None,
+                                # Nếu code cũ của ní dùng 'sh', thì ní giữ nguyên. 
+                                # Nếu ní dùng 'conn', hãy thay chữ 'sh' thành 'conn' ở dòng dưới đây:
+                                try:
+                                    # LẤY DỮ LIỆU TỪ DANHMUC
+                                    # Ní kiểm tra: Nếu dùng gspread thì là sh.worksheet("DanhMuc")
+                                    # Nếu dùng st.connection thì là conn.read(worksheet="DanhMuc")
+                                    rows = sh.worksheet("DanhMuc").get_all_values() 
+                                    df_dm = pd.DataFrame(rows[1:], columns=rows[0])
+                                    
+                                    # GHÉP DỮ LIỆU
+                                    df_merged = df_today.merge(
+                                        df_dm[['Tên Sản Phẩm', 'Tiền Công Thợ (%)']], 
+                                        left_on='Dịch vụ', 
+                                        right_on='Tên Sản Phẩm', 
+                                        how='left'
                                     )
-                                )
-
-                                if col_tho_name:
-                                    # Chuyển kiểu dữ liệu sang số để tính toán
-                                    df_today[c_tien] = pd.to_numeric(
-                                        df_today[c_tien], errors="coerce"
-                                    ).fillna(0)
-                                    df_today["Tiền Công Thợ (%)"] = pd.to_numeric(
-                                        df_today["Tiền Công Thợ (%)"], errors="coerce"
-                                    ).fillna(0)
-
-                                    # Tính tiền hoa hồng cho từng đơn
-                                    df_today["HH_Tung_Don"] = df_today[c_tien] * (
-                                        df_today["Tiền Công Thợ (%)"] / 100
-                                    )
-
-                                    # Gom nhóm theo Thợ
-                                    kpi_df = (
-                                        df_today.groupby(col_tho_name)
-                                        .agg({c_tien: "sum", "HH_Tung_Don": "sum"})
-                                        .reset_index()
-                                    )
-
-                                    kpi_df.columns = [
-                                        "Tên thợ",
-                                        "Doanh thu",
-                                        "Hoa Hồng NV",
-                                    ]
-                                    kpi_df = kpi_df.sort_values(
-                                        by="Doanh thu", ascending=False
-                                    )
-
-                                    # Định dạng hiển thị
-                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(
-                                        lambda x: f"{x:,.0f} đ"
-                                    )
-                                    kpi_df["Hoa Hồng NV"] = kpi_df["Hoa Hồng NV"].apply(
-                                        lambda x: f"{x:,.0f} đ"
-                                    )
-
-                                    st.dataframe(
-                                        kpi_df,
-                                        use_container_width=True,
-                                        hide_index=True,
-                                    )
-                                else:
-                                    st.warning(
-                                        "Hệ thống chưa dò thấy cột thông tin Thợ trong dữ liệu."
-                                    )
+                                    
+                                    # TÍNH TOÁN
+                                    col_tho_name = next((c for c in df_merged.columns if ("thợ" in c.lower() or "tho" in c.lower() or "thực hiện" in c.lower()) and "tiền" not in c.lower()), None)
+                                    
+                                    if col_tho_name:
+                                        df_merged[c_tien] = pd.to_numeric(df_merged[c_tien], errors="coerce").fillna(0)
+                                        df_merged["Tiền Công Thợ (%)"] = pd.to_numeric(df_merged["Tiền Công Thợ (%)"], errors="coerce").fillna(0)
+                                        df_merged["HH_Tung_Don"] = df_merged[c_tien] * (df_merged["Tiền Công Thợ (%)"] / 100)
+                                        
+                                        kpi_df = df_merged.groupby(col_tho_name).agg({c_tien: "sum", "HH_Tung_Don": "sum"}).reset_index()
+                                        kpi_df.columns = ["Tên thợ", "Doanh thu", "Hoa Hồng NV"]
+                                        
+                                        kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
+                                        kpi_df["Hoa Hồng NV"] = kpi_df["Hoa Hồng NV"].apply(lambda x: f"{x:,.0f} đ")
+                                        
+                                        st.dataframe(kpi_df, use_container_width=True, hide_index=True)
+                                    else:
+                                        st.warning("Không tìm thấy cột thợ.")
+                                except Exception as e:
+                                    st.error(f"Lỗi kết nối sheet DanhMuc: {e}")
                             else:
-                                st.info(
-                                    "Hôm nay chưa có dữ liệu giao dịch hoàn thành để tính KPI."
-                                )
+                                st.info("Hôm nay chưa có dữ liệu giao dịch hoàn thành.")
 
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📍 TRẠNG THÁI NHÂN VIÊN TRỰC TUYẾN</div>',
