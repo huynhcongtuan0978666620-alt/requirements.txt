@@ -2167,7 +2167,7 @@ def main():
                                     # Nếu ní dùng 'sheet_bao_cao', thì ní đổi thành 'sheet_bao_cao'
                                     # Nếu ní dùng 'conn', thì đổi thành 'conn'
                                     # Ở đây tôi đang giả định ní dùng 'TÊN_BIẾN_KẾT_NOI_CUA_NI'
-                                    rows =  ws = get_google_sheet_workbook().worksheet("DanhMuc")
+                                    rows = get_google_sheet_workbook().worksheet("DanhMuc")
                                         "DanhMuc"
                                     ).get_all_values()
 
