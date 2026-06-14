@@ -1438,7 +1438,6 @@ def main():
                         # ...
                         st.rerun()
 
-
                 with c1:
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
@@ -1471,8 +1470,6 @@ def main():
                         else:
                             st.session_state.kh_ten_val = ""
                         st.rerun()
-
-        
 
                 with c2:
                     kh_ten = st.text_input(
