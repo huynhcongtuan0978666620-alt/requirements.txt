@@ -1373,15 +1373,17 @@ def main():
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
-                    
+
                     # --- KIỂM TRA HẠNG THÀNH VIÊN TỨC THÌ ---
                     if kh_sdt and len(kh_sdt) >= 10:
                         df_plkh = get_plkh_data()
                         if not df_plkh.empty:
                             # Tìm SĐT trong cột 'SĐT'
-                            khach_data = df_plkh[df_plkh['SĐT'].astype(str).str.strip() == kh_sdt.strip()]
+                            khach_data = df_plkh[
+                                df_plkh["SĐT"].astype(str).str.strip() == kh_sdt.strip()
+                            ]
                             if not khach_data.empty:
-                                tien_chi = khach_data.iloc[0]['Tổng tiền đã chi tiêu']
+                                tien_chi = khach_data.iloc[0]["Tổng tiền đã chi tiêu"]
                                 huy_hieu = get_huy_hieu(tien_chi)
                                 st.success(f"💎 Hạng: **{huy_hieu}**", icon="✨")
                     # ----------------------------------------
@@ -1391,7 +1393,6 @@ def main():
                         st.session_state.kh_sdt_val = kh_sdt
                         # ... (Các đoạn logic cũ của ní)
                         st.rerun()
-
 
                 with c2:
                     kh_ten = st.text_input(
