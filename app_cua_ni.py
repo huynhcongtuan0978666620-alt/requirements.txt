@@ -2150,7 +2150,7 @@ def main():
 
                                 # 2. Xác định cột "Tiền Công Thợ (%)" (Tỷ lệ %)
                                 # Nếu trong df_today chưa có cột này, ní cần đảm bảo là đã nạp dữ liệu từ DanhMuc vào
-                                col_hh = "Tiền Công Thợ"
+                                col_hh = "Tiền Công Thợ (%)"
 
                                 if col_tho_name and col_hh in df_today.columns:
                                     # Chuyển đổi dữ liệu sang dạng số
