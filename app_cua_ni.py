@@ -1403,7 +1403,7 @@ def main():
                 )
                 c1, c2 = st.columns(2)
 
-                with c0:
+                with c1:
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
@@ -1438,7 +1438,7 @@ def main():
                         # ...
                         st.rerun()
 
-                with c1:
+                with c3:
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
