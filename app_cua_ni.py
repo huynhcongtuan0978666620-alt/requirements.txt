@@ -1427,10 +1427,18 @@ def main():
                         if kh_sdt.strip():
                             sdt_clean = kh_sdt.strip()
                             ds_kh = get_khach_hang_data()
-                            
+
                             # Logic tìm tên khách cũ của ní
-                            s_k_0 = sdt_clean[1:] if sdt_clean.startswith("0") else sdt_clean
-                            s_c_0 = "0" + sdt_clean if not sdt_clean.startswith("0") else sdt_clean
+                            s_k_0 = (
+                                sdt_clean[1:]
+                                if sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
+                            s_c_0 = (
+                                "0" + sdt_clean
+                                if not sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
 
                             if sdt_clean in ds_kh:
                                 st.session_state.kh_ten_val = ds_kh[sdt_clean]
@@ -1444,7 +1452,6 @@ def main():
                         else:
                             st.session_state.kh_ten_val = ""
                         st.rerun()
-                        
 
                 with c2:
                     kh_ten = st.text_input(
