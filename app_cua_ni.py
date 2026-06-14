@@ -2081,12 +2081,14 @@ def main():
 
                             m1, m2, m3, m4, m5 = st.columns(5)
                             m1.metric(
-                                "TỔNG DOANH THU TRONG THÁNG",  f"{doanh_thu_thang:,.0f}đ"
+                                "TỔNG DOANH THU TRONG THÁNG", f"{doanh_thu_thang:,.0f}đ"
                             )
                             m2.metric(
                                 "TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ"
                             )
-                            m3.metric("DOANH THU TRUNG BÌNH TRONG NGÀY", f"{tb_don:,.0f}đ")
+                            m3.metric(
+                                "DOANH THU TRUNG BÌNH TRONG NGÀY", f"{tb_don:,.0f}đ"
+                            )
                             m4.metric(
                                 "KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
                             )
