@@ -729,23 +729,27 @@ apply_v15_theme()
 
 # KIỂM TRA NGÀY
 def count_orders_today():
+    """Hàm đếm số lượng đơn hàng (khách) đã phục vụ trong ngày hôm nay"""
     try:
-        wb = get_db_connection()
-        ws_baocao = wb.worksheet("BaoCao")
-        data = ws_baocao.get_all_records()
-
-        # --- ĐOẠN KIỂM TRA MỚI ---
-        if data:
-            st.write("--- Dữ liệu dòng đầu tiên từ Sheet BaoCao ---")
-            st.write(data[0])
-            # Dòng này giúp ní xem tên cột và định dạng dữ liệu ngày tháng thực tế
-        # -------------------------
-
-        today = datetime.now().strftime("%d/%m/%Y")
-        count = sum(1 for row in data if str(row.get("Ngày", "")).strip() == today)
-        return count
+        data_bc, _ = get_bao_cao_va_bill_tam()
+        if len(data_bc) > 1:
+            df_bc = pd.DataFrame(data_bc[1:], columns=data_bc[0])
+            
+            # Tìm cột Ngày và cột Mã hóa đơn
+            c_ngay = next((c for c in df_bc.columns if "ngày" in c.lower() or "ngay" in c.lower()), "Ngày")
+            c_ma = next((c for c in df_bc.columns if "mã" in c.lower() or "hd" in c.lower()), None)
+            
+            today_str = get_now_vn().strftime("%d/%m/%Y")
+            
+            if c_ngay in df_bc.columns and c_ma:
+                # Lọc ra các dòng của ngày hôm nay
+                df_today = df_bc[df_bc[c_ngay].astype(str).str.strip() == today_str]
+                
+                # Đếm số lượng mã hóa đơn duy nhất (tránh đếm trùng nếu 1 bill có nhiều dòng dịch vụ)
+                so_don = len([x for x in df_today[c_ma].unique() if str(x).strip()])
+                return so_don
+        return 0
     except Exception as e:
-        st.write("Lỗi hàm đếm đơn:", e)  # Nếu lỗi thì in ra lỗi để mình sửa
         return 0
 
 
