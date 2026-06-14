@@ -778,6 +778,9 @@ def xoa_toan_bo_don_da_chot():
 # 4. LUỒNG ĐIỀU HƯỚNG VÀ XỬ LÝ CHÍNH
 # =====================================================================
 def main():
+    if 'active_tab' not in st.session_state:
+    st.session_state.active_tab = "🏠 Tổng quan"
+    
     init_states = {
         "last_submit": None,
         "submit_count": 0,
