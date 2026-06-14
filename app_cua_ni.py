@@ -964,37 +964,34 @@ def main():
                         st.session_state.gio_hang = new_gio
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
+    # 2. KHỞI TẠO TABS (Nó phải nằm trong khối else này!)
+        if "active_tab" not in st.session_state:
+            st.session_state.active_tab = "🏠 Tổng quan"
 
-    # 2. KHỐI TABS PHẢI NẰM NGOÀI KHỐI ELSE
-    # Khởi tạo trạng thái (nếu chưa có)
-    if "active_tab" not in st.session_state:
-        st.session_state.active_tab = "🏠 Tổng quan"
+        tab_names = [
+            "🏠 Tổng quan",
+            "📄 Lên hóa đơn",
+            "📅 Lịch hẹn",
+            "📊 Báo cáo",
+            "⚙️ Quản trị & Mở rộng",
+        ]
 
-    tab_names = [
-        "🏠 Tổng quan",
-        "📄 Lên hóa đơn",
-        "📅 Lịch hẹn",
-        "📊 Báo cáo",
-        "⚙️ Quản trị & Mở rộng",
-    ]
+        tabs = st.tabs(tab_names)
 
-    # Tạo tabs
-    tabs = st.tabs(tab_names)
-
-    # 3. Logic hiển thị nội dung từng tab
-    for i, tab_name in enumerate(tab_names):
-        with tabs[i]:
-            # Cập nhật trạng thái khi click
-            if st.session_state.active_tab != tab_name:
-                st.session_state.active_tab = tab_name
-                st.rerun()  # Lần này rerun là an toàn vì nó nằm ngoài khối else gây xung đột
-
-            # Đưa nội dung vào đây (ví dụ dùng if/elif)
-            if tab_name == "🏠 Tổng quan":
-                # show_tong_quan()
-                pass
-            # ... v.v.
-
+        # 3. Logic hiển thị nội dung từng tab
+        for i, tab_name in enumerate(tab_names):
+            with tabs[i]:
+                if st.session_state.active_tab != tab_name:
+                    st.session_state.active_tab = tab_name
+                    st.rerun() 
+                
+                # Gọi các hàm show_... của ní ở đây
+                if tab_name == "🏠 Tổng quan":
+                    show_tong_quan()
+                elif tab_name == "📄 Lên hóa đơn":
+                    show_len_hoa_don()
+                # ... và các tab còn lại
+        
         # =====================================================================
         # 🚀 CƠ CHẾ ĐỒNG BỘ GIỮ TAB VÀ CHUYỂN TAB TỰ ĐỘNG (FIX LỖI 1, 3 VÀ 4)
         # =====================================================================
