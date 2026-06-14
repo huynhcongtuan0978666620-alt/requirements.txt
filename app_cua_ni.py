@@ -987,8 +987,8 @@ def main():
             # Cập nhật trạng thái khi click
             if st.session_state.active_tab != tab_name:
                 st.session_state.active_tab = tab_name
-                st.rerun() # Lần này rerun là an toàn vì nó nằm ngoài khối else gây xung đột
-            
+                st.rerun()  # Lần này rerun là an toàn vì nó nằm ngoài khối else gây xung đột
+
             # Đưa nội dung vào đây (ví dụ dùng if/elif)
             if tab_name == "🏠 Tổng quan":
                 # show_tong_quan()
