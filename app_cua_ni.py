@@ -163,7 +163,7 @@ def inject_advanced_ui_js():
             timer = setTimeout(() => {{ clicks = 0; }}, 1000); 
             if(clicks >= 3) {{
                 clicks = 0;
-                showPremiumToast('🎉 CỐ LÊN NHÉ! BÃO ĐƠN NÀO! 🎉');
+                showPremiumToast('🎉 BÃO ĐƠN NÀO 🎉');
                 for(let i=0; i<60; i++) {{
                     let f = parentDoc.createElement('div');
                     f.style.cssText = `position:fixed; width:8px; height:8px; border-radius:100%; background-color:${{['{THEME_COLORS['primary']}', '{THEME_COLORS['accent_danger']}', '#40a9ff', '{THEME_COLORS['accent_vip']}'][Math.floor(Math.random()*4)]}}; left:50%; top:50%; transform:translate(-50%, -50%); pointer-events:none; z-index:9999998; transition: all 1.5s cubic-bezier(0.25, 1, 0.5, 1);`;
@@ -344,7 +344,7 @@ ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 marquee_code = f"""
 <div class="custom-marquee">
     <marquee scrollamount="4">
-        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI APP QL PRO V16! 
+        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI "APP QL PRO V16"  
         CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
     </marquee>
 </div>
@@ -908,7 +908,7 @@ def main():
     if not st.session_state["logged_in"]:
         with st.container(border=True):
             st.markdown(
-                f"<h2 style='text-align:center; color:{THEME_COLORS['text_title']}; font-weight:800;'>SALON PRO V15</h2>",
+                f"<h2 style='text-align:center; color:{THEME_COLORS['text_title']}; font-weight:800;'>APP QL PRO V16</h2>",
                 unsafe_allow_html=True,
             )
             st.markdown(
@@ -1783,8 +1783,8 @@ def main():
 <div style="display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 18px; font-weight: 900; color: {THEME_COLORS['text_main']};"><span>TỔNG CỘNG:</span> <span style="text-align: right; color: {THEME_COLORS['accent_chiet_khau']};">{t_khach_tra:,.0f}đ</span></div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; font-weight: 600; color: #444;">Ghi Chú: {ghi_chu_don}</div>
 <div style="font-size: 13px; font-weight: 600; color: {THEME_COLORS['text_secondary']}; text-align: left; margin-bottom: 8px; border-bottom: 1px dashed {THEME_COLORS['border_light']}; padding-bottom: 5px;"></div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ:</div>
-<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
+<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Mọi chi tiết xin liên hệ: Salon KIM HIỀN</div>
+#<div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Salon: KIM HIỀN.</div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Hotline: 0947.58.1516.</div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Facebook: Kim Hiền Tóc.</div>
 <div style="text-align: left; margin-top: 15px; font-size: 13px; color: {THEME_COLORS['text_muted']}; font-style: italic;">Zalo: 0947.58.1516 - Kim Hiền Tóc.</div>
@@ -2187,7 +2187,7 @@ def main():
 
                             # --- KPI THỢ HÔM NAY (V16 NÂNG CẤP) ---
                             st.markdown(
-                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
+                                '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI - Hoa Hồng Thợ </div>',
                                 unsafe_allow_html=True,
                             )
 
@@ -2351,7 +2351,7 @@ def main():
             if st.session_state["role"] == "CEO":
                 with st.container(border=True):
                     st.markdown(
-                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">QUẢN LÝ DANH SÁCH BILL CHỜ</div>',
+                        '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">DANH SÁCH BILL CHỜ</div>',
                         unsafe_allow_html=True,
                     )
                     if st.button(
