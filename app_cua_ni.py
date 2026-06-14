@@ -964,7 +964,7 @@ def main():
                         st.session_state.gio_hang = new_gio
                         st.toast("🔄 Đã tự động khôi phục giỏ hàng làm dở trước đó!")
                     break
-       # 1. Khởi tạo trạng thái
+        # 1. Khởi tạo trạng thái
         if "active_tab" not in st.session_state:
             st.session_state.active_tab = "🏠 Tổng quan"
 
@@ -990,7 +990,7 @@ def main():
                     elif tab_name == "📄 Lên hóa đơn":
                         show_len_hoa_don()
                     # ... các tab khác
-            
+
             # Phần xử lý chuyển tab (khi click vào tab khác)
             # Dùng st.button hoặc chỉ cần click vào tab là Streamlit tự chuyển
             # Lưu ý: Không cần st.rerun() trong vòng lặp này!
