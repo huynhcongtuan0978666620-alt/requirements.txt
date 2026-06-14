@@ -1403,7 +1403,7 @@ def main():
                 )
                 c1, c2 = st.columns(2)
 
-                with c1:
+                with c0:
                     kh_sdt = st.text_input(
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
@@ -1421,11 +1421,11 @@ def main():
                                 # Nếu tìm thấy
                                 tien = khach.iloc[0]["Tổng tiền đã chi tiêu"]
                                 huy_hieu = get_huy_hieu(tien)
-                                st.success(f"✨ Khách hàng hạng: {huy_hieu}")
+                                st.success(f"✨ Khách hàng: {huy_hieu}")
                             else:
                                 # NẾU KHÔNG TÌM THẤY: In ra cho ní biết nó đang tìm cái gì
                                 st.info(
-                                    f"🔎 Đang tìm SĐT: '{sdt_input}' trong hệ thống..."
+                                    f"🔎 '{sdt_input}' chưa tìm thấy trong hệ thống... lưu Khách hàng mới!"
                                 )
                                 # st.write(df['SĐT'].tolist()) # Bỏ dấu # nếu ní muốn xem danh sách SĐT máy đang thấy
                         else:
@@ -1437,6 +1437,42 @@ def main():
                         st.session_state.kh_sdt_val = kh_sdt
                         # ...
                         st.rerun()
+
+
+                with c1:
+                    kh_sdt = st.text_input(
+                        "Số điện thoại khách", value=st.session_state.kh_sdt_val
+                    )
+                    if kh_sdt != st.session_state.kh_sdt_val:
+                        st.session_state.kh_sdt_val = kh_sdt
+                        if kh_sdt.strip():
+                            sdt_clean = kh_sdt.strip()
+                            ds_kh = get_khach_hang_data()
+                            s_k_0 = (
+                                sdt_clean[1:]
+                                if sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
+                            s_c_0 = (
+                                "0" + sdt_clean
+                                if not sdt_clean.startswith("0")
+                                else sdt_clean
+                            )
+
+                            if sdt_clean in ds_kh:
+                                st.session_state.kh_ten_val = ds_kh[sdt_clean]
+                            elif s_k_0 in ds_kh:
+                                st.session_state.kh_ten_val = ds_kh[s_k_0]
+                            elif s_c_0 in ds_kh:
+                                st.session_state.kh_ten_val = ds_kh[s_c_0]
+                            else:
+                                st.session_state.kh_ten_val = ""
+                            trigger_auto_save()
+                        else:
+                            st.session_state.kh_ten_val = ""
+                        st.rerun()
+
+        
 
                 with c2:
                     kh_ten = st.text_input(
