@@ -812,6 +812,7 @@ def main():
         "lh_sdt_val": "",
         "lh_ten_val": "",
         "current_lh_idx": None,
+        "active_tab_index": 0,  # <--- CHÈN DÒNG NÀY VÀO ĐÂY NÍ NHÉ!
     }
     for key, val in init_states.items():
         if key not in st.session_state:
