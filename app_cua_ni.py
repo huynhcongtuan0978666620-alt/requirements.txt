@@ -2458,109 +2458,64 @@ def main():
                     except Exception as e:
                         st.error(f"Lỗi đọc đơn chờ: {e}")
 
-                    if st.button(
-                        "⚗️ THỬ NGHIỆM CÔNG THỨC & TỶ LỆ",
-                        type="primary",
-                        use_container_width=True,
-                    ):
-                        st.markdown(
-                            f"<div style='margin: 15px 0; border-bottom: 2px dashed {THEME_COLORS['primary']};'></div>",
-                            unsafe_allow_html=True,
+                        
+    with st.container(border=True):
+                    st.markdown(
+                        '<div class="the-quan-ly-flat">🧪 PHÒNG NGHIÊN CỨU MÀU TÓC</div>',
+                        unsafe_allow_html=True,
+                    )
+                    c_lab1, c_lab2 = st.columns(2)
+                    with c_lab1:
+                        mau_nhuom = st.selectbox(
+                            "Màu bạn muốn nhuộm:",
+                            ["Vàng Đồng (8.43)", "Nâu Lạnh (6.1)", "Khói Xám (8.11)", "Tự phối màu"],
+                        )
+                    with c_lab2:
+                        nen_toc = st.selectbox(
+                            "Nền tóc hiện tại:",
+                            ["Level 3 (Đen tự nhiên)", "Level 5 (Nâu sáng)", "Level 7 (Vàng sậm)", "Level 9 (Tẩy sáng)"],
                         )
 
-                        # 1. Định nghĩa công thức (Dữ liệu trung tâm)
-                        database_mau = {
-                            "Vàng Đồng (8.43)": {
-                                "data": [
-                                    ["Màu chủ đạo 8.43", 70.0],
-                                    ["Màu mix đồng 0.43", 20.0],
-                                    ["Màu tự nhiên 0.00", 10.0],
-                                    ["Oxy 9%", 100.0],
-                                ],
-                                "loi_khuyen": "Phù hợp da trắng. Chải cách chân tóc 2cm, chờ 30 phút rồi chải tiếp chân.",
-                                "diem": "9.2/10",
-                            },
-                            "Nâu Lạnh (6.1)": {
-                                "data": [
-                                    ["Màu chủ đạo 6.1", 80.0],
-                                    ["Màu mix tro 0.11", 15.0],
-                                    ["Màu mix rêu 0.22", 5.0],
-                                    ["Oxy 6%", 100.0],
-                                ],
-                                "loi_khuyen": "Tệp tóc, bền màu. Nếu nền có nhiều ánh đỏ, hãy tăng màu rêu 0.22 lên 10%.",
-                                "diem": "9.5/10",
-                            },
-                            "Khói Xám (8.11)": {
-                                "data": [
-                                    ["Màu chủ đạo 8.11", 70.0],
-                                    ["Màu mix tro 0.11", 20.0],
-                                    ["Màu mix tím 0.66", 10.0],
-                                    ["Oxy 3%", 100.0],
-                                ],
-                                "loi_khuyen": "Nền tóc phải Level 9+. Dùng Oxy 3% để hạt màu ngậm sâu, tránh bay màu nhanh.",
-                                "diem": "8.8/10",
-                            },
+                    # Định nghĩa dữ liệu ngay đây để không bị mất biến
+                    database_mau = {
+                        "Vàng Đồng (8.43)": {
+                            "data": [["Màu chủ đạo 8.43", 70.0], ["Màu mix đồng 0.43", 20.0], ["Màu tự nhiên 0.00", 10.0], ["Oxy 9%", 100.0]],
+                            "loi_khuyen": "Phù hợp da trắng. Chải cách chân tóc 2cm, chờ 30 phút rồi chải tiếp chân.",
+                            "diem": "9.2/10"
+                        },
+                        "Nâu Lạnh (6.1)": {
+                            "data": [["Màu chủ đạo 6.1", 80.0], ["Màu mix tro 0.11", 15.0], ["Màu mix rêu 0.22", 5.0], ["Oxy 6%", 100.0]],
+                            "loi_khuyen": "Tệp tóc, bền màu. Nếu nền có nhiều ánh đỏ, hãy tăng màu rêu 0.22 lên 10%.",
+                            "diem": "9.5/10"
+                        },
+                        "Khói Xám (8.11)": {
+                            "data": [["Màu chủ đạo 8.11", 70.0], ["Màu mix tro 0.11", 20.0], ["Màu mix tím 0.66", 10.0], ["Oxy 3%", 100.0]],
+                            "loi_khuyen": "Nền tóc phải Level 9+. Dùng Oxy 3% để hạt màu ngậm sâu, tránh bay màu nhanh.",
+                            "diem": "8.8/10"
                         }
+                    }
 
-                        # 2. Xử lý logic
+                    if st.button("⚗️ THỬ NGHIỆM CÔNG THỨC & TỶ LỆ", type="primary", use_container_width=True):
+                        st.markdown(f"<div style='margin: 15px 0; border-bottom: 2px dashed {THEME_COLORS['primary']};'></div>", unsafe_allow_html=True)
+                        
                         if mau_nhuom in database_mau:
                             item = database_mau[mau_nhuom]
                             cong_thuc_data = item["data"]
                             loi_khuyen = item["loi_khuyen"]
                             diem_so = item["diem"]
                         else:
-                            cong_thuc_data = [
-                                ["Màu chủ đạo", 80.0],
-                                ["Màu mix", 20.0],
-                                ["Oxy", 100.0],
-                            ]
+                            cong_thuc_data = [["Màu chủ đạo", 80.0], ["Màu mix", 20.0], ["Oxy", 100.0]]
                             loi_khuyen = "Vui lòng theo dõi sát biểu bì tóc để đạt hiệu quả tốt nhất."
                             diem_so = "8.5/10"
 
-                        # 3. Hiển thị kết quả
-                        st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']};'>1. Bảng công thức hoàn chỉnh (Tỷ lệ %)</h4>",
-                            unsafe_allow_html=True,
-                        )
-                        st.dataframe(
-                            pd.DataFrame(
-                                cong_thuc_data,
-                                columns=[
-                                    "Thành phần (Thuốc + Trợ nhuộm)",
-                                    "Tỷ lệ % (Gam/ML)",
-                                ],
-                            ),
-                            use_container_width=True,
-                            hide_index=True,
-                        )
-
-                        st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình pha chế chuẩn</h4>",
-                            unsafe_allow_html=True,
-                        )
-                        st.markdown("""
-                        * **Bước 1:** Chuẩn bị bát nhựa sạch, dùng cân tiểu ly điện tử đong chính xác các thành phần theo bảng tỷ lệ %.
-                        * **Bước 2:** Đánh hỗn hợp thuốc nhuộm và Oxy thật đều tay cho đến khi dung dịch nhuyễn mịn hoàn toàn.
-                        * **Bước 3:** Chia tóc làm 4 phần đồng đều. Tiến hành chải thuốc lên thân và ngọn tóc một cách đồng đều.
-                        * **Bước 4:** Để thời gian lưu thuốc ổn định trên tóc từ 35-45 phút tùy thuộc vào độ thẩm thấu của sợi tóc.
-                        """)
-
-                        st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>3. Đánh giá chuyên gia chuyên môn</h4>",
-                            unsafe_allow_html=True,
-                        )
-                        st.info(
-                            f"🏆 **Điểm số chất lượng công thức nhuộm:** {diem_so} điểm."
-                        )
-
-                        st.markdown(
-                            f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>4. Hướng dẫn thao tác / Hướng dẫn sử dụng</h4>",
-                            unsafe_allow_html=True,
-                        )
+                        st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']};'>1. Bảng công thức hoàn chỉnh</h4>", unsafe_allow_html=True)
+                        st.dataframe(pd.DataFrame(cong_thuc_data, columns=["Thành phần", "Tỷ lệ %"]), use_container_width=True, hide_index=True)
+                        
+                        st.markdown(f"<h4 style='color:{THEME_COLORS['text_title']}; margin-top: 15px;'>2. Quy trình pha chế</h4>", unsafe_allow_html=True)
+                        st.markdown("* **Bước 1:** Đong chính xác thành phần bằng cân tiểu ly.\n* **Bước 2:** Trộn đều cho đến khi hỗn hợp nhuyễn mịn.\n* **Bước 3:** Chải thuốc lên tóc (cách chân 2cm).\n* **Bước 4:** Lưu thuốc 35-45 phút.")
+                        
+                        st.info(f"🏆 **Điểm chất lượng công thức:** {diem_so}")
                         st.success(f"📌 **Kỹ thuật lưu ý:** {loi_khuyen}")
-                        st.warning(
-                            "⚠️ **An toàn thao tác:** Luôn trang bị găng tay chuyên dụng. Thực hiện bôi tinh chất bảo vệ da đầu nếu nền da đầu khách nhạy cảm."
-                        )
 
                     if st.button(
                         "♻️ LÀM MỚI NHỚ ĐỆM", use_container_width=True, type="primary"
