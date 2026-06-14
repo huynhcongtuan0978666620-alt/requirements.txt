@@ -1408,55 +1408,29 @@ def main():
                         "Số điện thoại khách", value=st.session_state.kh_sdt_val
                     )
 
-                    # --- PHẦN KIỂM TRA MỚI ---
+                    # --- KIỂM TRA HẠNG KHÁCH HÀNG TỨC THÌ ---
                     if kh_sdt and len(kh_sdt) >= 9:
                         df = get_plkh_data()
                         sdt_input = kh_sdt.strip()
-
                         if not df.empty:
-                            # Tìm kiếm
                             khach = df[df["SĐT"] == sdt_input]
-
                             if not khach.empty:
-                                # Nếu tìm thấy
                                 tien = khach.iloc[0]["Tổng tiền đã chi tiêu"]
                                 huy_hieu = get_huy_hieu(tien)
-                                st.success(f"✨ Khách hàng: {huy_hieu}")
+                                st.success(f"✨ Khách hàng: **{huy_hieu}**")
                             else:
-                                # NẾU KHÔNG TÌM THẤY: In ra cho ní biết nó đang tìm cái gì
-                                st.info(
-                                    f"🔎 '{sdt_input}' chưa tìm thấy trong hệ thống... lưu Khách hàng mới!"
-                                )
-                                # st.write(df['SĐT'].tolist()) # Bỏ dấu # nếu ní muốn xem danh sách SĐT máy đang thấy
-                        else:
-                            st.warning("⚠️ Bảng PLKH trống hoặc không thể đọc.")
-                    # ------------------------
+                                st.info(f"🔎 Chưa tìm thấy hạng cho SĐT: {sdt_input}")
 
-                    if kh_sdt != st.session_state.kh_sdt_val:
-                        # ... (Giữ nguyên logic cũ của ní ở đây)
-                        st.session_state.kh_sdt_val = kh_sdt
-                        # ...
-                        st.rerun()
-
-                with c3:
-                    kh_sdt = st.text_input(
-                        "Số điện thoại khách", value=st.session_state.kh_sdt_val
-                    )
+                    # --- XỬ LÝ DỮ LIỆU KHI THAY ĐỔI SĐT ---
                     if kh_sdt != st.session_state.kh_sdt_val:
                         st.session_state.kh_sdt_val = kh_sdt
                         if kh_sdt.strip():
                             sdt_clean = kh_sdt.strip()
                             ds_kh = get_khach_hang_data()
-                            s_k_0 = (
-                                sdt_clean[1:]
-                                if sdt_clean.startswith("0")
-                                else sdt_clean
-                            )
-                            s_c_0 = (
-                                "0" + sdt_clean
-                                if not sdt_clean.startswith("0")
-                                else sdt_clean
-                            )
+                            
+                            # Logic tìm tên khách cũ của ní
+                            s_k_0 = sdt_clean[1:] if sdt_clean.startswith("0") else sdt_clean
+                            s_c_0 = "0" + sdt_clean if not sdt_clean.startswith("0") else sdt_clean
 
                             if sdt_clean in ds_kh:
                                 st.session_state.kh_ten_val = ds_kh[sdt_clean]
@@ -1470,6 +1444,7 @@ def main():
                         else:
                             st.session_state.kh_ten_val = ""
                         st.rerun()
+                        
 
                 with c2:
                     kh_ten = st.text_input(
