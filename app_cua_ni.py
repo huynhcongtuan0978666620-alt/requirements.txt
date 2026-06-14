@@ -16,7 +16,7 @@ import streamlit.components.v1 as components
 
 # 1. Cấu hình trang tối ưu riêng cho giao diện điện thoại
 st.set_page_config(
-    page_title="SALON PRO V15",
+    page_title="APP QL PRO V16",
     layout="wide",
     page_icon="💇‍♀️",
     initial_sidebar_state="collapsed",
@@ -344,7 +344,7 @@ ten_dang_nhap = st.session_state.get("full_name", "Quý khách")
 marquee_code = f"""
 <div class="custom-marquee">
     <marquee scrollamount="4">
-        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI SALON KIM HIỀN! 
+        CHÀO MỪNG <span style="color: {mau_chu}; font-weight: bold;">{ten_dang_nhap}</span> ĐẾN VỚI APP QL PRO V16! 
         CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA!
     </marquee>
 </div>
@@ -407,7 +407,7 @@ def get_settings():
         }
     except Exception:
         return {
-            "TenTiem": "SALON KIM HIỀN",
+            "TenTiem": "APP QL PRO V16",
             "Diachi": "131, TRẦN BÌNH TRỌNG, LONG XUYÊN",
             "SDT": "0947.58.1516",
         }
@@ -666,11 +666,11 @@ def check_auto_login():
         u = st.query_params.get("saved_u")
         p = st.query_params.get("saved_p")
         if u and p:
-            if u == "Admin" and p == "111":
+            if u == "CEO" and p == "111":
                 st.session_state.update(
                     {
                         "logged_in": True,
-                        "role": "Admin",
+                        "role": "CEO",
                         "full_name": "Quản lý",
                         "tho_chot_val": "Quản lý",
                     }
@@ -922,14 +922,14 @@ def main():
             if st.button(
                 "Xác nhận Đăng Nhập", use_container_width=True, type="primary"
             ):
-                if u == "Admin" and p == "111":
+                if u == "CEO" and p == "111":
                     if remember_me:
                         st.query_params["saved_u"] = u
                         st.query_params["saved_p"] = p
                     st.session_state.update(
                         {
                             "logged_in": True,
-                            "role": "Admin",
+                            "role": "CEO",
                             "full_name": "Quản lý",
                             "tho_chot_val": "Quản lý",
                             "trigger_balloons": True,
@@ -1081,7 +1081,7 @@ def main():
             "📊 Báo cáo",
             "⚙️ Quản trị & Mở rộng",
         ]
-        if st.session_state["role"] == "Admin":
+        if st.session_state["role"] == "CEO":
             tab_names.append("🎬 Giải Trí")
 
         # Sử dụng tham số index để neo tab
@@ -1101,7 +1101,7 @@ def main():
                     f"""
                     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
                         <img src="{direct_logo_url}" style="width: 85px; height: 85px; border-radius: 65%; border: 3px solid {THEME_COLORS['primary']}; object-fit: cover; margin-bottom: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);" onerror="this.onerror=null;this.src='{fallback_gif}';">
-                        <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+                        <div style="font-size: 30px; font-weight: 900; color: {THEME_COLORS['text_main']}; text-transform: uppercase; letter-spacing: 1px;">{settings.get('TenTiem', 'APP QL PRO V16')}</div>
                         <div style="font-size: 14px; color: {THEME_COLORS['text_muted']}; margin-top: 5px; text-align: center;">
                             <div>{settings.get('Diachi', '131, TRẦN BÌNH TRỌNG, LONG XUYÊN')}</div>
                             <div style="margin-top: 5px; font-size: 18px;">Hotline: {settings.get('SDT', '0947.58.1516')}</div>
@@ -1293,7 +1293,7 @@ def main():
                                         f"<div style='text-align:right; font-weight:bold; font-size:14px; color:#28a745; margin-bottom:10px;'>✅ ĐÃ CHỐT ĐƠN</div>",
                                         unsafe_allow_html=True,
                                     )
-                                    if st.session_state["role"] == "Admin":
+                                    if st.session_state["role"] == "CEO":
                                         if st.button(
                                             "🗑️ Xóa lịch hẹn",
                                             key=f"del_lh_home_{idx_sheet}",
@@ -1747,7 +1747,7 @@ def main():
                             )
                             trigger_auto_save()
 
-                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nSalon Kim Hiền\nChi tiết xin liên hệ 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
+                            nd_mail = f"THÔNG BÁO\nĐH ĐÃ THANH TOÁN\n \nMã ĐH: {ma_hd} | {get_now_vn().strftime('%d/%m/%Y %H:%M')}\nKhách: {c_ten} - {c_sdt}\nThu ngân: {st.session_state.full_name}\nThợ: {chot_tho}\n \n===============\n \nChi tiết dịch vụ:{chi_tiet_tele}\n \n===============\n \nTổng bill: {t_bill:,.0f} đ\nChiết khấu: -{tien_chiet_khau:,.0f} đ\nKhuyến mãi: -{tien_khuyen_mai:,.0f} đ\n \nGHI CHÚ: {ghi_chu_don} \n \n===============\n \nTHỰC THU: {t_khach_tra:,.0f} đ\n \n===============\n \nAPP QL PRO V16\nChi tiết xin liên hệ 0947.58.1516 \nHỗ trợ 24/7.\nCảm ơn quý khách đã sử dụng dịch vụ!\n"
 
                             gui_email_backup(nd_mail)
                             gui_telegram_notification(nd_mail)
@@ -1755,7 +1755,7 @@ def main():
                             st.session_state.bill_vua_in = f"""<style>.hoa-don-khung table, .hoa-don-khung tr, .hoa-don-khung td {{border: none !important; background: transparent !important;}}</style>
 <div class="hoa-don-khung">
 <div style="text-align: center; border-bottom: 1px dashed {THEME_COLORS['border_input']}; padding-bottom: 15px; margin-bottom: 20px;">
-    <div style="font-size: 27px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'SALON KIM HIỀN')}</div>
+    <div style="font-size: 27px; font-weight: 900; color: {THEME_COLORS['text_main']};">{settings.get('TenTiem', 'APP QL PRO V16')}</div>
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']}; margin-top:4px;">{settings.get('Diachi', '')}</div>
     <div style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">SĐT: {settings.get('SDT', '')}</div>
     <div style="font-size: 18px; font-weight: 800; color: {THEME_COLORS['text_main']}; margin-top:10px;">HÓA ĐƠN DỊCH VỤ</div>
@@ -2004,7 +2004,7 @@ def main():
                                         f"<div style='text-align:right; font-weight:bold; font-size:14px; color:#28a745; margin-top:10px;'>✅ ĐÃ CHỐT ĐƠN</div>",
                                         unsafe_allow_html=True,
                                     )
-                                    if st.session_state["role"] == "Admin":
+                                    if st.session_state["role"] == "CEO":
                                         if st.button(
                                             "🗑️ Xóa lịch",
                                             key=f"del_lh_tab3_{idx_sheet}",
@@ -2088,7 +2088,7 @@ def main():
 
         # ==================== TAB 4: BÁO CÁO ====================
         with tabs[3]:
-            if st.session_state["role"] == "Admin":
+            if st.session_state["role"] == "CEO":
                 with st.container(border=True):
                     st.markdown(
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">📈 THỐNG KÊ DOANH THU CHUNG</div>',
@@ -2348,7 +2348,7 @@ def main():
 
         # ==================== TAB 5: QUẢN TRỊ & MỞ RỘNG ====================
         with tabs[4]:
-            if st.session_state["role"] == "Admin":
+            if st.session_state["role"] == "CEO":
                 with st.container(border=True):
                     st.markdown(
                         '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:10px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">QUẢN LÝ DANH SÁCH BILL CHỜ</div>',
@@ -2603,7 +2603,7 @@ def main():
                         st.cache_resource.clear()
                         st.rerun()
                     if st.button(
-                        "🚪 Đăng xuất tài khoản Admin",
+                        "🚪 Đăng xuất tài khoản CEO",
                         use_container_width=True,
                         type="primary",
                     ):
@@ -2625,11 +2625,11 @@ def main():
                         st.session_state.clear()
                         st.rerun()
 
-        # ==================== TAB 6: GIẢI TRÍ (ADMIN) ====================
-        if st.session_state["role"] == "Admin":
+        # ==================== TAB 6: GIẢI TRÍ (CEO) ====================
+        if st.session_state["role"] == "CEO":
             with tabs[5]:  # Vì là tab cuối cùng vừa thêm
                 st.markdown(
-                    '<div class="the-quan-ly-flat">🎬 GÓC GIẢI TRÍ ADMIN</div>',
+                    '<div class="the-quan-ly-flat">🎬 GÓC GIẢI TRÍ CEO</div>',
                     unsafe_allow_html=True,
                 )
 
