@@ -985,12 +985,12 @@ def main():
 
         # 4. Logic cập nhật lại tab khi ní click
         # Ní đặt các khối nội dung của ní vào đây
-        for i, tab in enumerate(tabs):
-            with tab:
-                # Chỉ rerun khi tab được chọn thực sự thay đổi
-                if st.session_state.active_tab != tab_names[i]:
-                    st.session_state.active_tab = tab_names[i]
-                    st.rerun()
+                # Bỏ lệnh st.rerun() đi ní ơi
+        for i, tab_name in enumerate(tab_names):
+            with tabs[i]:
+                if st.session_state.active_tab != tab_name:
+                    st.session_state.active_tab = tab_name
+                    # Chỉ cần gán giá trị thôi, không cần st.rerun() ở đây
 
                 # Ní đặt các nội dung (các hàm show_...) ở dưới đây là ngon lành!
 
