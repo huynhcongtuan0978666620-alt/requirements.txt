@@ -2134,36 +2134,71 @@ def main():
                             )
                             if not df_today.empty:
                                 # 1. Xác định cột Thợ
-                                col_tho_name = next((c for c in df_today.columns if ("thợ" in c.lower() or "tho" in c.lower() or "thực hiện" in c.lower()) and "tiền" not in c.lower()), None)
-                                
+                                col_tho_name = next(
+                                    (
+                                        c
+                                        for c in df_today.columns
+                                        if (
+                                            "thợ" in c.lower()
+                                            or "tho" in c.lower()
+                                            or "thực hiện" in c.lower()
+                                        )
+                                        and "tiền" not in c.lower()
+                                    ),
+                                    None,
+                                )
+
                                 # 2. Xác định cột "Tiền Công Thợ" (Tỷ lệ %)
                                 # Nếu trong df_today chưa có cột này, ní cần đảm bảo là đã nạp dữ liệu từ DanhMuc vào
-                                col_hh = "Tiền Công Thợ" 
+                                col_hh = "Tiền Công Thợ"
 
                                 if col_tho_name and col_hh in df_today.columns:
                                     # Chuyển đổi dữ liệu sang dạng số
-                                    df_today[c_tien] = pd.to_numeric(df_today[c_tien], errors='coerce').fillna(0)
-                                    df_today[col_hh] = pd.to_numeric(df_today[col_hh], errors='coerce').fillna(0)
-                                    
+                                    df_today[c_tien] = pd.to_numeric(
+                                        df_today[c_tien], errors="coerce"
+                                    ).fillna(0)
+                                    df_today[col_hh] = pd.to_numeric(
+                                        df_today[col_hh], errors="coerce"
+                                    ).fillna(0)
+
                                     # Tính tiền hoa hồng (Lưu ý: Nếu giá trị cột là 20 nghĩa là 20%, thì chia 100)
-                                    df_today['HH_Tung_Don'] = df_today[c_tien] * (df_today[col_hh] / 100)
-                                    
+                                    df_today["HH_Tung_Don"] = df_today[c_tien] * (
+                                        df_today[col_hh] / 100
+                                    )
+
                                     # Gom nhóm
-                                    kpi_df = df_today.groupby(col_tho_name).agg({
-                                        c_tien: 'sum',
-                                        'HH_Tung_Don': 'sum'
-                                    }).reset_index()
-                                    
-                                    kpi_df.columns = ["Tên thợ", "Doanh thu", "Tiền hoa hồng"]
-                                    kpi_df = kpi_df.sort_values(by="Doanh thu", ascending=False)
-                                    
+                                    kpi_df = (
+                                        df_today.groupby(col_tho_name)
+                                        .agg({c_tien: "sum", "HH_Tung_Don": "sum"})
+                                        .reset_index()
+                                    )
+
+                                    kpi_df.columns = [
+                                        "Tên thợ",
+                                        "Doanh thu",
+                                        "Tiền hoa hồng",
+                                    ]
+                                    kpi_df = kpi_df.sort_values(
+                                        by="Doanh thu", ascending=False
+                                    )
+
                                     # Định dạng hiển thị
-                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(lambda x: f"{x:,.0f} đ")
-                                    kpi_df["Tiền hoa hồng"] = kpi_df["Tiền hoa hồng"].apply(lambda x: f"{x:,.0f} đ")
-                                    
-                                    st.dataframe(kpi_df, use_container_width=True, hide_index=True)
+                                    kpi_df["Doanh thu"] = kpi_df["Doanh thu"].apply(
+                                        lambda x: f"{x:,.0f} đ"
+                                    )
+                                    kpi_df["Tiền hoa hồng"] = kpi_df[
+                                        "Tiền hoa hồng"
+                                    ].apply(lambda x: f"{x:,.0f} đ")
+
+                                    st.dataframe(
+                                        kpi_df,
+                                        use_container_width=True,
+                                        hide_index=True,
+                                    )
                                 else:
-                                    st.warning(f"⚠️ Chưa tìm thấy cột '{col_hh}' trong dữ liệu. Ní kiểm tra lại nhé!")
+                                    st.warning(
+                                        f"⚠️ Chưa tìm thấy cột '{col_hh}' trong dữ liệu. Ní kiểm tra lại nhé!"
+                                    )
                             else:
                                 st.info("Hôm nay chưa có dữ liệu giao dịch hoàn thành.")
 
