@@ -2081,17 +2081,16 @@ def main():
 
                             m1, m2, m3, m4, m5 = st.columns(5)
                             m1.metric(
-                                "💰 TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ"
+                                "TỔNG DOANH THU TRONG THÁNG",  f"{doanh_thu_thang:,.0f}đ"
                             )
                             m2.metric(
-                                "💳 TỔNG DOANH THU TRONG THÁNG",
-                                f"{doanh_thu_thang:,.0f}đ",
+                                "TỔNG DOANH THU HÔM NAY", f"{doanh_thu_ngay:,.0f}đ"
                             )
-                            m3.metric("📈 DOANH THU TRUNG BÌNH", f"{tb_don:,.0f}đ")
+                            m3.metric("DOANH THU TRUNG BÌNH TRONG NGÀY", f"{tb_don:,.0f}đ")
                             m4.metric(
-                                "👥 KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
+                                "KHÁCH ĐÃ PHỤC VỤ HÔM NAY", f"{khach_hom_nay} Khách"
                             )
-                            m5.metric("⏳ TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
+                            m5.metric("TỔNG ĐƠN CHỜ HIỆN TẠI", f"{bill_cho} Bill")
 
                             st.markdown(
                                 '<div style="color:#2c3e50; font-weight:800; font-size:18px; margin-top:35px; margin-bottom:15px; border-bottom:2px solid #6FA8DC; padding-bottom:8px; text-transform:uppercase;">🏆 KPI THỢ HÔM NAY</div>',
