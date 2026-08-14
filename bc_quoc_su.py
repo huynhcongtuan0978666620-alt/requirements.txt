@@ -1,7 +1,10 @@
 import streamlit as st
 
-# Cấu hình trang hiển thị dạng rộng, gọn gàng cho app báo cáo
-st.set_page_config(page_title="BC Quốc Sự", page_layout="centered", initial_sidebar_state="collapsed")
+# Cấu hình trang tối giản để tránh lỗi phiên bản
+st.set_page_config(
+    page_title="BC Quốc Sự",
+    page_layout="centered"
+)
 
 # --- CSS TẠO THẨM MỸ, GIAO DIỆN SANG TRỌNG ---
 st.markdown("""
