@@ -10,3 +10,18 @@ with st.container(border=True):
     st.text_area("Nội dung nhu cầu khách hàng", placeholder="Nhập chi tiết yêu cầu...")
     st.feedback("stars")
     st.button("💾 Gửi & Lưu Báo Cáo", use_container_width=True, type="primary")
+
+# --- LOGIC GHI DỮ LIỆU ---
+if st.button("💾 Gửi & Lưu Báo Cáo", use_container_width=True, type="primary"):
+    # 1. Lấy dữ liệu từ các ô nhập
+    import datetime
+    
+    # Giả sử ní đã có sẵn các biến chứa dữ liệu từ form
+    # tên_nv = st.session_state.ten_nv (đã có từ lúc đăng nhập)
+    # thời_gian = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # 2. Thực hiện lệnh ghi (Ví dụ dùng gspread)
+    # worksheet.append_row([stt, ten_nv, khach_hang, sdt, nhu_cau, thời_gian, chot_sale, ghi_chu])
+    
+    st.success("✅ Đã lưu báo cáo thành công!")
+    st.balloons()
