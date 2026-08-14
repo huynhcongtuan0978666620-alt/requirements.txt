@@ -1,103 +1,98 @@
 import streamlit as st
-import pandas as pd
 
-# Cấu hình trang tối ưu cho hiển thị Mobile
-st.set_page_config(page_title="Salon Kim Hiền - Premium UI", page_icon="💇", layout="centered")
+# Cấu hình trang hiển thị dạng rộng, gọn gàng cho app báo cáo
+st.set_page_config(page_title="BC Quốc Sự", page_layout="centered", initial_sidebar_state="collapsed")
 
-# --- 1. BỘ MÀU HOÀNG GIA CHO SALON (THEME_COLORS) ---
-THEME_COLORS = {
-    "bg_app": "rgba(235, 245, 241, 0.8)",       # Nền tổng thể xanh mint nhạt hoàng gia
-    "bg_card": "#ffffff",                       # Nền card trắng tinh khôi
-    "bg_box_chung": "#f4f8f6",                  # Khung thông tin phụ nhẹ nhàng
-    "bg_marquee": "#e2f0eb",                    # Nền thanh thông báo chạy chữ
-    "primary": "#0f4c43",                       # Xanh lục bảo đậm (Deep Emerald) - Cực sang
-    "text_main": "#1a2522",                     # Chữ chính màu than đá sắc nét
-    "text_secondary": "#5a6b66",                # Chữ phụ thanh lịch
-    "text_title": "#0f4c43",                    # Tiêu đề đồng bộ với primary
-}
-
-# --- 2. HÀM BƠM CSS CUSTOM - BIẾN APP BÌNH DÂN THÀNH CAO CẤP ---
-def apply_premium_theme():
-    custom_css = f"""
+# --- CSS TẠO THẨM MỸ, GIAO DIỆN SANG TRỌNG ---
+st.markdown("""
     <style>
-    /* Nền Gradient mượt mà tạo khoảng thở */
-    .stApp {{
-        background: linear-gradient(to bottom, {THEME_COLORS['bg_app']}, #ffffff) !important;
-        background-attachment: fixed;
-    }}
-    
-    /* Thiết kế khung Card bo góc mềm mại, đổ bóng khói sang trọng */
-    div[data-testid="stVerticalBlock"] > div {{
-        background-color: {THEME_COLORS['bg_card']} !important;
-        border-radius: 20px !important;
-        box-shadow: 0 10px 30px rgba(15, 76, 67, 0.05) !important;
-        padding: 24px !important;
-        border: 1px solid rgba(15, 76, 67, 0.04) !important;
-        margin-bottom: 15px;
-    }}
-    
-    /* Định dạng thanh thông báo chữ chạy tinh tế */
-    .custom-marquee {{
-        background-color: {THEME_COLORS['bg_marquee']};
-        color: {THEME_COLORS['primary']};
-        padding: 10px 15px;
-        border-radius: 30px;
-        font-weight: 500;
+    .main-title {
+        text-align: center;
+        color: #1E3A8A;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+    .sub-title {
+        text-align: center;
+        color: #4B5563;
         font-size: 14px;
-        border: 1px solid rgba(15, 76, 67, 0.1);
         margin-bottom: 20px;
-    }}
-    
-    /* Làm mượt font chữ tiêu đề */
-    h1, h2, h3 {{
-        color: {THEME_COLORS['text_title']} !important;
-        font-family: 'Inter', sans-serif;
-        font-weight: 700 !important;
-    }}
+    }
+    .section-header {
+        background-color: #F3F4F6;
+        padding: 10px;
+        border-radius: 6px;
+        color: #1F2937;
+        font-weight: bold;
+        margin-top: 15px;
+        margin-bottom: 15px;
+    }
     </style>
-    """
-    st.markdown(custom_css, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-apply_premium_theme()
+# ==================== 1. MÀN HÌNH ĐĂNG NHẬP (GIẢ LẬP KHung Sườn) ====================
+# (Khi chạy thật, nếu chưa đăng nhập sẽ hiện form này)
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = True  # Tạm thời để True để ní thấy ngay giao diện chính bên dưới
 
-# --- 3. HIỂN THỊ GIAO DIỆN MÔ PHỎNG ---
-
-# Thanh thông báo chạy chữ kiểu mới (Gọn, mỏng, sang)
-st.markdown('<div class="custom-marquee"><marquee scrollamount="4">KÍNH CHÀO QUÝ KHÁCH! CHÚC MỘT NGÀY BÃO ĐƠN VÀ CHỐT THẬT NHIỀU BILL NHA KHÁCH ƠI!</marquee></div>', unsafe_allow_html=True)
-
-# Thanh điều hướng Menu tối giản (Bỏ emoji quê mùa)
-menu_tabs = st.tabs(["Tổng quan", "Lên hóa đơn", "Lịch hẹn", "Báo cáo"])
-
-with menu_tabs[0]:
-    # --- CARD 1: THÔNG TIN SALON (ĐỒNG BỘ VÀ TINH TẾ) ---
-    st.markdown(
-        f"""
-        <div style="text-align: center;">
-            <div style="display: inline-block; width: 100px; height: 100px; border-radius: 50%; border: 3px solid {THEME_COLORS['primary']}; overflow: hidden; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
-                <img src="https://via.placeholder.com/100" style="width: 100%; height: 100%; object-fit: cover;" alt="Logo">
-            </div>
-            <h2 style="margin: 0; font-size: 24px; letter-spacing: 1px;">SALON KIM HIỀN</h2>
-            <p style="color: {THEME_COLORS['text_secondary']}; font-size: 13px; margin: 8px 0 4px 0;">131, Trần Bình Trọng, Mỹ Xuyên, Long Xuyên, An Giang</p>
-            <p style="color: {THEME_COLORS['primary']}; font-weight: 600; font-size: 14px; margin: 0;">Hotline: 0947.58.1516</p>
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+if not st.session_state.logged_in:
+    st.markdown('<div class="main-title">ĐĂNG NHẬP HỆ THỐNG</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">BC Quốc Sự - Vui lòng xác thực nhân sự</div>', unsafe_allow_html=True)
+    with st.form("login_form"):
+        nv_id = st.text_input("Mã hoặc Tên nhân viên")
+        submit_login = st.form_submit_button("Đăng Nhập")
+        if submit_login:
+            if nv_id:
+                st.session_state.logged_in = True
+                st.session_state.ten_nv = nv_id
+                st.rerun()
+            else:
+                st.warning("Vui lòng nhập tên nhân viên!")
+else:
+    # ==================== 2. GIAO DIỆN CHÍNH APP ====================
     
-    st.markdown("---") # Đường chia nhẹ nhàng
+    # Thông tin công ty ở phía trên cùng
+    st.markdown('<div class="main-title">CÔNG TY TNHH ABC QUỐC SỰ</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-title">HỆ THỐNG BÁO CÁO VÀ CHĂM SÓC KHÁCH HÀNG</div>', unsafe_allow_html=True)
     
-    # --- CARD 2: LỜI CHÀO KHÁCH HÀNG THÂN THIỆN ---
-    st.markdown(
-        f"""
-        <div style="color: {THEME_COLORS['text_main']};">
-            <span style="font-size: 15px; color: {THEME_COLORS['text_secondary']};">Chào chị thân yêu,</span>
-            <h3 style="margin: 2px 0 10px 0; font-size: 20px;">Nguyễn Thị Hiền</h3>
-            <span style="font-size: 13px; color: {THEME_COLORS['text_secondary']};">Hôm nay là ngày: <b>30/05/2026</b></span>
-        </div>
-        """,
-        unsafe_allow_html=True
-    )
+    # Hiển thị nhân viên đang thao tác (Góc trên)
+    col_info1, col_info2 = st.columns([3, 1])
+    with col_info1:
+        st.info("👤 Nhân viên trực: **Nguyễn Văn A** (Demo)")
+    with col_info2:
+        if st.button("Đăng xuất"):
+            st.session_state.logged_in = False
+            st.rerun()
+
+    st.markdown("---")
+
+    # Khung nhập liệu thông tin khách hàng
+    st.markdown('<div class="section-header">📝 PHIẾU GHI NHẬN THÔNG TIN & NHU CẦU</div>', unsafe_allow_html=True)
     
-    # Giả lập biểu đồ hoặc chỉ số
-    st.markdown(f"<p style='color:{THEME_COLORS['primary']}; font-weight:700; margin-top:15px;'>📈 TĂNG TRƯỞNG DOANH THU TRONG NGÀY</p>", unsafe_allow_html=True)
-    st.info("Hệ thống hiển thị biểu đồ mượt mà tại đây...")
+    with st.container(border=True):
+        col1, col2 = st.columns(2)
+        with col1:
+            st.text_input("Tên khách hàng", placeholder="Nhập họ tên khách...", disabled=True)
+        with col2:
+            st.text_input("Số điện thoại khách hàng", placeholder="Ví dụ: 0912345678", disabled=True)
+            
+        st.text_area("Nội dung nhu cầu khách hàng (Tự ghi chép)", placeholder="Nhập chi tiết yêu cầu, thắc mắc hoặc nội dung tư vấn...", height=100, disabled=True)
+        
+        st.markdown("⭐ **Đánh giá từ khách hàng (1 đến 5 sao):**")
+        # Tạo thanh chọn sao trực quan (khung sườn)
+        st.feedback("stars") 
+
+        st.text_input("Trạng thái Chốt Sale", placeholder="Ví dụ: Đã chốt / Đang suy nghĩ / Từ chối", disabled=True)
+        st.text_area("Ghi chú bổ sung", placeholder="Các lưu ý khác...", height=60, disabled=True)
+
+    # Khu vực các nút chức năng (Action buttons)
+    st.markdown("<br>", unsafe_allow_html=True)
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        st.button("💾 Gửi & Lưu Báo Cáo", use_container_width=True, type="primary", disabled=True)
+    with col_btn2:
+        st.button("🖨️ In 'BC Quốc Sự' (A4 Dọc)", use_container_width=True, disabled=True)
+
+    # Footer nhỏ xinh
+    st.markdown("<br><p style='text-align: center; color: #9CA3AF; font-size: 12px;'>Phát triển độc quyền cho đối tác bởi Đội ngũ kỹ thuật Salon Kim Hiền & AI</p>", unsafe_allow_html=True)
